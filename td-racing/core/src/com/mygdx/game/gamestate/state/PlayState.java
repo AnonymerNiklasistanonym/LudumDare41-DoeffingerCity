@@ -26,7 +26,6 @@ public class PlayState extends GameState {
 	private Texture maincar;
 	private World world;
 	private Car car;
-	private Body carbody;
 	private boolean debugBox2D;
 
 	private Sprite pitStop;
@@ -68,15 +67,9 @@ public class PlayState extends GameState {
 
 		world = new World(new Vector2(0, 0), true);
 
-		BodyDef bodydef = new BodyDef();
-		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(500, 500);
-		carbody = world.createBody(bodydef);
-		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(tmaincar.getWidth() * SCALE_TO_BOX, tmaincar.getHeight() * SCALE_TO_BOX);
-		carbody.createFixture(carBox, 0f);
+		
 		debugRender = new Box2DDebugRenderer();
-		car = new Car(carbody);
+		car = new Car(world,smaincar);
 
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
 		pitStop.setPosition(100, 100);
@@ -127,13 +120,7 @@ public class PlayState extends GameState {
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 		spriteBatch.draw(tteststrecke, 0, 0);
-
-		float carx = carbody.getPosition().x;
-		float cary = carbody.getPosition().y;
-		carx = carx - smaincar.getWidth() / 2;
-		cary = cary - smaincar.getHeight() / 2;
-		smaincar.setPosition(carx, cary);
-		smaincar.draw(spriteBatch);
+		car.draw(spriteBatch);
 		pitStop.draw(spriteBatch);
 		spriteBatch.end();
 
