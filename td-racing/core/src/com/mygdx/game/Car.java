@@ -17,8 +17,9 @@ public class Car {
 	float maxspeed = 80;
 	float acceleration = 100;
 	float armor = 0;
-	float brakepower = 200;
-	float steerpower = 250;
+	float brakepower = 5;
+	float steerpower = 50;
+	float speed=0;
 
 	public Car(World w, Sprite scar) {
 		BodyDef bodydef = new BodyDef();
