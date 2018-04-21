@@ -56,7 +56,6 @@ public abstract class Tower {
 
 	public void shoot(Enemy e) {
 		setDegrees(getAngleToEnemy(e));
-		
 		e.takeDamage(20);
 		if(e.tot)
 			target=null;
@@ -65,9 +64,11 @@ public abstract class Tower {
 	
 	public float getAngleToEnemy(Enemy e) {
 		float angle=0;
-		Vector2 epos=new Vector2(e.getBodyX(),e.getBodyY());
+		Vector2 epos=new Vector2(center.x,center.y);
+		Vector2 tpos=new Vector2(e.getBodyX(),e.getBodyY());
 		
 		angle=center.angle(epos);
+		angle = (float) ((Math.atan2(epos.x - tpos.x, -(epos.y - tpos.y)) * 180.0d / Math.PI));
 		System.out.println("Winkel "+angle);
 		return angle;
 		
