@@ -15,18 +15,18 @@ public class Car {
 	Body body;
 	Sprite sprite;
 	float maxspeed = 80;
-	float acceleration = 1000000;
+	float acceleration = 100;
 	float armor = 0;
-	float brakepower = 2000000;
+	float brakepower = 200;
 	float steerpower = 250;
 
 	public Car(World w, Sprite scar) {
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(500, 500);
+		bodydef.position.set(500 * PlayState.PIXEL_TO_METER, 500 * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(scar.getWidth() * PlayState.PIXEL_TO_METER, scar.getHeight() * PlayState.PIXEL_TO_METER);
+		carBox.setAsBox(scar.getWidth(), scar.getHeight());
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = carBox;
 		fdef.density = 1f;

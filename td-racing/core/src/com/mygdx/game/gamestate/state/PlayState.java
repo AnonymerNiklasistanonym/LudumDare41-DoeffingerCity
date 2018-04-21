@@ -22,7 +22,7 @@ public class PlayState extends GameState {
 	Sprite smaincar;
 
 
-	
+	private Sprite steststrecke;
 	private World world;
 	private Car car;
 	private Enemy_small[] aEnemySmall = new Enemy_small[1];
@@ -50,21 +50,18 @@ public class PlayState extends GameState {
 
 		tteststrecke = new Texture("maps/test.png");
 		tmaincar = new Texture("cars/car_standard.png");
+		steststrecke = new Sprite(tteststrecke);
+		steststrecke.setSize(tteststrecke.getWidth() * PIXEL_TO_METER, tteststrecke.getHeight() * PIXEL_TO_METER);
 
 		smaincar = new Sprite(tmaincar);
+		smaincar.setSize(smaincar.getWidth() * PIXEL_TO_METER, smaincar.getHeight() * PIXEL_TO_METER);
+
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
-		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
 		debugBox2D = true;
-
-		/*
-		 * // create new camera camera = new OrthographicCamera( MainGame.GAME_WIDTH,
-		 * MainGame.GAME_HEIGHT); // move camera to the bottom left camera.position.x =
-		 * MainGame.GAME_WIDTH / 2; camera.position.y = MainGame.GAME_HEIGHT / 2; //
-		 * register and update camera camera.update();
-		 */
 
 		world = new World(new Vector2(0, 0), true);
 			
@@ -123,17 +120,14 @@ public class PlayState extends GameState {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		//spriteBatch.draw(tteststrecke, 0, 0);
+		steststrecke.draw(spriteBatch);
 		car.draw(spriteBatch);
 		zombieUpdate(spriteBatch);
 		pitStop.draw(spriteBatch);
 		spriteBatch.end();
 		
 		if (debugBox2D) {
-			Matrix4 debugCamera=new Matrix4();
-			debugCamera=camera.combined.cpy();
-			debugCamera.scale(METER_TO_PIXEL,METER_TO_PIXEL,1f);
-			debugRender.render(world,debugCamera);
+			debugRender.render(world,camera.combined);
 		}
 
 		updatePhysics(Gdx.graphics.getDeltaTime());

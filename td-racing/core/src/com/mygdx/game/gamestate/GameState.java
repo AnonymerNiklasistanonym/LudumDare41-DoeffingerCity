@@ -2,7 +2,6 @@ package com.mygdx.game.gamestate;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.MainGame;
 
 public abstract class GameState {
 
