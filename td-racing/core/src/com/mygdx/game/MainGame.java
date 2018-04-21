@@ -3,12 +3,14 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class MainGame extends ApplicationAdapter {
-	SpriteBatch batch;
+	public SpriteBatch batch;
+	public static BitmapFont font;
 
 	/**
 	 * Name of the game
@@ -30,6 +32,7 @@ public class MainGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
 		gameStateManager.pushState(new PlayState(gameStateManager));
+		font = new BitmapFont(Gdx.files.internal("fonts/Cornerstone.fnt"));
 	}
 
 	@Override
