@@ -110,7 +110,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// create example towers
 		
 				
-			Tower t= new EmptyTower(800 * PIXEL_TO_METER, 500 * PIXEL_TO_METER,enemies);
+			Tower t= new EmptyTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER,enemies);
 			towers.add(t);
 			
 	
@@ -187,7 +187,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// draw tower
 		pitStop.draw(spriteBatch);
 		for (Tower tower : towers) {
-			srangecircle.setSize(tower.getRange(), tower.getRange());
+			srangecircle.setSize(tower.getRange()*2, tower.getRange()*2);
 			srangecircle.setOriginCenter();
 			srangecircle.setOriginBasedPosition(tower.getX()+tower.getSpriteBody().getWidth() / 2, tower.getY()+tower.getSpriteBody().getHeight()/2);
 			srangecircle.draw(spriteBatch);

@@ -13,6 +13,7 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Tower {
 
+	protected float turnspeed;
 	protected float maxHealth;
 	protected float damage;
 	protected float speed;
@@ -53,11 +54,22 @@ public abstract class Tower {
 		this.damage = 0;
 	}
 
-	public void shoot(Enemy enemy) {
+	public void shoot(Enemy e) {
+		setDegrees(getAngleToEnemy(e));
 		
-		enemy.takeDamage(20);
-		if(enemy.tot)
+		e.takeDamage(20);
+		if(e.tot)
 			target=null;
+		
+	}
+	
+	public float getAngleToEnemy(Enemy e) {
+		float angle=0;
+		Vector2 epos=new Vector2(e.getBodyX(),e.getBodyY());
+		
+		angle=center.angle(epos);
+		System.out.println("Winkel "+angle);
+		return angle;
 		
 	}
 	
@@ -123,9 +135,8 @@ public abstract class Tower {
 
 	private boolean isTargetInRange(Enemy e) {
 		Vector2 epos=new Vector2(e.getBodyX(),e.getBodyY());
-		Vector2 tpos=new Vector2(center.x*PlayState.PIXEL_TO_METER,center.y*PlayState.PIXEL_TO_METER);
+		Vector2 tpos=new Vector2(center.x,center.y);
 		float dist=epos.dst(tpos);
-		System.out.println("distance "+dist);
 		boolean inrange=false;
 				if(dist<range)
 					inrange=true;
