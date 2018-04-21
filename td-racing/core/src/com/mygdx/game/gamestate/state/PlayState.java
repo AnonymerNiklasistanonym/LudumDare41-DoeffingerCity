@@ -9,10 +9,13 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Car;
 import com.mygdx.game.CollisionListener;
+import com.mygdx.game.Enemy;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.MainMap;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
@@ -29,9 +32,10 @@ public class PlayState extends GameState {
 	private Sprite szombie1dead;
 	private World world;
 	private Car car;
-	private Enemy_small[] aEnemySmall = new Enemy_small[1];
+	private Array<Enemy> enemies;
 	private boolean debugBox2D;
 
+	private MainMap map;
 	private Sprite pitStop;
 
 	/**
@@ -58,7 +62,7 @@ public class PlayState extends GameState {
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-
+		enemies=new Array<Enemy>();
 		collis=new CollisionListener();
 		steststrecke=createScaledSprite("maps/test.png");
 		smaincar=createScaledSprite("cars/car_standard.png");
@@ -69,7 +73,7 @@ public class PlayState extends GameState {
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
-		debugBox2D = true;
+		debugBox2D = false;
 
 		world = new World(new Vector2(0, 0), true);
 			
@@ -77,9 +81,14 @@ public class PlayState extends GameState {
 		debugRender = new Box2DDebugRenderer();
 		
 		car = new Car(world,smaincar);
+		for (int i = 0; i < 50; i++) {
+			Enemy e = new Enemy_small(world,szombie1,szombie1dead);
+			e.startMove();
+			enemies.add(e);		
+		}
+		map = new MainMap("test",world);
+				
 		
-		aEnemySmall[0] = new Enemy_small(world,szombie1,szombie1dead);
-		aEnemySmall[0].startMove();
 		
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
@@ -164,6 +173,11 @@ public class PlayState extends GameState {
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 		steststrecke.draw(spriteBatch);
+		for( Enemy e: enemies )
+		{
+			e.update(Gdx.graphics.getDeltaTime());
+			e.draw(spriteBatch);
+		}
 		car.draw(spriteBatch);
 		zombieUpdate(spriteBatch);
 		
@@ -171,6 +185,7 @@ public class PlayState extends GameState {
 		for (Checkpoint checkpoint : checkpoints) checkpoint.draw(spriteBatch);
 		
 		// draw tower
+		pitStop.draw(spriteBatch);
 		for (Tower tower : towers) tower.draw(spriteBatch);
 		
 		// draw pitstop
@@ -193,16 +208,15 @@ public class PlayState extends GameState {
 			world.step(TIME_STEP, 6, 2);
 			physicsaccumulator -= TIME_STEP;
 		}
+		
+			for (Enemy enemy : enemies) {
+				if(enemy.tot){
+					enemy.body.setActive(false);
+					
+				}
+			}
 	}
 	
-	public void zombieUpdate(SpriteBatch spriteBatch) {
-
-		for( Enemy_small k: aEnemySmall )
-		{
-			k.draw(spriteBatch);
-		}
-		
-	}
 
 	@Override
 	protected void dispose() {
