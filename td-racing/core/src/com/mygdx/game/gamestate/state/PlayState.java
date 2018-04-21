@@ -136,11 +136,10 @@ public class PlayState extends GameState {
 		smaincar.draw(spriteBatch);
 		pitStop.draw(spriteBatch);
 		spriteBatch.end();
-		
+
 		if (debugBox2D) {
 			debugRender.render(world, camera.combined);
 		}
-		
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
 
