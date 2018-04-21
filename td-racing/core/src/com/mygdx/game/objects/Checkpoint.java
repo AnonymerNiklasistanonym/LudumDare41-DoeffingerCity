@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.gamestate.state.PlayState;
 
-public class Checkpoint extends BodyDef {
+public abstract class Checkpoint extends BodyDef {
 
 	private boolean activated;
 	protected Body body;
