@@ -11,6 +11,19 @@ public class MainGame extends ApplicationAdapter {
 	Texture img;
 	Texture teststrecke;
 	
+	/**
+	 * Name of the game
+	 */
+	public final static String GAME_NAME = "td-racing";
+	/**
+	 * Width of the game screen (the window)
+	 */
+	public final static int GAME_WIDTH = 1280;
+	/**
+	 * Height of the game screen (the window)
+	 */
+	public final static int GAME_HEIGHT = 720;
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
