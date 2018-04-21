@@ -15,10 +15,10 @@ public class Car {
 	Body body;
 	Sprite sprite;
 	float maxspeed = 80;
-	float acceleration = 100;
+	float acceleration = 20;
 	float armor = 0;
 	float brakepower = 5;
-	float steerpower = 50;
+	float steerpower = 100;
 	float speed=0;
 
 	public Car(World w, Sprite scar) {
@@ -35,6 +35,7 @@ public class Car {
 		fdef.filter.categoryBits=PlayState.PLAYER_BOX;
 		fdef.filter.categoryBits=PlayState.ENEMY_BOX;
 		body.createFixture(fdef);
+		body.setUserData(this);
 		body.setAngularDamping(2);
 		sprite = scar;
 	}
