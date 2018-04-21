@@ -18,7 +18,7 @@ public class Car {
 	float acceleration = 1000000;
 	float armor = 0;
 	float brakepower = 2000000;
-	float steerpower = 5000000;
+	float steerpower = 250;
 
 	public Car(World w, Sprite scar) {
 		BodyDef bodydef = new BodyDef();
@@ -26,33 +26,31 @@ public class Car {
 		bodydef.position.set(500, 500);
 		body = w.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(scar.getWidth() * PlayState.SCALE_TO_BOX, scar.getHeight() * PlayState.SCALE_TO_BOX);
-		FixtureDef fdef=new FixtureDef();
-		fdef.shape=carBox;
-		fdef.density=0.1f;
-		fdef.friction=0f;
-		
+		carBox.setAsBox(scar.getWidth() * PlayState.PIXEL_TO_METER, scar.getHeight() * PlayState.PIXEL_TO_METER);
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = carBox;
+		fdef.density = 1f;
+		fdef.friction = 1f;
 		body.createFixture(fdef);
-		body.setAngularDamping(0.99f);
-		sprite=scar;
+		body.setAngularDamping(2);
+		sprite = scar;
 	}
 
 	public void accelarate() {
-		Vector2 velo=new Vector2(acceleration,0);
+		Vector2 velo = new Vector2(acceleration, 0);
 		velo.rotateRad(body.getAngle());
 		body.applyForceToCenter(velo, true);
-	
-	}
+		}
 
 	public void brake() {
-		Vector2 velo=new Vector2(brakepower*-1,0);
+		Vector2 velo = new Vector2(brakepower * -1, 0);
 		velo.rotateRad(body.getAngle());
 		body.applyForceToCenter(velo, true);
 	}
 
 	public void steerLeft() {
 		body.applyTorque(steerpower, true);
-		
+
 	}
 
 	public void steerRight() {
@@ -62,17 +60,17 @@ public class Car {
 	public void update(float delta) {
 
 	}
-	
+
 	public void hitEnemy(Enemy e) {
 
 	}
-	
+
 	public float getX() {
 		float carx = body.getPosition().x;
 		carx = carx - sprite.getWidth() / 2;
 		return carx;
 	}
-	
+
 	public float getY() {
 		float cary = body.getPosition().y;
 		cary = cary - sprite.getHeight() / 2;
@@ -81,9 +79,9 @@ public class Car {
 
 	public void draw(SpriteBatch spriteBatch) {
 		sprite.setPosition(getX(), getY());
-		sprite.setRotation(body.getAngle()*MathUtils.radDeg);
-		
+		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
+
 		sprite.draw(spriteBatch);
-		
+
 	}
 }
