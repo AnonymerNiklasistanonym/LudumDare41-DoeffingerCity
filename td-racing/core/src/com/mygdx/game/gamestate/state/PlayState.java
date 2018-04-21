@@ -52,6 +52,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float TIME_STEP = 1 / 60f;
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
+	public final static float RESOLUTION_WIDTH = 1280f;
 	
 	private Tower[] towers;
 	private Checkpoint[] checkpoints;
@@ -87,7 +88,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			e.startMove();
 			enemies.add(e);		
 		}
-		map = new MainMap("test",world);
+		map = new MainMap("test",world,RESOLUTION_WIDTH,PIXEL_TO_METER);
 				
 		
 		

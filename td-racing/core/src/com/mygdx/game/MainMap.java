@@ -19,13 +19,14 @@ public class MainMap {
 	Body mapModel;
 	Sprite debug;
 	
-	public MainMap (String mapName, World world) {
+	public MainMap (String mapName, World world, float resolution, float pixel_to_meter) {
 		
-		createSolidMap(mapName, world);
+		createSolidMap(mapName, world, resolution, pixel_to_meter);
+		
 		
 	}
 	
-	public void createSolidMap(String mapName, World world) {
+	public void createSolidMap(String mapName, World world, float resolution, float pixel_to_meter) {
         // The following line would throw ExceptionInInitializerError
 		tMap = new Texture("maps/Test.png");
 		sMap = new Sprite(tMap);
@@ -35,7 +36,7 @@ public class MainMap {
 		
 		// 1. Create a BodyDef, as usual.
 		BodyDef bd = new BodyDef();
-		bd.type = BodyType.DynamicBody;
+		bd.type = BodyType.StaticBody;
 
 		// 2. Create a FixtureDef, as usual.
 		FixtureDef fd = new FixtureDef();
@@ -47,12 +48,8 @@ public class MainMap {
 		mapModel = world.createBody(bd);
 //
 //		// 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "Name", fd, sMap.getWidth());
+		loader.attachFixture(mapModel, "Name", fd, resolution*pixel_to_meter);
 	}
 	
-//	public void draw(SpriteBatch spriteBatch) {
-//		debug.setPosition(getX(), getY());
-//		debug.draw(spriteBatch);
-//	}
 	
 }
