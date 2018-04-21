@@ -15,7 +15,9 @@ import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Tower;
+import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.tower.EmptyTower;
 
 public class PlayState extends GameState {
@@ -47,6 +49,7 @@ public class PlayState extends GameState {
 	public final static float METER_TO_PIXEL = 20f;
 	
 	private Tower[] towers;
+	private Checkpoint[] checkpoints;
 
 //Zur identifizierung von Collisions Entitys
 	public final static short PLAYER_BOX = 0x1;    // 0001
@@ -78,6 +81,14 @@ public class PlayState extends GameState {
 		aEnemySmall[0] = new Enemy_small(world,szombie1,szombie1dead);
 		aEnemySmall[0].startMove();
 		
+		// create example checkpoints
+		checkpoints = new Checkpoint[4];
+		float[][] checkPointPosition = { { 100, 100 }, { 100, 300 }, {900, 100 }, { 900, 300 } };
+		for (int i = 0; i < checkpoints.length; i++) {
+			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER, checkPointPosition[i][1] * PIXEL_TO_METER);
+		}
+		
+		// create example towers
 		towers = new EmptyTower[10];
 		float test = 50;
 		for (int i = 0; i < towers.length; i++) {
@@ -85,6 +96,7 @@ public class PlayState extends GameState {
 			test += 65;
 		}
 
+		// create example pit stop
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
 		pitStop.setPosition(100, 100);
 
@@ -107,6 +119,12 @@ public class PlayState extends GameState {
 		// Check if somehow the screen was touched
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
+			
+			// turn upper tower
+			towers[0].setDegrees(towers[0].getDegrees() + 1);
+			
+			// turn checkpoint on
+			checkpoints[0].setActivated(!checkpoints[0].getActivated());
 		}
 		if (Gdx.input.isKeyPressed(Keys.W)) {
 			car.accelarate();
@@ -148,8 +166,16 @@ public class PlayState extends GameState {
 		steststrecke.draw(spriteBatch);
 		car.draw(spriteBatch);
 		zombieUpdate(spriteBatch);
-		pitStop.draw(spriteBatch);
+		
+		// draw checkpoints
+		for (Checkpoint checkpoint : checkpoints) checkpoint.draw(spriteBatch);
+		
+		// draw tower
 		for (Tower tower : towers) tower.draw(spriteBatch);
+		
+		// draw pitstop
+		pitStop.draw(spriteBatch);
+
 		spriteBatch.end();
 		
 		if (debugBox2D) {

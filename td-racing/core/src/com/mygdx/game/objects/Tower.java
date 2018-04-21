@@ -45,6 +45,14 @@ public abstract class Tower {
 	public void shoot(Enemy enemy) {
 		// TODO
 	}
+	
+	public float getDegrees() {
+		return this.spriteUpperBody.getRotation();
+	}
+	
+	public void setDegrees(float degrees) {
+		this.spriteUpperBody.setRotation(degrees);
+	}
 
 	public void rotate(float degrees) {
 		spriteUpperBody.rotate(degrees);
