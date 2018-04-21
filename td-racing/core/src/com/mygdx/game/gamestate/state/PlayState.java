@@ -15,6 +15,7 @@ import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.MainMap;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Tower;
@@ -32,6 +33,7 @@ public class PlayState extends GameState {
 	private Array<Enemy> enemies;
 	private boolean debugBox2D;
 
+	private MainMap map;
 	private Sprite pitStop;
 
 	/**
@@ -81,6 +83,8 @@ public class PlayState extends GameState {
 			e.startMove();
 			enemies.add(e);		
 		}
+		map = new MainMap("test",world);
+				
 		
 		
 		towers = new EmptyTower[10];
