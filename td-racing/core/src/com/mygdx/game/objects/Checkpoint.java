@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.mygdx.game.gamestate.state.PlayState;
@@ -29,7 +30,11 @@ public abstract class Checkpoint extends BodyDef {
 
 		final CircleShape circleShape = new CircleShape();
 		circleShape.setRadius(this.sprite.getHeight() * 1f);
-		this.body.createFixture(circleShape, 0f);
+		final FixtureDef fdef = new FixtureDef();
+		fdef.shape = circleShape;
+		fdef.isSensor = true;
+		this.body.createFixture(fdef);
+		this.body.setUserData(this);
 		this.activatedTexture = activated;
 		this.disabledTexture = disabled;
 	}

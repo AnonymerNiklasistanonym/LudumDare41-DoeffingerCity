@@ -25,29 +25,29 @@ public class CollisionListener implements ContactListener {
 
 			// and the other object is an Enemy
 			if (a instanceof Enemy || b instanceof Enemy) {
+				System.out.println("Collision detected >> Enemy");
 				if (a instanceof Enemy)
 					this.collisionCallbackInterface.collisionCarEnemy((Car) b, (Enemy) a);
 				else
 					this.collisionCallbackInterface.collisionCarEnemy((Car) a, (Enemy) b);
-				return;
 			}
 
 			// and the other object is a Checkpoint
 			if (a instanceof Checkpoint || b instanceof Checkpoint) {
+				System.out.println("Collision detected >> Checkpoint");
 				if (a instanceof Checkpoint)
 					this.collisionCallbackInterface.collisionCarCheckpoint((Car) b, (Checkpoint) a);
 				else
 					this.collisionCallbackInterface.collisionCarCheckpoint((Car) a, (Checkpoint) b);
-				return;
 			}
 
 			// and the other object is a Checkpoint
 			if (a instanceof Tower || b instanceof Tower) {
+				System.out.println("Collision detected >> Tower");
 				if (a instanceof Tower)
 					this.collisionCallbackInterface.collisionCarTower((Car) b, (Tower) a);
 				else
 					this.collisionCallbackInterface.collisionCarTower((Car) a, (Tower) b);
-				return;
 			}
 		}
 	}

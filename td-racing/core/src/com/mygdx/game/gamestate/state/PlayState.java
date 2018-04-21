@@ -241,6 +241,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
 		// TODO Auto-generated method stub
+		checkpoint.setActivated(true);
 		
 	}
 
