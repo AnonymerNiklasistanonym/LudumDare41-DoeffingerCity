@@ -83,7 +83,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
-		debugBox2D = true;
+		debugBox2D = false;
 
 		world = new World(new Vector2(0, 0), true);
 			
@@ -91,7 +91,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugRender = new Box2DDebugRenderer();
 		
 		car = new Car(world,smaincar, 600, 600);
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 300; i++) {
 			Enemy e = new Enemy_small(world,szombie1,szombie1dead);
 			e.startMove();
 			enemies.add(e);		
@@ -110,7 +110,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// create example towers
 		
 				
-			Tower t= new EmptyTower(200 * PIXEL_TO_METER, 200 * PIXEL_TO_METER,enemies);
+			Tower t= new EmptyTower(800 * PIXEL_TO_METER, 500 * PIXEL_TO_METER,enemies);
 			towers.add(t);
 			
 	
