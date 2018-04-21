@@ -12,13 +12,11 @@ public class CollisionListener implements ContactListener {
 	public void beginContact(Contact contact) {
 		Object a = contact.getFixtureA().getBody().getUserData();
 		Object b = contact.getFixtureB().getBody().getUserData();
-		System.out.println("userData a/b " + a + "/" + b);
-
 		if (a instanceof Car || b instanceof Car) {
-			System.out.println("ya");
+		
 
 			if (a instanceof Enemy || b instanceof Enemy) {
-				System.out.println("yo");
+				
 				if (a instanceof Enemy) {
 					Enemy e = (Enemy) a;
 					e.takeDamage(20);
