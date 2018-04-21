@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -17,6 +18,9 @@ public class MainGame extends ApplicationAdapter {
 	World world;
 	Car car;
 	Body carbody;
+	
+	private OrthographicCamera camera;
+	
 
 	
 	/**
@@ -37,7 +41,12 @@ public class MainGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		teststrecke = new Texture("maps/test.png");
 		maincar = new Texture("cars/car_standard.png");
-
+		
+		// create new camera
+		camera = new OrthographicCamera(GAME_WIDTH, GAME_HEIGHT);
+		// register camera
+		camera.update();
+		
 		world = new World(new Vector2(0, 0), true);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
@@ -59,6 +68,9 @@ public class MainGame extends ApplicationAdapter {
 		updateGame();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// set the projection matrix to be used by this batch
+		// camera.combined = combined projection and view matrix 
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(teststrecke, 0, 0);
 		batch.draw(maincar, 500, 100);
