@@ -21,27 +21,21 @@ public class PlayState extends GameState {
 	Texture tteststrecke;
 	Texture tmaincar;
 	Sprite smaincar;
-	World world;
-	Car car;
 
-	Body carbody;
-	boolean debugBox2D;
 	private Texture teststrecke;
 	private Texture maincar;
 	private World world;
 	private Car car;
 	private Body carbody;
 	private boolean debugBox2D;
-	
+
 	private Sprite pitStop;
 
 	/**
 	 * Time since last physic Steps
 	 */
-	float physicsaccumulator = 0f;
-	private float physicsaccumulator = 0f;
 
-	Box2DDebugRenderer debugRender;
+	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
 
 	/**
@@ -83,8 +77,7 @@ public class PlayState extends GameState {
 		carbody.createFixture(carBox, 0f);
 		debugRender = new Box2DDebugRenderer();
 		car = new Car(carbody);
-		
-		
+
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
 		pitStop.setPosition(100, 100);
 
@@ -140,20 +133,14 @@ public class PlayState extends GameState {
 		carx = carx - smaincar.getWidth() / 2;
 		cary = cary - smaincar.getHeight() / 2;
 		smaincar.setPosition(carx, cary);
-
 		smaincar.draw(spriteBatch);
-
+		pitStop.draw(spriteBatch);
 		spriteBatch.end();
+		
 		if (debugBox2D) {
 			debugRender.render(world, camera.combined);
 		}
-		spriteBatch.draw(teststrecke, 10, 10);
-		float carx = carbody.getPosition().x;
-		float cary = carbody.getPosition().y;
-		spriteBatch.draw(maincar, 10, 10);
-		spriteBatch.draw(maincar, carx, cary);
-		pitStop.draw(spriteBatch);
-		spriteBatch.end();
+		
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
 
