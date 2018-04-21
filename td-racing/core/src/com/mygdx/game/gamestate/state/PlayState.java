@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Car;
+import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
@@ -26,6 +27,7 @@ public class PlayState extends GameState {
 	private Texture maincar;
 	private World world;
 	private Car car;
+	private Enemy_small[] aEnemySmall = new Enemy_small[1];
 	private boolean debugBox2D;
 
 	private Sprite pitStop;
@@ -70,6 +72,9 @@ public class PlayState extends GameState {
 		
 		debugRender = new Box2DDebugRenderer();
 		car = new Car(world,smaincar);
+		
+		aEnemySmall[0] = new Enemy_small(world);
+		aEnemySmall[0].startMove();
 
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
 		pitStop.setPosition(100, 100);
@@ -121,6 +126,10 @@ public class PlayState extends GameState {
 		spriteBatch.begin();
 		spriteBatch.draw(tteststrecke, 0, 0);
 		car.draw(spriteBatch);
+		
+		
+		zombieUpdate(spriteBatch);
+		
 		pitStop.draw(spriteBatch);
 		spriteBatch.end();
 
@@ -139,6 +148,15 @@ public class PlayState extends GameState {
 			world.step(TIME_STEP, 6, 2);
 			physicsaccumulator -= TIME_STEP;
 		}
+	}
+	
+	public void zombieUpdate(SpriteBatch spriteBatch) {
+
+		for( Enemy_small k: aEnemySmall )
+		{
+			k.draw(spriteBatch);
+		}
+		
 	}
 
 	@Override
