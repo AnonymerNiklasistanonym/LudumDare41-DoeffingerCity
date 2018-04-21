@@ -13,7 +13,7 @@ public abstract class GameState {
 	/**
 	 * Game state manager
 	 */
-	private final GameStateManager gameStateManager;
+	protected final GameStateManager gameStateManager;
 	
 	/**
 	 * Constructor
