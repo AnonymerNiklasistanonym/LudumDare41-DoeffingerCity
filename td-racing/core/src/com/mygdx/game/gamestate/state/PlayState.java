@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,10 +19,12 @@ import com.mygdx.game.gamestate.GameStateManager;
 
 public class PlayState extends GameState {
 
-	Texture teststrecke;
-	Texture maincar;
+	Texture tteststrecke;
+	Texture tmaincar;
+	Sprite smaincar;
 	World world;
 	Car car;
+
 	Body carbody;
 	boolean debugBox2D;
 
@@ -37,11 +40,15 @@ public class PlayState extends GameState {
 	 */
 	public final static float TIME_STEP = 1 / 60f;
 
+	public final static float SCALE_TO_BOX = 0.5f;
+
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-		teststrecke = new Texture("maps/test.png");
-		maincar = new Texture("cars/car_standard.png");
+		tteststrecke = new Texture("maps/test.png");
+		tmaincar = new Texture("cars/car_standard.png");
+
+		smaincar = new Sprite(tmaincar);
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
@@ -57,15 +64,16 @@ public class PlayState extends GameState {
 		 */
 
 		world = new World(new Vector2(0, 0), true);
+
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(500, 500);
 		carbody = world.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(maincar.getWidth(), maincar.getHeight());
+		carBox.setAsBox(tmaincar.getWidth() * SCALE_TO_BOX, tmaincar.getHeight() * SCALE_TO_BOX);
 		carbody.createFixture(carBox, 0f);
 		debugRender = new Box2DDebugRenderer();
-
+		car = new Car(carbody);
 		System.out.println("Play state entered");
 
 	}
@@ -76,6 +84,18 @@ public class PlayState extends GameState {
 		// Check if somehow the screen was touched
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.W)) {
+			car.accelarate();
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.S)) {
+			car.brake();
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.A)) {
+			car.steerLeft();
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.D)) {
+			car.steerRight();
 		}
 
 	}
@@ -98,17 +118,21 @@ public class PlayState extends GameState {
 
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
-
 		spriteBatch.begin();
+		spriteBatch.draw(tteststrecke, 0, 0);
 
-		spriteBatch.draw(teststrecke, 0, 0);
 		float carx = carbody.getPosition().x;
 		float cary = carbody.getPosition().y;
-		spriteBatch.draw(maincar, carx, cary);
+		carx = carx - smaincar.getWidth() / 2;
+		cary = cary - smaincar.getHeight() / 2;
+		smaincar.setPosition(carx, cary);
+
+		smaincar.draw(spriteBatch);
+
+		spriteBatch.end();
 		if (debugBox2D) {
 			debugRender.render(world, camera.combined);
 		}
-		spriteBatch.end();
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
 
@@ -125,7 +149,7 @@ public class PlayState extends GameState {
 
 	@Override
 	protected void dispose() {
-		teststrecke.dispose();
+		tteststrecke.dispose();
 	}
 
 }
