@@ -33,6 +33,7 @@ public class PlayState extends GameState {
 	private World world;
 	private Car car;
 	private Array<Enemy> enemies;
+	private Array<Tower> towers;
 	private boolean debugBox2D;
 
 	private MainMap map;
@@ -52,7 +53,7 @@ public class PlayState extends GameState {
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
 	
-	private Tower[] towers;
+	
 	private Checkpoint[] checkpoints;
 
 //Zur identifizierung von Collisions Entitys
@@ -63,6 +64,7 @@ public class PlayState extends GameState {
 		super(gameStateManager);
 
 		enemies=new Array<Enemy>();
+		towers=new Array<Tower>();
 		collis=new CollisionListener();
 		steststrecke=createScaledSprite("maps/test.png");
 		smaincar=createScaledSprite("cars/car_standard.png");
@@ -73,7 +75,7 @@ public class PlayState extends GameState {
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
-		debugBox2D = false;
+		debugBox2D = true;
 
 		world = new World(new Vector2(0, 0), true);
 			
@@ -98,10 +100,11 @@ public class PlayState extends GameState {
 		}
 		
 		// create example towers
-		towers = new EmptyTower[10];
+		
 		float test = 50;
-		for (int i = 0; i < towers.length; i++) {
-			towers[i] = new EmptyTower(test * PIXEL_TO_METER, 10 * PIXEL_TO_METER);
+		for (int i = 0; i < 10; i++) {
+			Tower t= new EmptyTower(test * PIXEL_TO_METER, 10 * PIXEL_TO_METER,enemies);
+			towers.add(t);
 			test += 65;
 		}
 
@@ -129,8 +132,8 @@ public class PlayState extends GameState {
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
 			
-			// turn upper tower
-			towers[0].setDegrees(towers[0].getDegrees() + 1);
+			
+			
 			
 			// turn checkpoint on
 			checkpoints[0].setActivated(!checkpoints[0].getActivated());
@@ -153,13 +156,13 @@ public class PlayState extends GameState {
 	@Override
 	protected void update(float deltaTime) {
 
-		// handle input
+	
 		handleInput();
-		
-		// update car
 		car.update(deltaTime);
 		
-		// do other things
+		for (Tower t : towers) {
+			t.update();
+		}
 
 		// update camera if camera has changed
 		camera.update();
