@@ -14,6 +14,8 @@ import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.objects.Tower;
+import com.mygdx.game.objects.tower.EmptyTower;
 
 public class PlayState extends GameState {
 
