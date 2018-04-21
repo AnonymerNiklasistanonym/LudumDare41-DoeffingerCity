@@ -13,6 +13,7 @@ import com.mygdx.game.Car;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.MainMap;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Tower;
@@ -30,6 +31,7 @@ public class PlayState extends GameState {
 	private Enemy_small[] aEnemySmall = new Enemy_small[1];
 	private boolean debugBox2D;
 
+	private MainMap map;
 	private Sprite pitStop;
 
 	/**
@@ -74,6 +76,8 @@ public class PlayState extends GameState {
 		debugRender = new Box2DDebugRenderer();
 		
 		car = new Car(world,smaincar);
+		map = new MainMap("test",world);
+				
 		
 		aEnemySmall[0] = new Enemy_small(world,szombie1,szombie1dead);
 		aEnemySmall[0].startMove();
