@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class MainGame extends ApplicationAdapter {
@@ -21,6 +22,9 @@ public class MainGame extends ApplicationAdapter {
 	
 	private OrthographicCamera camera;
 	
+	float physicsaccumulator=0f; //time since last physicstep
+	//Box2DDebugRenderer debugRender= new Box2DDebugRenderer();
+>>>>>>> 1021e355408c07bb5cb855b7b263bcce1e921247
 
 	
 	/**
@@ -35,7 +39,12 @@ public class MainGame extends ApplicationAdapter {
 	 * Height of the game screen (the window)
 	 */
 	public final static int GAME_HEIGHT = 720;
-
+	/**
+	 * Time for physic Steps
+	 */
+	public final static float TIME_STEP = 1/60f;
+	
+	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
@@ -59,9 +68,19 @@ public class MainGame extends ApplicationAdapter {
 	}
 
 	public void updateGame() {
-
+		
 	}
-
+	
+	public void updatePhysics(float deltaTime) {
+	    float frameTime = Math.min(deltaTime, 0.25f);
+	    physicsaccumulator += frameTime;
+	    while (physicsaccumulator >= TIME_STEP) {
+	        world.step(TIME_STEP, 6, 2);
+	        physicsaccumulator -= TIME_STEP;
+	    }
+	}
+	
+	
 	@Override
 	public void render() {
 		getInput();
@@ -75,6 +94,7 @@ public class MainGame extends ApplicationAdapter {
 		batch.draw(teststrecke, 0, 0);
 		batch.draw(maincar, 500, 100);
 		batch.end();
+		updatePhysics(Gdx.graphics.getDeltaTime());
 	}
 
 	@Override
