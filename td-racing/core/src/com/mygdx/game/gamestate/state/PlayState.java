@@ -207,6 +207,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// draw car
 		car.draw(spriteBatch);
+		
+		MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,  MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 
 		spriteBatch.end();
 		
