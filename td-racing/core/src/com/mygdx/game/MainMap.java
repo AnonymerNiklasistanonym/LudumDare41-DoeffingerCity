@@ -27,7 +27,7 @@ public class MainMap {
 	public MainMap (String mapName, World world, float resolution, float pixel_to_meter) {
 		
 		createSolidMap(mapName, world, resolution, pixel_to_meter);
-		createAStarArray();
+		//createAStarArray();
 		
 	}
 	
@@ -58,7 +58,7 @@ public class MainMap {
 //
 //		// 4. Create the body fixture automatically by using the loader.
 		loader.attachFixture(mapModel, "Name", fd, resolution*pixel_to_meter);
-		loader.attachFixture(mapZiel, "Ziel", fd, resolution*pixel_to_meter);
+		//loader.attachFixture(mapZiel, "Ziel", fd, resolution*pixel_to_meter);
 	}
 	
 	public void createAStarArray() {
