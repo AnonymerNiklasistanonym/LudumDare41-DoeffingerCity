@@ -107,10 +107,11 @@ public abstract class Tower {
 		
 		Enemy best=null;
 		for (Enemy e : enemies) {
-			if(best==null&&e.tot==false)
-				best=e;
-			else
-				if(best!=null)
+			if(best==null)
+				if(e.tot==false)
+					if(isTargetInRange(e))
+						best=e;
+			if(best!=null)
 			if(e.getScore()>best.getScore()&&e.tot==false)
 				if(isTargetInRange(e))
 				best=e;
@@ -122,6 +123,28 @@ public abstract class Tower {
 		Vector2 epos=new Vector2(e.getBodyX(),e.getBodyY());
 		Vector2 tpos=new Vector2(spriteBody.getX()*PlayState.PIXEL_TO_METER,spriteBody.getY()*PlayState.PIXEL_TO_METER);
 		float dist=epos.dst(tpos);
-		return dist<range;
+		System.out.println("distance "+dist);
+		boolean inrange=false;
+				if(dist<range)
+					inrange=true;
+		return inrange;
 	}
+	
+	public float getX() {
+		return spriteBody.getX();
+	}
+	
+	public float getY() {
+		return spriteBody.getY();
+	}
+
+	public float getRange() {
+		return range;
+	}
+
+	public Sprite getSpriteBody() {
+		return spriteBody;
+	}
+	
+	
 }

@@ -13,7 +13,7 @@ public class EmptyTower extends Tower{
 		maxHealth = -1;
 		speed = -1;
 		power = -1;
-		range=10;
+		range=20;
 		}
 
 }
