@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestates;
+package com.mygdx.game.gamestate;
 
 import java.util.Stack;
 
