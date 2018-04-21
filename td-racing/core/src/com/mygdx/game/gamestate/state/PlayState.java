@@ -31,9 +31,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Sprite szombie1;
 	private Sprite steststrecke;
 	private Sprite szombie1dead;
+	private Sprite srangecircle;
 	private World world;
 	private Car car;
 	private Array<Enemy> enemies;
+	private Array<Tower> towers;
 	private boolean debugBox2D;
 
 	private MainMap map;
@@ -55,7 +57,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float RESOLUTION_WIDTH = 1280f;
 	public final static float RESOLUTION_HEIGHT = 720f;
 	
-	private Tower[] towers;
+	
 	private Checkpoint[] checkpoints;
 
 //Zur identifizierung von Collisions Entitys
@@ -66,17 +68,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		super(gameStateManager);
 
 		enemies=new Array<Enemy>();
+
+		towers=new Array<Tower>();
+
+
 		collis=new CollisionListener(this);
+
 		steststrecke=createScaledSprite("maps/test.png");
 		smaincar=createScaledSprite("cars/car_standard.png");
 		szombie1=createScaledSprite("zombies/zombie_standard.png");
 		szombie1dead=createScaledSprite("zombies/zombie_standard_tot.png");
-		
+		srangecircle=createScaledSprite("tower/range.png");
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
-		debugBox2D = false;
+		debugBox2D = true;
 
 		world = new World(new Vector2(0, 0), true);
 			
@@ -84,7 +91,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugRender = new Box2DDebugRenderer();
 		
 		car = new Car(world,smaincar);
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 1; i++) {
 			Enemy e = new Enemy_small(world,szombie1,szombie1dead);
 			e.startMove();
 			enemies.add(e);		
@@ -101,12 +108,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		
 		// create example towers
-		towers = new EmptyTower[10];
-		float test = 50;
-		for (int i = 0; i < towers.length; i++) {
-			towers[i] = new EmptyTower(test * PIXEL_TO_METER, 10 * PIXEL_TO_METER);
-			test += 65;
-		}
+		
+				
+			Tower t= new EmptyTower(200 * PIXEL_TO_METER, 200 * PIXEL_TO_METER,enemies);
+			towers.add(t);
+			
+	
 
 		// create example pit stop
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
@@ -132,8 +139,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
 			
-			// turn upper tower
-			towers[0].setDegrees(towers[0].getDegrees() + 1);
+			
+			
 			
 			// turn checkpoint on
 			checkpoints[0].setActivated(!checkpoints[0].getActivated());
@@ -156,13 +163,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	protected void update(float deltaTime) {
 
-		// handle input
+	
 		handleInput();
-		
-		// update car
 		car.update(deltaTime);
 		
-		// do other things
+		for (Tower t : towers) {
+			t.update();
+		}
 
 		// update camera if camera has changed
 		camera.update();
@@ -188,7 +195,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// draw tower
 		pitStop.draw(spriteBatch);
-		for (Tower tower : towers) tower.draw(spriteBatch);
+		for (Tower tower : towers) {
+			srangecircle.setSize(tower.getRange(), tower.getRange());
+			srangecircle.setOriginCenter();
+			srangecircle.setOriginBasedPosition(tower.getX()+tower.getSpriteBody().getWidth() / 2, tower.getY()+tower.getSpriteBody().getHeight()/2);
+			srangecircle.draw(spriteBatch);
+			tower.draw(spriteBatch);
+		}
 		
 		// draw pitstop
 		pitStop.draw(spriteBatch);
@@ -235,6 +248,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
 		// TODO Auto-generated method stub
+		checkpoint.setActivated(true);
 		
 	}
 

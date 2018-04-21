@@ -20,6 +20,7 @@ public abstract class Enemy extends BodyDef{
 	Sprite saussehen;
 	Sprite stot;
 	float[][] position;
+	float score=0;
 	World world;
 	
 	public boolean tot=false;
@@ -29,7 +30,7 @@ public abstract class Enemy extends BodyDef{
 		this.health = 10;
 		this.saussehen = sprite;
 		this.stot=deadsprite;
-		
+		this.score=MathUtils.random(100);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER, MathUtils.random(720)*PlayState.PIXEL_TO_METER);
@@ -94,15 +95,26 @@ public abstract class Enemy extends BodyDef{
 		cary = cary - saussehen.getWidth() / 2;
 		return cary;
 	}
+	public float getBodyX() {
+		return body.getPosition().x;
+	}
 	
+	public float getBodyY() {
+		return body.getPosition().y;
+	}
 	public void update(float delta) {
 		if(health<0) {
 			this.die();
 		}
+		body.applyForceToCenter(new Vector2(MathUtils.random(speed*-1, speed),MathUtils.random(speed*-1, speed)),true);
 	}
 	
 	public void draw(SpriteBatch spriteBatch) {
 		saussehen.setPosition(getX(), getY());
 		saussehen.draw(spriteBatch);
+	}
+	
+	public float getScore() {
+		return score;
 	}
 }
