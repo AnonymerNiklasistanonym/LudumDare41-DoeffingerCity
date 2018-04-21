@@ -88,7 +88,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		world.setContactListener(collis);
 		debugRender = new Box2DDebugRenderer();
 		
-		car = new Car(world,smaincar);
+		car = new Car(world,smaincar, 600, 600);
 		for (int i = 0; i < 50; i++) {
 			Enemy e = new Enemy_small(world,szombie1,szombie1dead);
 			e.startMove();
@@ -100,7 +100,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
-		float[][] checkPointPosition = { { 100, 100 }, { 100, 300 }, {900, 100 }, { 900, 300 } };
+		float[][] checkPointPosition = { { 300, 190 }, { 350, 540 }, {1000, 500 }, { 1000, 200 } };
 		for (int i = 0; i < checkpoints.length; i++) {
 			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER, checkPointPosition[i][1] * PIXEL_TO_METER);
 		}
@@ -137,9 +137,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// Check if somehow the screen was touched
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
-			
-			
-			
 			
 			// turn checkpoint on
 			checkpoints[0].setActivated(!checkpoints[0].getActivated());
@@ -182,12 +179,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 		steststrecke.draw(spriteBatch);
-		for( Enemy e: enemies )
-		{
-			e.update(Gdx.graphics.getDeltaTime());
-			e.draw(spriteBatch);
-		}
-		car.draw(spriteBatch);
 		
 		// draw checkpoints
 		for (Checkpoint checkpoint : checkpoints) checkpoint.draw(spriteBatch);
@@ -198,6 +189,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// draw pitstop
 		pitStop.draw(spriteBatch);
+		
+		// draw enemies
+		for( Enemy e: enemies )
+		{
+			e.update(Gdx.graphics.getDeltaTime());
+			e.draw(spriteBatch);
+		}
+		
+		// draw car
+		car.draw(spriteBatch);
 
 		spriteBatch.end();
 		
