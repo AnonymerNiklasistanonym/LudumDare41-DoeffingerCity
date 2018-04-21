@@ -44,9 +44,8 @@ public class PlayState extends GameState {
 	 * Time for physic Steps
 	 */
 	public final static float TIME_STEP = 1 / 60f;
-
-	public final static float METER_PER_PIXEL = 0.05f;
-	public final static float PIXELS_PER_METER = 20f;
+	public final static float PIXEL_TO_METER = 0.05f;
+	public final static float METER_TO_PIXEL = 20f;
 
 
 	public PlayState(GameStateManager gameStateManager) {
@@ -135,8 +134,7 @@ public class PlayState extends GameState {
 
 		if (debugBox2D) {
 			Matrix4 debugMatrix=camera.combined.cpy();
-			debugMatrix.scale(PIXELS_PER_METER, PIXELS_PER_METER, PIXELS_PER_METER);
-			
+			//debugMatrix.scale(PIXELS_PER_METER, PIXELS_PER_METER, PIXELS_PER_METER);
 			debugRender.render(world,debugMatrix);
 		}
 
