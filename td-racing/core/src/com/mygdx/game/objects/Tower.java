@@ -52,7 +52,7 @@ public abstract class Tower {
 	}
 
 	public void shoot(Enemy enemy) {
-		System.out.println("peng");
+		
 		enemy.takeDamage(20);
 		if(enemy.tot)
 			target=null;

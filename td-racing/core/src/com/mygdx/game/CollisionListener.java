@@ -1,33 +1,55 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.Tower;
 
 public class CollisionListener implements ContactListener {
+	
+	final CollisionCallbackInterface collisionCallbackInterface;
+
+	public CollisionListener(CollisionCallbackInterface collisionCallbackInterface) {
+		this.collisionCallbackInterface = collisionCallbackInterface;
+	}
 
 	@Override
 	public void beginContact(Contact contact) {
-		Object a = contact.getFixtureA().getBody().getUserData();
-		Object b = contact.getFixtureB().getBody().getUserData();
-		if (a instanceof Car || b instanceof Car) {
-		
+		final Object a = contact.getFixtureA().getBody().getUserData();
+		final Object b = contact.getFixtureB().getBody().getUserData();
 
+		// if one of the objects is a car
+		if (a instanceof Car || b instanceof Car) {
+
+			// and the other object is an Enemy
 			if (a instanceof Enemy || b instanceof Enemy) {
-				
-				if (a instanceof Enemy) {
-					Enemy e = (Enemy) a;
-					e.takeDamage(20);
-				}
-				if (b instanceof Enemy) {
-					Enemy e = (Enemy) b;
-					e.die();
-				}
+				if (a instanceof Enemy)
+					this.collisionCallbackInterface.collisionCarEnemy((Car) b, (Enemy) a);
+				else
+					this.collisionCallbackInterface.collisionCarEnemy((Car) a, (Enemy) b);
+				return;
+			}
+
+			// and the other object is a Checkpoint
+			if (a instanceof Checkpoint || b instanceof Checkpoint) {
+				if (a instanceof Checkpoint)
+					this.collisionCallbackInterface.collisionCarCheckpoint((Car) b, (Checkpoint) a);
+				else
+					this.collisionCallbackInterface.collisionCarCheckpoint((Car) a, (Checkpoint) b);
+				return;
+			}
+
+			// and the other object is a Checkpoint
+			if (a instanceof Tower || b instanceof Tower) {
+				if (a instanceof Tower)
+					this.collisionCallbackInterface.collisionCarTower((Car) b, (Tower) a);
+				else
+					this.collisionCallbackInterface.collisionCarTower((Car) a, (Tower) b);
+				return;
 			}
 		}
-
 	}
 
 	@Override

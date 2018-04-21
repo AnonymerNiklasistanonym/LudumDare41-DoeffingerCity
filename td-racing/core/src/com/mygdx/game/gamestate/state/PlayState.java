@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Car;
+import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.Enemy_small;
@@ -23,7 +24,7 @@ import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.tower.EmptyTower;
 
-public class PlayState extends GameState {
+public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	CollisionListener collis;
 	private Sprite smaincar;
@@ -52,6 +53,7 @@ public class PlayState extends GameState {
 	public final static float TIME_STEP = 1 / 60f;
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
+	public final static float RESOLUTION_WIDTH = 1280f;
 	
 	
 	private Checkpoint[] checkpoints;
@@ -64,8 +66,12 @@ public class PlayState extends GameState {
 		super(gameStateManager);
 
 		enemies=new Array<Enemy>();
+
 		towers=new Array<Tower>();
-		collis=new CollisionListener();
+
+
+		collis=new CollisionListener(this);
+
 		steststrecke=createScaledSprite("maps/test.png");
 		smaincar=createScaledSprite("cars/car_standard.png");
 		szombie1=createScaledSprite("zombies/zombie_standard.png");
@@ -88,7 +94,7 @@ public class PlayState extends GameState {
 			e.startMove();
 			enemies.add(e);		
 		}
-		map = new MainMap("test",world);
+		map = new MainMap("test",world,RESOLUTION_WIDTH,PIXEL_TO_METER);
 				
 		
 		
@@ -222,6 +228,25 @@ public class PlayState extends GameState {
 
 	@Override
 	protected void dispose() {
+		
+	}
+
+	@Override
+	public void collisionCarEnemy(Car car, Enemy enemy) {
+		enemy.takeDamage(20);
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void collisionCarTower(Car car, Tower tower) {
+		// TODO Auto-generated method stub
 		
 	}
 
