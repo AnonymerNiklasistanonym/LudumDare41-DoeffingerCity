@@ -5,7 +5,7 @@ import com.mygdx.game.objects.Tower;
 
 public class EmptyTower extends Tower{
 	
-	public EmptyTower(int xPosition, int yPosition) {
+	public EmptyTower(float xPosition, float yPosition) {
 		super(xPosition, yPosition, new Texture("tower/tower_empty.png"), new Texture("tower/tower_empty_upper.png"));
 
 		maxHealth = -1;

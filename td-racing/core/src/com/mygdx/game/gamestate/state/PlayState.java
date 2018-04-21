@@ -43,6 +43,8 @@ public class PlayState extends GameState {
 	public final static float TIME_STEP = 1 / 60f;
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
+	
+	private Tower[] towers;
 
 
 	public PlayState(GameStateManager gameStateManager) {
@@ -71,6 +73,13 @@ public class PlayState extends GameState {
 		
 		aEnemySmall[0] = new Enemy_small(world);
 		aEnemySmall[0].startMove();
+		
+		towers = new EmptyTower[10];
+		float test = 50;
+		for (int i = 0; i < towers.length; i++) {
+			towers[i] = new EmptyTower(test * PIXEL_TO_METER, 10 * PIXEL_TO_METER);
+			test += 65;
+		}
 
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
 		pitStop.setPosition(100, 100);
@@ -106,7 +115,10 @@ public class PlayState extends GameState {
 
 		// handle input
 		handleInput();
-		car.update(Gdx.graphics.getDeltaTime());
+		
+		// update car
+		car.update(deltaTime);
+		
 		// do other things
 
 		// update camera if camera has changed
@@ -124,6 +136,7 @@ public class PlayState extends GameState {
 		car.draw(spriteBatch);
 		zombieUpdate(spriteBatch);
 		pitStop.draw(spriteBatch);
+		for (Tower tower : towers) tower.draw(spriteBatch);
 		spriteBatch.end();
 		
 		if (debugBox2D) {
