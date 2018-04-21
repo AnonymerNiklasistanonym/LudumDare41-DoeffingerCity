@@ -231,13 +231,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	@Override
-	public void collisionCarCheckpoint(Car car, Enemy enemy) {
+	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void collisionCarTowernt(Car car, Enemy enemy) {
+	public void collisionCarTower(Car car, Tower tower) {
 		// TODO Auto-generated method stub
 		
 	}
