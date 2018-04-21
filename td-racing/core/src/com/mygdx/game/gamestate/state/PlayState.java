@@ -55,7 +55,7 @@ public class PlayState extends GameState {
 
 		smaincar = new Sprite(tmaincar);
 		smaincar.setSize(smaincar.getWidth() * PIXEL_TO_METER, smaincar.getHeight() * PIXEL_TO_METER);
-
+		smaincar.setOriginCenter();
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.

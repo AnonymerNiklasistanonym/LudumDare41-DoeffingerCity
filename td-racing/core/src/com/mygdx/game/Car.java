@@ -26,7 +26,7 @@ public class Car {
 		bodydef.position.set(500 * PlayState.PIXEL_TO_METER, 500 * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(scar.getWidth(), scar.getHeight());
+		carBox.setAsBox(scar.getWidth()*0.5f, scar.getHeight()*0.5f);
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = carBox;
 		fdef.density = 1f;
