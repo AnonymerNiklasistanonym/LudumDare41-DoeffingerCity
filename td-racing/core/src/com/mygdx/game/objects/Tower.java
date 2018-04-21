@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.Enemy;
+import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Tower {
 
@@ -26,13 +27,17 @@ public abstract class Tower {
 			drawHealthBar();
 	}
 
-	protected Tower(final int xPosition, final int yPosition, final Texture spriteBody, final Texture spriteUpperBody) {
+	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody, final Texture spriteUpperBody) {
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteUpperBody = new Sprite(spriteUpperBody);
+		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER, spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER, spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
 		final float middleOfSpriteBody = spriteBody.getWidth() / 2;
 		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2;
 		this.spriteBody.setPosition(xPosition, yPosition);
-		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody - widthOfUpperBody, yPosition + middleOfSpriteBody - widthOfUpperBody);
+		this.spriteUpperBody.setPosition(xPosition + widthOfUpperBody, yPosition + widthOfUpperBody);
+		// this.spriteUpperBody.setPosition(xPosition, yPosition);
+		this.spriteUpperBody.setOriginCenter();
 		this.healthBar = false;
 		this.damage = 0;
 	}
