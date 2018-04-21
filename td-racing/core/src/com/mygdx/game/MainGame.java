@@ -19,14 +19,12 @@ public class MainGame extends ApplicationAdapter {
 	World world;
 	Car car;
 	Body carbody;
-	
+
 	private OrthographicCamera camera;
-	
-	float physicsaccumulator=0f; //time since last physicstep
-	//Box2DDebugRenderer debugRender= new Box2DDebugRenderer();
 
+	float physicsaccumulator = 0f; // time since last physicstep
+	// Box2DDebugRenderer debugRender= new Box2DDebugRenderer();
 
-	
 	/**
 	 * Name of the game
 	 */
@@ -42,20 +40,19 @@ public class MainGame extends ApplicationAdapter {
 	/**
 	 * Time for physic Steps
 	 */
-	public final static float TIME_STEP = 1/60f;
-	
-	
+	public final static float TIME_STEP = 1 / 60f;
+
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		teststrecke = new Texture("maps/test.png");
 		maincar = new Texture("cars/car_standard.png");
-		
+
 		// create new camera
 		camera = new OrthographicCamera(GAME_WIDTH, GAME_HEIGHT);
 		// register camera
 		camera.update();
-		
+
 		world = new World(new Vector2(0, 0), true);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
@@ -68,19 +65,18 @@ public class MainGame extends ApplicationAdapter {
 	}
 
 	public void updateGame() {
-		
+
 	}
-	
+
 	public void updatePhysics(float deltaTime) {
-	    float frameTime = Math.min(deltaTime, 0.25f);
-	    physicsaccumulator += frameTime;
-	    while (physicsaccumulator >= TIME_STEP) {
-	        world.step(TIME_STEP, 6, 2);
-	        physicsaccumulator -= TIME_STEP;
-	    }
+		float frameTime = Math.min(deltaTime, 0.25f);
+		physicsaccumulator += frameTime;
+		while (physicsaccumulator >= TIME_STEP) {
+			world.step(TIME_STEP, 6, 2);
+			physicsaccumulator -= TIME_STEP;
+		}
 	}
-	
-	
+
 	@Override
 	public void render() {
 		getInput();
@@ -88,7 +84,7 @@ public class MainGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// set the projection matrix to be used by this batch
-		// camera.combined = combined projection and view matrix 
+		// camera.combined = combined projection and view matrix
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(teststrecke, 0, 0);
