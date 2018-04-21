@@ -6,10 +6,10 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class Car {
 	Body body;
 	float maxspeed = 80;
-	float accelarition = 10;
+	float accelarition = 10000;
 	float armor = 0;
-	float brakepower = 20;
-	float steerpower = 5;
+	float brakepower = 20000;
+	float steerpower = 500000;
 
 	public Car(Body b) {
 		this.body = b;
