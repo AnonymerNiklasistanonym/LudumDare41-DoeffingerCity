@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Car;
 import com.mygdx.game.Enemy_small;
@@ -24,8 +21,8 @@ public class PlayState extends GameState {
 	Texture tmaincar;
 	Sprite smaincar;
 
-	private Texture teststrecke;
-	private Texture maincar;
+
+	
 	private World world;
 	private Car car;
 	private Enemy_small[] aEnemySmall = new Enemy_small[1];
@@ -70,9 +67,9 @@ public class PlayState extends GameState {
 		 */
 
 		world = new World(new Vector2(0, 0), true);
-
-		
+			
 		debugRender = new Box2DDebugRenderer();
+		
 		car = new Car(world,smaincar);
 		
 		aEnemySmall[0] = new Enemy_small(world);
@@ -126,16 +123,17 @@ public class PlayState extends GameState {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		spriteBatch.draw(tteststrecke, 0, 0);
+		//spriteBatch.draw(tteststrecke, 0, 0);
 		car.draw(spriteBatch);
 		zombieUpdate(spriteBatch);
 		pitStop.draw(spriteBatch);
 		spriteBatch.end();
-
+		
 		if (debugBox2D) {
-			Matrix4 debugMatrix=camera.combined.cpy();
-			//debugMatrix.scale(PIXELS_PER_METER, PIXELS_PER_METER, PIXELS_PER_METER);
-			debugRender.render(world,debugMatrix);
+			Matrix4 debugCamera=new Matrix4();
+			debugCamera=camera.combined.cpy();
+			debugCamera.scale(METER_TO_PIXEL,METER_TO_PIXEL,1f);
+			debugRender.render(world,debugCamera);
 		}
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
