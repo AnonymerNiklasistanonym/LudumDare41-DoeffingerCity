@@ -18,7 +18,7 @@ public class Car {
 	float acceleration = 1000000;
 	float armor = 0;
 	float brakepower = 2000000;
-	float steerpower = 1500000;
+	float steerpower = 250;
 
 	public Car(World w, Sprite scar) {
 		BodyDef bodydef = new BodyDef();
@@ -26,7 +26,7 @@ public class Car {
 		bodydef.position.set(500, 500);
 		body = w.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(scar.getWidth() * PlayState.SCALE_TO_BOX, scar.getHeight() * PlayState.SCALE_TO_BOX);
+		carBox.setAsBox(scar.getWidth() * PlayState.METER_PER_PIXEL, scar.getHeight() * PlayState.METER_PER_PIXEL);
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = carBox;
 		fdef.density = 1f;
@@ -40,8 +40,7 @@ public class Car {
 		Vector2 velo = new Vector2(acceleration, 0);
 		velo.rotateRad(body.getAngle());
 		body.applyForceToCenter(velo, true);
-
-	}
+		}
 
 	public void brake() {
 		Vector2 velo = new Vector2(brakepower * -1, 0);

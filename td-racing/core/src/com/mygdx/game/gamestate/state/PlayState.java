@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -44,7 +45,9 @@ public class PlayState extends GameState {
 	 */
 	public final static float TIME_STEP = 1 / 60f;
 
-	public final static float SCALE_TO_BOX = 0.5f;
+	public final static float METER_PER_PIXEL = 0.05f;
+	public final static float PIXELS_PER_METER = 20f;
+
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
@@ -126,15 +129,15 @@ public class PlayState extends GameState {
 		spriteBatch.begin();
 		spriteBatch.draw(tteststrecke, 0, 0);
 		car.draw(spriteBatch);
-		
-		
 		zombieUpdate(spriteBatch);
-		
 		pitStop.draw(spriteBatch);
 		spriteBatch.end();
 
 		if (debugBox2D) {
-			debugRender.render(world, camera.combined);
+			Matrix4 debugMatrix=camera.combined.cpy();
+			debugMatrix.scale(PIXELS_PER_METER, PIXELS_PER_METER, PIXELS_PER_METER);
+			
+			debugRender.render(world,debugMatrix);
 		}
 
 		updatePhysics(Gdx.graphics.getDeltaTime());

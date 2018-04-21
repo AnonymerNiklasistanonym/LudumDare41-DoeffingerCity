@@ -23,7 +23,7 @@ public class Enemy_small extends Enemy{
 		bodydef.position.set(500, 500);
 		enemyBody = w.createBody(bodydef);
 		CircleShape enemyCircle = new CircleShape();
-		enemyCircle.setRadius(saussehen.getHeight() * PlayState.SCALE_TO_BOX);;
+		enemyCircle.setRadius(saussehen.getHeight() * PlayState.METER_PER_PIXEL);;
 		enemyBody.createFixture(enemyCircle, 0f);
 	}
 	
