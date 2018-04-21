@@ -3,18 +3,19 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-import aurelienribon.bodyeditor.BodyEditorLoader;
 
 
 public class MainMap {
 	Sprite sMap;
 	Texture tMap;
-	
+	Body mapModel;
 	
 	public MainMap (String mapName, World world) {
 		
@@ -23,12 +24,8 @@ public class MainMap {
 	}
 	
 	public void createSolidMap(String mapName, World world) {
-		try {
-            // The following line would throw ExceptionInInitializerError
-			BodyEditorLoader solidMap = new BodyEditorLoader(Gdx.files.local("maps/test.json"));
-        } catch (Throwable t) {
-            System.out.println(t);
-        }
+        // The following line would throw ExceptionInInitializerError
+		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.local("maps/test.json"));
 		
 		// 1. Create a BodyDef, as usual.
 		BodyDef bd = new BodyDef();
@@ -41,11 +38,10 @@ public class MainMap {
 		fd.restitution = 0.3f;
 
 		// 3. Create a Body, as usual.
-//		bottleModel = world.createBody(bd);
+		mapModel = world.createBody(bd);
 //
 //		// 4. Create the body fixture automatically by using the loader.
-//		loader.attachFixture(bottleModel, "test01", fd, BOTTLE_WIDTH);
-//		bottleModelOrigin = loader.getOrigin("test01", BOTTLE_WIDTH).cpy();
+		loader.attachFixture(mapModel, "test01", fd, sMap.getWidth());
 	}
 	
 }
