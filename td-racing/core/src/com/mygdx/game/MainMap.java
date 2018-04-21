@@ -25,6 +25,8 @@ public class MainMap {
 	
 	public void createSolidMap(String mapName, World world) {
         // The following line would throw ExceptionInInitializerError
+		tMap = new Texture("maps/Test.png");
+		sMap = new Sprite(tMap);
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.local("maps/test.json"));
 		
 		// 1. Create a BodyDef, as usual.
@@ -41,7 +43,7 @@ public class MainMap {
 		mapModel = world.createBody(bd);
 //
 //		// 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "test01", fd, sMap.getWidth());
+		loader.attachFixture(mapModel, "Name", fd, sMap.getWidth());
 	}
 	
 }
