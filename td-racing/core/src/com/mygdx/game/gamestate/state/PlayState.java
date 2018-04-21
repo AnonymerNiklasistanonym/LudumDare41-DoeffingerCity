@@ -90,16 +90,16 @@ public class PlayState extends GameState {
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
 		}
-		if (Gdx.input.isKeyJustPressed(Keys.W)) {
+		if (Gdx.input.isKeyPressed(Keys.W)) {
 			car.accelarate();
 		}
-		if (Gdx.input.isKeyJustPressed(Keys.S)) {
+		if (Gdx.input.isKeyPressed(Keys.S)) {
 			car.brake();
 		}
-		if (Gdx.input.isKeyJustPressed(Keys.A)) {
+		if (Gdx.input.isKeyPressed(Keys.A)) {
 			car.steerLeft();
 		}
-		if (Gdx.input.isKeyJustPressed(Keys.D)) {
+		if (Gdx.input.isKeyPressed(Keys.D)) {
 			car.steerRight();
 		}
 
