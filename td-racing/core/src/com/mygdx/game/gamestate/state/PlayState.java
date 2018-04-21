@@ -179,7 +179,6 @@ public class PlayState extends GameState {
 			e.draw(spriteBatch);
 		}
 		car.draw(spriteBatch);
-		zombieUpdate(spriteBatch);
 		
 		// draw checkpoints
 		for (Checkpoint checkpoint : checkpoints) checkpoint.draw(spriteBatch);
