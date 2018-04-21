@@ -33,8 +33,8 @@ public abstract class Enemy extends BodyDef{
 		this.score=MathUtils.random(100);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER, MathUtils.random(720)*PlayState.PIXEL_TO_METER);
-
+		//bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER, MathUtils.random(720)*PlayState.PIXEL_TO_METER);
+		bodydef.position.set(300*PlayState.PIXEL_TO_METER, 150*PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(saussehen.getHeight()*0.35f);;

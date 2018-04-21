@@ -18,6 +18,7 @@ public abstract class Tower {
 	protected float speed;
 	protected float power;
 	protected float range;
+	protected Vector2 center;
 	protected Sprite amunition;
 	protected Animation<TextureRegion> destroyAnimation;
 	protected Sprite spriteBody;
@@ -43,6 +44,7 @@ public abstract class Tower {
 		this.spriteUpperBody.setOriginCenter();
 		final float middleOfSpriteBody = spriteBody.getWidth() / 2*PlayState.PIXEL_TO_METER;
 		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2*PlayState.PIXEL_TO_METER;
+		center=new Vector2(xPosition+middleOfSpriteBody,yPosition+middleOfSpriteBody);
 		this.spriteBody.setPosition(xPosition, yPosition);
 		this.spriteUpperBody.setPosition(xPosition +middleOfSpriteBody- widthOfUpperBody, yPosition +middleOfSpriteBody- widthOfUpperBody);
 		// this.spriteUpperBody.setPosition(xPosition, yPosition);
@@ -121,7 +123,7 @@ public abstract class Tower {
 
 	private boolean isTargetInRange(Enemy e) {
 		Vector2 epos=new Vector2(e.getBodyX(),e.getBodyY());
-		Vector2 tpos=new Vector2(spriteBody.getX()*PlayState.PIXEL_TO_METER,spriteBody.getY()*PlayState.PIXEL_TO_METER);
+		Vector2 tpos=new Vector2(center.x*PlayState.PIXEL_TO_METER,center.y*PlayState.PIXEL_TO_METER);
 		float dist=epos.dst(tpos);
 		System.out.println("distance "+dist);
 		boolean inrange=false;
@@ -144,6 +146,14 @@ public abstract class Tower {
 
 	public Sprite getSpriteBody() {
 		return spriteBody;
+	}
+
+	public Vector2 getCenter() {
+		return center;
+	}
+
+	public void setCenter(Vector2 center) {
+		this.center = center;
 	}
 	
 	
