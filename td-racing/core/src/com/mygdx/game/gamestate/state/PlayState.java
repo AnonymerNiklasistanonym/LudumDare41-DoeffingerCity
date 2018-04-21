@@ -50,6 +50,11 @@ public class PlayState extends GameState {
 
 		tteststrecke = new Texture("maps/test.png");
 		tmaincar = new Texture("cars/car_standard.png");
+		Texture tzombie1 = new Texture("zombies/zombie_standard.png");
+		
+		Sprite szombie1=new Sprite(tzombie1);
+		szombie1.setSize(szombie1.getWidth() * PIXEL_TO_METER, szombie1.getHeight() * PIXEL_TO_METER);
+		szombie1.setOriginCenter();
 		steststrecke = new Sprite(tteststrecke);
 		steststrecke.setSize(tteststrecke.getWidth() * PIXEL_TO_METER, tteststrecke.getHeight() * PIXEL_TO_METER);
 
@@ -69,7 +74,7 @@ public class PlayState extends GameState {
 		
 		car = new Car(world,smaincar);
 		
-		aEnemySmall[0] = new Enemy_small(world);
+		aEnemySmall[0] = new Enemy_small(world,szombie1);
 		aEnemySmall[0].startMove();
 
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
