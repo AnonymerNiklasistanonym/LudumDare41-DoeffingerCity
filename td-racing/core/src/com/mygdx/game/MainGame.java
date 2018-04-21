@@ -24,7 +24,7 @@ public class MainGame extends ApplicationAdapter {
 	
 	float physicsaccumulator=0f; //time since last physicstep
 	//Box2DDebugRenderer debugRender= new Box2DDebugRenderer();
->>>>>>> 1021e355408c07bb5cb855b7b263bcce1e921247
+
 
 	
 	/**
