@@ -48,7 +48,7 @@ public abstract class Enemy extends BodyDef{
 	}
 	
 	public void startMove() {
-		body.applyForceToCenter(new Vector2(speed, 0), true);
+		body.applyForceToCenter(new Vector2(MathUtils.random(speed*-1, speed),MathUtils.random(speed*-1, speed)),true);
 	}
 	
 	public void endMove() {
