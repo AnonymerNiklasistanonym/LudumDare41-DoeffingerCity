@@ -9,7 +9,7 @@ public class Car {
 	float accelarition = 10000;
 	float armor = 0;
 	float brakepower = 20000;
-	float steerpower = 500000;
+	float steerpower = 5000000;
 
 	public Car(Body b) {
 		this.body = b;
@@ -25,12 +25,17 @@ public class Car {
 
 	public void steerLeft() {
 		body.applyTorque(steerpower, true);
+		
 	}
 
 	public void steerRight() {
 		body.applyTorque(steerpower * -1, true);
 	}
 
+	public void update(float delta) {
+		
+	}
+	
 	public void hitEnemy(Enemy e) {
 
 	}

@@ -112,7 +112,7 @@ public class PlayState extends GameState {
 
 		// handle input
 		handleInput();
-
+		car.update(Gdx.graphics.getDeltaTime());
 		// do other things
 
 		// update camera if camera has changed
