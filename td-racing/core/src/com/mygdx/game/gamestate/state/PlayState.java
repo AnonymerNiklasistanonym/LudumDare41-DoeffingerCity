@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Car;
+import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
@@ -19,7 +20,7 @@ import com.mygdx.game.objects.tower.EmptyTower;
 
 public class PlayState extends GameState {
 
-
+	CollisionListener collis;
 	private Sprite smaincar;
 	private Sprite szombie1;
 	private Sprite steststrecke;
@@ -54,7 +55,8 @@ public class PlayState extends GameState {
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-		
+
+		collis=new CollisionListener();
 		steststrecke=createScaledSprite("maps/test.png");
 		smaincar=createScaledSprite("cars/car_standard.png");
 		szombie1=createScaledSprite("zombies/zombie_standard.png");
@@ -68,6 +70,7 @@ public class PlayState extends GameState {
 
 		world = new World(new Vector2(0, 0), true);
 			
+		world.setContactListener(collis);
 		debugRender = new Box2DDebugRenderer();
 		
 		car = new Car(world,smaincar);
