@@ -21,10 +21,10 @@ public class Car {
 	float steerpower = 100;
 	float speed=0;
 
-	public Car(World w, Sprite scar) {
+	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(500 * PlayState.PIXEL_TO_METER, 500 * PlayState.PIXEL_TO_METER);
+		bodydef.position.set(xPostion * PlayState.PIXEL_TO_METER, yPosition * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
 		carBox.setAsBox(scar.getWidth()*0.5f, scar.getHeight()*0.5f);
