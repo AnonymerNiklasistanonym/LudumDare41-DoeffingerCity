@@ -13,6 +13,7 @@ public abstract class Enemy extends BodyDef{
 	float health = 0;
 	Texture taussehen;
 	Sprite saussehen;
+	Sprite stot;
 	float[][] position;
 	Body enemyBody;
 	

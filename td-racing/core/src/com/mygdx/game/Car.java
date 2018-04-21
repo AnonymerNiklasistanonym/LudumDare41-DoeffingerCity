@@ -32,6 +32,8 @@ public class Car {
 		fdef.shape = carBox;
 		fdef.density = 1f;
 		fdef.friction = 1f;
+		fdef.filter.categoryBits=PlayState.PLAYER_BOX;
+		fdef.filter.categoryBits=PlayState.ENEMY_BOX;
 		body.createFixture(fdef);
 		body.setAngularDamping(2);
 		sprite = scar;

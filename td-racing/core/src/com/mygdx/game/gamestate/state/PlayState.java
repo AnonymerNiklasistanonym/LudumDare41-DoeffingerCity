@@ -17,12 +17,11 @@ import com.mygdx.game.gamestate.GameStateManager;
 
 public class PlayState extends GameState {
 
-	Texture tteststrecke;
-	Texture tmaincar;
-	Sprite smaincar;
 
-
+	private Sprite smaincar;
+	private Sprite szombie1;
 	private Sprite steststrecke;
+	private Sprite szombie1dead;
 	private World world;
 	private Car car;
 	private Enemy_small[] aEnemySmall = new Enemy_small[1];
@@ -44,24 +43,19 @@ public class PlayState extends GameState {
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
 
-
+//Zur identifizierung von Collisions Entitys
+	public final static short PLAYER_BOX = 0x1;    // 0001
+	public final static short ENEMY_BOX = 0x1 << 1; // 0010 or 0x2 in hex
+	
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-		tteststrecke = new Texture("maps/test.png");
-		tmaincar = new Texture("cars/car_standard.png");
-		Texture tzombie1 = new Texture("zombies/zombie_standard.png");
 		
-		Sprite szombie1=new Sprite(tzombie1);
-		szombie1.setSize(szombie1.getWidth() * PIXEL_TO_METER, szombie1.getHeight() * PIXEL_TO_METER);
-		szombie1.setOriginCenter();
-		steststrecke = new Sprite(tteststrecke);
-		steststrecke.setSize(tteststrecke.getWidth() * PIXEL_TO_METER, tteststrecke.getHeight() * PIXEL_TO_METER);
-
-		smaincar = new Sprite(tmaincar);
-		smaincar.setSize(smaincar.getWidth() * PIXEL_TO_METER, smaincar.getHeight() * PIXEL_TO_METER);
-		smaincar.setOriginCenter();
-
+		steststrecke=createScaledSprite("maps/test.png");
+		smaincar=createScaledSprite("cars/car_standard.png");
+		szombie1=createScaledSprite("zombies/zombie_standard.png");
+		szombie1dead=createScaledSprite("zombies/zombie_standard_tot.png");
+		
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -74,7 +68,7 @@ public class PlayState extends GameState {
 		
 		car = new Car(world,smaincar);
 		
-		aEnemySmall[0] = new Enemy_small(world,szombie1);
+		aEnemySmall[0] = new Enemy_small(world,szombie1,szombie1dead);
 		aEnemySmall[0].startMove();
 
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
@@ -84,6 +78,15 @@ public class PlayState extends GameState {
 
 	}
 
+	public static Sprite createScaledSprite(String location) {
+		Texture t=new Texture(location);
+		Sprite s=new Sprite(t);
+		s.setSize(s.getWidth() * PIXEL_TO_METER, s.getHeight() * PIXEL_TO_METER);
+		s.setOriginCenter();
+		//t.dispose();
+		return s;
+	}
+	
 	@Override
 	protected void handleInput() {
 
@@ -159,7 +162,7 @@ public class PlayState extends GameState {
 
 	@Override
 	protected void dispose() {
-		tteststrecke.dispose();
+		
 	}
 
 }
