@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class MainGame extends ApplicationAdapter {
@@ -20,11 +23,11 @@ public class MainGame extends ApplicationAdapter {
 	Car car;
 	Body carbody;
 
+	boolean debugBox2D=true;
 	private OrthographicCamera camera;
 
 	float physicsaccumulator = 0f; // time since last physicstep
-	// Box2DDebugRenderer debugRender= new Box2DDebugRenderer();
-
+	Box2DDebugRenderer debugRender;
 	/**
 	 * Name of the game
 	 */
@@ -60,7 +63,14 @@ public class MainGame extends ApplicationAdapter {
 		world = new World(new Vector2(0, 0), true);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
+		bodydef.position.set(500,500);
 		carbody = world.createBody(bodydef);
+		PolygonShape carBox=new PolygonShape();
+		carBox.setAsBox(maincar.getWidth(), maincar.getHeight());
+		carbody.createFixture(carBox,0f);
+		debugRender= new Box2DDebugRenderer();
+		
+		
 
 	}
 
@@ -85,15 +95,23 @@ public class MainGame extends ApplicationAdapter {
 	public void render() {
 		getInput();
 		updateGame();	
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// set the projection matrix to be used by this batch
 		// camera.combined = combined projection and view matrix
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		batch.draw(teststrecke, 0, 0);
-		batch.draw(maincar, 500, 100);
+		float carx=carbody.getPosition().x;
+		float cary=carbody.getPosition().y;
+		batch.draw(maincar, carx,cary);
+		if(debugBox2D) {
+		debugRender.render(world,camera.combined);
+		
+		}
+		
 		batch.end();
+		
 		updatePhysics(Gdx.graphics.getDeltaTime());
 	}
 
