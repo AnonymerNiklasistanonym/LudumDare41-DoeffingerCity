@@ -37,7 +37,6 @@ public class GameOverState extends GameState {
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
 			dispose();
 			Gdx.app.exit();
-			System.exit(0);
 		}
 
 	}

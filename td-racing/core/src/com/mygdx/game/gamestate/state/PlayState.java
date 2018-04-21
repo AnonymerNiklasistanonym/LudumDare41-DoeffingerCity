@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
@@ -250,6 +251,25 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
 		// TODO Auto-generated method stub
 		checkpoint.setActivated(true);
+		
+		// check if all checkpoints are activated
+		boolean allCheckpointsactivated = true;
+		for (Checkpoint checkpoint1 : checkpoints) {
+			if (checkpoint1.getActivated() == false) {
+				allCheckpointsactivated = false;
+				break;
+			}
+		}
+		// if they are schedule in 2 seconds to deactivate them all
+		if (allCheckpointsactivated) {
+			Timer.schedule(new Timer.Task() {
+				public void run() {
+					for (Checkpoint checkpoint1 : checkpoints) {
+						checkpoint1.setActivated(false);
+					}
+				}
+			}, 2);
+		}
 		
 	}
 
