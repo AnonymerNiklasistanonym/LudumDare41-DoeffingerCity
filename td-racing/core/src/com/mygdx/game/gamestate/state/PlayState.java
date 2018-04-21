@@ -2,8 +2,8 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,19 +18,21 @@ import com.mygdx.game.gamestate.GameStateManager;
 
 public class PlayState extends GameState {
 
-	Texture teststrecke;
-	Texture maincar;
-	World world;
-	Car car;
-	Body carbody;
-	boolean debugBox2D;
+	private Texture teststrecke;
+	private Texture maincar;
+	private World world;
+	private Car car;
+	private Body carbody;
+	private boolean debugBox2D;
+	
+	private Sprite pitStop;
 
 	/**
 	 * Time since last physic Steps
 	 */
-	float physicsaccumulator = 0f;
+	private float physicsaccumulator = 0f;
 
-	Box2DDebugRenderer debugRender;
+	private Box2DDebugRenderer debugRender;
 
 	/**
 	 * Time for physic Steps
@@ -65,6 +67,10 @@ public class PlayState extends GameState {
 		carBox.setAsBox(maincar.getWidth(), maincar.getHeight());
 		carbody.createFixture(carBox, 0f);
 		debugRender = new Box2DDebugRenderer();
+		
+		
+		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
+		pitStop.setPosition(100, 100);
 
 		System.out.println("Play state entered");
 
@@ -101,13 +107,12 @@ public class PlayState extends GameState {
 
 		spriteBatch.begin();
 
-		spriteBatch.draw(teststrecke, 0, 0);
+		spriteBatch.draw(teststrecke, 10, 10);
 		float carx = carbody.getPosition().x;
 		float cary = carbody.getPosition().y;
+		spriteBatch.draw(maincar, 10, 10);
 		spriteBatch.draw(maincar, carx, cary);
-		if (debugBox2D) {
-			debugRender.render(world, camera.combined);
-		}
+		pitStop.draw(spriteBatch);
 		spriteBatch.end();
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
