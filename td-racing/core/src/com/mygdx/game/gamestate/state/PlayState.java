@@ -31,6 +31,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Sprite szombie1;
 	private Sprite steststrecke;
 	private Sprite szombie1dead;
+	private Sprite srangecircle;
 	private World world;
 	private Car car;
 	private Array<Enemy> enemies;
@@ -54,6 +55,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
 	public final static float RESOLUTION_WIDTH = 1280f;
+	public final static float RESOLUTION_HEIGHT = 720f;
 	
 	
 	private Checkpoint[] checkpoints;
@@ -76,7 +78,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		smaincar=createScaledSprite("cars/car_standard.png");
 		szombie1=createScaledSprite("zombies/zombie_standard.png");
 		szombie1dead=createScaledSprite("zombies/zombie_standard_tot.png");
-		
+		srangecircle=createScaledSprite("tower/range.png");
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -107,12 +109,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// create example towers
 		
-		float test = 50;
-		for (int i = 0; i < 10; i++) {
-			Tower t= new EmptyTower(test * PIXEL_TO_METER, 10 * PIXEL_TO_METER,enemies);
+				
+			Tower t= new EmptyTower(200 * PIXEL_TO_METER, 200 * PIXEL_TO_METER,enemies);
 			towers.add(t);
-			test += 65;
-		}
+			
+	
 
 		// create example pit stop
 		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
@@ -185,7 +186,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// draw tower
 		pitStop.draw(spriteBatch);
-		for (Tower tower : towers) tower.draw(spriteBatch);
+		for (Tower tower : towers) {
+			srangecircle.setSize(tower.getRange(), tower.getRange());
+			srangecircle.setOriginCenter();
+			srangecircle.setOriginBasedPosition(tower.getX()+tower.getSpriteBody().getWidth() / 2, tower.getY()+tower.getSpriteBody().getHeight()/2);
+			srangecircle.draw(spriteBatch);
+			tower.draw(spriteBatch);
+		}
 		
 		// draw pitstop
 		pitStop.draw(spriteBatch);

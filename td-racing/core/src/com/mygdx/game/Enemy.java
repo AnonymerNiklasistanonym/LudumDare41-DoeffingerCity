@@ -106,6 +106,7 @@ public abstract class Enemy extends BodyDef{
 		if(health<0) {
 			this.die();
 		}
+		body.applyForceToCenter(new Vector2(MathUtils.random(speed*-1, speed),MathUtils.random(speed*-1, speed)),true);
 	}
 	
 	public void draw(SpriteBatch spriteBatch) {
