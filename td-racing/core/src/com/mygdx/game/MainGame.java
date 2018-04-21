@@ -50,8 +50,12 @@ public class MainGame extends ApplicationAdapter {
 
 		// create new camera
 		camera = new OrthographicCamera(GAME_WIDTH, GAME_HEIGHT);
-		// register camera
+		// move camera to the bottom left
+		camera.position.x = GAME_WIDTH / 2;
+		camera.position.y = GAME_HEIGHT / 2;
+		// register and update camera
 		camera.update();
+
 
 		world = new World(new Vector2(0, 0), true);
 		BodyDef bodydef = new BodyDef();
@@ -80,7 +84,7 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void render() {
 		getInput();
-		updateGame();
+		updateGame();	
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// set the projection matrix to be used by this batch
