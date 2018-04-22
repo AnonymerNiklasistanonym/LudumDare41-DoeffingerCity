@@ -34,8 +34,8 @@ public class MainMap {
 
 	}
 	
-	public ArrayList<Node> getNodesList(){
-		return nodesList;
+	public Node[][] getNodesList(){
+		return nodes2DList;
 	}
 	
 	public void createSolidMap(String mapName, World world, float resolution, float pixel_to_meter) {
@@ -88,7 +88,7 @@ public class MainMap {
 				// Im befahrbaren Bereich?
 				befahrbar = true;
 				for (Fixture f : mapModel.getFixtureList()) {
-					if(f.testPoint(i, j)) {
+					if(f.testPoint(i*PlayState.PIXEL_TO_METER, j*PlayState.PIXEL_TO_METER)) {
 						befahrbar = false;
 					}				
 				}
@@ -106,22 +106,30 @@ public class MainMap {
 			}
 		}
 		System.out.println();
-		
+		boolean isFound = false;
+		Node uebergebNode = new Node(true);
 		
 		this.nodes2DList = new Node[(int)PlayState.RESOLUTION_WIDTH][(int)PlayState.RESOLUTION_HEIGHT];
 		// In 2d Array schreiben
-		for (int i = 0;i<(int)PlayState.RESOLUTION_WIDTH;i += 10) {
-			for (int j = 0;j<(int)PlayState.RESOLUTION_HEIGHT;j += 10) {
+		for (int i = 0;i<(int)PlayState.RESOLUTION_WIDTH;i = i + 10) {
+			for (int j = 0;j<(int)PlayState.RESOLUTION_HEIGHT;j = j + 10) {
+				isFound = false;
 				for (Node node : nodesList) {
 					if(node.x == i && node.y == j) {
-						nodes2DList[i][j] = node;
+						isFound = true;
+						uebergebNode = node;
+						break;
 					}
-					else {
-						nodes2DList[i][j] = new Node(false);
-					}
+				}
+				if(isFound) {
+					nodes2DList[i][j] = uebergebNode;
+				}
+				else {
+					nodes2DList[i][j] = new Node(true);
 				}
 			}
 		}
+		
 	}
 
-}
+} 

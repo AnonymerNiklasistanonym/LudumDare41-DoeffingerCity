@@ -5,11 +5,13 @@ import java.util.ArrayList;
 public class Node {
 	float x, y;
 	// Kosten von Start hierher
-	float g;
+	float g = 1;
 	// Kosten bis zum Ziel
 	float h;
 	// Erschwernis
 	float erschwernis;
+	// Kosten
+	float kosten;
 	
 	boolean noUse = false;
 	
@@ -30,8 +32,19 @@ public class Node {
 	}
 	
 	public float getKosten() {
-		return g * h * erschwernis;
+		kosten = g * h * erschwernis;
+		return kosten;
 	}
 	
+	public boolean getNoUse() {
+		return noUse;
+	}
 	
+	public float getX() {
+		return x;
+	}
+	
+	public float getY() {
+		return y;
+	}
 }
