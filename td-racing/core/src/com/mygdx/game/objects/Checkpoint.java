@@ -43,7 +43,7 @@ public abstract class Checkpoint extends BodyDef {
 		this.sprite.setTexture(this.activated ? activatedTexture : disabledTexture);
 	}
 
-	public boolean getActivated() {
+	public boolean isActivated() {
 		return activated;
 	}
 

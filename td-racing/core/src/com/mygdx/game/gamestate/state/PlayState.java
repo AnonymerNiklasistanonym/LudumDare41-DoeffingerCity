@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
@@ -31,7 +30,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	CollisionListener collis;
 	private Sprite smaincar;
-	private Sprite steststrecke;
 	private Sprite srangecircle;
 	private Sprite sfinishline;
 	private Sprite strack1;
@@ -51,8 +49,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public static boolean soundon = false;
 
 	private int money = 100;
-	private int moneyperlap = 100;
-	private float timeperlap = 0;
+	private int moneyPerLap = 100;
 
 	/**
 	 * Time since last physic Steps
@@ -71,6 +68,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float RESOLUTION_HEIGHT = 720f;
 
 	private Checkpoint[] checkpoints;
+	private static int moneyLap = 100;
+	private long lapTimeBegin;
+	private float millisecondsTimeMalus;
 
 	// Zur identifizierung von Collisions Entitys
 	public final static short PLAYER_BOX = 0x1; // 0001
@@ -78,9 +78,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
+		
+		money = 0;
 
 		// import textures
-		steststrecke = createScaledSprite("maps/test.png");
 		strack1 = createScaledSprite("maps/track1.png");
 		strack1top = createScaledSprite("maps/track1top.png");
 		smaincar = createScaledSprite("cars/car_standard.png");
@@ -145,6 +146,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// create example pit stop
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
+		
+		lapTimeBegin = System.currentTimeMillis();
 
 		System.out.println("Play state entered");
 
@@ -167,7 +170,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			System.out.println("Do something");
 
 			// turn checkpoint on
-			checkpoints[0].setActivated(!checkpoints[0].getActivated());
+			checkpoints[0].setActivated(!checkpoints[0].isActivated());
 		}
 		if (Gdx.input.isKeyPressed(Keys.W)) {
 			car.accelarate();
@@ -200,8 +203,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void update(float deltaTime) {
-
-		timeperlap = timeperlap + deltaTime;
 
 		handleInput();
 		car.update(deltaTime);
@@ -303,37 +304,40 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
 		// TODO Auto-generated method stub
 		checkpoint.setActivated(true);
-
-		// check if all checkpoints are activated
-		boolean allCheckpointsactivated = true;
-		for (Checkpoint checkpoint1 : checkpoints) {
-			if (checkpoint1.getActivated() == false) {
-				allCheckpointsactivated = false;
-				break;
-			}
-		}
-		// if they are schedule in 2 seconds to deactivate them all
-		if (allCheckpointsactivated) {
-			lapFinished();
-		}
-
 	}
 
 	public void lapFinished() {
-
-		for (Checkpoint checkpoint1 : checkpoints) {
-			checkpoint1.setActivated(false);
+		
+		boolean allCheckpointsChecked = true;
+		
+		for (final Checkpoint checkpoint : this.checkpoints) {
+			if (checkpoint.isActivated() == false) {
+				allCheckpointsChecked = false;
+			}
+			checkpoint.setActivated(false);
 		}
-		money = money + moneyperlap;
-		int timebonus = 100 - (int) timeperlap * 2;
-		money = money + timebonus;
-		System.out.println("Lap Finished, new Money: " + money);
+		
+		final int oldMoney = this.money;
+
+		if (allCheckpointsChecked) {
+			final long timeDelta = lapTimeBegin - System.currentTimeMillis();
+			this.money += moneyLap + timeDelta * millisecondsTimeMalus;
+		}
+		
+		lapTimeBegin = System.currentTimeMillis();
+		
+		System.out.println("Lap Finished, new Money: " + money + " (old: " + oldMoney + ")");
 	}
 
 	@Override
 	public void collisionCarTower(Car car, Tower tower) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void collisionCarFinishLine(Car car, FinishLine finishLine) {
+		lapFinished();
 	}
 
 }

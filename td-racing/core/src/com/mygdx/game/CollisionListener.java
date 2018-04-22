@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 
 public class CollisionListener implements ContactListener {
@@ -48,6 +49,15 @@ public class CollisionListener implements ContactListener {
 					this.collisionCallbackInterface.collisionCarTower((Car) b, (Tower) a);
 				else
 					this.collisionCallbackInterface.collisionCarTower((Car) a, (Tower) b);
+			}
+			
+			// and the other object is a Checkpoint
+			if (a instanceof FinishLine || b instanceof FinishLine) {
+				System.out.println("Collision detected >> Tower");
+				if (a instanceof FinishLine)
+					this.collisionCallbackInterface.collisionCarFinishLine((Car) b, (FinishLine) a);
+				else
+					this.collisionCallbackInterface.collisionCarFinishLine((Car) a, (FinishLine) b);
 			}
 		}
 	}
