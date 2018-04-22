@@ -19,7 +19,7 @@ public class Car {
 	Sprite sprite;
 	float maxspeed = 10;
 	float acceleration = 0.2f;
-	float armor = 0.6f;
+	float armor = 0.3f;
 	float brakepower = 0.2f;
 	float backacc = 0.1f;
 	float steerpower = 2;
@@ -43,6 +43,7 @@ public class Car {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
+		//body.getPosition().setAngle(180);
 		sprite = scar;
 		
 	}
@@ -127,7 +128,7 @@ public class Car {
 		float collisionpower=speed-e.health;
 		if(collisionpower<0)
 			collisionpower=0;
-		speed=speed-e.health*armor;
+		//speed=speed-e.health*armor;
 		e.takeDamage(oldspeed*2);
 		health=health-collisionpower*armor;
 		
