@@ -50,16 +50,23 @@ public abstract class Tower {
 		center = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
 		this.spriteBody.setPosition(xPosition, yPosition);
 		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody - widthOfUpperBody,
-				yPosition + middleOfSpriteBody - widthOfUpperBody);
-		// this.spriteUpperBody.setPosition(xPosition, yPosition);
-
+		yPosition + middleOfSpriteBody - widthOfUpperBody);
 		this.healthBar = false;
 		this.damage = 0;
 	}
 
 	public void shoot(Enemy e) {
-		setDegrees(getAngleToEnemy(e));
-		e.takeDamage(20);
+		if(getAngleToEnemy(e)>getDegrees())
+		{
+			setDegrees(getDegrees()+turnspeed);
+		}
+		else {
+			setDegrees(getDegrees()-turnspeed);
+		}
+		if(Math.abs(getDegrees()-getAngleToEnemy(e))<1){
+			e.takeDamage(20);
+		}
+		
 		if (e.tot)
 			target = null;
 
