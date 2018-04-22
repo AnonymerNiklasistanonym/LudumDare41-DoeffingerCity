@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 
@@ -19,19 +23,28 @@ public abstract class Enemy extends BodyDef {
 	Texture taussehen;
 	Sprite saussehen;
 	Sprite stot;
-	float[][] position;
+	Sprite damage;
 	float score = 0;
 	World world;
+	ArrayList<Node> nodesList;
+	MainMap map;
+	boolean washit=false;
 
 	public boolean tot = false;
 
 	public Enemy(World w, Texture sprite, Texture deadsprite) {
 		final Sprite spriteSprite = new Sprite(sprite);
-		final Sprite deadspriteSprite = new Sprite(deadsprite);
 		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER, spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		spriteSprite.setOriginCenter();
+		
+		final Sprite deadspriteSprite = new Sprite(deadsprite);
 		deadspriteSprite.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		deadspriteSprite.setOriginCenter();
+		
+		final Sprite damage = new Sprite(deadsprite);
+		damage.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER*0.5f, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER*0.5f);
+		damage.setOriginCenter();
+		
 
 		this.speed = 80;
 		this.health = 10;
@@ -82,15 +95,35 @@ public abstract class Enemy extends BodyDef {
 
 	}
 
-	public abstract float[][] givePosition();
-
 	public void takeDamage(float amount) {
-		health = -amount;
+		health = health -amount;
+		washit=true;
 
 	}
 
 	public void findWay() {
-
+		// Wo bin ich wo will ich hin
+		// Aus Map auslesen wo das Ziel ist
+		PolygonShape ps=(PolygonShape)map.mapZiel.getFixtureList().first().getShape();
+		Vector2 vector = new Vector2();
+		ps.getVertex(0, vector);
+		
+		getPath(this.getBodyX(),this.getBodyY(),vector.x,vector.y);
+	}
+	
+	private LinkedList<Node> getPath(float startX,float startY,float zielX,float zielY){
+		LinkedList<Node> openList = new LinkedList();
+		LinkedList<Node> closedList = new LinkedList();
+		
+		boolean found = false;
+		
+		while(!found) {
+			// Nachbarn finden
+			for (Node node : closedList) {
+				
+			}
+		}
+		return openList;
 	}
 
 	public float getX() {
@@ -124,6 +157,12 @@ public abstract class Enemy extends BodyDef {
 	public void draw(SpriteBatch spriteBatch) {
 		saussehen.setPosition(getX(), getY());
 		saussehen.draw(spriteBatch);
+		if(washit) {
+			stot.setX(getX()+MathUtils.random(-0.2f,0.2f));
+			stot.setY(getY()+MathUtils.random(-0.2f,0.2f));
+			stot.draw(spriteBatch);
+			washit=false;
+		}
 	}
 
 	public float getScore() {
