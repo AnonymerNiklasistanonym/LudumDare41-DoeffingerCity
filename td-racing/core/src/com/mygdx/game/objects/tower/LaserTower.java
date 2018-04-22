@@ -35,7 +35,7 @@ public class LaserTower extends Tower {
 		spriteBatch.end();
 		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 		sRender.begin(ShapeType.Filled);
-		sRender.setColor(new Color(1, 0.3f, 0.3f, 0.9f));
+		sRender.setColor(Color.ORANGE);
 		sRender.rectLine(center, shotposition, 0.4f);
 		sRender.end();
 		spriteBatch.begin();

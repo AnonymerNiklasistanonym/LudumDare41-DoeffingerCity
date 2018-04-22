@@ -142,11 +142,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		world.setContactListener(collis);
 		debugRender = new Box2DDebugRenderer();
 
-		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 		car = new Car(world, smaincar, 440, 220);
 
 		finishline = new FinishLine(world, sfinishline, 380, 220);
 
+		map = new MainMap("test", world,finishline.body );
 		for (int i = 0; i < 4; i++) {
 			Enemy e = new Enemy_small(world, map);
 

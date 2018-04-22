@@ -22,14 +22,15 @@ public class MainMap {
 	Texture tMap;
 	Body mapModel;
 	Body mapZiel;
+	Body finishLine;
 	Sprite debug;
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
 
-	public MainMap(String mapName, World world, float resolution, float pixel_to_meter) {
+	public MainMap(String mapName, World world, Body finishLine) {
 
 		nodesList = new ArrayList<Node>();
-		createSolidMap(mapName, world, resolution, pixel_to_meter);
+		createSolidMap(mapName, world);
 		createAStarArray();
 
 	}
@@ -38,7 +39,7 @@ public class MainMap {
 		return nodes2DList;
 	}
 	
-	public void createSolidMap(String mapName, World world, float resolution, float pixel_to_meter) {
+	public void createSolidMap(String mapName, World world) {
 		// The following line would throw ExceptionInInitializerError
 		tMap = new Texture(Gdx.files.internal("maps/test.png"));
 		sMap = new Sprite(tMap);
@@ -71,8 +72,8 @@ public class MainMap {
 		mapZiel = world.createBody(ziel);
 
 		// // 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "Name", solid, resolution * pixel_to_meter);
-		loaderZiel.attachFixture(mapZiel, "Ziel", solid, resolution * pixel_to_meter);
+		loader.attachFixture(mapModel, "Name", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+		loaderZiel.attachFixture(mapZiel, "Ziel", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		System.out.println();
 	}
 
