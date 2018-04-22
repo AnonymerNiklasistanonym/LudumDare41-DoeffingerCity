@@ -100,7 +100,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugRender = new Box2DDebugRenderer();
 
 		car = new Car(world, smaincar, 600, 600);
-		for (int i = 0; i < 300; i++) {
+		for (int i = 0; i < 3; i++) {
 			Enemy e = new Enemy_small(world);
 			e.startMove();
 			enemies.add(e);
@@ -212,8 +212,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// draw car
 		car.draw(spriteBatch);
 
-		MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,
-				MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
+//		MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,
+//				MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 
 		spriteBatch.end();
 
