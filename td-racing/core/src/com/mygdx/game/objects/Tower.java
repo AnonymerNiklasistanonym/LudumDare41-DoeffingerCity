@@ -10,6 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.gamestate.state.PlayState;
@@ -22,8 +27,8 @@ public abstract class Tower {
 	protected float speed;
 	protected float power;
 	protected float range;
-	protected float firingSpriteTime=0.3f;
-	protected float firingLineTime=0.1f;
+	protected float firingSpriteTime = 0.3f;
+	protected float firingLineTime = 0.1f;
 	protected Vector2 center;
 	protected Sprite amunition;
 	protected Animation<TextureRegion> destroyAnimation;
@@ -32,57 +37,73 @@ public abstract class Tower {
 	protected Sprite spriteFiring;
 	protected float timesincelastshot;
 	boolean healthBar;
-	boolean justshot=false;
+	boolean justshot = false;
 	Sound soundShoot;
 	Enemy target = null;
 	Array<Enemy> enemies;
 	Vector2 shotposition;
 	protected ShapeRenderer sRender;
+	float delta = 0;
+	public Body body;
+	boolean isactive = false;
 
 	public void draw(final SpriteBatch spriteBatch) {
-		if(firingLineTime>timesincelastshot)
-		{
-			spriteBatch.end();
-			sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-			sRender.begin(ShapeType.Filled);
-			sRender.setColor(Color.YELLOW);
-			sRender.rectLine(center, shotposition,0.2f);
-			sRender.end();
-			spriteBatch.begin();
+		if (isactive) {
+			spriteBody.setColor(1, 1, 1, 1);
+			spriteUpperBody.setColor(1, 1, 1, 1);
+			spriteFiring.setColor(1, 1, 1, 1);
+		} else {
+			spriteBody.setColor(1, 1, 1, 0.5f);
+			spriteUpperBody.setColor(1, 1, 1, 0.5f);
+			spriteFiring.setColor(1, 1, 1, 0.5f);
 		}
-		
+		if (firingLineTime > timesincelastshot) {
+			drawLine(spriteBatch);
+		}
+
 		spriteBody.draw(spriteBatch);
-		if(firingSpriteTime>timesincelastshot)
+		if (firingSpriteTime > timesincelastshot)
 			spriteFiring.draw(spriteBatch);
 		else
 			spriteUpperBody.draw(spriteBatch);
-		
-	
+
 		if (healthBar)
 			drawHealthBar();
 	}
 
+	public void drawLine(final SpriteBatch spriteBatch) {
+		spriteBatch.end();
+		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+		sRender.begin(ShapeType.Filled);
+		sRender.setColor(Color.YELLOW);
+		sRender.rectLine(center, shotposition, 0.2f);
+		sRender.end();
+		spriteBatch.begin();
+	}
+
 	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody,
-			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, final Sound soundShoot) {
+			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, final Sound soundShoot,
+			World w) {
+
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
 		this.soundShoot = soundShoot;
-		this.sRender=new ShapeRenderer();
+		this.sRender = new ShapeRenderer();
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
 		this.spriteBody.setOriginCenter();
-		
+
 		this.spriteUpperBody = new Sprite(spriteUpperBody);
 		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
 		this.spriteUpperBody.setOriginCenter();
-		
+
 		this.spriteFiring = new Sprite(spriteFiring);
 		this.spriteFiring.setSize(spriteFiring.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteFiring.getHeight() * PlayState.PIXEL_TO_METER);
 		this.spriteFiring.setOriginCenter();
-		
+
 		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
 		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
 		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
@@ -95,13 +116,41 @@ public abstract class Tower {
 				yPosition + middleOfSpriteBody - widthOfFiringBody);
 		this.healthBar = false;
 		this.damage = 0;
+
+		BodyDef bodydef = new BodyDef();
+		bodydef.type = BodyDef.BodyType.KinematicBody;
+		bodydef.position.set(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
+		body = w.createBody(bodydef);
+		PolygonShape towerBaseBox = new PolygonShape();
+		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
+				spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = towerBaseBox;
+		fdef.isSensor = true;
+		body.createFixture(fdef);
+		body.setUserData(this);
+		updateSprites(xPosition, yPosition);
+	}
+
+	public void updateSprites(float x, float y) {
+		float xPosition = x;
+		float yPosition = y;
+		
+		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
+		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+
+		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		this.spriteBody.setPosition(xPosition, yPosition);
+		this.spriteUpperBody.setPosition(xPosition - widthOfUpperBody, yPosition - 0);
+		this.spriteFiring.setPosition(xPosition + middleOfSpriteBody - widthOfFiringBody,
+				yPosition + middleOfSpriteBody - widthOfFiringBody);
 	}
 
 	public void tryshoot(Enemy e) {
 		if (getAngleToEnemy(e) > getDegrees()) {
-			setDegrees(getDegrees() + turnspeed);
+			setDegrees(getDegrees() + turnspeed * delta);
 		} else {
-			setDegrees(getDegrees() - turnspeed);
+			setDegrees(getDegrees() - turnspeed * delta);
 		}
 		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < 1) {
 			if (timesincelastshot > speed)
@@ -115,12 +164,12 @@ public abstract class Tower {
 
 	public void shoot(Enemy e) {
 		e.takeDamage(power);
-		if(PlayState.soundon)
-		soundShoot.play();
+		if (PlayState.soundon)
+			soundShoot.play();
 		timesincelastshot = 0;
-		shotposition.x=e.getX()+10*PlayState.PIXEL_TO_METER;
-		shotposition.y=e.getY()+10*PlayState.PIXEL_TO_METER;
-		//TODO: Versatz Dynamisch machen!
+		shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
+		shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
+		// TODO: Versatz Dynamisch machen!
 	}
 
 	public float getAngleToEnemy(Enemy e) {
@@ -174,11 +223,14 @@ public abstract class Tower {
 	}
 
 	public void update(float delta) {
-		timesincelastshot = timesincelastshot + delta;
-		if (target == null)
-			selectNewTarget();
-		else
-			tryshoot(target);
+		this.delta = delta;
+		if (isactive) {
+			timesincelastshot = timesincelastshot + delta;
+			if (target == null)
+				selectNewTarget();
+			else
+				tryshoot(target);
+		}
 	}
 
 	private void selectNewTarget() {
@@ -229,6 +281,10 @@ public abstract class Tower {
 
 	public void setCenter(Vector2 center) {
 		this.center = center;
+	}
+
+	public void activate() {
+		isactive = true;
 	}
 
 }
