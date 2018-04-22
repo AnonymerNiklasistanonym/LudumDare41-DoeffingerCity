@@ -89,34 +89,42 @@ public abstract class Tower {
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
 		this.soundShoot = soundShoot;
+		this.healthBar = false;
+		this.damage = 0;
 		this.sRender = new ShapeRenderer();
+		
+
+		
+		
 		this.spriteBody = new Sprite(spriteBody);
+		this.spriteUpperBody = new Sprite(spriteUpperBody);
 		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
-		this.spriteBody.setOriginCenter();
-
-		this.spriteUpperBody = new Sprite(spriteUpperBody);
 		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteBody.setOriginCenter();
 		this.spriteUpperBody.setOriginCenter();
+		
+		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER - widthOfUpperBody;
+
+		this.spriteBody.setPosition(xPosition, yPosition);
+		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody,
+				yPosition + middleOfSpriteBody);
+		
 
 		this.spriteFiring = new Sprite(spriteFiring);
 		this.spriteFiring.setSize(spriteFiring.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteFiring.getHeight() * PlayState.PIXEL_TO_METER);
 		this.spriteFiring.setOriginCenter();
-
-		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
-		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
 		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
-		center = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
-		shotposition = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
-		this.spriteBody.setPosition(xPosition, yPosition);
-		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody - widthOfUpperBody,
-				yPosition + middleOfSpriteBody - widthOfUpperBody);
 		this.spriteFiring.setPosition(xPosition + middleOfSpriteBody - widthOfFiringBody,
 				yPosition + middleOfSpriteBody - widthOfFiringBody);
-		this.healthBar = false;
-		this.damage = 0;
+		shotposition = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
+
+		
+		center = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
+
 
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.KinematicBody;
@@ -133,19 +141,16 @@ public abstract class Tower {
 		updateSprites(xPosition, yPosition);
 	}
 
-	public void updateSprites(float x, float y) {
-		float xPosition = x;
-		float yPosition = y;
+	public void updateSprites(final float xPosition, final float yPosition) {
 		
-		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
-		final float widthOfUpperBody = spriteUpperBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
-
-		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		// set body to new position
 		this.spriteBody.setPosition(xPosition, yPosition);
-		System.out.println("Weite "+widthOfUpperBody);
-		this.spriteUpperBody.setPosition(xPosition-(spriteUpperBody.getWidth()/2)*PlayState.PIXEL_TO_METER, yPosition - 0);
-		this.spriteFiring.setPosition(xPosition + middleOfSpriteBody - widthOfFiringBody,
-				yPosition + middleOfSpriteBody - widthOfFiringBody);
+		// set upper body to new position
+		this.spriteUpperBody.setPosition(xPosition + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2,
+				yPosition + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2);
+		// fire position 
+		this.spriteFiring.setPosition(xPosition + spriteBody.getWidth() - spriteFiring.getHeight(),
+				yPosition + spriteBody.getWidth() - spriteFiring.getHeight());
 	}
 
 	public void tryshoot(Enemy e) {

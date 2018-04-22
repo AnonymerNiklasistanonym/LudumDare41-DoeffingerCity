@@ -361,15 +361,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		scoreBoard.draw(spriteBatch);
 
-		// MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH *
-		// PlayState.PIXEL_TO_METER / 2,
-		// MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
-		MainGame.font.getData().setScale(PIXEL_TO_METER);
-		MainGame.font.draw(spriteBatch, "TEST", 10, 10);
-		 MainGame.font.draw(spriteBatch, "TEXTTEST", MainGame.GAME_WIDTH *
-		 PlayState.PIXEL_TO_METER / 2,
-		 MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
-
 		spriteBatch.end();
 
 		if (debugBox2D) {
