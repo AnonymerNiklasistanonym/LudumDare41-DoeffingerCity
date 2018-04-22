@@ -51,6 +51,18 @@ public abstract class Tower {
 
 	
 	public void draw(final SpriteBatch spriteBatch) {
+		if(isactive)
+		{
+			spriteBody.setColor(1, 1, 1, 1);
+			spriteUpperBody.setColor(1, 1, 1, 1);
+			spriteFiring.setColor(1, 1, 1, 1);
+		}
+		else
+		{
+			spriteBody.setColor(1, 1, 1, 0.5f);
+			spriteUpperBody.setColor(1, 1, 1, 0.5f);
+			spriteFiring.setColor(1, 1, 1, 0.5f);
+		}
 		if(firingLineTime>timesincelastshot)
 		{
 			drawLine(spriteBatch);
@@ -129,6 +141,22 @@ public abstract class Tower {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		
+	}
+	
+	
+	public void updateSprites() {
+		float xPosition=body.getPosition().x;
+		float yPosition=body.getPosition().y;
+		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
+		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		center = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
+		shotposition = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
+		this.spriteBody.setPosition(xPosition, yPosition);
+		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody - widthOfUpperBody,
+				yPosition + middleOfSpriteBody - widthOfUpperBody);
+		this.spriteFiring.setPosition(xPosition + middleOfSpriteBody - widthOfFiringBody,
+				yPosition + middleOfSpriteBody - widthOfFiringBody);
 	}
 
 	public void tryshoot(Enemy e) {

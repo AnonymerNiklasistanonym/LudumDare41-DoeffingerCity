@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -42,15 +43,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private FinishLine finishline;
 	private Array<Enemy> enemies;
 	private Array<Tower> towers;
-	
+
 	private boolean debugBox2D;
 	private boolean debugCollision;
 
 	public static boolean soundon = false;
-	private boolean placingtowers=false;
+	private boolean placingtowers = false;
 	private boolean debugWay;
 	private Sound soundmgshoot;
-	
 
 	private MainMap map;
 	private Sprite pitStop;
@@ -87,7 +87,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-		
+
 		money = 0;
 
 		// import textures
@@ -113,8 +113,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		collis = new CollisionListener(this);
 
-		
-		
 		soundmgshoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
@@ -132,9 +130,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 		car = new Car(world, smaincar, 440, 220);
-		
-		finishline=new FinishLine(world, sfinishline, 380, 220);
-		
+
+		finishline = new FinishLine(world, sfinishline, 380, 220);
+
 		for (int i = 0; i < 4; i++) {
 			Enemy e = new Enemy_small(world, map);
 
@@ -159,7 +157,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// create example pit stop
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
-		
+
 		lapTimeBegin = System.currentTimeMillis();
 
 		System.out.println("Play state entered");
@@ -175,21 +173,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// t.dispose();
 		return s;
 	}
-	
-	
+
 	public void startBuilding(Tower t) {
-		buildingtower=t;
-		placingtowers=true;
+		buildingtower = t;
+		placingtowers = true;
 	}
-	
+
 	public void stopBuilding() {
-		buildingtower=null;
-		placingtowers=false;
+		buildingtower = null;
+		placingtowers = false;
 	}
 
 	@Override
 	protected void handleInput() {
-		
+
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
 			gameStateManager.setGameState(new MenuState(gameStateManager));
 		}
@@ -276,30 +273,27 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			srangecircle.setOriginCenter();
 			srangecircle.setOriginBasedPosition(tower.getX() + tower.getSpriteBody().getWidth() / 2,
 					tower.getY() + tower.getSpriteBody().getHeight() / 2);
-			if(placingtowers)
-			srangecircle.draw(spriteBatch);
+			if (placingtowers)
+				srangecircle.draw(spriteBatch);
 			tower.draw(spriteBatch);
 		}
-		
-		if(placingtowers&&buildingtower!=null) {
+
+		if (placingtowers && buildingtower != null) {
 			Vector2 target;
-			
-			float mousex=Gdx.input.getX();
-			float mousey=Gdx.input.getY();
-			Vector2 mousepos=new Vector2(mousex,mousey);
-			Vector2 curpos=new Vector2(buildingtower.body.getPosition());
-			target=mousepos.sub(curpos);
-			System.out.println("Setting to "+mousex+"/"+mousey);
-			System.out.println("Current: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
+			float mousex = Gdx.input.getX();
+			float mousey = Gdx.input.getY();
+			Vector3 mpos = new Vector3(mousex, mousey, 0);
+			camera.unproject(mpos);
+			Vector2 mousepos = new Vector2(mpos.x, mpos.y);
+
 			buildingtower.body.setTransform(mousepos, 0);
-			System.out.println("After: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
+			buildingtower.updateSprites();
 			buildingtower.draw(spriteBatch);
-			
-			for (Tower t : towers) {
-				System.out.println("Current: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
-				t.body.setTransform(mousepos, 0);
-				System.out.println("After: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
-			}
+			srangecircle.setSize(buildingtower.getRange() * 2, buildingtower.getRange() * 2);
+			srangecircle.setOriginCenter();
+			srangecircle.setOriginBasedPosition(buildingtower.getX() + buildingtower.getSpriteBody().getWidth() / 2,
+					buildingtower.getY() + buildingtower.getSpriteBody().getHeight() / 2);
+			srangecircle.draw(spriteBatch);
 		}
 
 		// draw pitstop
@@ -309,44 +303,41 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (Enemy e : enemies) {
 			e.update(Gdx.graphics.getDeltaTime());
 			e.draw(spriteBatch);
-			
+
 		}
-		
-		if(debugCollision) {
+
+		if (debugCollision) {
 			Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.1f);
-			for (int i = 0;i < this.RESOLUTION_WIDTH; i = i + 10) {
-				for(int j = 0; j < this.RESOLUTION_HEIGHT; j = j + 10) {
-					if(test[i][j].getNoUse()) {
-						MainGame.font.draw(spriteBatch, "O",i * PlayState.PIXEL_TO_METER,
-						j* PlayState.PIXEL_TO_METER);
-						
-					}
-					else {
+			for (int i = 0; i < this.RESOLUTION_WIDTH; i = i + 10) {
+				for (int j = 0; j < this.RESOLUTION_HEIGHT; j = j + 10) {
+					if (test[i][j].getNoUse()) {
+						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
+								j * PlayState.PIXEL_TO_METER);
+
+					} else {
 						MainGame.font.draw(spriteBatch, "T", i * PlayState.PIXEL_TO_METER,
-						j* PlayState.PIXEL_TO_METER );
+								j * PlayState.PIXEL_TO_METER);
 					}
 				}
-			}			
+			}
 		}
-		
-		
-		if(debugWay) {
+
+		if (debugWay) {
 			MainGame.font.getData().setScale(0.1f);
 			for (Enemy e : enemies) {
-				
+
 				e.findWay();
 				LinkedList<Node> weg;
 				weg = e.getWeg();
 				for (Node node : weg) {
 					MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
-							node.getY()* PlayState.PIXEL_TO_METER );
+							node.getY() * PlayState.PIXEL_TO_METER);
 				}
 			}
-			
+
 		}
-		
-		
+
 		// draw car
 		car.draw(spriteBatch);
 
@@ -370,9 +361,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		while (physicsaccumulator >= TIME_STEP) {
 			world.step(TIME_STEP, 6, 2);
 			physicsaccumulator -= TIME_STEP;
-			
-		}
 
+		}
 
 		for (Enemy enemy : enemies) {
 			if (enemy.tot) {
@@ -395,7 +385,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
-		
+
 		car.hitEnemy(enemy);
 		// TODO Auto-generated method stub
 
@@ -408,25 +398,25 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void lapFinished() {
-		
+
 		boolean allCheckpointsChecked = true;
-		
+
 		for (final Checkpoint checkpoint : this.checkpoints) {
 			if (checkpoint.isActivated() == false) {
 				allCheckpointsChecked = false;
 			}
 			checkpoint.setActivated(false);
 		}
-		
+
 		final int oldMoney = this.money;
 
 		if (allCheckpointsChecked) {
 			final long timeDelta = lapTimeBegin - System.currentTimeMillis();
 			this.money += moneyLap + timeDelta * millisecondsTimeMalus;
 		}
-		
+
 		lapTimeBegin = System.currentTimeMillis();
-		
+
 		System.out.println("Lap Finished, new Money: " + money + " (old: " + oldMoney + ")");
 	}
 

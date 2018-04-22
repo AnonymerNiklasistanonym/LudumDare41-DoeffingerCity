@@ -13,7 +13,7 @@ import com.mygdx.game.gamestate.state.PlayState;
 import com.mygdx.game.objects.Checkpoint;
 
 public class Car {
-	Body body;
+	public Body body;
 	Sprite sprite;
 	float maxspeed = 10;
 	float acceleration = 5f;
