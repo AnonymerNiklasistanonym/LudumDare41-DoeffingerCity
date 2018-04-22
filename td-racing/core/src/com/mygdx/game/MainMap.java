@@ -26,8 +26,9 @@ public class MainMap {
 	
 	public MainMap (String mapName, World world, float resolution, float pixel_to_meter) {
 		
+		nodesList = new ArrayList<Node>();
 		createSolidMap(mapName, world, resolution, pixel_to_meter);
-		//createAStarArray();
+		createAStarArray();
 		
 	}
 	
@@ -36,6 +37,7 @@ public class MainMap {
 		tMap = new Texture("maps/Test.png");
 		sMap = new Sprite(tMap);
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.local("maps/test.json"));
+		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.local("maps/ziel.json"));
 		
 		debug = new Sprite(new Texture("maps/Test.png"));
 		
@@ -47,27 +49,33 @@ public class MainMap {
 		ziel.type = BodyType.StaticBody;
 
 		// 2. Create a FixtureDef, as usual.
-		FixtureDef fd = new FixtureDef();
-		fd.density = 1;
-		fd.friction = 0.5f;
-		fd.restitution = 0.3f;
+		FixtureDef solid = new FixtureDef();
+		solid.density = 1;
+		solid.friction = 0.5f;
+		solid.restitution = 0.3f;
+		
+		FixtureDef nonSolid = new FixtureDef();
+		nonSolid.density = 1;
+		nonSolid.friction = 0.5f;
+		nonSolid.restitution = 0.3f;
+		//nonSolid.isSensor = true;
 
 		// 3. Create a Body, as usual.
 		mapModel = world.createBody(bd);
 		mapZiel = world.createBody(ziel);
-//
+		
 //		// 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "Name", fd, resolution*pixel_to_meter);
-		//loader.attachFixture(mapZiel, "Ziel", fd, resolution*pixel_to_meter);
+		loader.attachFixture(mapModel, "Name", solid, resolution*pixel_to_meter);
+		loaderZiel.attachFixture(mapZiel, "Ziel", solid, resolution*pixel_to_meter);
 	}
 	
 	public void createAStarArray() {
 		// Nodes erstellen
-		for( int i = 1; i <= PlayState.RESOLUTION_WIDTH ; i =+ 10) {
-			for( int j = 1; j <= PlayState.RESOLUTION_HEIGHT ; j =+ 10) {
-				nodesList.add(new Node((float)i,(float)j,mapZiel.getLocalCenter().x,mapZiel.getLocalCenter().y));
+		for( int i = 1; i <= PlayState.RESOLUTION_WIDTH ; i += 10) {
+			for( int j = 1; j <= PlayState.RESOLUTION_HEIGHT ; j += 10) {
+				nodesList.add(new Node((float)i,(float)j, mapZiel.getLocalCenter().x,mapZiel.getLocalCenter().y));
 			}
-		}		
+		}
 	}
 	
 }
