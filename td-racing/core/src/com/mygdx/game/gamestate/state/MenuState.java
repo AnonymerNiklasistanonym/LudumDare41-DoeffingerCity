@@ -25,8 +25,8 @@ public class MenuState extends GameState {
 	public MenuState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-		MenuButton.textureActive = new Texture(Gdx.files.internal("buttons/button_active.png"));
-		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_not_active.png"));
+		MenuButton.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active.png"));
+		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
 		backgroundStars = new Texture(Gdx.files.internal("background/background_stars.png"));
 		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
 
