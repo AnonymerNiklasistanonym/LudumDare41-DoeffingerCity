@@ -70,7 +70,6 @@ public class Car {
 		body.applyForceToCenter(velo, true);
 		KillOrthogonalVelocity(0f);
 	}
-	}
 
 	public float getX() {
 		float carx = body.getPosition().x;

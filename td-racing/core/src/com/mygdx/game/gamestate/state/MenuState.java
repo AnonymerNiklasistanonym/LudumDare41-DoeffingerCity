@@ -56,7 +56,6 @@ public class MenuState extends GameState {
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
 		// spriteBatch.draw(BACKGROUND, 0, 0);
-		spriteBatch.draw(PLAYBUTTON, camera.position.x - PLAYBUTTON.getWidth() / 4, camera.position.y, PLAYBUTTON.getWidth() / 2, PLAYBUTTON.getHeight() / 2);
 		spriteBatch.end();
 
 	}
@@ -64,7 +63,6 @@ public class MenuState extends GameState {
 	@Override
 	public void dispose() {
 		// BACKGROUND.dispose();
-		PLAYBUTTON.dispose();
 		System.out.println("Menu state disposed");
 	}
 
