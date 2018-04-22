@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 
+import com.mygdx.game.gamestate.state.PlayState;
+
 public class Node {
 	float x, y;
 	// Kosten von Start hierher
@@ -23,7 +25,7 @@ public class Node {
 		this.x = x;
 		this.y = y;
 		erschwernis = 1;
-		h = (float) Math.sqrt((((x - zielX) * (x - zielX)) + ((y - zielY) * (y - zielY))));
+		h = (float) Math.sqrt((((x - zielX*PlayState.METER_TO_PIXEL) * (x - zielX*PlayState.METER_TO_PIXEL)) + ((y - zielY*PlayState.METER_TO_PIXEL) * (y - zielY*PlayState.METER_TO_PIXEL))));
 		nachbarn = new ArrayList();
 	}
 	

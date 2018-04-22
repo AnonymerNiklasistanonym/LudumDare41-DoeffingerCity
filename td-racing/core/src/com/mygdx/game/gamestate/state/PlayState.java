@@ -1,5 +1,7 @@
 package com.mygdx.game.gamestate.state;
 
+import java.util.LinkedList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
@@ -42,6 +44,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Array<Tower> towers;
 	private boolean debugBox2D;
 	private boolean debugCollision;
+	private boolean debugWay;
 
 	private Sound soundmgshoot;
 
@@ -116,6 +119,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		debugBox2D = false;
 		debugCollision = false;
+		debugWay = false;
 
 		world = new World(new Vector2(0, 0), true);
 
@@ -208,6 +212,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				debugCollision = true;
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.L)) {
+			if (debugWay)
+				debugWay = false;
+			else
+				debugWay = true;
+		}
 
 	}
 
@@ -256,6 +266,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (Enemy e : enemies) {
 			e.update(Gdx.graphics.getDeltaTime());
 			e.draw(spriteBatch);
+			
 		}
 		
 		if(debugCollision) {
@@ -275,6 +286,23 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				}
 			}			
 		}
+		
+		
+		if(debugWay) {
+			MainGame.font.getData().setScale(0.1f);
+			for (Enemy e : enemies) {
+				
+				e.findWay();
+				LinkedList<Node> weg;
+				weg = e.getWeg();
+				for (Node node : weg) {
+					MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
+							node.getY()* PlayState.PIXEL_TO_METER );
+				}
+			}
+			
+		}
+		
 		
 		// draw car
 		car.draw(spriteBatch);

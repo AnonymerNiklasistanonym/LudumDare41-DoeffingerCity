@@ -29,6 +29,7 @@ public abstract class Enemy extends BodyDef {
 	ArrayList<Node> nodesList;
 	MainMap map;
 	boolean washit=false;
+	LinkedList<Node> weg;
 
 	public boolean tot = false;
 
@@ -70,7 +71,7 @@ public abstract class Enemy extends BodyDef {
 		body.setUserData(this);
 		this.world = w;
 		this.map = map;
-		//this.findWay();
+		this.findWay();
 	}
 
 	public void startMove() {
@@ -110,13 +111,14 @@ public abstract class Enemy extends BodyDef {
 		Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
 		
-		getPath(this.getBodyX()*PlayState.METER_TO_PIXEL,this.getBodyY()*PlayState.METER_TO_PIXEL,vector.x,vector.y);
+		weg = getPath(this.getBodyX()*PlayState.METER_TO_PIXEL,this.getBodyY()*PlayState.METER_TO_PIXEL,vector.x*PlayState.METER_TO_PIXEL,vector.y*PlayState.METER_TO_PIXEL);
 	}
 	
 	private LinkedList<Node> getPath(float startX,float startY,float zielX,float zielY){
 		LinkedList<Node> openList = new LinkedList();
 		LinkedList<Node> closedList = new LinkedList();
-		Node aktuellerNode;
+		Node aktuellerNode,tempNode;
+		boolean isLower;
 		
 		boolean found = false;
 		// Welcher Node ist der nächste?
@@ -130,6 +132,19 @@ public abstract class Enemy extends BodyDef {
 		}
 		if(startY%10 >= 5) {
 			startY = startY + (10-startY%10);
+		}
+		
+		// Ende normalisiesrn?
+		if(zielX%10 < 5) {
+			zielX = zielX - zielX%10;
+		}
+		if(zielX%10 >= 5) {
+			zielX = zielX + (10-zielX%10);
+		}if(zielY%10 < 5) {
+			zielY = zielY - zielY%10;
+		}
+		if(zielY%10 >= 5) {
+			zielY = zielY + (10-zielY%10);
 		}
 		
 		// Welcher Nachbar ist der beste
@@ -147,38 +162,62 @@ public abstract class Enemy extends BodyDef {
 		
 
 		aktuellerNode = openList.getFirst();
-		
+		int zaehler = 100;
 		while(!found) {
+			zaehler--;
+			if(zaehler < 0) {
+				//Bisherige Liste zurückgeben
+				
+				break;
+			}
 			// Wer hat den besten Wert in openList
 			lowCost = 999999;
 			for (Node node : openList) {
 				if(lowCost > node.getKosten())
 					aktuellerNode = node;
 			}
-			
+			if(aktuellerNode.getX() == zielX && aktuellerNode.getY() == zielY)
+				break;
 			// Alle Nachbarn des Nodes untersuchen
 			lowCost = 9999999;
+			isLower = false;
+			tempNode = aktuellerNode;
 			for (Node node : aktuellerNode.nachbarn) {
+				node.g = aktuellerNode.g+1;
 				if(lowCost > node.getKosten()) {
-					node.g = aktuellerNode.g+1;
-					node.parent = aktuellerNode;
-					// Ist er schon in der openList?
-					if(openList.indexOf(node) == -1) {
-						openList.add(node);						
-					}
-					else {
-						if(openList.get(openList.indexOf(node)).kosten > node.kosten) {
-							openList.remove(openList.indexOf(node));
-							openList.add(node);
-						}
-					}
+					tempNode = node;
+					isLower = true;
+					lowCost = node.getKosten();
+				}
+				else {
+					int index = openList.indexOf(node);
+					if(index > 0)
+					openList.remove(index);
 				}
 			}
-			
+			// Ist er schon in der openList?
+			tempNode.parent = aktuellerNode;
+			lowCost = tempNode.getKosten();
+			if(openList.indexOf(tempNode) == -1) {
+				openList.add(tempNode);						
+			}
+			else {
+				if(openList.get(openList.indexOf(tempNode)).kosten > tempNode.kosten) {
+					openList.remove(openList.indexOf(tempNode));
+					openList.add(tempNode);
+				}
+			}
+			System.out.println("X:"+tempNode.x+" Y:"+tempNode.y);
 		}
+		System.out.println("test");
+		
 		return openList;
 	}
-
+	
+	public LinkedList<Node> getWeg(){
+		return weg;
+	}
+	
 	public float getX() {
 		float carx = body.getPosition().x;
 		carx = carx - saussehen.getWidth() / 2;
