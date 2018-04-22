@@ -189,11 +189,6 @@ public abstract class Enemy extends BodyDef {
 					isLower = true;
 					lowCost = node.getKosten();
 				}
-				else {
-					int index = openList.indexOf(node);
-					if(index > 0)
-					openList.remove(index);
-				}
 //				else {
 //					int index = openList.indexOf(node);
 //					if(index > 0)
