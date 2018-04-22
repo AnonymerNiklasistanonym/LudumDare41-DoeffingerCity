@@ -1,16 +1,17 @@
 package com.mygdx.game.objects.tower;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.objects.Tower;
 
 public class EmptyTower extends Tower {
+	
+	public static Texture groundTower;
+	public static Texture upperTower;
 
-	public EmptyTower(float xPosition, float yPosition, Array<Enemy> enemies) {
-		super(xPosition, yPosition, new Texture(Gdx.files.internal("tower/tower_empty.png")), new Texture(Gdx.files.internal("tower/tower_empty_upper.png")),
-				enemies);
+	public EmptyTower(final float xPosition, final float yPosition, final Array<Enemy> enemies) {
+		super(xPosition, yPosition, groundTower, upperTower, enemies);
 
 		maxHealth = -1;
 		speed = -1;

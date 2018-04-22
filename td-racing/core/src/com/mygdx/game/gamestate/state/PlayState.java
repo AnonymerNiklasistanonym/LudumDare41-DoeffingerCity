@@ -65,6 +65,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
+		
+		// import textures
+		steststrecke = createScaledSprite("maps/test.png");
+		smaincar = createScaledSprite("cars/car_standard.png");
+		szombie1 = createScaledSprite("zombies/zombie_standard.png");
+		szombie1dead = createScaledSprite("zombies/zombie_standard_tot.png");
+		srangecircle = createScaledSprite("tower/range.png");
+		
+		// import STATIC textures
+		NormalCheckpoint.normalCheckPointActivated = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
+		NormalCheckpoint.normalCheckPointDisabled = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
+		EmptyTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
+		EmptyTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 
 		enemies = new Array<Enemy>();
 
@@ -72,11 +85,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		collis = new CollisionListener(this);
 
-		steststrecke = createScaledSprite("maps/test.png");
-		smaincar = createScaledSprite("cars/car_standard.png");
-		szombie1 = createScaledSprite("zombies/zombie_standard.png");
-		szombie1dead = createScaledSprite("zombies/zombie_standard_tot.png");
-		srangecircle = createScaledSprite("tower/range.png");
+
+				
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -232,7 +242,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void dispose() {
-
+		// dispose STATIC textures
+		NormalCheckpoint.normalCheckPointActivated.dispose();
+		NormalCheckpoint.normalCheckPointDisabled.dispose();
+		EmptyTower.groundTower.dispose();
+		EmptyTower.upperTower.dispose();
 	}
 
 	@Override

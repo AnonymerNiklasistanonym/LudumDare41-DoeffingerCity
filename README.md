@@ -5,9 +5,15 @@ Racing-TowerDefense
 ## Setup
 
 1. Clone files/git repository
-2. Eclipse - IMPORT - GRADLE - EXISTINP PROJECTS - Choose the `td-racing` directory
-3. Wait
-4. Link the assets directory by right clicking the project to get to the properties, then go into java build path and link source the assets directory
+2. Open Eclipse
+3. Select `Import` > `Gradle` > `Existing Gradle Project` (then `Next` and `Next`)
+4. Then click `Browse` and select the project directory (`td-racing`) and click `Finish`
+
+---
+
+If there are resource load errors you need to link the assets directory from `core` in the `desktop` project over the `Build path`
+
+---
 
 ## Run
 
