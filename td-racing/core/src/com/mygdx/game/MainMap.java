@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 
@@ -69,6 +70,8 @@ public class MainMap {
 	}
 
 	public void createAStarArray() {
+		PolygonShape ps=(PolygonShape)mapZiel.getFixtureList().first().getShape();
+		System.out.println("Vertex count "+ps.getVertexCount());
 		// Nodes erstellen
 		for (int i = 1; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
 			for (int j = 1; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
