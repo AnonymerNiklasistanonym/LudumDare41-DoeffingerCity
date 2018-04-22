@@ -65,6 +65,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
+		
+		// import textures
+		steststrecke = createScaledSprite("maps/test.png");
+		smaincar = createScaledSprite("cars/car_standard.png");
+		srangecircle = createScaledSprite("tower/range.png");
+		
+		// set STATIC textures
+		NormalCheckpoint.normalCheckPointActivated = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
+		NormalCheckpoint.normalCheckPointDisabled = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
+		EmptyTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
+		EmptyTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
+		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
+		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
+
 
 		enemies = new Array<Enemy>();
 
@@ -72,11 +86,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		collis = new CollisionListener(this);
 
-		steststrecke = createScaledSprite("maps/test.png");
-		smaincar = createScaledSprite("cars/car_standard.png");
-		szombie1 = createScaledSprite("zombies/zombie_standard.png");
-		szombie1dead = createScaledSprite("zombies/zombie_standard_tot.png");
-		srangecircle = createScaledSprite("tower/range.png");
+
+				
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -90,7 +101,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		car = new Car(world, smaincar, 600, 600);
 		for (int i = 0; i < 300; i++) {
-			Enemy e = new Enemy_small(world, szombie1, szombie1dead);
+			Enemy e = new Enemy_small(world);
 			e.startMove();
 			enemies.add(e);
 		}
@@ -110,7 +121,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		towers.add(t);
 
 		// create example pit stop
-		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
+		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 
 		System.out.println("Play state entered");
@@ -118,7 +129,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public static Sprite createScaledSprite(String location) {
-		Texture t = new Texture(location);
+		Texture t = new Texture(Gdx.files.internal(location));
 		Sprite s = new Sprite(t);
 		s.setSize(s.getWidth() * PIXEL_TO_METER, s.getHeight() * PIXEL_TO_METER);
 		s.setOriginCenter();
@@ -232,7 +243,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void dispose() {
-
+		// dispose STATIC textures
+		NormalCheckpoint.normalCheckPointActivated.dispose();
+		NormalCheckpoint.normalCheckPointDisabled.dispose();
+		EmptyTower.groundTower.dispose();
+		EmptyTower.upperTower.dispose();
+		Enemy_small.normalTexture.dispose();
+		Enemy_small.deadTexture.dispose();
 	}
 
 	@Override

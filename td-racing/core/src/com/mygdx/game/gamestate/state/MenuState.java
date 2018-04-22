@@ -8,34 +8,31 @@ import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 
-public class GameOverState extends GameState {
+public class MenuState extends GameState {
 
-	private final Texture BACKGROUND;
+	//private final Texture BACKGROUND;
 	private final Texture PLAYBUTTON;
 
-	public GameOverState(final GameStateManager gameStateManager) {
+	public MenuState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-
-		BACKGROUND = new Texture(Gdx.files.internal("maps/test.png"));
-		PLAYBUTTON = new Texture(Gdx.files.internal("button/button_start.png"));
-
-		// paint text
+		
+		//BACKGROUND = new Texture(Gdx.files.internal("background.png"));
+		PLAYBUTTON = new Texture(Gdx.files.internal("buttons/button_start.png"));
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 2);
 
-		System.out.println("Game over state entered");
+		System.out.println("Menu state entered");
 	}
 
 	@Override
-	protected void handleInput() {
+	public void handleInput() {
 
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-			System.out.println("Do something");
+		// Check if somehow the screen was touched
+		if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			gameStateManager.setGameState(new PlayState(gameStateManager));
 		}
 
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
-			dispose();
 			Gdx.app.exit();
 		}
 
@@ -52,17 +49,18 @@ public class GameOverState extends GameState {
 
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		spriteBatch.draw(BACKGROUND, 0, 0);
-		spriteBatch.draw(PLAYBUTTON, camera.position.x - PLAYBUTTON.getWidth() / 2, camera.position.y / 2);
+		// spriteBatch.draw(BACKGROUND, 0, 0);
+		spriteBatch.draw(PLAYBUTTON, camera.position.x - PLAYBUTTON.getWidth() / 4, camera.position.y, PLAYBUTTON.getWidth() / 2, PLAYBUTTON.getHeight() / 2);
 		spriteBatch.end();
 
 	}
 
 	@Override
 	public void dispose() {
-		BACKGROUND.dispose();
+		// BACKGROUND.dispose();
 		PLAYBUTTON.dispose();
-		System.out.println("Game over  state disposed");
+		System.out.println("Menu state disposed");
 	}
 
 }
+

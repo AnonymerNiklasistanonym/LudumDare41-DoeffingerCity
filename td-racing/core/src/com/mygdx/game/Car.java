@@ -20,6 +20,7 @@ public class Car {
 	float brakepower = 5;
 	float steerpower = 100;
 	float speed = 0;
+	
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -38,18 +39,19 @@ public class Car {
 		body.setUserData(this);
 		body.setAngularDamping(2);
 		sprite = scar;
+
 	}
 
 	public void accelarate() {
-		Vector2 velo = new Vector2(acceleration, 0);
-		velo.rotateRad(body.getAngle());
-		body.applyForceToCenter(velo, true);
+		speed=speed+acceleration;
+		if(speed>maxspeed)
+			speed=maxspeed;
 	}
 
 	public void brake() {
-		Vector2 velo = new Vector2(brakepower * -1, 0);
-		velo.rotateRad(body.getAngle());
-		body.applyForceToCenter(velo, true);
+		speed=speed-brakepower;
+		if(speed<maxspeed*-1)
+			speed=maxspeed*-1;
 	}
 
 	public void steerLeft() {
@@ -62,7 +64,10 @@ public class Car {
 	}
 
 	public void update(float delta) {
-
+		Vector2 velo=new Vector2(speed,0);
+		velo.rotateRad(body.getAngle());
+		body.applyForceToCenter(velo, true);
+		KillOrthogonalVelocity(0f);
 	}
 
 	public void hitEnemy(Enemy e) {
@@ -87,5 +92,34 @@ public class Car {
 
 		sprite.draw(spriteBatch);
 
+	}
+	
+	public void KillOrthogonalVelocity(float drift)
+	{
+		Vector2 newVelo=new Vector2(0,0);
+		
+//		Vector2 forwardVelocity= Vector2.dot(getVelocityVector().x,getVelocityVector().y, getForward().x,getForward().y);
+//	    //forwardVelocity = getForward()*   Vector2.dot(getVelocityVector().x,getVelocityVector().y, getForward().x,getForward().y); 
+//	    Vector2 rightVelocity = getOrthogonal() * Vector2.dot(getVelocityVector().x,getVelocityVector().y, getOrthogonal().x,getOrthogonal().y);
+////	    car.Velocity = forwardVelocity + rightVelocity * drift;
+//	    body.setLinearVelocity(forwardVelocity);
+	}
+	
+	public Vector2 getForward() {
+		Vector2 fwd=new Vector2(0,0);
+		fwd.x=body.getAngle();
+		return fwd;
+	}
+	
+	public Vector2 getVelocityVector() {
+		Vector2 vv=new Vector2(speed,0);
+		return vv;
+	}
+	
+	public Vector2 getOrthogonal() {
+		Vector2 ort=new Vector2(0,0);
+		ort.x=body.getAngle();
+		ort.rotate90(1);
+		return ort;
 	}
 }
