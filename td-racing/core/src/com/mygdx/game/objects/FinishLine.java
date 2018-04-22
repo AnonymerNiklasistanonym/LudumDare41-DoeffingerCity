@@ -15,7 +15,7 @@ import com.mygdx.game.gamestate.state.PlayState;
 public class FinishLine {
 	
 	Sprite sprite;
-	Body body;
+	public Body body;
 	public FinishLine(World w, Sprite s,float xPosition,float yPosition) {
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
