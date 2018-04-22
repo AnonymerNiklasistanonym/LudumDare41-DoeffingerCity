@@ -10,6 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.gamestate.state.PlayState;
@@ -38,17 +43,17 @@ public abstract class Tower {
 	Array<Enemy> enemies;
 	Vector2 shotposition;
 	protected ShapeRenderer sRender;
+	float delta=0;
+	Body body;
+	boolean isactive=false;
+	
+	
 
+	
 	public void draw(final SpriteBatch spriteBatch) {
 		if(firingLineTime>timesincelastshot)
 		{
-			spriteBatch.end();
-			sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-			sRender.begin(ShapeType.Filled);
-			sRender.setColor(Color.YELLOW);
-			sRender.rectLine(center, shotposition,0.2f);
-			sRender.end();
-			spriteBatch.begin();
+			drawLine(spriteBatch);
 		}
 		
 		spriteBody.draw(spriteBatch);
@@ -61,9 +66,25 @@ public abstract class Tower {
 		if (healthBar)
 			drawHealthBar();
 	}
+	
+	public void drawLine(final SpriteBatch spriteBatch) {
+		spriteBatch.end();
+		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+		sRender.begin(ShapeType.Filled);
+		sRender.setColor(Color.YELLOW);
+		sRender.rectLine(center, shotposition,0.2f);
+		sRender.end();
+		spriteBatch.begin();
+	}
 
 	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody,
-			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, final Sound soundShoot) {
+			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, final Sound soundShoot, World w) {
+		
+		
+		
+		
+		
+		
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
 		this.soundShoot = soundShoot;
@@ -95,13 +116,26 @@ public abstract class Tower {
 				yPosition + middleOfSpriteBody - widthOfFiringBody);
 		this.healthBar = false;
 		this.damage = 0;
+		
+		BodyDef bodydef = new BodyDef();
+		bodydef.type = BodyDef.BodyType.StaticBody;
+		bodydef.position.set(xPosition+middleOfSpriteBody, yPosition+middleOfSpriteBody);
+		body = w.createBody(bodydef);
+		PolygonShape towerBaseBox = new PolygonShape();
+		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f* PlayState.PIXEL_TO_METER, spriteBody.getHeight() * 0.5f* PlayState.PIXEL_TO_METER);
+		FixtureDef fdef = new FixtureDef();
+		fdef.shape = towerBaseBox;
+		fdef.isSensor=true;
+		body.createFixture(fdef);
+		body.setUserData(this);
+		
 	}
 
 	public void tryshoot(Enemy e) {
 		if (getAngleToEnemy(e) > getDegrees()) {
-			setDegrees(getDegrees() + turnspeed);
+			setDegrees(getDegrees() + turnspeed*delta);
 		} else {
-			setDegrees(getDegrees() - turnspeed);
+			setDegrees(getDegrees() - turnspeed*delta);
 		}
 		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < 1) {
 			if (timesincelastshot > speed)
@@ -174,11 +208,14 @@ public abstract class Tower {
 	}
 
 	public void update(float delta) {
+		this.delta=delta;
+		if(isactive) {
 		timesincelastshot = timesincelastshot + delta;
 		if (target == null)
 			selectNewTarget();
 		else
 			tryshoot(target);
+		}
 	}
 
 	private void selectNewTarget() {
@@ -229,6 +266,10 @@ public abstract class Tower {
 
 	public void setCenter(Vector2 center) {
 		this.center = center;
+	}
+	
+	public void activate() {
+		isactive=true;
 	}
 
 }

@@ -28,8 +28,6 @@ public class FinishLine {
 		fdef.density = 1f;
 		fdef.friction = 1f;
 		fdef.isSensor=true;
-		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
-		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);

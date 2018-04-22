@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import java.sql.DatabaseMetaData;
-
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -18,14 +16,15 @@ public class Car {
 	Body body;
 	Sprite sprite;
 	float maxspeed = 10;
-	float acceleration = 0.2f;
+	float acceleration = 5f;
 	float armor = 0.3f;
-	float brakepower = 0.2f;
-	float backacc = 0.1f;
-	float steerpower = 2;
+	float brakepower = 3f;
+	float backacc = 1f;
+	float steerpower = 5;
 	float speed = 0;
 	float friction = 0.99f;
 	float health=100;
+	float delta=0;
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -43,22 +42,23 @@ public class Car {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
-		//body.getPosition().setAngle(180);
+		
+		
 		sprite = scar;
 		
 	}
 
 	public void accelarate() {
-		speed = speed + acceleration;
+		speed = speed + acceleration*delta;
 		if (speed > maxspeed)
 			speed = maxspeed;
 	}
 
 	public void brake() {
 		if (speed > 0)
-			speed = speed - brakepower;
+			speed = speed - brakepower*delta;
 		else
-			speed = speed - backacc;
+			speed = speed - backacc*delta;
 	}
 
 	public void steerLeft() {
@@ -71,6 +71,7 @@ public class Car {
 	}
 
 	public void update(float delta) {
+		this.delta=delta;
 		if (speed < maxspeed * -1)
 			speed = maxspeed * -1;
 		if (speed > maxspeed)

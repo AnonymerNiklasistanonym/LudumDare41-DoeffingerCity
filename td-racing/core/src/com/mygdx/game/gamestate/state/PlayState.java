@@ -40,15 +40,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private FinishLine finishline;
 	private Array<Enemy> enemies;
 	private Array<Tower> towers;
+	
 	private boolean debugBox2D;
 	private boolean debugCollision;
-
+	public static boolean soundon = false;
+	private boolean placingtowers=false;
+	
 	private Sound soundmgshoot;
+	
 
 	private MainMap map;
 	private Sprite pitStop;
 
-	public static boolean soundon = false;
+	Tower buildingtower;
 
 	private int money = 100;
 	private int moneyPerLap = 100;
@@ -144,7 +148,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// create example towers
 
-		MGTower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, soundmgshoot);
+		MGTower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, soundmgshoot, world);
+		t.activate();
 		towers.add(t);
 
 		// create example pit stop
@@ -249,8 +254,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			srangecircle.setOriginCenter();
 			srangecircle.setOriginBasedPosition(tower.getX() + tower.getSpriteBody().getWidth() / 2,
 					tower.getY() + tower.getSpriteBody().getHeight() / 2);
-			// srangecircle.draw(spriteBatch);
+			if(placingtowers)
+			srangecircle.draw(spriteBatch);
 			tower.draw(spriteBatch);
+		}
+		
+		if(placingtowers&&buildingtower!=null) {
+			
 		}
 
 		// draw pitstop
