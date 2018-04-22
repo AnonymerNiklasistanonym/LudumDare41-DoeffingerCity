@@ -1,5 +1,8 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 
@@ -19,9 +23,10 @@ public abstract class Enemy extends BodyDef {
 	Texture taussehen;
 	Sprite saussehen;
 	Sprite stot;
-	float[][] position;
 	float score = 0;
 	World world;
+	ArrayList<Node> nodesList;
+	MainMap map;
 
 	public boolean tot = false;
 
@@ -82,15 +87,34 @@ public abstract class Enemy extends BodyDef {
 
 	}
 
-	public abstract float[][] givePosition();
-
 	public void takeDamage(float amount) {
 		health = -amount;
 
 	}
 
 	public void findWay() {
-
+		// Wo bin ich wo will ich hin
+		// Aus Map auslesen wo das Ziel ist
+		PolygonShape ps=(PolygonShape)map.mapZiel.getFixtureList().first().getShape();
+		Vector2 vector = new Vector2();
+		ps.getVertex(0, vector);
+		
+		getPath(this.getBodyX(),this.getBodyY(),vector.x,vector.y);
+	}
+	
+	private LinkedList<Node> getPath(float startX,float startY,float zielX,float zielY){
+		LinkedList<Node> openList = new LinkedList();
+		LinkedList<Node> closedList = new LinkedList();
+		
+		boolean found = false;
+		
+		while(!found) {
+			// Nachbarn finden
+			for (Node node : closedList) {
+				
+			}
+		}
+		return openList;
 	}
 
 	public float getX() {

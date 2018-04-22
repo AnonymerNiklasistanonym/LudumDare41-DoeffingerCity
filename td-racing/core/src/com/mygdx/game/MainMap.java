@@ -24,6 +24,7 @@ public class MainMap {
 	Body mapZiel;
 	Sprite debug;
 	ArrayList<Node> nodesList;
+	Node[][] nodes2DList;
 
 	public MainMap(String mapName, World world, float resolution, float pixel_to_meter) {
 
@@ -32,7 +33,11 @@ public class MainMap {
 		createAStarArray();
 
 	}
-
+	
+	public ArrayList<Node> getNodesList(){
+		return nodesList;
+	}
+	
 	public void createSolidMap(String mapName, World world, float resolution, float pixel_to_meter) {
 		// The following line would throw ExceptionInInitializerError
 		tMap = new Texture(Gdx.files.internal("maps/test.png"));
@@ -78,8 +83,8 @@ public class MainMap {
 		ps.getVertex(0, vector);
 
 		// Nodes erstellen
-		for (int i = 1; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
-			for (int j = 1; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
+		for (int i = 0; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
+			for (int j = 0; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
 				// Im befahrbaren Bereich?
 				befahrbar = true;
 				for (Fixture f : mapModel.getFixtureList()) {
@@ -89,7 +94,34 @@ public class MainMap {
 				}
 				if(befahrbar) nodesList.add(new Node((float) i, (float) j,vector.x, vector.y));
 			}
-		}		
+		}
+		// Alle Nachbarn in die Nodes eintragen
+		for (Node nodeMain : nodesList) {
+			// Nachbar finde
+			for (Node nodeNachbar : nodesList) {
+				if((nodeMain.x+10 == nodeNachbar.x && nodeMain.y == nodeNachbar.y) 
+					|| (nodeMain.x == nodeNachbar.x && nodeMain.y+10 == nodeNachbar.y)
+					|| (nodeMain.x-10 == nodeNachbar.x && nodeMain.y == nodeNachbar.y) 
+					|| (nodeMain.x == nodeNachbar.x && nodeMain.y-10 == nodeNachbar.y))  nodeMain.nachbarn.add(nodeNachbar);
+			}
+		}
+		System.out.println();
+		
+		
+		this.nodes2DList = new Node[(int)PlayState.RESOLUTION_WIDTH][(int)PlayState.RESOLUTION_HEIGHT];
+		// In 2d Array schreiben
+		for (int i = 0;i<(int)PlayState.RESOLUTION_WIDTH;i += 10) {
+			for (int j = 0;j<(int)PlayState.RESOLUTION_HEIGHT;j += 10) {
+				for (Node node : nodesList) {
+					if(node.x == i && node.y == j) {
+						nodes2DList[i][j] = node;
+					}
+					else {
+						nodes2DList[i][j] = new Node(false);
+					}
+				}
+			}
+		}
 	}
 
 }
