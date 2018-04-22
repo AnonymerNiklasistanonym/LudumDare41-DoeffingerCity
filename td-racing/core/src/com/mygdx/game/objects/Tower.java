@@ -38,10 +38,11 @@ public abstract class Tower {
 	protected float timesincelastshot;
 	boolean healthBar;
 	boolean justshot = false;
+	protected boolean permanentsound=false;
 	Sound soundShoot;
 	Enemy target = null;
 	Array<Enemy> enemies;
-	Vector2 shotposition;
+	protected Vector2 shotposition;
 	protected ShapeRenderer sRender;
 	float delta = 0;
 	public Body body;
@@ -137,11 +138,12 @@ public abstract class Tower {
 		float yPosition = y;
 		
 		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
-		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		final float widthOfUpperBody = spriteUpperBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
 
 		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
 		this.spriteBody.setPosition(xPosition, yPosition);
-		this.spriteUpperBody.setPosition(xPosition - widthOfUpperBody, yPosition - 0);
+		System.out.println("Weite "+widthOfUpperBody);
+		this.spriteUpperBody.setPosition(xPosition-(spriteUpperBody.getWidth()/2)*PlayState.PIXEL_TO_METER, yPosition - 0);
 		this.spriteFiring.setPosition(xPosition + middleOfSpriteBody - widthOfFiringBody,
 				yPosition + middleOfSpriteBody - widthOfFiringBody);
 	}

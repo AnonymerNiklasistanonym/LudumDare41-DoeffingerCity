@@ -28,6 +28,7 @@ import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.tower.EmptyTower;
+import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MGTower;
 
 public class PlayState extends GameState implements CollisionCallbackInterface {
@@ -50,7 +51,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public static boolean soundon = false;
 	private boolean placingtowers = false;
 	private boolean debugWay;
+	
+	
 	private Sound soundmgshoot;
+	private Sound soundlasershoot;
 
 	private MainMap map;
 	private Sprite pitStop;
@@ -104,6 +108,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
+		
+		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
+		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
+		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
+		
+		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
 
@@ -114,7 +124,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		collis = new CollisionListener(this);
 
 		soundmgshoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-
+		soundlasershoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -150,10 +160,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// create example towers
 
-		MGTower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, soundmgshoot, world);
+		Tower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, soundmgshoot, world);
 		t.activate();
 		towers.add(t);
-
+		t=new LaserTower(550*PIXEL_TO_METER,350*PIXEL_TO_METER,enemies,soundlasershoot,world);
+		t.activate();
+		towers.add(t);
 		// create example pit stop
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
