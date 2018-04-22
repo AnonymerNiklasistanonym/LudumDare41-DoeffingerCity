@@ -44,7 +44,7 @@ public abstract class Tower {
 	Vector2 shotposition;
 	protected ShapeRenderer sRender;
 	float delta=0;
-	Body body;
+	public Body body;
 	boolean isactive=false;
 	
 	
@@ -118,7 +118,7 @@ public abstract class Tower {
 		this.damage = 0;
 		
 		BodyDef bodydef = new BodyDef();
-		bodydef.type = BodyDef.BodyType.StaticBody;
+		bodydef.type = BodyDef.BodyType.KinematicBody;
 		bodydef.position.set(xPosition+middleOfSpriteBody, yPosition+middleOfSpriteBody);
 		body = w.createBody(bodydef);
 		PolygonShape towerBaseBox = new PolygonShape();

@@ -1,6 +1,7 @@
 package com.mygdx.game.gamestate.state;
 
 import java.util.LinkedList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Sound;
@@ -44,9 +45,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	
 	private boolean debugBox2D;
 	private boolean debugCollision;
+
 	public static boolean soundon = false;
 	private boolean placingtowers=false;
-	
 	private boolean debugWay;
 	private Sound soundmgshoot;
 	
@@ -134,7 +135,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		finishline=new FinishLine(world, sfinishline, 380, 220);
 		
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 4; i++) {
 			Enemy e = new Enemy_small(world, map);
 
 			e.startMove();
@@ -162,6 +163,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		lapTimeBegin = System.currentTimeMillis();
 
 		System.out.println("Play state entered");
+		startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
 
 	}
 
@@ -172,6 +174,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		s.setOriginCenter();
 		// t.dispose();
 		return s;
+	}
+	
+	
+	public void startBuilding(Tower t) {
+		buildingtower=t;
+		placingtowers=true;
+	}
+	
+	public void stopBuilding() {
+		buildingtower=null;
+		placingtowers=false;
 	}
 
 	@Override
@@ -269,7 +282,24 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		
 		if(placingtowers&&buildingtower!=null) {
+			Vector2 target;
 			
+			float mousex=Gdx.input.getX();
+			float mousey=Gdx.input.getY();
+			Vector2 mousepos=new Vector2(mousex,mousey);
+			Vector2 curpos=new Vector2(buildingtower.body.getPosition());
+			target=mousepos.sub(curpos);
+			System.out.println("Setting to "+mousex+"/"+mousey);
+			System.out.println("Current: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
+			buildingtower.body.setTransform(mousepos, 0);
+			System.out.println("After: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
+			buildingtower.draw(spriteBatch);
+			
+			for (Tower t : towers) {
+				System.out.println("Current: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
+				t.body.setTransform(mousepos, 0);
+				System.out.println("After: "+buildingtower.body.getTransform().POS_X+"/"+buildingtower.body.getTransform().POS_Y);
+			}
 		}
 
 		// draw pitstop
@@ -340,7 +370,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		while (physicsaccumulator >= TIME_STEP) {
 			world.step(TIME_STEP, 6, 2);
 			physicsaccumulator -= TIME_STEP;
+			
 		}
+
 
 		for (Enemy enemy : enemies) {
 			if (enemy.tot) {
