@@ -123,7 +123,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugRender = new Box2DDebugRenderer();
 
 		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
-		car = new Car(world, smaincar, 600, 600);
+		car = new Car(world, smaincar, 440, 220);
+		
 		finishline=new FinishLine(world, sfinishline, 380, 220);
 		
 		for (int i = 0; i < 20; i++) {
@@ -325,7 +326,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
-		enemy.takeDamage(20);
+		
 		car.hitEnemy(enemy);
 		// TODO Auto-generated method stub
 

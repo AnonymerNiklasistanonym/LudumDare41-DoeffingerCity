@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.sql.DatabaseMetaData;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,13 +19,13 @@ public class Car {
 	Sprite sprite;
 	float maxspeed = 10;
 	float acceleration = 0.2f;
-	float armor = 0;
-	float brakepower = 1;
+	float armor = 0.3f;
+	float brakepower = 0.2f;
 	float backacc = 0.1f;
-	float steerpower = 20;
+	float steerpower = 2;
 	float speed = 0;
 	float friction = 0.99f;
-	boolean breaking = false;
+	float health=100;
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -41,8 +43,9 @@ public class Car {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
+		//body.getPosition().setAngle(180);
 		sprite = scar;
-
+		
 	}
 
 	public void accelarate() {
@@ -56,26 +59,22 @@ public class Car {
 			speed = speed - brakepower;
 		else
 			speed = speed - backacc;
-		if (speed < maxspeed * -1)
-			speed = maxspeed * -1;
 	}
 
 	public void steerLeft() {
-		if (speed >= 0)
-			body.applyTorque(steerpower, true);
-		else
-			body.applyTorque(steerpower * -1, true);
+		body.applyTorque(steerpower*speed, true);
 
 	}
 
 	public void steerRight() {
-		if (speed >= 0)
-			body.applyTorque(steerpower * -1, true);
-		else
-			body.applyTorque(steerpower, true);
+		body.applyTorque(steerpower*speed * -1, true);
 	}
 
 	public void update(float delta) {
+		if (speed < maxspeed * -1)
+			speed = maxspeed * -1;
+		if (speed > maxspeed)
+			speed = maxspeed;
 		Vector2 velo = new Vector2(speed, 0);
 		velo.rotateRad(body.getAngle());
 		body.setLinearVelocity(velo);
@@ -125,7 +124,14 @@ public class Car {
 	}
 
 	public void hitEnemy(Enemy e) {
-		// TODO Auto-generated method stub
+		float oldspeed=speed;
+		float collisionpower=speed-e.health;
+		if(collisionpower<0)
+			collisionpower=0;
+		//speed=speed-e.health*armor;
+		e.takeDamage(oldspeed*2);
+		health=health-collisionpower*armor;
+		
 	}
 
 }
