@@ -17,7 +17,7 @@ public class EmptyTower extends Tower {
 		speed = -1;
 		power = -1;
 		range = 10;
-		turnspeed = 10;
+		turnspeed = 2;
 	}
 
 }

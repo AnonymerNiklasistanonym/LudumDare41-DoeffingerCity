@@ -41,6 +41,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private MainMap map;
 	private Sprite pitStop;
 
+	public boolean soundon=true;
+	
 	/**
 	 * Time since last physic Steps
 	 */
@@ -196,7 +198,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			srangecircle.setOriginCenter();
 			srangecircle.setOriginBasedPosition(tower.getX() + tower.getSpriteBody().getWidth() / 2,
 					tower.getY() + tower.getSpriteBody().getHeight() / 2);
-			srangecircle.draw(spriteBatch);
+			//srangecircle.draw(spriteBatch);
 			tower.draw(spriteBatch);
 		}
 
