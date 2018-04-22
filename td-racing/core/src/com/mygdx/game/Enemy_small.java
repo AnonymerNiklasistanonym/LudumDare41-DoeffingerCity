@@ -7,7 +7,7 @@ public class Enemy_small extends Enemy {
 
 	public Enemy_small(World w, Sprite sprite, Sprite deadsprite) {
 		super(w, sprite, deadsprite);
-		this.speed = 80;
+		this.speed = 2;
 		this.health = 10;
 	}
 
