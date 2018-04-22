@@ -51,7 +51,8 @@ To export the program as ? `war` web app you need to this:
 1. Open the command line in the directory of the project (`td-racing`)
 2. Run the command `./gradlew html:clean` 
 3. After the command is finished run the command `./gradlew html:dist`
-4. ...Profit?
+4. Then go into the directory `html` and then `build`
+5. Now copy everything in this directory into an directory on you server or into `htdocs` if you use XAMPP and open the page (XAMPP: `127.0.0.1`) 
 
 ## Notes
 

@@ -18,7 +18,7 @@ public class MenuState extends GameState {
 	private final Texture backgroundStars;
 	private final Texture backgroundLoading;
 
-	private Vector3 touchPos = new Vector3();
+	private Vector3 touchPos;
 
 	private boolean loading, changeToPlayState;
 
@@ -30,6 +30,7 @@ public class MenuState extends GameState {
 		backgroundStars = new Texture(Gdx.files.internal("background/background_stars.png"));
 		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
 
+		touchPos = new Vector3();
 		loading = false;
 		changeToPlayState = false;
 
