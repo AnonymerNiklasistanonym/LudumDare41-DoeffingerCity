@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 
@@ -63,13 +66,16 @@ public class MainMap {
 		// // 4. Create the body fixture automatically by using the loader.
 		loader.attachFixture(mapModel, "Name", solid, resolution * pixel_to_meter);
 		loaderZiel.attachFixture(mapZiel, "Ziel", solid, resolution * pixel_to_meter);
+		System.out.println();
 	}
 
 	public void createAStarArray() {
+		PolygonShape ps=(PolygonShape)mapZiel.getFixtureList().first().getShape();
+		System.out.println("Vertex count "+ps.getVertexCount());
 		// Nodes erstellen
 		for (int i = 1; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
 			for (int j = 1; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
-				nodesList.add(new Node((float) i, (float) j, mapZiel.getLocalCenter().x, mapZiel.getLocalCenter().y));
+				nodesList.add(new Node((float) i, (float) j,mapZiel.getFixtureList().first().getBody().getPosition().x, mapZiel.getFixtureList().first().getBody().getPosition().y));
 			}
 		}
 	}
