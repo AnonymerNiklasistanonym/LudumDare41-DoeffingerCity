@@ -167,6 +167,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			car.steerRight();
 		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.U)) {
+			if(soundon)
+				soundon=false;
+				else
+					soundon=true;
+		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.I)) {
+			if(debugBox2D)
+				debugBox2D=false;
+				else
+					debugBox2D=true;
+		}
 
 	}
 
