@@ -19,6 +19,10 @@ public class MainGame extends ApplicationAdapter {
 	 */
 	public static BitmapFont smallFont;
 	/**
+	 * Small game font "Cornerstone"
+	 */
+	public static BitmapFont fontBig;
+	/**
 	 * Name of the game
 	 */
 	public final static String GAME_NAME = "td-racing";
@@ -38,6 +42,7 @@ public class MainGame extends ApplicationAdapter {
 	public void create() {
 		font = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone.fnt"));
 		smallFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_small.fnt"));
+		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));
 
 		spriteBatch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
