@@ -160,7 +160,8 @@ public abstract class Tower {
 		} else {
 			setDegrees(getDegrees() - turnspeed * delta);
 		}
-		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < 1) {
+		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < turnspeed*delta) {
+			setDegrees(getAngleToEnemy(e));
 			if (timesincelastshot > speed)
 				shoot(e);
 		}
