@@ -107,13 +107,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 		car = new Car(world, smaincar, 600, 600);
-<<<<<<< HEAD
+
 		for (int i = 0; i < 2; i++) {
 			Enemy e = new Enemy_small(world,map);
-=======
-		for (int i = 0; i < 3; i++) {
-			Enemy e = new Enemy_small(world);
->>>>>>> 82a3531d3166107714fef452095052416f922c74
+			
 			e.startMove();
 			enemies.add(e);
 		}
