@@ -37,8 +37,8 @@ public class GameOverState extends GameState {
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		highScoreButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2, "HIGHSCORES", false);
-		playAgainButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 4, "RESTART LEVEL", true);
+		highScoreButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 8 * 2, "HIGHSCORES", false);
+		playAgainButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT /8 * 4, "RESTART LEVEL", true);
 
 		System.out.println("Menu state entered");
 	}

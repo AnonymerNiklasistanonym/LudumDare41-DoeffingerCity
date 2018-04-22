@@ -21,6 +21,7 @@ import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
+import com.mygdx.game.ScoreBoard;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
@@ -58,8 +59,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	private MainMap map;
 	private Sprite pitStop;
-
-	Tower buildingtower;
+	
+	private ScoreBoard scoreBoard;
+	private Tower buildingtower;
 
 	private int money = 100;
 	private int moneyPerLap = 100;
@@ -93,6 +95,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		super(gameStateManager);
 
 		money = 0;
+		
+		scoreBoard = new ScoreBoard();
 
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
@@ -354,6 +358,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// draw car
 		car.draw(spriteBatch);
+		
+		scoreBoard.draw(spriteBatch);
+
+		// MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH *
+		// PlayState.PIXEL_TO_METER / 2,
+		// MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 		MainGame.font.getData().setScale(PIXEL_TO_METER);
 		MainGame.font.draw(spriteBatch, "TEST", 10, 10);
 		 MainGame.font.draw(spriteBatch, "TEXTTEST", MainGame.GAME_WIDTH *
