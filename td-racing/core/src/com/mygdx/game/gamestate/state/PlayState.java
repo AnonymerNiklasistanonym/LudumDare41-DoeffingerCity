@@ -21,6 +21,7 @@ import com.mygdx.game.MainMap;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.tower.EmptyTower;
@@ -32,8 +33,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Sprite smaincar;
 	private Sprite steststrecke;
 	private Sprite srangecircle;
+	private Sprite sfinishline;
+	private Sprite strack1;
+	private Sprite strack1top;
 	private World world;
 	private Car car;
+	private FinishLine finishline;
 	private Array<Enemy> enemies;
 	private Array<Tower> towers;
 	private boolean debugBox2D;
@@ -76,9 +81,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// import textures
 		steststrecke = createScaledSprite("maps/test.png");
+		strack1 = createScaledSprite("maps/track1.png");
+		strack1top = createScaledSprite("maps/track1top.png");
 		smaincar = createScaledSprite("cars/car_standard.png");
 		srangecircle = createScaledSprite("tower/range.png");
-
+		sfinishline = createScaledSprite("maps/finishline.png");
 		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
@@ -96,6 +103,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		collis = new CollisionListener(this);
 
+		
+		
 		soundmgshoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
@@ -111,7 +120,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 		car = new Car(world, smaincar, 600, 600);
-
+		finishline=new FinishLine(world, sfinishline, 380, 220);
+		
 		for (int i = 0; i < 20; i++) {
 			Enemy e = new Enemy_small(world, map);
 
@@ -210,8 +220,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		steststrecke.draw(spriteBatch);
-
+		strack1.draw(spriteBatch);
+		finishline.draw(spriteBatch);
+		strack1top.draw(spriteBatch);
 		// draw checkpoints
 		for (Checkpoint checkpoint : checkpoints)
 			checkpoint.draw(spriteBatch);
