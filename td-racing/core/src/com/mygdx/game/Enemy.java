@@ -46,9 +46,10 @@ public abstract class Enemy extends BodyDef {
 		body = w.createBody(bodydef);
 		CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(saussehen.getHeight() * 0.35f);
-		;
+		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
+		fdef.density=0.1f;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 
