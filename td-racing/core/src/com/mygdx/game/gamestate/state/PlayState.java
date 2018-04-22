@@ -256,6 +256,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void render(SpriteBatch spriteBatch) {
 
+		
+		
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
@@ -287,7 +289,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			Vector2 mousepos = new Vector2(mpos.x, mpos.y);
 
 			buildingtower.body.setTransform(mousepos, 0);
-			buildingtower.updateSprites();
+			buildingtower.updateSprites(mousepos.x,mousepos.y);
 			buildingtower.draw(spriteBatch);
 			srangecircle.setSize(buildingtower.getRange() * 2, buildingtower.getRange() * 2);
 			srangecircle.setOriginCenter();
@@ -340,10 +342,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// draw car
 		car.draw(spriteBatch);
-
-		// MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH *
-		// PlayState.PIXEL_TO_METER / 2,
-		// MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
+		MainGame.font.getData().setScale(PIXEL_TO_METER);
+		MainGame.font.draw(spriteBatch, "TEST", 10, 10);
+		 MainGame.font.draw(spriteBatch, "TEXTTEST", MainGame.GAME_WIDTH *
+		 PlayState.PIXEL_TO_METER / 2,
+		 MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 
 		spriteBatch.end();
 
