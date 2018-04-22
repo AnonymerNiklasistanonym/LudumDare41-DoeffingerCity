@@ -1,5 +1,6 @@
 package com.mygdx.game.objects.tower;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Enemy;
@@ -8,7 +9,7 @@ import com.mygdx.game.objects.Tower;
 public class EmptyTower extends Tower {
 
 	public EmptyTower(float xPosition, float yPosition, Array<Enemy> enemies) {
-		super(xPosition, yPosition, new Texture("tower/tower_empty.png"), new Texture("tower/tower_empty_upper.png"),
+		super(xPosition, yPosition, new Texture(Gdx.files.internal("tower/tower_empty.png")), new Texture(Gdx.files.internal("tower/tower_empty_upper.png")),
 				enemies);
 
 		maxHealth = -1;

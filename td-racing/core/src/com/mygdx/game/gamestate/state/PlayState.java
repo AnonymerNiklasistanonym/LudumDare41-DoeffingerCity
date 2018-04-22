@@ -110,7 +110,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		towers.add(t);
 
 		// create example pit stop
-		pitStop = new Sprite(new Texture("pit_stop/pit_stop_01.png"));
+		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 
 		System.out.println("Play state entered");
@@ -118,7 +118,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public static Sprite createScaledSprite(String location) {
-		Texture t = new Texture(location);
+		Texture t = new Texture(Gdx.files.internal(location));
 		Sprite s = new Sprite(t);
 		s.setSize(s.getWidth() * PIXEL_TO_METER, s.getHeight() * PIXEL_TO_METER);
 		s.setOriginCenter();

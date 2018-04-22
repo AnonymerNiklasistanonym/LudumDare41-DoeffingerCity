@@ -16,8 +16,8 @@ public class GameOverState extends GameState {
 	public GameOverState(final GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-		BACKGROUND = new Texture("background.png");
-		PLAYBUTTON = new Texture("button/start.png");
+		BACKGROUND = new Texture(Gdx.files.internal("maps/test.png"));
+		PLAYBUTTON = new Texture(Gdx.files.internal("button/button_start.png"));
 
 		// paint text
 

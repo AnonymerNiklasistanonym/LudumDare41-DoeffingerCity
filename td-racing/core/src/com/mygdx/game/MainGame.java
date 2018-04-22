@@ -32,7 +32,7 @@ public class MainGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
 		gameStateManager.pushState(new PlayState(gameStateManager));
-		font = new BitmapFont(Gdx.files.internal("fonts/Cornerstone.fnt"));
+		font = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone.fnt"));
 	}
 
 	@Override
