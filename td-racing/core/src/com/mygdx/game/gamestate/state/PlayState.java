@@ -2,6 +2,7 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,14 +24,13 @@ import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.tower.EmptyTower;
+import com.mygdx.game.objects.tower.MGTower;
 
 public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	CollisionListener collis;
 	private Sprite smaincar;
-	private Sprite szombie1;
 	private Sprite steststrecke;
-	private Sprite szombie1dead;
 	private Sprite srangecircle;
 	private World world;
 	private Car car;
@@ -38,6 +38,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Array<Tower> towers;
 	private boolean debugBox2D;
 
+	private Sound soundmgshoot;
+	
 	private MainMap map;
 	private Sprite pitStop;
 
@@ -76,8 +78,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
 		NormalCheckpoint.normalCheckPointDisabled = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
-		EmptyTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
-		EmptyTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
+		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
+		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
+		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
 
@@ -89,6 +92,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		collis = new CollisionListener(this);
 
 
+		soundmgshoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 				
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
@@ -119,7 +123,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// create example towers
 
-		Tower t = new EmptyTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies);
+		MGTower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, soundmgshoot);
 		towers.add(t);
 
 		// create example pit stop
@@ -171,10 +175,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		car.update(deltaTime);
 
 		for (Tower t : towers) {
-			t.update();
+			t.update(deltaTime);
 		}
 
-		// update camera if camera has changed
 		camera.update();
 
 	}
