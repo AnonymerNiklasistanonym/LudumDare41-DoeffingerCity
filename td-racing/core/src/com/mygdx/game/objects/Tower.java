@@ -94,6 +94,7 @@ public abstract class Tower {
 
 	public void shoot(Enemy e) {
 		e.takeDamage(power);
+		if(PlayState.soundon)
 		soundShoot.play();
 		timesincelastshot = 0;
 		

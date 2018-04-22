@@ -23,20 +23,28 @@ public abstract class Enemy extends BodyDef {
 	Texture taussehen;
 	Sprite saussehen;
 	Sprite stot;
+	Sprite damage;
 	float score = 0;
 	World world;
 	ArrayList<Node> nodesList;
 	MainMap map;
+	boolean washit=false;
 
 	public boolean tot = false;
 
 	public Enemy(World w, Texture sprite, Texture deadsprite) {
 		final Sprite spriteSprite = new Sprite(sprite);
-		final Sprite deadspriteSprite = new Sprite(deadsprite);
 		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER, spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		spriteSprite.setOriginCenter();
+		
+		final Sprite deadspriteSprite = new Sprite(deadsprite);
 		deadspriteSprite.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		deadspriteSprite.setOriginCenter();
+		
+		final Sprite damage = new Sprite(deadsprite);
+		damage.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER*0.5f, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER*0.5f);
+		damage.setOriginCenter();
+		
 
 		this.speed = 80;
 		this.health = 10;
@@ -88,7 +96,8 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void takeDamage(float amount) {
-		health = -amount;
+		health = health -amount;
+		washit=true;
 
 	}
 
@@ -148,6 +157,12 @@ public abstract class Enemy extends BodyDef {
 	public void draw(SpriteBatch spriteBatch) {
 		saussehen.setPosition(getX(), getY());
 		saussehen.draw(spriteBatch);
+		if(washit) {
+			stot.setX(getX()+MathUtils.random(-0.2f,0.2f));
+			stot.setY(getY()+MathUtils.random(-0.2f,0.2f));
+			stot.draw(spriteBatch);
+			washit=false;
+		}
 	}
 
 	public float getScore() {

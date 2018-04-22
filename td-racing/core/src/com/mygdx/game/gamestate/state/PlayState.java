@@ -43,7 +43,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private MainMap map;
 	private Sprite pitStop;
 
-	public boolean soundon=true;
+	public static boolean soundon=false;
 	
 	/**
 	 * Time since last physic Steps
@@ -108,7 +108,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 		car = new Car(world, smaincar, 600, 600);
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 20; i++) {
 			Enemy e = new Enemy_small(world,map);
 			
 			e.startMove();
