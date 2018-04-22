@@ -172,6 +172,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void handleInput() {
+		
+		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			gameStateManager.setGameState(new MenuState(gameStateManager));
+		}
 
 		// Check if somehow the screen was touched
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
@@ -342,8 +346,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// dispose STATIC textures
 		NormalCheckpoint.normalCheckPointActivated.dispose();
 		NormalCheckpoint.normalCheckPointDisabled.dispose();
-		EmptyTower.groundTower.dispose();
-		EmptyTower.upperTower.dispose();
+		// EmptyTower.groundTower.dispose();
+		// EmptyTower.upperTower.dispose();
 		Enemy_small.normalTexture.dispose();
 		Enemy_small.deadTexture.dispose();
 	}

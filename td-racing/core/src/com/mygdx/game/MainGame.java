@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.gamestate.state.GameOverState;
 import com.mygdx.game.gamestate.state.MenuState;
+import com.mygdx.game.gamestate.state.PlayState;
 
 public class MainGame extends ApplicationAdapter {
 	
@@ -35,7 +37,7 @@ public class MainGame extends ApplicationAdapter {
 	 */
 	public final static int GAME_HEIGHT = 720;
 	
-	public SpriteBatch spriteBatch;
+	private SpriteBatch spriteBatch;
 	private GameStateManager gameStateManager;
 
 	@Override
@@ -46,7 +48,7 @@ public class MainGame extends ApplicationAdapter {
 
 		spriteBatch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
-		gameStateManager.pushState(new MenuState(gameStateManager));
+		gameStateManager.pushState(new PlayState(gameStateManager));
 	}
 
 	@Override
