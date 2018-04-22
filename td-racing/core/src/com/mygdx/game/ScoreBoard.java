@@ -26,7 +26,7 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "TEXTTEST", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,
 				MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 
-		System.out.println("Money: " + this.money + ", timeRound: " + this.timeWhole + ", ");
+		//System.out.println("Money: " + this.money + ", timeRound: " + this.timeWhole + ", ");
 
 		String completeText= "In this text there are multi lines";
 
