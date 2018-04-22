@@ -88,4 +88,25 @@ public class Car {
 		sprite.draw(spriteBatch);
 
 	}
+	
+	public static void KillOrthogonalVelocity(Car car, float drift)
+	{
+		
+//	    Vector2 forwardVelocity = car.Forward * Vector2.Dot(car.Velocity, car.Forward);
+//	    Vector2 rightVelocity = car.Right * Vector2.Dot(car.Velocity, car.Right);
+//	    car.Velocity = forwardVelocity + rightVelocity * drift;
+	}
+	
+	public Vector2 getForward() {
+		Vector2 fwd=new Vector2(0,0);
+		fwd.x=body.getAngle();
+		return fwd;
+	}
+	
+	public Vector2 getOrthogonal() {
+		Vector2 ort=new Vector2(0,0);
+		ort.x=body.getAngle();
+		ort.rotate90(1);
+		return ort;
+	}
 }
