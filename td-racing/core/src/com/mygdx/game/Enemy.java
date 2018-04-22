@@ -32,7 +32,7 @@ public abstract class Enemy extends BodyDef {
 
 	public boolean tot = false;
 
-	public Enemy(World w, Texture sprite, Texture deadsprite) {
+	public Enemy(World w, Texture sprite, Texture deadsprite, MainMap map) {
 		final Sprite spriteSprite = new Sprite(sprite);
 		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER, spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		spriteSprite.setOriginCenter();
@@ -69,6 +69,8 @@ public abstract class Enemy extends BodyDef {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		this.world = w;
+		this.map = map;
+		//this.findWay();
 	}
 
 	public void startMove() {
@@ -108,20 +110,71 @@ public abstract class Enemy extends BodyDef {
 		Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
 		
-		getPath(this.getBodyX(),this.getBodyY(),vector.x,vector.y);
+		getPath(this.getBodyX()*PlayState.METER_TO_PIXEL,this.getBodyY()*PlayState.METER_TO_PIXEL,vector.x,vector.y);
 	}
 	
 	private LinkedList<Node> getPath(float startX,float startY,float zielX,float zielY){
 		LinkedList<Node> openList = new LinkedList();
 		LinkedList<Node> closedList = new LinkedList();
+		Node aktuellerNode;
 		
 		boolean found = false;
+		// Welcher Node ist der nächste?
+		if(startX%10 < 5) {
+			startX = startX - startX%10;
+		}
+		if(startX%10 >= 5) {
+			startX = startX + (10-startX%10);
+		}if(startY%10 < 5) {
+			startY = startY - startY%10;
+		}
+		if(startY%10 >= 5) {
+			startY = startY + (10-startY%10);
+		}
+		
+		// Welcher Nachbar ist der beste
+		float lowCost = 9999999;
+		if(map.nodes2DList[(int)startX][(int)startY].noUse)
+			System.out.println("Halt");
+		for (Node node : map.nodes2DList[(int)startX][(int)startY].nachbarn) {
+			if(!node.noUse) 
+				if(lowCost > node.getKosten()) {
+					node.g = 1;
+					openList.add(node);
+					lowCost = node.getKosten();
+				}
+		}
+		
+
+		aktuellerNode = openList.getFirst();
 		
 		while(!found) {
-			// Nachbarn finden
-			for (Node node : closedList) {
-				
+			// Wer hat den besten Wert in openList
+			lowCost = 999999;
+			for (Node node : openList) {
+				if(lowCost > node.getKosten())
+					aktuellerNode = node;
 			}
+			
+			// Alle Nachbarn des Nodes untersuchen
+			lowCost = 9999999;
+			for (Node node : aktuellerNode.nachbarn) {
+				if(lowCost > node.getKosten()) {
+					node.g = aktuellerNode.g+1;
+					node.parent = aktuellerNode;
+					// Ist er schon in der openList?
+					if(openList.indexOf(node) == -1) {
+						openList.add(node);						
+					}
+					else {
+						if(openList.get(openList.indexOf(node)).kosten > node.kosten) {
+							openList.remove(openList.indexOf(node));
+							openList.add(node);
+						}
+					}
+				}
+			}
+			
 		}
 		return openList;
 	}

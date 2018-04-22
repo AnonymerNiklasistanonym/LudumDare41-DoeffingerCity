@@ -15,13 +15,15 @@ import com.mygdx.game.objects.Checkpoint;
 public class Car {
 	Body body;
 	Sprite sprite;
-	float maxspeed = 80;
-	float acceleration = 20;
+	float maxspeed = 10;
+	float acceleration = 0.2f;
 	float armor = 0;
-	float brakepower = 5;
-	float steerpower = 100;
+	float brakepower = 1;
+	float backacc = 0.1f;
+	float steerpower = 20;
 	float speed = 0;
-	
+	float friction = 0.99f;
+	boolean breaking = false;
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -44,31 +46,40 @@ public class Car {
 	}
 
 	public void accelarate() {
-		speed=speed+acceleration;
-		if(speed>maxspeed)
-			speed=maxspeed;
+		speed = speed + acceleration;
+		if (speed > maxspeed)
+			speed = maxspeed;
 	}
 
 	public void brake() {
-		speed=speed-brakepower;
-		if(speed<maxspeed*-1)
-			speed=maxspeed*-1;
+		if (speed > 0)
+			speed = speed - brakepower;
+		else
+			speed = speed - backacc;
+		if (speed < maxspeed * -1)
+			speed = maxspeed * -1;
 	}
 
 	public void steerLeft() {
-		body.applyTorque(steerpower, true);
+		if (speed >= 0)
+			body.applyTorque(steerpower, true);
+		else
+			body.applyTorque(steerpower * -1, true);
 
 	}
 
 	public void steerRight() {
-		body.applyTorque(steerpower * -1, true);
+		if (speed >= 0)
+			body.applyTorque(steerpower * -1, true);
+		else
+			body.applyTorque(steerpower, true);
 	}
 
 	public void update(float delta) {
-		Vector2 velo=new Vector2(speed,0);
+		Vector2 velo = new Vector2(speed, 0);
 		velo.rotateRad(body.getAngle());
-		body.applyForceToCenter(velo, true);
-		KillOrthogonalVelocity(0f);
+		body.setLinearVelocity(velo);
+		speed = speed * friction;
 	}
 
 	public float getX() {
@@ -88,34 +99,23 @@ public class Car {
 		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 
 		sprite.draw(spriteBatch);
+	}
 
-	}
-	
-	public void KillOrthogonalVelocity(float drift)
-	{
-		Vector2 newVelo=new Vector2(0,0);
-		
-//		Vector2 forwardVelocity= Vector2.dot(getVelocityVector().x,getVelocityVector().y, getForward().x,getForward().y);
-//	    //forwardVelocity = getForward()*   Vector2.dot(getVelocityVector().x,getVelocityVector().y, getForward().x,getForward().y); 
-//	    Vector2 rightVelocity = getOrthogonal() * Vector2.dot(getVelocityVector().x,getVelocityVector().y, getOrthogonal().x,getOrthogonal().y);
-////	    car.Velocity = forwardVelocity + rightVelocity * drift;
-//	    body.setLinearVelocity(forwardVelocity);
-	}
-	
+
 	public Vector2 getForward() {
-		Vector2 fwd=new Vector2(0,0);
-		fwd.x=body.getAngle();
+		Vector2 fwd = new Vector2(0, 0);
+		fwd.x = body.getAngle();
 		return fwd;
 	}
-	
+
 	public Vector2 getVelocityVector() {
-		Vector2 vv=new Vector2(speed,0);
+		Vector2 vv = new Vector2(speed, 0);
 		return vv;
 	}
-	
+
 	public Vector2 getOrthogonal() {
-		Vector2 ort=new Vector2(0,0);
-		ort.x=body.getAngle();
+		Vector2 ort = new Vector2(0, 0);
+		ort.x = body.getAngle();
 		ort.rotate90(1);
 		return ort;
 	}
@@ -123,9 +123,9 @@ public class Car {
 	public void hitCheckpoint(Checkpoint checkpoint) {
 		// TODO Auto-generated method stub
 	}
-	
+
 	public void hitEnemy(Enemy e) {
 		// TODO Auto-generated method stub
 	}
-	
+
 }

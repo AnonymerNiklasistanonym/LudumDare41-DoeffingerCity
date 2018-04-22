@@ -17,6 +17,7 @@ import com.mygdx.game.Enemy;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
+import com.mygdx.game.Node;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
@@ -40,6 +41,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Array<Enemy> enemies;
 	private Array<Tower> towers;
 	private boolean debugBox2D;
+	private boolean debugCollision;
 
 	private Sound soundmgshoot;
 
@@ -113,6 +115,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
 		debugBox2D = false;
+		debugCollision = false;
 
 		world = new World(new Vector2(0, 0), true);
 
@@ -198,6 +201,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				debugBox2D = true;
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.K)) {
+			if (debugCollision)
+				debugCollision = false;
+			else
+				debugCollision = true;
+		}
 
 	}
 
@@ -247,7 +256,25 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			e.update(Gdx.graphics.getDeltaTime());
 			e.draw(spriteBatch);
 		}
-
+		
+		if(debugCollision) {
+			Node[][] test = this.map.getNodesList();
+			MainGame.font.getData().setScale(0.1f);
+			for (int i = 0;i < this.RESOLUTION_WIDTH; i = i + 10) {
+				for(int j = 0; j < this.RESOLUTION_HEIGHT; j = j + 10) {
+					if(test[i][j].getNoUse()) {
+						MainGame.font.draw(spriteBatch, "O",i * PlayState.PIXEL_TO_METER,
+						j* PlayState.PIXEL_TO_METER);
+						
+					}
+					else {
+						MainGame.font.draw(spriteBatch, "T", i * PlayState.PIXEL_TO_METER,
+						j* PlayState.PIXEL_TO_METER );
+					}
+				}
+			}			
+		}
+		
 		// draw car
 		car.draw(spriteBatch);
 

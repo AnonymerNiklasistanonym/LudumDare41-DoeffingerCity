@@ -11,10 +11,9 @@ public class Enemy_small extends Enemy {
 	public static Texture deadTexture;
 
 	public Enemy_small(World w, MainMap map) {
-		super(w, normalTexture, deadTexture);
+		super(w, normalTexture, deadTexture,map);
 		this.speed = 2;
 		this.health = 10;
-		this.map = map;
 	}
 
 
