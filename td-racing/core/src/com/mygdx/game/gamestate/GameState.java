@@ -13,9 +13,10 @@ public abstract class GameState {
 	 * Game state manager
 	 */
 	protected final GameStateManager gameStateManager;
-	
+
 	/**
 	 * Constructor
+	 * 
 	 * @param gameStateManager
 	 */
 	protected GameState(final GameStateManager gameStateManager) {

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Enemy;
@@ -25,7 +24,7 @@ public abstract class Tower {
 	protected Sprite spriteBody;
 	protected Sprite spriteUpperBody;
 	boolean healthBar;
-	Enemy target=null;
+	Enemy target = null;
 	Array<Enemy> enemies;
 
 	public void draw(final SpriteBatch spriteBatch) {
@@ -35,21 +34,25 @@ public abstract class Tower {
 			drawHealthBar();
 	}
 
-	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody, final Texture spriteUpperBody, Array<Enemy> enemies) {
-		this.enemies=enemies;
+	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody,
+			final Texture spriteUpperBody, Array<Enemy> enemies) {
+		this.enemies = enemies;
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteUpperBody = new Sprite(spriteUpperBody);
-		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER, spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
 		this.spriteBody.setOriginCenter();
-		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER, spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
 		this.spriteUpperBody.setOriginCenter();
-		final float middleOfSpriteBody = spriteBody.getWidth() / 2*PlayState.PIXEL_TO_METER;
-		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2*PlayState.PIXEL_TO_METER;
-		center=new Vector2(xPosition+middleOfSpriteBody,yPosition+middleOfSpriteBody);
+		final float middleOfSpriteBody = spriteBody.getWidth() / 2 * PlayState.PIXEL_TO_METER;
+		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
+		center = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
 		this.spriteBody.setPosition(xPosition, yPosition);
-		this.spriteUpperBody.setPosition(xPosition +middleOfSpriteBody- widthOfUpperBody, yPosition +middleOfSpriteBody- widthOfUpperBody);
+		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody - widthOfUpperBody,
+				yPosition + middleOfSpriteBody - widthOfUpperBody);
 		// this.spriteUpperBody.setPosition(xPosition, yPosition);
-		
+
 		this.healthBar = false;
 		this.damage = 0;
 	}
@@ -57,27 +60,27 @@ public abstract class Tower {
 	public void shoot(Enemy e) {
 		setDegrees(getAngleToEnemy(e));
 		e.takeDamage(20);
-		if(e.tot)
-			target=null;
-		
+		if (e.tot)
+			target = null;
+
 	}
-	
+
 	public float getAngleToEnemy(Enemy e) {
-		float angle=0;
-		Vector2 epos=new Vector2(center.x,center.y);
-		Vector2 tpos=new Vector2(e.getBodyX(),e.getBodyY());
-		
-		angle=center.angle(epos);
+		float angle = 0;
+		Vector2 epos = new Vector2(center.x, center.y);
+		Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
+
+		angle = center.angle(epos);
 		angle = (float) ((Math.atan2(epos.x - tpos.x, -(epos.y - tpos.y)) * 180.0d / Math.PI));
-		System.out.println("Winkel "+angle);
+		System.out.println("Winkel " + angle);
 		return angle;
-		
+
 	}
-	
+
 	public float getDegrees() {
 		return this.spriteUpperBody.getRotation();
 	}
-	
+
 	public void setDegrees(float degrees) {
 		this.spriteUpperBody.setRotation(degrees);
 	}
@@ -110,44 +113,44 @@ public abstract class Tower {
 			this.destroyAnimation();
 		}
 	}
-	
+
 	public void update() {
-		if(target==null)
+		if (target == null)
 			selectNewTarget();
 		else
 			shoot(target);
 	}
 
 	private void selectNewTarget() {
-		
-		Enemy best=null;
+
+		Enemy best = null;
 		for (Enemy e : enemies) {
-			if(best==null)
-				if(e.tot==false)
-					if(isTargetInRange(e))
-						best=e;
-			if(best!=null)
-			if(e.getScore()>best.getScore()&&e.tot==false)
-				if(isTargetInRange(e))
-				best=e;
+			if (best == null)
+				if (e.tot == false)
+					if (isTargetInRange(e))
+						best = e;
+			if (best != null)
+				if (e.getScore() > best.getScore() && e.tot == false)
+					if (isTargetInRange(e))
+						best = e;
 		}
-		target=best;
+		target = best;
 	}
 
 	private boolean isTargetInRange(Enemy e) {
-		Vector2 epos=new Vector2(e.getBodyX(),e.getBodyY());
-		Vector2 tpos=new Vector2(center.x,center.y);
-		float dist=epos.dst(tpos);
-		boolean inrange=false;
-				if(dist<range)
-					inrange=true;
+		Vector2 epos = new Vector2(e.getBodyX(), e.getBodyY());
+		Vector2 tpos = new Vector2(center.x, center.y);
+		float dist = epos.dst(tpos);
+		boolean inrange = false;
+		if (dist < range)
+			inrange = true;
 		return inrange;
 	}
-	
+
 	public float getX() {
 		return spriteBody.getX();
 	}
-	
+
 	public float getY() {
 		return spriteBody.getY();
 	}
@@ -167,6 +170,5 @@ public abstract class Tower {
 	public void setCenter(Vector2 center) {
 		this.center = center;
 	}
-	
-	
+
 }

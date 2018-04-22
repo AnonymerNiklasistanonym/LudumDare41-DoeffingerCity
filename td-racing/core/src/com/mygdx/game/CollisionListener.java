@@ -8,7 +8,7 @@ import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Tower;
 
 public class CollisionListener implements ContactListener {
-	
+
 	final CollisionCallbackInterface collisionCallbackInterface;
 
 	public CollisionListener(CollisionCallbackInterface collisionCallbackInterface) {

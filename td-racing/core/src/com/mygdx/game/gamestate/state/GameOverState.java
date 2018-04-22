@@ -15,10 +15,10 @@ public class GameOverState extends GameState {
 
 	public GameOverState(final GameStateManager gameStateManager) {
 		super(gameStateManager);
-		
+
 		BACKGROUND = new Texture("background.png");
 		PLAYBUTTON = new Texture("button/start.png");
-		
+
 		// paint text
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 2);
@@ -28,7 +28,7 @@ public class GameOverState extends GameState {
 
 	@Override
 	protected void handleInput() {
-		
+
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			System.out.println("Do something");
 			gameStateManager.setGameState(new PlayState(gameStateManager));
@@ -66,4 +66,3 @@ public class GameOverState extends GameState {
 	}
 
 }
-

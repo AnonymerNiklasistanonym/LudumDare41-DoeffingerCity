@@ -19,7 +19,7 @@ public class Car {
 	float armor = 0;
 	float brakepower = 5;
 	float steerpower = 100;
-	float speed=0;
+	float speed = 0;
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -27,13 +27,13 @@ public class Car {
 		bodydef.position.set(xPostion * PlayState.PIXEL_TO_METER, yPosition * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(scar.getWidth()*0.5f, scar.getHeight()*0.5f);
+		carBox.setAsBox(scar.getWidth() * 0.5f, scar.getHeight() * 0.5f);
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = carBox;
 		fdef.density = 1f;
 		fdef.friction = 1f;
-		fdef.filter.categoryBits=PlayState.PLAYER_BOX;
-		fdef.filter.categoryBits=PlayState.ENEMY_BOX;
+		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
+		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
@@ -44,7 +44,7 @@ public class Car {
 		Vector2 velo = new Vector2(acceleration, 0);
 		velo.rotateRad(body.getAngle());
 		body.applyForceToCenter(velo, true);
-		}
+	}
 
 	public void brake() {
 		Vector2 velo = new Vector2(brakepower * -1, 0);
