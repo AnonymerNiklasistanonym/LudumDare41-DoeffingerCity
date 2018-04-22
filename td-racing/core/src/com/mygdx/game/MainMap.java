@@ -33,11 +33,11 @@ public class MainMap {
 	
 	public void createSolidMap(String mapName, World world, float resolution, float pixel_to_meter) {
         // The following line would throw ExceptionInInitializerError
-		tMap = new Texture("maps/Test.png");
+		tMap = new Texture("maps/test.png");
 		sMap = new Sprite(tMap);
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.local("maps/test.json"));
 		
-		debug = new Sprite(new Texture("maps/Test.png"));
+		debug = new Sprite(new Texture("maps/test.png"));
 		
 		// 1. Create a BodyDef, as usual.
 		BodyDef bd = new BodyDef();
