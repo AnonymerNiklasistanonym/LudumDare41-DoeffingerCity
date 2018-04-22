@@ -21,7 +21,7 @@ public class MGTower extends Tower {
 		speed = 0.2f;
 		firingSpriteTime=0.1f;
 		power = 1;
-		range = 10;
+		range = 100;
 		turnspeed = 50;
 	}
 

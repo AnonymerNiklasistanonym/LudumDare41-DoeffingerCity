@@ -93,9 +93,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-
-		money = 0;
-		
+	
 		scoreBoard = new ScoreBoard();
 
 		// import textures
@@ -173,9 +171,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// create example pit stop
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
-
 		lapTimeBegin = System.currentTimeMillis();
-
 		System.out.println("Play state entered");
 		startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
 
@@ -252,6 +248,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				debugWay = true;
 		}
+		
+		if(Gdx.input.isTouched()) {
+			if(placingtowers&&buildingtower!=null) {
+				buildingtower.activate();
+				towers.add(buildingtower);
+				//buildingtower=null;
+				placingtowers=false;
+			}
+		}
 
 	}
 
@@ -260,9 +265,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		handleInput();
 		car.update(deltaTime);
-
 		for (Tower t : towers) {
+
 			t.update(deltaTime);
+			
 		}
 
 		camera.update();
@@ -360,7 +366,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		car.draw(spriteBatch);
 		
 		scoreBoard.draw(spriteBatch);
-
+		String stringmoney="Money: ";
+		stringmoney=stringmoney+money;
+		MainGame.font.draw(spriteBatch, stringmoney, 900,50);
 		spriteBatch.end();
 
 		if (debugBox2D) {
