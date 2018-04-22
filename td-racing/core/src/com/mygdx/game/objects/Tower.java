@@ -1,11 +1,14 @@
 package com.mygdx.game.objects;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Enemy;
@@ -20,6 +23,7 @@ public abstract class Tower {
 	protected float power;
 	protected float range;
 	protected float firingSpriteTime=0.3f;
+	protected float firingLineTime=0.1f;
 	protected Vector2 center;
 	protected Sprite amunition;
 	protected Animation<TextureRegion> destroyAnimation;
@@ -28,16 +32,32 @@ public abstract class Tower {
 	protected Sprite spriteFiring;
 	protected float timesincelastshot;
 	boolean healthBar;
+	boolean justshot=false;
 	Sound soundShoot;
 	Enemy target = null;
 	Array<Enemy> enemies;
+	Vector2 shotposition;
+	protected ShapeRenderer sRender;
 
 	public void draw(final SpriteBatch spriteBatch) {
+		if(firingLineTime>timesincelastshot)
+		{
+			spriteBatch.end();
+			sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+			sRender.begin(ShapeType.Filled);
+			sRender.setColor(Color.YELLOW);
+			sRender.rectLine(center, shotposition,0.2f);
+			sRender.end();
+			spriteBatch.begin();
+		}
+		
 		spriteBody.draw(spriteBatch);
 		if(firingSpriteTime>timesincelastshot)
 			spriteFiring.draw(spriteBatch);
 		else
 			spriteUpperBody.draw(spriteBatch);
+		
+	
 		if (healthBar)
 			drawHealthBar();
 	}
@@ -47,7 +67,7 @@ public abstract class Tower {
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
 		this.soundShoot = soundShoot;
-		
+		this.sRender=new ShapeRenderer();
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
@@ -67,6 +87,7 @@ public abstract class Tower {
 		final float widthOfUpperBody = spriteUpperBody.getHeight() / 2 * PlayState.PIXEL_TO_METER;
 		final float widthOfFiringBody = spriteFiring.getHeight() / 2 * PlayState.PIXEL_TO_METER;
 		center = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
+		shotposition = new Vector2(xPosition + middleOfSpriteBody, yPosition + middleOfSpriteBody);
 		this.spriteBody.setPosition(xPosition, yPosition);
 		this.spriteUpperBody.setPosition(xPosition + middleOfSpriteBody - widthOfUpperBody,
 				yPosition + middleOfSpriteBody - widthOfUpperBody);
@@ -97,7 +118,9 @@ public abstract class Tower {
 		if(PlayState.soundon)
 		soundShoot.play();
 		timesincelastshot = 0;
-		
+		shotposition.x=e.getX()+10*PlayState.PIXEL_TO_METER;
+		shotposition.y=e.getY()+10*PlayState.PIXEL_TO_METER;
+		//TODO: Versatz Dynamisch machen!
 	}
 
 	public float getAngleToEnemy(Enemy e) {

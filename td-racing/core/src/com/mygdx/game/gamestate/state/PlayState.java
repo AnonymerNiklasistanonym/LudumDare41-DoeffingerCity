@@ -39,12 +39,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugBox2D;
 
 	private Sound soundmgshoot;
-	
+
 	private MainMap map;
 	private Sprite pitStop;
 
-	public static boolean soundon=false;
-	
+	public static boolean soundon = false;
+
+	private int money = 100;
+	private int moneyperlap = 100;
+	private float timeperlap = 0;
+
 	/**
 	 * Time since last physic Steps
 	 */
@@ -69,21 +73,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-		
+
 		// import textures
 		steststrecke = createScaledSprite("maps/test.png");
 		smaincar = createScaledSprite("cars/car_standard.png");
 		srangecircle = createScaledSprite("tower/range.png");
-		
+
 		// set STATIC textures
-		NormalCheckpoint.normalCheckPointActivated = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
-		NormalCheckpoint.normalCheckPointDisabled = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
+		NormalCheckpoint.normalCheckPointActivated = new Texture(
+				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
+		NormalCheckpoint.normalCheckPointDisabled = new Texture(
+				Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
 		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
-
 
 		enemies = new Array<Enemy>();
 
@@ -91,9 +96,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		collis = new CollisionListener(this);
 
+		soundmgshoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 
-		soundmgshoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-				
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -109,15 +113,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		car = new Car(world, smaincar, 600, 600);
 
 		for (int i = 0; i < 20; i++) {
-			Enemy e = new Enemy_small(world,map);
-			
+			Enemy e = new Enemy_small(world, map);
+
 			e.startMove();
 			enemies.add(e);
 		}
 
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
-		float[][] checkPointPosition = { { 300, 190 }, { 350, 540 }, { 1000, 500 }, { 1000, 200 } };
+		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
 		for (int i = 0; i < checkpoints.length; i++) {
 			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER,
 					checkPointPosition[i][1] * PIXEL_TO_METER);
@@ -167,25 +171,27 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyPressed(Keys.D)) {
 			car.steerRight();
 		}
-		
+
 		if (Gdx.input.isKeyJustPressed(Keys.U)) {
-			if(soundon)
-				soundon=false;
-				else
-					soundon=true;
+			if (soundon)
+				soundon = false;
+			else
+				soundon = true;
 		}
-		
+
 		if (Gdx.input.isKeyJustPressed(Keys.I)) {
-			if(debugBox2D)
-				debugBox2D=false;
-				else
-					debugBox2D=true;
+			if (debugBox2D)
+				debugBox2D = false;
+			else
+				debugBox2D = true;
 		}
 
 	}
 
 	@Override
 	protected void update(float deltaTime) {
+
+		timeperlap = timeperlap + deltaTime;
 
 		handleInput();
 		car.update(deltaTime);
@@ -217,7 +223,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			srangecircle.setOriginCenter();
 			srangecircle.setOriginBasedPosition(tower.getX() + tower.getSpriteBody().getWidth() / 2,
 					tower.getY() + tower.getSpriteBody().getHeight() / 2);
-			//srangecircle.draw(spriteBatch);
+			// srangecircle.draw(spriteBatch);
 			tower.draw(spriteBatch);
 		}
 
@@ -233,8 +239,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// draw car
 		car.draw(spriteBatch);
 
-//		MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,
-//				MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
+		// MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH *
+		// PlayState.PIXEL_TO_METER / 2,
+		// MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 
 		spriteBatch.end();
 
@@ -296,15 +303,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		// if they are schedule in 2 seconds to deactivate them all
 		if (allCheckpointsactivated) {
-			Timer.schedule(new Timer.Task() {
-				public void run() {
-					for (Checkpoint checkpoint1 : checkpoints) {
-						checkpoint1.setActivated(false);
-					}
-				}
-			}, 2);
+			lapFinished();
 		}
 
+	}
+
+	public void lapFinished() {
+
+		for (Checkpoint checkpoint1 : checkpoints) {
+			checkpoint1.setActivated(false);
+		}
+		money = money + moneyperlap;
+		int timebonus = 100 - (int) timeperlap * 2;
+		money = money + timebonus;
+		System.out.println("Lap Finished, new Money: " + money);
 	}
 
 	@Override
