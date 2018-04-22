@@ -14,7 +14,6 @@ public class Enemy_small extends Enemy {
 		super(w, normalTexture, deadTexture);
 		this.speed = 2;
 		this.health = 10;
-		this.nodesList = nodesList;
 		this.map = map;
 	}
 
