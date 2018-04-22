@@ -7,19 +7,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.menu.MenuButton;
 
 public class MenuState extends GameState {
+	
+	private MenuButton startButton;
+	private MenuButton aboutButton;
 
-	//private final Texture BACKGROUND;
-	private final Texture PLAYBUTTON;
 
 	public MenuState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 		
 		//BACKGROUND = new Texture(Gdx.files.internal("background.png"));
-		PLAYBUTTON = new Texture(Gdx.files.internal("buttons/button_start.png"));
+		MenuButton.textureActive = new Texture(Gdx.files.internal("buttons/button_active.png"));
+		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_not_active.png"));
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 2);
+		
+		startButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2, "START", true);
+		aboutButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 4, "ABOUT", false);
 
 		System.out.println("Menu state entered");
 	}

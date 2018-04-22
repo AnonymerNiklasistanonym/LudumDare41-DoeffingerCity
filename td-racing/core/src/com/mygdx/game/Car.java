@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.objects.Checkpoint;
 
 public class Car {
 	Body body;
@@ -69,9 +70,6 @@ public class Car {
 		body.applyForceToCenter(velo, true);
 		KillOrthogonalVelocity(0f);
 	}
-
-	public void hitEnemy(Enemy e) {
-
 	}
 
 	public float getX() {
@@ -122,4 +120,13 @@ public class Car {
 		ort.rotate90(1);
 		return ort;
 	}
+
+	public void hitCheckpoint(Checkpoint checkpoint) {
+		// TODO Auto-generated method stub
+	}
+	
+	public void hitEnemy(Enemy e) {
+		// TODO Auto-generated method stub
+	}
+	
 }
