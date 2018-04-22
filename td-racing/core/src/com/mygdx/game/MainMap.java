@@ -22,6 +22,7 @@ public class MainMap {
 	Texture tMap;
 	Body mapModel;
 	Body mapZiel;
+	Body finishLine;
 	Sprite debug;
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
