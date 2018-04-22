@@ -321,7 +321,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
-		enemy.takeDamage(20);
+		
 		car.hitEnemy(enemy);
 		// TODO Auto-generated method stub
 
