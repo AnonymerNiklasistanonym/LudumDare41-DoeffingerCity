@@ -9,19 +9,20 @@ import com.mygdx.game.gamestate.state.PlayState;
 public class ScoreBoard {
 	
 	private float score;
-	private float time;
+	private float money;
+	private float timeWhole;
+	private float timeRound;
 	private float timeBegin;
 	private int enemyNumber;
 	private int waveNumber;
 	
 	
 	public ScoreBoard() {
-		MainGame.fontTest.getData().setScale(MainGame.fontTest.getScaleX() * PlayState.PIXEL_TO_METER);		
 	}
 	
 	public void draw(final SpriteBatch spriteBatch) {
 		
-		System.out.println("Money: " + );
+		System.out.println("Money: " + this.money + ", timeRound: " + this.timeWhole + ", ");
 				
 		// String completeText= "In this text there are multi lines";
 		

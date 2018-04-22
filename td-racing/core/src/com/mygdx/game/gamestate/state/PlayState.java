@@ -55,11 +55,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	private MainMap map;
 	private Sprite pitStop;
-
-	public static boolean soundon = false;
 	
 	private ScoreBoard scoreBoard;
-	Tower buildingtower;
+	private Tower buildingtower;
 
 	private int money = 100;
 	private int moneyPerLap = 100;
