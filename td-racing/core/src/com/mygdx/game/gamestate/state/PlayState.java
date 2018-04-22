@@ -99,13 +99,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		world.setContactListener(collis);
 		debugRender = new Box2DDebugRenderer();
 
+		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 		car = new Car(world, smaincar, 600, 600);
-		for (int i = 0; i < 300; i++) {
-			Enemy e = new Enemy_small(world);
+		for (int i = 0; i < 2; i++) {
+			Enemy e = new Enemy_small(world,map);
 			e.startMove();
 			enemies.add(e);
 		}
-		map = new MainMap("test", world, RESOLUTION_WIDTH, PIXEL_TO_METER);
 
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
