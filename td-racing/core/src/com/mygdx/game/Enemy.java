@@ -25,11 +25,18 @@ public abstract class Enemy extends BodyDef {
 
 	public boolean tot = false;
 
-	public Enemy(World w, Sprite sprite, Sprite deadsprite) {
+	public Enemy(World w, Texture sprite, Texture deadsprite) {
+		final Sprite spriteSprite = new Sprite(sprite);
+		final Sprite deadspriteSprite = new Sprite(deadsprite);
+		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER, spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
+		spriteSprite.setOriginCenter();
+		deadspriteSprite.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
+		deadspriteSprite.setOriginCenter();
+
 		this.speed = 80;
 		this.health = 10;
-		this.saussehen = sprite;
-		this.stot = deadsprite;
+		this.saussehen = spriteSprite;
+		this.stot = deadspriteSprite;
 		this.score = MathUtils.random(100);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;

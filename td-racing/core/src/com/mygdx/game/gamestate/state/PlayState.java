@@ -69,15 +69,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// import textures
 		steststrecke = createScaledSprite("maps/test.png");
 		smaincar = createScaledSprite("cars/car_standard.png");
-		szombie1 = createScaledSprite("zombies/zombie_standard.png");
-		szombie1dead = createScaledSprite("zombies/zombie_standard_tot.png");
 		srangecircle = createScaledSprite("tower/range.png");
 		
-		// import STATIC textures
+		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
 		NormalCheckpoint.normalCheckPointDisabled = new Texture(Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
 		EmptyTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		EmptyTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
+		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
+		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
+
 
 		enemies = new Array<Enemy>();
 
@@ -100,7 +101,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		car = new Car(world, smaincar, 600, 600);
 		for (int i = 0; i < 300; i++) {
-			Enemy e = new Enemy_small(world, szombie1, szombie1dead);
+			Enemy e = new Enemy_small(world);
 			e.startMove();
 			enemies.add(e);
 		}
@@ -247,6 +248,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		NormalCheckpoint.normalCheckPointDisabled.dispose();
 		EmptyTower.groundTower.dispose();
 		EmptyTower.upperTower.dispose();
+		Enemy_small.normalTexture.dispose();
+		Enemy_small.deadTexture.dispose();
 	}
 
 	@Override
