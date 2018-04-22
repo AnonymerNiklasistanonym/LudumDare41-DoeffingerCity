@@ -6,9 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -70,14 +72,24 @@ public class MainMap {
 	}
 
 	public void createAStarArray() {
+		boolean befahrbar = true;
 		PolygonShape ps=(PolygonShape)mapZiel.getFixtureList().first().getShape();
-		System.out.println("Vertex count "+ps.getVertexCount());
+		Vector2 vector = new Vector2();
+		ps.getVertex(0, vector);
+
 		// Nodes erstellen
 		for (int i = 1; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
 			for (int j = 1; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
-				nodesList.add(new Node((float) i, (float) j,mapZiel.getFixtureList().first().getBody().getPosition().x, mapZiel.getFixtureList().first().getBody().getPosition().y));
+				// Im befahrbaren Bereich?
+				befahrbar = true;
+				for (Fixture f : mapModel.getFixtureList()) {
+					if(f.testPoint(i, j)) {
+						befahrbar = false;
+					}				
+				}
+				if(befahrbar) nodesList.add(new Node((float) i, (float) j,vector.x, vector.y));
 			}
-		}
+		}		
 	}
 
 }
