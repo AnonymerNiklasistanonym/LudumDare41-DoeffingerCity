@@ -18,6 +18,7 @@ import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
+import com.mygdx.game.ScoreBoard;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
@@ -49,6 +50,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Sprite pitStop;
 
 	public static boolean soundon = false;
+	
+	private ScoreBoard scoreBoard;
 
 	private int money = 100;
 	private int moneyPerLap = 100;
@@ -82,6 +85,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		super(gameStateManager);
 		
 		money = 0;
+		
+		scoreBoard = new ScoreBoard();
 
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
@@ -282,6 +287,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		// draw car
 		car.draw(spriteBatch);
+		
+		scoreBoard.draw(spriteBatch);
 
 		// MainGame.font.draw(spriteBatch, "Hi", MainGame.GAME_WIDTH *
 		// PlayState.PIXEL_TO_METER / 2,
