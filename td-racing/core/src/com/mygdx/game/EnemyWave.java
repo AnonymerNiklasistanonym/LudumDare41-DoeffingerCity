@@ -28,10 +28,8 @@ public class EnemyWave {
 			newEnemies[i] = new Enemy_fat(220, 40, world, map);
 		for (int i = 0; i < newEnemies.length; i++)
 			if (newEnemies[i] == null) {
-				System.out.println("enemy is null");
 				System.out.println("enemy is null in waves");
 			}
-		}
 		return newEnemies;
 	}
 

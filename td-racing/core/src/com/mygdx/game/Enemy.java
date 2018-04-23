@@ -130,7 +130,7 @@ public abstract class Enemy extends BodyDef {
 		Node aktuellerNode, tempNode;
 
 		boolean found = false;
-		// Welcher Node ist der nächste?
+		// Welcher Node ist der naechste?
 		if (startX % 10 < 5) {
 			startX = startX - startX % 10;
 		}
@@ -185,7 +185,7 @@ public abstract class Enemy extends BodyDef {
 
 			zaehler--;
 			if (zaehler < 0) {
-				// Bisherige Liste zurückgeben
+				// Bisherige Liste zurueckgeben
 
 				break;
 			}
@@ -239,11 +239,11 @@ public abstract class Enemy extends BodyDef {
 			if (zaehler < 0) {
 				break;
 			}
-			// Für alle Wege die benutzt werden ein Erschwernis eintragen
+			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10);
+			//map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10);
 
-			// Hinzufügen
+			// Hinzufuegen
 			tempweg.add(aktuellerNode);
 			aktuellerNode = aktuellerNode.parent;
 		}
