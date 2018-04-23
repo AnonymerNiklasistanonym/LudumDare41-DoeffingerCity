@@ -361,9 +361,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			// Add tower to the tower list		
 			turmmenu.unselectAll();
 			this.scoreBoard.addMoney(-this.buildingtower.getCost());
-			final Tower newTower = this.buildingtower;
+			Tower newTower = this.buildingtower;
 			buildingtower=null;
 			newTower.activate();
+			newTower.setBuildingMode(false);
 			towers.add(newTower);
 			stopBuilding();
 		} else {
@@ -392,12 +393,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// get mouse position
 		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(mousePos);		
-		buildingtower=turmmenu.getCurrentTower();
-		
+		if(buildingtower==null){
+			buildingtower=turmmenu.getCurrentTower();
+			if(buildingtower!=null)
+			startBuilding(buildingtower);
+		}
+
 		// update towers
 		if (buildingtower != null) {
-			startBuilding(buildingtower);
+			
 			buildingtower.update(deltaTime, mousePos);
+			buildingtower=turmmenu.getCurrentTower();
 		}
 		else
 		{

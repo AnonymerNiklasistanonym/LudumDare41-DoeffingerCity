@@ -311,7 +311,7 @@ public abstract class Tower {
 	}
 
 	public void update(float delta, Vector3 mousepos) {
-		
+
 		if (this.isInBuildingMode) {
 			this.updateSprites(mousepos.x,mousepos.y);
 		}
