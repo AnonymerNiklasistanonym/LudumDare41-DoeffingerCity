@@ -97,7 +97,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	
 		scoreBoard = new ScoreBoard();
 		scoreBoard.reset(100);
-
+		
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
 		strack1top = createScaledSprite("maps/track1top.png");
@@ -206,6 +206,31 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			System.out.println(tower.getCost());
 		}
 	}
+	
+	public boolean buildingPositionIsAllowed(final Tower tower) {
+		System.out.println("buildingPositionIsAllowed");
+		final float[][] cornerPoints = tower.getCornerPoints();
+		boolean isAllowed = true;
+		for (int i = 0; i < cornerPoints.length; i++) {
+			isAllowed = this.map.isInBody(cornerPoints[i][0], cornerPoints[i][1]);
+			System.out.println("isAllowed: " + isAllowed + ", x: " + cornerPoints[i][0] + ", y: " + cornerPoints[i][1]);
+		}
+		System.out.println("isAllowed: " + isAllowed);
+		return isAllowed;
+	}
+	
+	public boolean buildingMoneyIsEnough(final Tower tower) {
+		System.out.println("buildingMoneyIsEnough");
+		// if there is enough money return true
+		if(tower.getCost() <= this.scoreBoard.getMoney()) {
+			 this.scoreBoard.addMoney(-tower.getCost());
+				System.out.println("cost ok");
+			 return true;
+		} else {
+			System.out.println("cost not ok");
+			return false;
+		}
+	}
 
 	public void stopBuilding() {
 		System.out.println("Stop building");
@@ -290,14 +315,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 
 		if(Gdx.input.isTouched()) {
-			if(this.buildingtower != null) {
-				buildingtower.activate();
-				final Tower newTower = buildingtower;
-				towers.add(newTower);
-				stopBuilding();
-			}
+			// if in build mode build tower at the current mouse positin if allowed
+			if (this.buildingtower != null)
+				buildTowerIfAllowed();
 		}
 
+	}
+	
+	public void buildTowerIfAllowed() {
+		// if position and money is ok build it
+		if (buildingPositionIsAllowed(this.buildingtower) && buildingMoneyIsEnough(this.buildingtower)) {
+			// Add tower to the tower list
+			final Tower newTower = this.buildingtower;
+			newTower.activate();
+			towers.add(newTower);
+			stopBuilding();
+		}
 	}
 
 	@Override

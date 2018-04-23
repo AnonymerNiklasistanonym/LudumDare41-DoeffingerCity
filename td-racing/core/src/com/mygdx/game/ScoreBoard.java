@@ -63,4 +63,12 @@ public class ScoreBoard {
 		this.waveNumber = 0;
 	}
 
+	public int getMoney() {
+		return (int) this.money;
+	}
+
+	public void addMoney(final int cost) {
+		this.money += cost;		
+	}
+
 }

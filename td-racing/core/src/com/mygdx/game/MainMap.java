@@ -76,6 +76,17 @@ public class MainMap {
 		loaderZiel.attachFixture(mapZiel, "Ziel", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		System.out.println();
 	}
+	
+	public boolean isInBody(final float xPosition, final float yPosition) {
+		for (int i = 0; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
+			for (int j = 0; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
+				for (final Fixture f : mapModel.getFixtureList()) {
+					if (f.testPoint(xPosition, yPosition)) return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	public void createAStarArray() {
 		boolean befahrbar = true;

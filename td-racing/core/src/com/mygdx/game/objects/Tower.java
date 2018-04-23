@@ -122,6 +122,24 @@ public abstract class Tower {
 		}
 	}
 	
+	public float[][] getCornerPoints() {
+		float[][] cornerPoints = new float[4][2];
+		// left bottom
+		cornerPoints[0][0] = this.spriteBody.getX();
+		cornerPoints[0][1] = this.spriteBody.getY();
+		// right top
+		cornerPoints[1][0] = this.spriteBody.getX() + this.spriteBody.getHeight();
+		cornerPoints[1][1] = this.spriteBody.getY() + this.spriteBody.getHeight();
+		// left top
+		cornerPoints[2][0] = this.spriteBody.getX();
+		cornerPoints[2][1] = this.spriteBody.getY() + this.spriteBody.getHeight();
+		// right bottom
+		cornerPoints[3][0] = this.spriteBody.getX() + this.spriteBody.getHeight();
+		cornerPoints[3][1] = this.spriteBody.getY();
+		return cornerPoints;
+		
+	}
+	
 	public boolean buildingModeBlocked() {
 		return this.buildingModeBlocked;
 	}
