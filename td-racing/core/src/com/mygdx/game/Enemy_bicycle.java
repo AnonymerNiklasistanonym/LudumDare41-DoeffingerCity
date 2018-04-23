@@ -10,7 +10,7 @@ public class Enemy_bicycle extends Enemy {
 
 	public Enemy_bicycle(float x, float y,World w, MainMap map) {
 		super(x,y,w, normalTexture, deadTexture,damageTexture,map);
-		this.speed = 0.2f;
-		this.health = 100;
+		this.speed = 5f;
+		this.health = 10;
 	}
 }
