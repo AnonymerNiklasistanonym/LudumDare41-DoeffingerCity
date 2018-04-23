@@ -160,9 +160,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		map = new MainMap("test", world,finishline.body );
 		for (int i = 0; i < 2; i++) {
-			Enemy e = new Enemy_small(world, map);
-			Enemy f= new Enemy_fat(world,map);
-			Enemy b= new Enemy_bicycle(world,map);
+			Enemy e = new Enemy_small(220,20,world, map);
+			Enemy f= new Enemy_fat(220,20,world,map);
+			Enemy b= new Enemy_bicycle(220,20,world,map);
 			f.startMove();
 			e.startMove();
 			b.startMove();

@@ -9,9 +9,9 @@ import com.badlogic.gdx.physics.box2d.World;
 		public static Texture deadTexture;
 		public static Texture damageTexture;
 
-		public Enemy_fat(World w, MainMap map) {
-			super(w, normalTexture, deadTexture,damageTexture,map);
-			this.speed = 0.2f;
+		public Enemy_fat(float x, float y,World w, MainMap map) {
+			super(x,y,w, normalTexture, deadTexture,damageTexture,map);
+			this.speed = 0.5f;
 			this.health = 100;
 		}
 }
