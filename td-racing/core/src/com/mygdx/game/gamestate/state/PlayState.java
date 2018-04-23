@@ -61,6 +61,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugBox2D;
 	private boolean debugCollision;
 	private boolean debugEntfernung;
+	private boolean carsoundPlaying = false;
 
 	public static boolean soundon = false;
 	private boolean debugWay;
@@ -174,7 +175,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
-		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound2.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -355,10 +356,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		handleInput();
 
 		car.update(deltaTime);
-		if(car.getForward().x != 0) {
-			carsound.play();
-			
-		}
+		
+		if(soundon)
+			if(car.getForward().x != 0 && !carsoundPlaying) {
+				carsound.loop();
+				carsoundPlaying = true;			
+			}
+			else {
+				if(car.getForward().x == 0) {
+					carsound.stop();
+					carsoundPlaying = false;	
+					
+				}
+			}
 
 		if (buildingtower == null) {
 			buildingtower = turmmenu.getCurrentTower();
