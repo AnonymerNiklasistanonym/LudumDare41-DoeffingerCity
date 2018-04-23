@@ -196,11 +196,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public static Sprite createScaledSprite(String location) {
-		Texture t = new Texture(Gdx.files.internal(location));
-		Sprite s = new Sprite(t);
+		final Sprite s = new Sprite(new Texture(Gdx.files.internal(location)));
 		s.setSize(s.getWidth() * PIXEL_TO_METER, s.getHeight() * PIXEL_TO_METER);
 		s.setOriginCenter();
-		// t.dispose();
 		return s;
 	}
 
@@ -215,134 +213,67 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 	
 	public boolean buildingPositionIsAllowed(final Tower tower) {
-		System.out.println("buildingPositionIsAllowed");
 		final float[][] cornerPoints = tower.getCornerPoints();
 		boolean isAllowed = true;
-		for (int i = 0; i < cornerPoints.length; i++) {
+		for (int i = 0; i < cornerPoints.length; i++)
 			isAllowed = this.map.isInBody(cornerPoints[i][0], cornerPoints[i][1]);
-			System.out.println("isAllowed: " + isAllowed + ", x: " + cornerPoints[i][0] + ", y: " + cornerPoints[i][1]);
-		}
-		System.out.println("isAllowed: " + isAllowed);
+		System.out.println("buildingPositionIsAllowed: " + isAllowed);
 		return isAllowed;
 	}
 	
 	public boolean buildingMoneyIsEnough(final Tower tower) {
-		System.out.println("buildingMoneyIsEnough");
-		// if there is enough money return true
-		if(tower.getCost() <= this.scoreBoard.getMoney()) {
-				System.out.println("cost ok");
-			 return true;
-		} else {
-			System.out.println("cost not ok");
-			return false;
-		}
+		final boolean moneyIsEnough = tower.getCost() <= scoreBoard.getMoney();
+		System.out.println("buildingMoneyIsEnough: " + moneyIsEnough);
+		return moneyIsEnough;
 	}
 
 	public void stopBuilding() {
+		System.out.println("Stop building");
 		turmmenu.unselectAll();
-		for (final Tower tower : towers) {
+		for (final Tower tower : towers)
 			tower.activateRange(false);
-		}
 	}
 
 	@Override
 	protected void handleInput() {
-
-		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			gameStateManager.setGameState(new MenuState(gameStateManager));
-		}
-
-		// Check if somehow the screen was touched
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-			System.out.println("Do something");
-
-			// turn checkpoint on
-			checkpoints[0].setActivated(!checkpoints[0].isActivated());
-		}
-		if (Gdx.input.isKeyPressed(Keys.W)) {
+		if (Gdx.input.isKeyPressed(Keys.W))
 			car.accelarate();
-		}
-		if (Gdx.input.isKeyPressed(Keys.S)) {
+		if (Gdx.input.isKeyPressed(Keys.S))
 			car.brake();
-		}
-		if (Gdx.input.isKeyPressed(Keys.A)) {
+		if (Gdx.input.isKeyPressed(Keys.A))
 			car.steerLeft();
-		}
-		if (Gdx.input.isKeyPressed(Keys.D)) {
+		if (Gdx.input.isKeyPressed(Keys.D))
 			car.steerRight();
-		}
-	
-
-		if (Gdx.input.isKeyJustPressed(Keys.U)) {
-			if (soundon)
-				soundon = false;
-			else
-				soundon = true;
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Keys.F)) {
-			Enemy e=new Enemy_small(220, 20, world, map);
-			enemies.add(e);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.G)) {
-			Enemy e=new Enemy_fat(220, 20, world, map);
-			enemies.add(e);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.H)) {
-			Enemy e=new Enemy_bicycle(220, 20, world, map);
-			enemies.add(e);
-		}
-
-		if (Gdx.input.isKeyJustPressed(Keys.I)) {
-			if (debugBox2D)
-				debugBox2D = false;
-			else
-				debugBox2D = true;
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.K)) {
-			if (debugCollision)
-				debugCollision = false;
-			else
-				debugCollision = true;
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.L)) {
-			if (debugWay)
-				debugWay = false;
-			else
-				debugWay = true;
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.J)) {
-			if (debugEntfernung)
-				debugEntfernung = false;
-			else
-				debugEntfernung = true;
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
+		if (Gdx.input.isKeyJustPressed(Keys.U))
+			soundon = !soundon;
+		if (Gdx.input.isKeyJustPressed(Keys.F))
+			enemies.add(new Enemy_small(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.G))
+			enemies.add(new Enemy_fat(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.H))
+			enemies.add(new Enemy_bicycle(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.I))
+			debugBox2D = !debugBox2D;
+		if (Gdx.input.isKeyJustPressed(Keys.K))
+			debugCollision = !debugCollision;
+		if (Gdx.input.isKeyJustPressed(Keys.L))
+			debugWay = !debugWay;
+		if (Gdx.input.isKeyJustPressed(Keys.J))
+			debugEntfernung = !debugEntfernung;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			turmmenu.selectTower(1);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
 			turmmenu.selectTower(2);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_3)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_3))
 			turmmenu.selectTower(3);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_4))
 			turmmenu.selectTower(4);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_5))
 			turmmenu.selectTower(5);
-		}
-		
-		// B >> Activate building mode
-
-		// Screen clicked >> Build tower
-		if(Gdx.input.justTouched()) {
-			// if in build mode build tower at the current mouse positin if allowed
-			if (this.buildingtower != null)
+		if(Gdx.input.justTouched() && this.buildingtower != null)
 				buildTowerIfAllowed();
-		}
-
 	}
 	
 	public void buildTowerIfAllowed() {
@@ -350,8 +281,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (buildingMoneyIsEnough(this.buildingtower) && buildingPositionIsAllowed(this.buildingtower)) {
 			// Add tower to the tower list		
 			turmmenu.unselectAll();
-			this.scoreBoard.addMoney(-this.buildingtower.getCost());
-			Tower newTower = this.buildingtower;
+			scoreBoard.addMoney(-this.buildingtower.getCost());
+			final Tower newTower = this.buildingtower;
 			buildingtower=null;
 			newTower.activate();
 			newTower.setBuildingMode(false);
@@ -391,13 +322,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// update towers
 		if (buildingtower != null) {
-			
 			buildingtower.update(deltaTime, mousePos);
-			buildingtower=turmmenu.getCurrentTower();
-		}
-		else
-		{
-			stopBuilding();
+			buildingtower = turmmenu.getCurrentTower();
 		}
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
