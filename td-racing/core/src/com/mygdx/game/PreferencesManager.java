@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
@@ -29,50 +30,75 @@ public class PreferencesManager {
 	private final Preferences prefs;
 		
 	public PreferencesManager() {
-		this.prefs = Gdx.app.getPreferences(PREFERENCES_NAME);
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
+			this.prefs = Gdx.app.getPreferences(PREFERENCES_NAME);
+		} else {
+			this.prefs = null;
+		}
 	}
 	
 	public void checkHighscore() {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		final HighscoreEntry[] entries = retrieveHighscore();
 		for (int i = 0; i < entries.length; i++) {
 			if (entries[i].getName() == null || entries[i].getName().equals("")) prefs.putString(HIGHSCORE_NAME + i, "NOBODY");
 			if (entries[i].getScore() < 0) prefs.putInteger(HIGHSCORE_SCORE + i, 0);
 		}
 		prefs.flush();
+		}
 	}
 	
 	public void saveHighscore(String[] names, int[] scores) {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		for (int i = 0; 0 < 10; i++) {
 			prefs.putString(HIGHSCORE_NAME + i, names[i]);
 			prefs.putInteger(HIGHSCORE_SCORE + i, scores[i]);
 			prefs.flush();
 		}
+		}
 	}
 	
 	public HighscoreEntry[] retrieveHighscore() {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		final HighscoreEntry[] entries = new HighscoreEntry[10];
 		for (int i = 0; i < entries.length; i++)
 			entries[i] = new HighscoreEntry(prefs.getInteger(HIGHSCORE_SCORE + i), prefs.getString(HIGHSCORE_NAME + i));
 		return entries;
+		} else {
+			return null;
+		}
 	}
 	
 	public void saveSoundEffects(final boolean soundEffectsOn) {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		prefs.putBoolean(SOUND_EFFECTS, soundEffectsOn).flush();
+		}
 	}
 	
 	public void saveMusic(final boolean musicOn) {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		prefs.putBoolean(MUSIC, musicOn).flush();
+		}
 	}
 	
 	public boolean retrieveSoundEffects() {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		return prefs.getBoolean(SOUND_EFFECTS);
+		} else {
+			return false;
+		}
 	}
 	
 	public boolean retrieveMusic() {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		return prefs.getBoolean(MUSIC);
+		} else {
+			return false;
+		}
 	}
 
 	public void saveHighscore(String name, int score) {
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
 		final HighscoreEntry[] entries = retrieveHighscore();
 		for (int i = 0; i < entries.length; i++) {
 			if (entries[i].getScore() < score) {
@@ -85,6 +111,7 @@ public class PreferencesManager {
 				prefs.flush();
 				return;
 			}
+		}
 		}
 	}
 
