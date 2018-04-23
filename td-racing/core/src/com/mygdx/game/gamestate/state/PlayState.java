@@ -21,7 +21,7 @@ import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
-import com.mygdx.game.EnemyWave;
+import com.mygdx.game.EnemyWaveEntry;
 import com.mygdx.game.Enemy_bicycle;
 import com.mygdx.game.Enemy_fat;
 import com.mygdx.game.Enemy_small;
@@ -38,6 +38,7 @@ import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.tower.FireTower;
+import com.mygdx.game.objects.tower.Flame;
 import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MGTower;
 
@@ -97,7 +98,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static short PLAYER_BOX = 0x1; // 0001
 	public final static short ENEMY_BOX = 0x1 << 1; // 0010 or 0x2 in hex
 	
-	public Array<EnemyWave> currentEnemyWaves;
+	public Array<EnemyWaveEntry> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
@@ -331,6 +332,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
 		
+		for (final EnemyWaveEntry entry : currentEnemyWaves) {
+			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
+				System.out.println("entry.getTimeInSeconds()" + entry.getTimeInSeconds() + "> scoreBoard.getTime()" + scoreBoard.getTime());
+				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
+				currentEnemyWaves.removeValue(entry, true);
+			}
+		}
+		
+		
 		scoreBoard.update(deltaTime);
 		
 		camera.update();
@@ -449,7 +459,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			rb=t.removeProjectiles();
 			if(rb!=null)
 			ab.addAll(rb);
-			System.out.println("Found to remove: "+ab.size);
 			for (Body body : ab) {
 				
 				world.destroyBody(body);
@@ -521,6 +530,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				gameStateManager.setGameState(new HighscoreState(gameStateManager));
 			}
 		}, "Enter your name", "", "");
+	}
+
+	@Override
+	public void collisionFlameEnemy(Enemy e, Flame f) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
