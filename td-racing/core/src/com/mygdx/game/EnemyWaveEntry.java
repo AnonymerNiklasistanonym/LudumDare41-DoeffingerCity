@@ -39,9 +39,6 @@ public class EnemyWaveEntry {
 		if(small == null) small = new Vector2[0];
 		if(fat == null) fat = new Vector2[0];
 		if(bicycle == null) bicycle = new Vector2[0];
-		System.out.println(small.length);
-		System.out.println(fat.length);
-		System.out.println(bicycle.length);
 		
 		final EnemyWaveEntry[] entries = new EnemyWaveEntry[small.length + fat.length + bicycle.length];
 		
@@ -72,6 +69,23 @@ public class EnemyWaveEntry {
 			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_SMALL);
 		for (int i = 0 + smallNumber; i < fatNumber + smallNumber; i++)
 			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_FAT);
+		return entries;
+	}
+	
+	public static EnemyWaveEntry[] createEnemyEntries(
+			final Vector2 entryPoint, final int entryTime, final int smallNumber, final float smallTimeDelta,
+			final int fatNumber,  final float fatTimeDelta,
+			final int bicycleNumber, final float bicycleTimeDelta) {
+		
+		final EnemyWaveEntry[] entries = new EnemyWaveEntry[smallNumber + fatNumber + bicycleNumber];
+		
+		int counter = 0;
+		for (int i = 0 + smallNumber + fatNumber; i < bicycleNumber + smallNumber + fatNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * bicycleTimeDelta, entryPoint, ENEMY_BYCICLE);
+		for (int i = 0; i < smallNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * smallTimeDelta, entryPoint, ENEMY_SMALL);
+		for (int i = 0 + smallNumber; i < fatNumber + smallNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * fatTimeDelta, entryPoint, ENEMY_FAT);
 		return entries;
 	}
 	
