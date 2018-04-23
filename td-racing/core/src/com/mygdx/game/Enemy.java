@@ -331,6 +331,7 @@ public abstract class Enemy extends BodyDef {
 			angle = (float) ((Math.atan2(weg.getLast().x*PlayState.PIXEL_TO_METER - getBodyX(), -(weg.getLast().y*PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			body.setTransform(body.getPosition(), (float) Math.toRadians( angle-90 ));
 			Vector2 velo=new Vector2(1,0);
+			Vector2 velo=new Vector2(speed,0);
 			velo.rotateRad(body.getAngle());
 			body.setLinearVelocity(velo);
 			//body.applyForceToCenter(velo,true);
