@@ -34,8 +34,7 @@ public class Node {
 	}
 	
 	public float getKosten() {
-		kosten = g * h * erschwernis;
-		return kosten;
+		return g * h * erschwernis;
 	}
 	
 	public boolean getNoUse() {
