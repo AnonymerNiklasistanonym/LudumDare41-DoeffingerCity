@@ -18,12 +18,13 @@ public class Car {
 	float maxspeed = 15;
 	float acceleration = 2000f;
 	float armor = 0.3f;
-	float brakepower = 1000f;
-	float backacc = 1f;
-	float steerpower = 200;
+	float brakepower = 5000f;
+	float backacc = 1000f;
+	float steerpower = 2000;
 	float friction = 0.99f;
 	float health=100;
 	float delta=0;
+	
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -47,25 +48,37 @@ public class Car {
 	}
 
 	public void accelarate() {
-		Vector2 acc=new Vector2(brakepower*delta,0);
+		Vector2 acc=new Vector2(acceleration*delta,0);
 		acc.rotateRad(body.getAngle());
 		body.applyForceToCenter(acc,true);
 	}
 
 	public void brake() {
-//		if(getForwardVelocity().x>=0)
-//		Vector2 acc=new Vector2(acceleration*-1*delta,0);
-//		acc.rotateRad(body.getAngle());
-//		body.applyForceToCenter(acc,true);
+		Vector2 acc=new Vector2(0,0);
+		if(getForwardVelocity().x>=0) {
+		acc=new Vector2(brakepower*-1*delta,0);
+		}
+		else
+		{
+			acc=new Vector2(backacc*-1*delta,0);
+		}
+		acc.rotateRad(body.getAngle());
+		body.applyForceToCenter(acc,true);
 	}
 
 	public void steerLeft() {
-		body.applyTorque(steerpower*getForwardVelocity().x*delta, true);
+		int i=1;
+		if(getForwardVelocity().x<0)
+			i=i*-1;
+		body.applyTorque(steerpower*delta*i, true);
 
 	}
 
 	public void steerRight() {
-		body.applyTorque(steerpower*getForwardVelocity().x* -1*delta, true);
+		int i=1;
+		if(getForwardVelocity().x<0)
+			i=i*-1;
+		body.applyTorque(steerpower* -1*delta*i, true);
 	}
 
 	public void update(float delta) {
@@ -73,9 +86,12 @@ public class Car {
 		
 		
 		reduceToMaxSpeed(maxspeed);
-		killLateral();
+		killLateral(0.95f);
 	}
 	
+	public void steerZero() {
+		
+	}
 	
 	public void reduceToMaxSpeed(float maxspeed) {
 		float speed=getForwardVelocity().x;
@@ -83,15 +99,16 @@ public class Car {
 			speed = maxspeed * -1;
 		if (speed > maxspeed)
 			speed = maxspeed;
-		Vector2 velo=getVelocityVector();
+	
 		Vector2 newSpeed=new Vector2(speed,getForwardVelocity().y);
 		newSpeed.rotateRad(body.getAngle());
 		body.setLinearVelocity(newSpeed);
 	}
 	
-	public void killLateral() {
+	public void killLateral(float drift) {
 		float lat=getVelocityVector().dot(getOrthogonal());
 		Vector2 vlat=getOrthogonal();
+		vlat.scl(drift);
 		vlat.scl(lat);
 		vlat=vlat.scl(-1);
 		body.applyLinearImpulse(vlat,body.getPosition(),true);
