@@ -76,7 +76,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private int moneyPerLap = 50;
 
 	private float laptime = 0f;
-	private Sound splatt;
+	private Sound splatt,money,carsound;
 
 	/**
 	 * Time since last physic Steps
@@ -168,8 +168,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 		
-		splatt =  MGTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
-
+		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
+		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
+		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -190,7 +191,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugWay = false;
 		debugEntfernung = false;
 
-		map = new MainMap("track2", world, finishline.body);
+		map = new MainMap("test", world, finishline.body);
 		turmmenu = new TurmMenu(s1, s2, s3, s4, s5, world, enemies);
 
 		checkpoints = new Checkpoint[4];
@@ -324,6 +325,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		handleInput();
 
 		car.update(deltaTime);
+		if(car.getForward().x != 0) {
+			carsound
+			
+		}
 
 		if (buildingtower == null) {
 			buildingtower = turmmenu.getCurrentTower();
@@ -539,9 +544,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
 		car.hitEnemy(enemy);
-		if(enemy.tot) {
-//			if(soundon)
-			splatt.play();
+		if(enemy.health < 0) {
+			if(soundon)
+			splatt.play(1, MathUtils.random(0.5f,2f), 0);
 		}
 	}
 
@@ -564,6 +569,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
 		}
+		
+		if(soundon)
+			money.play();
 
 	}
 
