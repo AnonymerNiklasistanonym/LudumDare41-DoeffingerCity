@@ -213,7 +213,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
 		backgroundMusic.setLooping(true);
-		backgroundMusic.play();
+		backgroundMusic.setVolume(0.4f);
+		if (soundon) backgroundMusic.play();
 	}
 
 	public void loadLevel(int i) {
@@ -297,7 +298,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			soundon = !soundon;
 			if (soundon == false && backgroundMusic.isPlaying()) backgroundMusic.pause();
 			if (soundon == true) backgroundMusic.play();
-		}
+		}	
 		if (Gdx.input.isKeyJustPressed(Keys.F))
 			enemies.add(new Enemy_small(220, 20, world, map));
 		if (Gdx.input.isKeyJustPressed(Keys.G))
@@ -586,6 +587,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.normalTexture.dispose();
 		Enemy_bicycle.deadTexture.dispose();
 		backgroundMusic.dispose();
+		carsound.dispose();
 	}
 
 	@Override
