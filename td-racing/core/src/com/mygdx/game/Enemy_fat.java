@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 		public Enemy_fat(float x, float y,World w, MainMap map) {
 			super(x,y,w, normalTexture, deadTexture,damageTexture,map);
-			this.speed = 0.5f;
+			this.speed = 0.8f;
 			this.health = 100;
 			this.damage = 20;
 		}

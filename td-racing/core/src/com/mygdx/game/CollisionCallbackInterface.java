@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.FinishLine;
-import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.tower.Flame;
 
 public interface CollisionCallbackInterface {

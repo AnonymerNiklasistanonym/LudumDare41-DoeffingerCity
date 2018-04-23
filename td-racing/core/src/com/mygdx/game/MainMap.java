@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -42,9 +40,10 @@ public class MainMap {
 	
 	public Array<EnemyWaveEntry> setEnemyWave() {
 		final Array<EnemyWaveEntry> enemyWavesToSet = new Array<EnemyWaveEntry>();
-		enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
-		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
-		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 100, 4, 10));
+		//enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 10,0.1f, 20,1f, 10,0.01f));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 0,0.1f, 10,1f, 0,0.01f));
 		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 0, 0, 10));
 		return enemyWavesToSet;
 	}

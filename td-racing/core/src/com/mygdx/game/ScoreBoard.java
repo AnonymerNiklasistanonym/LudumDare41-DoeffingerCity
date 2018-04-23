@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.StringBuilder;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class ScoreBoard {
@@ -91,6 +90,18 @@ public class ScoreBoard {
 
 	public int getScore() {
 		return (int) this.score;
+	}
+
+	public float getCurrentTime() {
+		return currentTime;
+	}
+
+	public int getWaveNumber() {
+		return waveNumber;
+	}
+
+	public void setWaveNumber(int waveNumber) {
+		this.waveNumber = waveNumber;
 	}
 
 }

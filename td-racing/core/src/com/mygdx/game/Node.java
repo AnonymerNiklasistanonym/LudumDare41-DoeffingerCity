@@ -3,7 +3,6 @@ package com.mygdx.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.gamestate.state.PlayState;
 
 public class Node {
 	float x, y;
@@ -35,7 +34,7 @@ public class Node {
 	}
 	
 	public float getKosten() {
-		return g + h*7 + erschwernis*20;
+		return g + h*7 * erschwernis;
 	}
 	
 	public boolean getNoUse() {

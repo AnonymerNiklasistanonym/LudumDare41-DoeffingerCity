@@ -22,7 +22,7 @@ public class MGTower extends Tower {
 		this.maxHealth = -1;
 		this.speed = 0.4f;
 		this.firingSpriteTime = 0.1f;
-		this.power = 1;
+		this.power = 1.5f;
 		this.turnspeed = 50;
 		this.cost = MGTower.costTower;
 
