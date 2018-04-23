@@ -60,17 +60,12 @@ public abstract class Tower {
 	}
 	
 	public void draw(final SpriteBatch spriteBatch) {
-
-		spriteBody.draw(spriteBatch);
-		
-		if (firingSpriteTime > timesincelastshot)
-			spriteFiring.draw(spriteBatch);
-		else
-			spriteUpperBody.draw(spriteBatch);
 		
 		if (this.rangeActivated) {
 			spriteRange.draw(spriteBatch);
 		}
+
+		spriteBody.draw(spriteBatch);
 		
 		if (firingLineTime > timesincelastshot) {
 			spriteBatch.end();
@@ -81,7 +76,12 @@ public abstract class Tower {
 			sRender.end();
 			spriteBatch.begin();
 		}
-
+		
+		if (firingSpriteTime > timesincelastshot)
+			spriteFiring.draw(spriteBatch);
+		else
+			spriteUpperBody.draw(spriteBatch);
+		
 		if (healthBar)
 			drawHealthBar();
 	}

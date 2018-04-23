@@ -12,20 +12,23 @@ public class ScoreBoard {
 	private float currentTime;
 	private int lapNumber;
 	private int killCount;
+	
+	private final int COLUMN;
 
 	public ScoreBoard() {
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
+		COLUMN = 53;
 		reset();
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 50, 7);
-		MainGame.font.draw(spriteBatch, "Kill Count: " + (int) this.killCount, 50, 6);
-		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", 50, 5);
-		MainGame.font.draw(spriteBatch, "Whole Time: " + this.wholeTime + "s", 50, 4);
-		MainGame.font.draw(spriteBatch, "Lap Time: " + this.currentTime + "s", 50, 3);
-		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber + "s", 50, 2);
-		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, 50, 1);
+		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, COLUMN, 7);
+		MainGame.font.draw(spriteBatch, "Kill Count: " + (int) this.killCount, COLUMN, 6);
+		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", COLUMN, 5);
+		MainGame.font.draw(spriteBatch, "Whole Time: " + String.format("%.2f", this.wholeTime) + "s", COLUMN, 4);
+		MainGame.font.draw(spriteBatch, "Lap Time: " + String.format("%.2f", this.currentTime) + "s", COLUMN, 3);
+		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber + "s", COLUMN, 2);
+		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 1);
 	}
 
 	public void update(final float deltaTime) {
