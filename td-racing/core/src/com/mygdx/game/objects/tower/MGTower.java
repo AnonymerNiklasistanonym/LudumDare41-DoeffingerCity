@@ -20,7 +20,7 @@ public class MGTower extends Tower {
 		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, w, range, soundShoot);
 
 		this.maxHealth = -1;
-		this.speed = 0.2f;
+		this.speed = 0.4f;
 		this.firingSpriteTime = 0.1f;
 		this.power = 1;
 		this.turnspeed = 50;

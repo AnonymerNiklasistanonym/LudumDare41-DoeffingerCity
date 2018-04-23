@@ -44,7 +44,7 @@ public abstract class Tower {
 	boolean justshot = false;
 	protected boolean permanentsound=false;
 	protected Sound soundShoot;
-	Enemy target = null;
+	protected Enemy target = null;
 	Array<Enemy> enemies;
 	protected Vector2 shotposition;
 	protected ShapeRenderer sRender;
@@ -66,9 +66,9 @@ public abstract class Tower {
 			spriteRange.draw(spriteBatch);
 
 		spriteBody.draw(spriteBatch);
+
 		
-		if (!(firingSpriteTime > timesincelastshot))
-			spriteUpperBody.draw(spriteBatch);
+		drawProjectile(spriteBatch);
 	}
 	
 	public void drawUpperBuddy(final SpriteBatch spriteBatch) {
@@ -77,6 +77,10 @@ public abstract class Tower {
 			drawLine(spriteBatch);
 			spriteBatch.begin();
 			spriteFiring.draw(spriteBatch);
+		}
+		else
+		{
+			spriteUpperBody.draw(spriteBatch);
 		}
 	}
 	
@@ -354,7 +358,7 @@ public abstract class Tower {
 		target = best;
 	}
 
-	private boolean isTargetInRange(Enemy e) {
+	protected boolean isTargetInRange(Enemy e) {
 		Vector2 epos = new Vector2(e.getBodyX(), e.getBodyY());
 		Vector2 tpos = new Vector2(center.x, center.y);
 		float dist = epos.dst(tpos);

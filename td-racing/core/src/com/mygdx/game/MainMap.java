@@ -28,7 +28,7 @@ public class MainMap {
 	Sprite debug;
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
-	Array<EnemyWave> enemyWaves;
+
 
 	public MainMap(String mapName, World world, Body finishLine) {
 
@@ -38,17 +38,7 @@ public class MainMap {
 		createAStarArray();
 	}
 	
-	public Array<EnemyWave> setEnemyWave(final World world) {
-		final Array<EnemyWave> enemyWavesToSet = new Array<EnemyWave>();
-		enemyWavesToSet.add(new EnemyWave(1, EnemyWave.createEnemies(world, this, 1, 0)));
-		enemyWavesToSet.add(new EnemyWave(10, EnemyWave.createEnemies(world, this, 3, 0)));
-		enemyWavesToSet.add(new EnemyWave(20, EnemyWave.createEnemies(world, this, 0, 2)));
-		return enemyWavesToSet;
-	}
-	
-	public Array<EnemyWave> getEnemyWaves() {
-		return this.enemyWaves;
-	}
+
 	
 	public Node[][] getNodesList(){
 		return nodes2DList;

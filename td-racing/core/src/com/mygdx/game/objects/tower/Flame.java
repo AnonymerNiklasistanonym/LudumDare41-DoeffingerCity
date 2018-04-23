@@ -13,8 +13,9 @@ public class Flame {
 	Body body;
 	float spritescale=0.1f;
 	float originalsize=0;
-	float lifetime=1.2f;
+	float lifetime=1.0f;
 	Sprite sprite;
+	float damage;
 	public boolean killme=false;
 	public Flame(float x, float y,Sprite sprite, World w, float damage) {
 		
@@ -32,8 +33,9 @@ public class Flame {
 		fdef.isSensor=true;
 		body.createFixture(fdef);
 		body.setUserData(this);
-		this.sprite=sprite;
+		this.sprite=new Sprite(sprite);
 		originalsize=sprite.getWidth();
+		this.damage=damage;
 	}
 	
 	public void update(float delta) {
@@ -48,7 +50,7 @@ public class Flame {
 	public void draw(SpriteBatch batch) {
 		sprite.setPosition(getX(),getY());
 		//sprite.scale(0.0001f);
-		//sprite.setSize(spritescale*originalsize, spritescale*originalsize);
+		sprite.setSize(spritescale*originalsize, spritescale*originalsize);
 		sprite.setOriginCenter();
 		sprite.draw(batch);
 	}
@@ -63,5 +65,9 @@ public class Flame {
 		float cary = body.getPosition().y;
 		cary = cary - sprite.getWidth() / 2;
 		return cary;
+	}
+	
+	public float getDamage() {
+		return damage;
 	}
 }

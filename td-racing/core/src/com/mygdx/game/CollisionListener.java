@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.FinishLine;
+import com.mygdx.game.objects.tower.Flame;
 
 public class CollisionListener implements ContactListener {
 
@@ -25,7 +26,7 @@ public class CollisionListener implements ContactListener {
 
 			// and the other object is an Enemy
 			if (a instanceof Enemy || b instanceof Enemy) {
-				
+
 				if (a instanceof Enemy)
 					this.collisionCallbackInterface.collisionCarEnemy((Car) b, (Enemy) a);
 				else
@@ -34,20 +35,32 @@ public class CollisionListener implements ContactListener {
 
 			// and the other object is a Checkpoint
 			if (a instanceof Checkpoint || b instanceof Checkpoint) {
-				
+
 				if (a instanceof Checkpoint)
 					this.collisionCallbackInterface.collisionCarCheckpoint((Car) b, (Checkpoint) a);
 				else
 					this.collisionCallbackInterface.collisionCarCheckpoint((Car) a, (Checkpoint) b);
 			}
-			
+
 			// and the other object is a Checkpoint
 			if (a instanceof FinishLine || b instanceof FinishLine) {
-				
+
 				if (a instanceof FinishLine)
 					this.collisionCallbackInterface.collisionCarFinishLine((Car) b, (FinishLine) a);
 				else
 					this.collisionCallbackInterface.collisionCarFinishLine((Car) a, (FinishLine) b);
+			}
+		}
+
+		if (a instanceof Enemy || b instanceof Enemy) {
+
+			// and the other object is an Enemy
+			if (a instanceof Flame || b instanceof Flame) {
+
+				if (a instanceof Enemy)
+					this.collisionCallbackInterface.collisionFlameEnemy((Enemy) a, (Flame) b);
+				else
+					this.collisionCallbackInterface.collisionFlameEnemy((Enemy) b, (Flame) a);
 			}
 		}
 	}

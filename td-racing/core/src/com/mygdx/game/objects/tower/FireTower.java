@@ -22,7 +22,7 @@ public class FireTower extends Tower {
 	public static Texture upperTower;
 	public static Texture towerFiring;
 	public static Texture tflame;
-	public static Sprite sflame;
+	public Sprite sflame;
 	public static Sound soundShoot;
 	public static final int range = 7;
 	public static int costTower = 200;
@@ -36,9 +36,9 @@ public class FireTower extends Tower {
 				sflame.getHeight() * PlayState.PIXEL_TO_METER);
 		
 		this.maxHealth = -1;
-		this.speed = 0.0f;
-		this.firingSpriteTime = 0.1f;
-		this.power = 0.2f;
+		this.speed = 0.05f;
+		this.firingSpriteTime = 0.2f;
+		this.power = 0.1f;
 		this.turnspeed = 700;
 		this.permanentsound = true;
 		this.cost = FireTower.costTower;
@@ -48,11 +48,7 @@ public class FireTower extends Tower {
 
 	@Override
 	public void drawLine(final SpriteBatch spriteBatch) {
-//		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-//		sRender.begin(ShapeType.Filled);
-//		sRender.setColor(Color.ORANGE);
-//		sRender.rectLine(center, shotposition, 0.4f);
-//		sRender.end();
+
 	}
 	
 	@Override
@@ -73,12 +69,21 @@ public class FireTower extends Tower {
 	}
 	@Override
 	public void shoot(Enemy e) {
-		Flame f=new Flame(body.getPosition().x*PlayState.METER_TO_PIXEL, body.getPosition().y*PlayState.METER_TO_PIXEL, sflame, w, 1);
+		
+		if(isTargetInRange(e)) {
+		
+		Flame f=new Flame(body.getPosition().x*PlayState.METER_TO_PIXEL, body.getPosition().y*PlayState.METER_TO_PIXEL, sflame, w, power);
 		flames.add(f);
-		Vector2 aim=new Vector2(500,0);
-		aim.rotateRad(getDegrees());
-		aim.rotate90(-1);
+		Vector2 aim=new Vector2(1000,0);
+		aim.rotate(getDegrees());
+		aim.rotate90(1);
 		f.body.applyForceToCenter(aim, true);
+		timesincelastshot=0;
+		}
+			else
+			{
+				target=null;
+			}
 	}
 	
 	@Override
