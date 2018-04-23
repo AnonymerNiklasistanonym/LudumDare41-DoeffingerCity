@@ -222,7 +222,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break;
 		case 2:
 			map = new MainMap("track2", world, finishline.body);
-			map.setSpawn(new Vector2(230,100));
+			map.setSpawn(new Vector2(200,500));
 			scurrenttrack=strack2; 
 			break;
 		case 3:
