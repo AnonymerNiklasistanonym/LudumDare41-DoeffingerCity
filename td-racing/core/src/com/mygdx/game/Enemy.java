@@ -235,7 +235,6 @@ public abstract class Enemy extends BodyDef {
 		
 
 		}
-		System.out.println("test");
 		zaehler =1000;
 		while(aktuellerNode != null) {
 			zaehler--;
@@ -274,11 +273,25 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void update(float delta) {
+		float angle = 0;
 		if (!this.tot) {
 		if (health < 0) {
 			this.die();
 		}
-		body.applyForceToCenter(new Vector2(MathUtils.random(speed * -1, speed), MathUtils.random(speed * -1, speed)),
+//		float testX,testY,bodX,bodY,getLastX,getLastY,getFirstX,getFirstY;
+//		bodX =  getBodyX();
+//		bodY =  getBodyY();
+//		getLastX = weg.getLast().x;
+//		getLastY = weg.getLast().y;
+//		getFirstX = weg.getFirst().x;
+//		getFirstY = weg.getFirst().y;
+//		testX = getBodyX()-weg.getLast().x;
+//		testY =getBodyY()-weg.getLast().y;
+		
+		angle = (float) ((Math.atan2(weg.getLast().x - getBodyX(), -(weg.getLast().y - getBodyY())) * 180.0d / Math.PI));
+		body.setTransform(body.getPosition(), (float) Math.toRadians( angle ));
+
+		body.applyForceToCenter(new Vector2(1,0),
 				true);
 		}
 	}
