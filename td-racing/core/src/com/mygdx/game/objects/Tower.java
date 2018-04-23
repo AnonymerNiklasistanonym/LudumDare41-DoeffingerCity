@@ -52,6 +52,12 @@ public abstract class Tower {
 	boolean isactive = false;
 	private boolean isInBuildingMode;
 	boolean isSoundPlaying=false;
+	protected int cost = 10;
+	private boolean buildingModeBlocked;
+	
+	public int getCost() {
+		return this.cost;
+	}
 	
 	public void draw(final SpriteBatch spriteBatch) {
 
@@ -102,6 +108,24 @@ public abstract class Tower {
 		}
 	}
 	
+	public void setBlockBuildingMode(final boolean b) {
+		this.buildingModeBlocked = b;
+
+		if (this.buildingModeBlocked) {
+			spriteBody.setColor(1, 0, 0, 0.5f);
+			spriteUpperBody.setColor(1, 0, 0, 0.5f);
+			spriteFiring.setColor(1, 0, 0, 0.5f);
+		} else {
+			spriteBody.setColor(1, 1, 1, 1);
+			spriteUpperBody.setColor(1, 1, 1, 1);
+			spriteFiring.setColor(1, 1, 1, 1);
+		}
+	}
+	
+	public boolean buildingModeBlocked() {
+		return this.buildingModeBlocked;
+	}
+	
 	public boolean isInBuildingMode() {
 		return this.isInBuildingMode;
 	}
@@ -117,6 +141,7 @@ public abstract class Tower {
 		this.damage = 0;
 		this.sRender = new ShapeRenderer();
 		this.range = range;
+		this.buildingModeBlocked = false;
 		
 		spriteRange = new Sprite(circleTexture);
 		spriteRange.setSize(this.range * 2, this.range * 2);
@@ -158,7 +183,6 @@ public abstract class Tower {
 	}
 
 	public void updateSprites(float xPosition, float yPosition) {
-		System.out.println("Update sprite");
 		
 		// set body
 		this.body.setTransform(new Vector2(xPosition, yPosition), this.body.getAngle());

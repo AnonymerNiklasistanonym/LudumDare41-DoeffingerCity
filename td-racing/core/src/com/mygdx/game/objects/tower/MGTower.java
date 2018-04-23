@@ -13,16 +13,20 @@ public class MGTower extends Tower {
 	public static Texture upperTower;
 	public static Texture towerFiring;
 	public static final int range = 100;
+	public static int costTower = 200;
+
 
 	public MGTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final Sound soundShoot,
 			World w) {
 		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, soundShoot, w, range);
 
-		maxHealth = -1;
-		speed = 0.2f;
-		firingSpriteTime = 0.1f;
-		power = 1;
-		turnspeed = 50;
+		this.maxHealth = -1;
+		this.speed = 0.2f;
+		this.firingSpriteTime = 0.1f;
+		this.power = 1;
+		this.turnspeed = 50;
+		this.cost = MGTower.costTower;
+
 	}
 
 }
