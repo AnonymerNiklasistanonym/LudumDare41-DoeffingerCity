@@ -61,17 +61,13 @@ public abstract class Tower {
 	
 	public void draw(final SpriteBatch spriteBatch) {
 		
-		if (this.rangeActivated) {
+		if (this.rangeActivated)
 			spriteRange.draw(spriteBatch);
-		}
 
 		spriteBody.draw(spriteBatch);
 		
 		if (!(firingSpriteTime > timesincelastshot))
 			spriteUpperBody.draw(spriteBatch);
-		
-		if (healthBar)
-			drawHealthBar();
 	}
 	
 	public void drawUpperBuddy(final SpriteBatch spriteBatch) {
@@ -134,7 +130,6 @@ public abstract class Tower {
 		cornerPoints[3][0] = this.spriteBody.getX() + this.spriteBody.getHeight();
 		cornerPoints[3][1] = this.spriteBody.getY();
 		return cornerPoints;
-		
 	}
 	
 	public boolean buildingModeBlocked() {

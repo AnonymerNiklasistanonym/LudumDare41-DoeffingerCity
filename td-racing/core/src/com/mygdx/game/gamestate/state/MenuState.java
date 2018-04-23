@@ -12,11 +12,14 @@ import com.mygdx.game.menu.MenuButton;
 
 public class MenuState extends GameState {
 
-	private final MenuButton startButton;
-	private final MenuButton aboutButton;
+	private final MenuButton[] menuButtons;
 
 	private final Texture backgroundStars;
 	private final Texture backgroundLoading;
+
+	private final static int START_ID = 0;
+	private final static int HIGHSCORES_ID = 1;
+	private final static int ABOUT_ID = 2;
 
 	private Vector3 touchPos;
 
@@ -36,45 +39,58 @@ public class MenuState extends GameState {
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		aboutButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2, "ABOUT", false);
-		startButton = new MenuButton(MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 4, "START", true);
+		final MenuButton startButton = new MenuButton(START_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 5,
+				"START", true);
+		final MenuButton highscoreButton = new MenuButton(HIGHSCORES_ID, MainGame.GAME_WIDTH / 2,
+				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
+		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
+				"ABOUT", false);
+		menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
 
 		System.out.println("Menu state entered");
 	}
-
+	
 	@Override
 	public void handleInput() {
 
-		// If enter, space or screen touched do something
-		if (Gdx.input.justTouched()
-				|| (Gdx.input.isKeyJustPressed(Keys.SPACE) || Gdx.input.isKeyJustPressed(Keys.ENTER))) {
-			if (aboutButton.contains(touchPos)) System.out.println("IDK?");
-			else if (startButton.contains(touchPos)) loading = true;
+		touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+		camera.unproject(touchPos);
+
+		// determine on which button the mouse cursor is and select this button
+		boolean oneIsSelected = false;
+		for (final MenuButton menuButton : menuButtons) {
+			if (menuButton.contains(touchPos))
+				oneIsSelected = true;
+		}
+		if (oneIsSelected) {
+			for (final MenuButton menuButton : menuButtons)
+				menuButton.setActive(menuButton.contains(touchPos));
 		}
 
-		if (Gdx.input.isKeyJustPressed(Keys.DOWN) || Gdx.input.isKeyJustPressed(Keys.UP)) {
-			if (aboutButton.isActive()) {
-				aboutButton.setActive(false);
-				startButton.setActive(true);
-			} else if (startButton.isActive()) {
-				aboutButton.setActive(true);
-				startButton.setActive(false);
+		// If a button is touched do something or Space or Enter is pressed execue the
+		// action for the selected button
+		if (Gdx.input.justTouched()
+				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
+			for (final MenuButton menuButton : menuButtons) {
+				if (menuButton.isActive()) {
+					switch (menuButton.getId()) {
+					case START_ID:
+						loading = true;
+						break;
+					case HIGHSCORES_ID:
+						System.out.println("HIGHSCORES_ID IDK?");
+						break;
+					case ABOUT_ID:
+						System.out.println("ABOUT_ID IDK?");
+						break;
+					}
+				}
 			}
 		}
 
-		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+		// if excape or back is pressed quit
+		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			Gdx.app.exit();
-		}
-
-		touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(touchPos);
-		if (aboutButton.contains(touchPos)) {
-			aboutButton.setActive(true);
-			startButton.setActive(false);
-		} else if (startButton.contains(touchPos)) {
-			startButton.setActive(true);
-			aboutButton.setActive(false);
-		}
 	}
 
 	@Override
@@ -93,8 +109,8 @@ public class MenuState extends GameState {
 			changeToPlayState = true;
 		} else {
 			spriteBatch.draw(backgroundStars, 0, 0);
-			startButton.draw(spriteBatch);
-			aboutButton.draw(spriteBatch);
+			for (final MenuButton menuButton : menuButtons)
+				menuButton.draw(spriteBatch);
 		}
 		spriteBatch.end();
 	}
@@ -105,7 +121,7 @@ public class MenuState extends GameState {
 		backgroundLoading.dispose();
 		MenuButton.textureActive.dispose();
 		MenuButton.textureNotActive.dispose();
-		
+
 		System.out.println("Menu state disposed");
 	}
 

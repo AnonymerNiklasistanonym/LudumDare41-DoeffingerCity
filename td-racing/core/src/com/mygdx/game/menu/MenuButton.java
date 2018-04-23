@@ -17,11 +17,14 @@ public class MenuButton implements Disposable {
 	private boolean activated;
 	private final String content;
 	
+	private final int id;
+	
 	private final float fontX, fontY;
 	
-	public MenuButton(final float xPosition, final float yPosition, final String content, final boolean activated) {
+	public MenuButton(final int id, final float xPosition, final float yPosition, final String content, final boolean activated) {
 		this.activated = activated;
 		this.content = content;
+		this.id = id;
 		this.button = new Sprite(this.activated ? textureActive : textureNotActive);
 		this.button.setSize(textureActive.getWidth(), textureActive.getHeight());
 		this.button.setPosition(xPosition - this.button.getWidth() / 2, yPosition - this.button.getHeight() / 2);
@@ -58,6 +61,10 @@ public class MenuButton implements Disposable {
 	public void dispose() {
 		textureActive.dispose();
 		textureNotActive.dispose();		
+	}
+
+	public int getId() {
+		return this.id;
 	}
 
 
