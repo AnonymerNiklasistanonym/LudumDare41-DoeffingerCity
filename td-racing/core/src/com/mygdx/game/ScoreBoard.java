@@ -71,4 +71,8 @@ public class ScoreBoard {
 		this.money += cost;		
 	}
 
+	public float getTime() {
+		return this.wholeTime;
+	}
+
 }

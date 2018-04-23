@@ -240,6 +240,11 @@ public abstract class Enemy extends BodyDef {
 			if(zaehler < 0) {
 				break;
 			}
+			//F�r alle Wege die benutzt werden ein Erschwernis eintragen			
+			
+			map.nodes2DList[(int)aktuellerNode.x][(int)aktuellerNode.y].erschwernis = MathUtils.random(10);
+			
+			// Hinzuf�gen
 			tempweg.add(aktuellerNode);
 			aktuellerNode = aktuellerNode.parent;
 		}
@@ -316,7 +321,42 @@ public abstract class Enemy extends BodyDef {
 		if (!this.tot) {
 			if (health < 0) {
 				this.die();
+		if(weg.getLast() != null)
+			if (!this.tot) {
+				if (health < 0) {
+					this.die();
+				}
+				
+				float testX,testY,bodX,bodY,getLastX,getLastY,getFirstX,getFirstY;
+				bodX =  getBodyX();
+				bodY =  getBodyY();
+				getLastX = weg.getLast().x*PlayState.PIXEL_TO_METER;
+				getLastY = weg.getLast().y*PlayState.PIXEL_TO_METER;
+				getFirstX = weg.getFirst().x;
+				getFirstY = weg.getFirst().y;
+				testX = getBodyX()-weg.getLast().x;
+				testY =getBodyY()-weg.getLast().y;
+				
+				angle = (float) ((Math.atan2(weg.getLast().x*PlayState.PIXEL_TO_METER - getBodyX(), -(weg.getLast().y*PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+				body.setTransform(body.getPosition(), (float) Math.toRadians( angle-90 ));
+				Vector2 velo=new Vector2(1,0);
+				velo.rotateRad(body.getAngle());
+				body.setLinearVelocity(velo);
+				//body.applyForceToCenter(velo,true);
+				//reduceToMaxSpeed(speed);
+				//killLateral(1f);
+				distancetonode=saussehen.getWidth();
+				System.out.println("Distance to target: "+body.getPosition().dst(weg.getLast().x, weg.getLast().y));
+				if(body.getPosition().dst(weg.getLast().x*PlayState.PIXEL_TO_METER, weg.getLast().y*PlayState.PIXEL_TO_METER)<distancetonode)
+					weg.remove(weg.indexOf(weg.getLast()));
+				
+				score = weg.getLast().h;
+				//if(body.getPosition().x < weg.getLast().x + distancetonode && body.getPosition().x > weg.getLast().x - distancetonode &&  body.getPosition().y > weg.getLast().y - distancetonode && body.getPosition().y < weg.getLast().y + distancetonode)
+				//	weg.remove(weg.indexOf(weg.getLast()));
+				
+				
 			}
+<<<<<<< HEAD
 			
 			float testX,testY,bodX,bodY,getLastX,getLastY,getFirstX,getFirstY;
 			bodX =  getBodyX();
@@ -348,6 +388,8 @@ public abstract class Enemy extends BodyDef {
 			
 			
 		}
+=======
+>>>>>>> 1cc9202a3b4add448f395eb9ab759fce0838c8c5
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
