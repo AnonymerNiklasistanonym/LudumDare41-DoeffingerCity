@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.state.GameOverState;
+import com.mygdx.game.gamestate.state.HighscoreState;
 import com.mygdx.game.gamestate.state.MenuState;
 import com.mygdx.game.gamestate.state.PlayState;
 
@@ -25,6 +26,7 @@ public class MainGame extends ApplicationAdapter {
 	 * Small game font "Cornerstone"
 	 */
 	public static BitmapFont fontBig;
+	public static BitmapFont highscoreFont;
 	/**
 	 * Name of the game
 	 */
@@ -47,10 +49,11 @@ public class MainGame extends ApplicationAdapter {
 		font.getRegion().getTexture().setFilter(TextureFilter.Nearest,TextureFilter.Nearest);
 		font.setUseIntegerPositions(false);
 		smallFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_small.fnt"));
+		highscoreFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_highscore.fnt"));
 		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));
 		spriteBatch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
-		gameStateManager.pushState(new PlayState(gameStateManager));
+		gameStateManager.pushState(new MenuState(gameStateManager));
 	}
 
 	@Override

@@ -38,16 +38,18 @@ public class GameOverState extends GameState {
 		changeToPlayState = false;
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
-		
-		final MenuButton playAgainButton = new MenuButton(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT /8 * 4, "RESTART LEVEL", true);
-		final MenuButton highScoreButton = new MenuButton(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 8 * 2, "HIGHSCORES", false);
+
+		final MenuButton playAgainButton = new MenuButton(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2,
+				MainGame.GAME_HEIGHT / 6 * 5, "RESTART LEVEL", true);
+		final MenuButton highScoreButton = new MenuButton(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2,
+				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
 		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
 				"ABOUT", false);
 		menuButtons = new MenuButton[] { playAgainButton, highScoreButton, aboutButton };
 
 		System.out.println("Menu state entered");
 	}
-	
+
 	@Override
 	public void handleInput() {
 
@@ -65,10 +67,26 @@ public class GameOverState extends GameState {
 				menuButton.setActive(menuButton.contains(touchPos));
 		}
 
-		// If a button is touched do something or Space or Enter is pressed execue the
+		// If a button is touched do something or Space or Enter is pressed execute the
 		// action for the selected button
-		if (Gdx.input.justTouched()
-				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
+		if (Gdx.input.justTouched()) {
+			for (final MenuButton menuButton : menuButtons) {
+				if (menuButton.isActive() && menuButton.contains(touchPos)) {
+					switch (menuButton.getId()) {
+					case PLAY_AGAIN_ID:
+						loading = true;
+						break;
+					case HIGHSCORE_ID:
+						gameStateManager.setGameState(new HighscoreState(gameStateManager));
+						break;
+					case ABOUT_ID:
+						System.out.println("ABOUT_ID IDK?");
+						break;
+					}
+				}
+			}
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			for (final MenuButton menuButton : menuButtons) {
 				if (menuButton.isActive()) {
 					switch (menuButton.getId()) {
@@ -76,7 +94,7 @@ public class GameOverState extends GameState {
 						loading = true;
 						break;
 					case HIGHSCORE_ID:
-						System.out.println("HIGHSCORES_ID IDK?");
+						gameStateManager.setGameState(new HighscoreState(gameStateManager));
 						break;
 					case ABOUT_ID:
 						System.out.println("ABOUT_ID IDK?");
@@ -86,7 +104,7 @@ public class GameOverState extends GameState {
 			}
 		}
 
-		// if excape or back is pressed quit
+		// if escape or back is pressed quit
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			Gdx.app.exit();
 	}

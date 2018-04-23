@@ -49,7 +49,7 @@ public class MenuState extends GameState {
 
 		System.out.println("Menu state entered");
 	}
-	
+
 	@Override
 	public void handleInput() {
 
@@ -67,10 +67,26 @@ public class MenuState extends GameState {
 				menuButton.setActive(menuButton.contains(touchPos));
 		}
 
-		// If a button is touched do something or Space or Enter is pressed execue the
+		// If a button is touched do something or Space or Enter is pressed execute the
 		// action for the selected button
-		if (Gdx.input.justTouched()
-				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
+		if (Gdx.input.justTouched()) {
+			for (final MenuButton menuButton : menuButtons) {
+				if (menuButton.isActive() && menuButton.contains(touchPos)) {
+					switch (menuButton.getId()) {
+					case START_ID:
+						loading = true;
+						break;
+					case HIGHSCORES_ID:
+						gameStateManager.setGameState(new HighscoreState(gameStateManager));
+						break;
+					case ABOUT_ID:
+						System.out.println("ABOUT_ID IDK?");
+						break;
+					}
+				}
+			}
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 			for (final MenuButton menuButton : menuButtons) {
 				if (menuButton.isActive()) {
 					switch (menuButton.getId()) {
@@ -78,7 +94,7 @@ public class MenuState extends GameState {
 						loading = true;
 						break;
 					case HIGHSCORES_ID:
-						System.out.println("HIGHSCORES_ID IDK?");
+						gameStateManager.setGameState(new HighscoreState(gameStateManager));
 						break;
 					case ABOUT_ID:
 						System.out.println("ABOUT_ID IDK?");
@@ -88,7 +104,7 @@ public class MenuState extends GameState {
 			}
 		}
 
-		// if excape or back is pressed quit
+		// if escape or back is pressed quit
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			Gdx.app.exit();
 	}
