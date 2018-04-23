@@ -119,9 +119,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
+		Enemy_small.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 		
 		Enemy_fat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
 		Enemy_fat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
+		Enemy_fat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
 		enemies = new Array<Enemy>();
 
@@ -151,9 +153,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		map = new MainMap("test", world,finishline.body );
 		for (int i = 0; i < 4; i++) {
 			Enemy e = new Enemy_small(world, map);
-
+			Enemy f= new Enemy_fat(world,map);
+			f.startMove();
 			e.startMove();
 			enemies.add(e);
+			enemies.add(f);
 		}
 
 		// create example checkpoints
