@@ -337,6 +337,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (buildingtower != null) {
 			buildingtower.update(deltaTime, mousePos);
 			buildingtower = turmmenu.getCurrentTower();
+			if(buildingtower==null) {
+				stopBuilding();
+			}
 		}
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
