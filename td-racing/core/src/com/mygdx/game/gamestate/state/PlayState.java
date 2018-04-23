@@ -9,6 +9,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -80,6 +81,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	 * Time since last physic Steps
 	 */
 
+	boolean infiniteenemies=true;
+	
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
 
@@ -186,13 +189,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER,
 					checkPointPosition[i][1] * PIXEL_TO_METER);
 
-		Tower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, world);
-		t.activate();
-		towers.add(t);
-		t=new LaserTower(550*PIXEL_TO_METER,350*PIXEL_TO_METER,enemies,world);
-		t.activate();
-		towers.add(t);
-		
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 		
@@ -339,8 +335,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				currentEnemyWaves.removeValue(entry, true);
 			}
 		}
+		if(infiniteenemies) {
+		if(MathUtils.random(1000)>950) {
+			Enemy e=new Enemy_small(220, 20, world, map);
+			enemies.add(e);
+		}
+		if(MathUtils.random(1000)>990) {
+			Enemy e=new Enemy_bicycle(220, 20, world, map);
+			enemies.add(e);
+		}
+		if(MathUtils.random(1000)>995) {
+			Enemy e=new Enemy_fat(220, 20, world, map);
+			enemies.add(e);
+		}
 		
-		
+		}
 		scoreBoard.update(deltaTime);
 		
 		camera.update();
