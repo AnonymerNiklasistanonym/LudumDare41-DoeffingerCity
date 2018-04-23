@@ -26,6 +26,7 @@ import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
 import com.mygdx.game.ScoreBoard;
+import com.mygdx.game.TurmMenu;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
@@ -39,7 +40,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	CollisionListener collis;
 	private Sprite smaincar;
-	private Sprite srangecircle;
 	private Sprite sfinishline;
 	private Sprite strack1;
 	private Sprite strack1top;
@@ -56,9 +56,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public static boolean soundon = false;
 	private boolean debugWay;
 	
-	
-	private Sound soundmgshoot;
-	private Sound soundlasershoot;
+	private TurmMenu turmmenu;
 
 	private MainMap map;
 	private Sprite pitStop;
@@ -87,9 +85,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float RESOLUTION_HEIGHT = 720f;
 
 	private Checkpoint[] checkpoints;
-	private static int moneyLap = 100;
-	private long lapTimeBegin;
-	private float millisecondsTimeMalus;
 
 	// Zur identifizierung von Collisions Entitys
 	public final static short PLAYER_BOX = 0x1; // 0001
@@ -118,10 +113,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
+		MGTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		
+		
 		
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
 		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
+		LaserTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
@@ -135,14 +134,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
 		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
+		
+		
 		enemies = new Array<Enemy>();
 
 		towers = new Array<Tower>();
 
 		collis = new CollisionListener(this);
+		Sprite s1=createScaledSprite("buttons/cannonbutton.png");
+		Sprite s2=createScaledSprite("buttons/laserbutton.png");
+		Sprite s3=createScaledSprite("buttons/cannonbutton.png");
+		Sprite s4=createScaledSprite("buttons/cannonbutton.png");
+		Sprite s5=createScaledSprite("buttons/cannonbutton.png");
 
-		soundmgshoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-		soundlasershoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		
+		
+		
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -182,6 +189,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 //			enemies.add(e);
 //			enemies.add(f);
 //			enemies.add(b);
+			turmmenu=new TurmMenu(s1, s2, s3, s4, s5,world,enemies);
 		}
 
 		// create example checkpoints
@@ -194,18 +202,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// create example towers
 
-		Tower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, soundmgshoot, world);
+		Tower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, world);
 		t.activate();
 		towers.add(t);
-		t=new LaserTower(550*PIXEL_TO_METER,350*PIXEL_TO_METER,enemies,soundlasershoot,world);
+		t=new LaserTower(550*PIXEL_TO_METER,350*PIXEL_TO_METER,enemies,world);
 		t.activate();
 		towers.add(t);
 		// create example pit stop
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
-		lapTimeBegin = System.currentTimeMillis();
 		System.out.println("Play state entered");
-		startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
+		//startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, world));
 
 		
 		currentEnemyWaves = map.getEnemyWaves();
@@ -255,9 +262,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void stopBuilding() {
-		System.out.println("Stop building");
-		buildingtower.setBuildingMode(false);
-		buildingtower = null;
+		turmmenu.unselectAll();
 		for (final Tower tower : towers) {
 			tower.activateRange(false);
 		}
@@ -322,18 +327,27 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				debugEntfernung = true;
 		}
-
-		// B >> Activate building mode
-		if (Gdx.input.isKeyJustPressed(Keys.B)) {
-			if (this.buildingtower == null) {
-				startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
-			} else {
-				stopBuilding();
-			}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
+			turmmenu.selectTower(1);
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
+			turmmenu.selectTower(2);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_3)) {
+			turmmenu.selectTower(3);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
+			turmmenu.selectTower(4);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
+			turmmenu.selectTower(5);
+		}
+		
+		// B >> Activate building mode
 
 		// Screen clicked >> Build tower
-		if(Gdx.input.isTouched()) {
+		if(Gdx.input.justTouched()) {
 			// if in build mode build tower at the current mouse positin if allowed
 			if (this.buildingtower != null)
 				buildTowerIfAllowed();
@@ -344,7 +358,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void buildTowerIfAllowed() {
 		// if position and money is ok build it
 		if (buildingMoneyIsEnough(this.buildingtower) && buildingPositionIsAllowed(this.buildingtower)) {
-			// Add tower to the tower list			 
+			// Add tower to the tower list		
+			turmmenu.unselectAll();
 			this.scoreBoard.addMoney(-this.buildingtower.getCost());
 			final Tower newTower = this.buildingtower;
 			newTower.activate();
@@ -376,9 +391,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// get mouse position
 		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(mousePos);		
+		buildingtower=turmmenu.getCurrentTower();
 		
 		// update towers
-		if (buildingtower != null) buildingtower.update(deltaTime, mousePos);
+		if (buildingtower != null) {
+			startBuilding(buildingtower);
+			buildingtower.update(deltaTime, mousePos);
+		}
+		else
+		{
+			stopBuilding();
+		}
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
 		
@@ -475,6 +498,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		car.draw(spriteBatch);
 		
 		scoreBoard.draw(spriteBatch);
+		
+		turmmenu.draw(spriteBatch);
 		
 		spriteBatch.end();
 

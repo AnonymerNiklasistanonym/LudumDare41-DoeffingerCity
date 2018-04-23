@@ -43,7 +43,7 @@ public abstract class Tower {
 	boolean healthBar;
 	boolean justshot = false;
 	protected boolean permanentsound=false;
-	Sound soundShoot;
+	protected Sound soundShoot;
 	Enemy target = null;
 	Array<Enemy> enemies;
 	protected Vector2 shotposition;
@@ -142,12 +142,11 @@ public abstract class Tower {
 	}
 
 	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody,
-			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, final Sound soundShoot,
-			World w, int range) {
-
+			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, 
+			World w, int range, Sound soundShoot) {
+		this.soundShoot=soundShoot;
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
-		this.soundShoot = soundShoot;
 		this.healthBar = false;
 		this.damage = 0;
 		this.sRender = new ShapeRenderer();
