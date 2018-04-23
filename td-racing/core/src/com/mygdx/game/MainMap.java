@@ -95,7 +95,7 @@ public class MainMap {
 		mapZombieWay = world.createBody(ziel);
 
 		// // 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "Name", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+		loader.attachFixture(mapModel, "Map", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		loaderZiel.attachFixture(mapZiel, "Ziel", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		loaderZombieWay.attachFixture(mapZombieWay, "Zombieway", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		System.out.println();

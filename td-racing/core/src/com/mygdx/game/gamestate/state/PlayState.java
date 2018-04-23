@@ -23,6 +23,7 @@ import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.EnemyWaveEntry;
+import com.mygdx.game.Enemy_Lincoln;
 import com.mygdx.game.Enemy_bicycle;
 import com.mygdx.game.Enemy_fat;
 import com.mygdx.game.Enemy_small;
@@ -159,6 +160,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
 		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
 		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+
+		Enemy_Lincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
+		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
+		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 		
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
@@ -192,7 +197,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 		
-		currentEnemyWaves = map.getEnemyWaves();
+
+		Enemy e=new Enemy_Lincoln(220, 40, world, map);
+		enemies.add(e);
+		
+//		currentEnemyWaves = map.getEnemyWaves();
 
 		System.out.println("Play state entered");
 	}
@@ -328,12 +337,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
 		
-		for (final EnemyWaveEntry entry : currentEnemyWaves) {
-			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
-				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
-				currentEnemyWaves.removeValue(entry, true);
-			}
-		}
+//		for (final EnemyWaveEntry entry : currentEnemyWaves) {
+//			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
+//				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
+//				currentEnemyWaves.removeValue(entry, true);
+//			}
+//		}
 		if(infiniteenemies) {
 		if(MathUtils.random(1000)>950) {
 			Enemy e=new Enemy_small(220, 20, world, map);
