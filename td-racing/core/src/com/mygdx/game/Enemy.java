@@ -100,7 +100,7 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void die() {
-		System.out.println("Enemy died");
+		
 		tot = true;
 		speed = 0;
 		saussehen = stot;
@@ -344,7 +344,7 @@ public abstract class Enemy extends BodyDef {
 					// body.applyForceToCenter(velo,true);
 					// reduceToMaxSpeed(speed);
 					// killLateral(1f);
-					distancetonode = saussehen.getWidth();
+					distancetonode = saussehen.getWidth()*4;
 	
 					if (body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
 							weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)

@@ -90,4 +90,16 @@ public class ScoreBoard {
 		return (int) this.score;
 	}
 
+	public float getCurrentTime() {
+		return currentTime;
+	}
+
+	public int getWaveNumber() {
+		return waveNumber;
+	}
+
+	public void setWaveNumber(int waveNumber) {
+		this.waveNumber = waveNumber;
+	}
+
 }

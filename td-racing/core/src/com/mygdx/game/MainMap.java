@@ -42,9 +42,10 @@ public class MainMap {
 	
 	public Array<EnemyWaveEntry> setEnemyWave() {
 		final Array<EnemyWaveEntry> enemyWavesToSet = new Array<EnemyWaveEntry>();
-		enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
-		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
-		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 100, 4, 10));
+		//enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 10,0.1f, 20,1f, 10,0.01f));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 0,0.1f, 10,1f, 0,0.01f));
 		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 0, 0, 10));
 		return enemyWavesToSet;
 	}
