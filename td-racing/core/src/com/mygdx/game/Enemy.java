@@ -32,6 +32,8 @@ public abstract class Enemy extends BodyDef {
 	boolean washit = false;
 	LinkedList<Node> weg;
 	public boolean justDied = false;
+	float damage = 10;
+	boolean delete;
 
 	public boolean tot = false;
 	float distancetonode = 50f;
@@ -316,40 +318,47 @@ public abstract class Enemy extends BodyDef {
 
 	public void update(float delta) {
 		float angle = 0;
-		if (weg.getLast() != null)
-			if (!this.tot) {
-				if (health < 0) {
-					this.die();
+		if (!this.tot) {
+			if (weg.size() > 0) {
+					if (health < 0) {
+						this.die();
+					}
+	
+					float testX, testY, bodX, bodY, getLastX, getLastY, getFirstX, getFirstY;
+					bodX = getBodyX();
+					bodY = getBodyY();
+					getLastX = weg.getLast().x * PlayState.PIXEL_TO_METER;
+					getLastY = weg.getLast().y * PlayState.PIXEL_TO_METER;
+					getFirstX = weg.getFirst().x;
+					getFirstY = weg.getFirst().y;
+					testX = getBodyX() - weg.getLast().x;
+					testY = getBodyY() - weg.getLast().y;
+	
+					angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
+							-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+					body.setTransform(body.getPosition(), (float) Math.toRadians(angle - 90));
+					Vector2 velo = new Vector2(speed, 0);
+					velo.rotateRad(body.getAngle());
+					body.setLinearVelocity(velo);
+					// body.applyForceToCenter(velo,true);
+					// reduceToMaxSpeed(speed);
+					// killLateral(1f);
+					distancetonode = saussehen.getWidth();
+	
+					if (body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
+							weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
+						weg.remove(weg.indexOf(weg.getLast()));
+					if (weg.size() > 0)
+						score = weg.getLast().h;
+					
 				}
-
-				float testX, testY, bodX, bodY, getLastX, getLastY, getFirstX, getFirstY;
-				bodX = getBodyX();
-				bodY = getBodyY();
-				getLastX = weg.getLast().x * PlayState.PIXEL_TO_METER;
-				getLastY = weg.getLast().y * PlayState.PIXEL_TO_METER;
-				getFirstX = weg.getFirst().x;
-				getFirstY = weg.getFirst().y;
-				testX = getBodyX() - weg.getLast().x;
-				testY = getBodyY() - weg.getLast().y;
-
-				angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
-						-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
-				body.setTransform(body.getPosition(), (float) Math.toRadians(angle - 90));
-				Vector2 velo = new Vector2(speed, 0);
-				velo.rotateRad(body.getAngle());
-				body.setLinearVelocity(velo);
-				// body.applyForceToCenter(velo,true);
-				// reduceToMaxSpeed(speed);
-				// killLateral(1f);
-				distancetonode = saussehen.getWidth();
-
-				if (body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
-						weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
-					weg.remove(weg.indexOf(weg.getLast()));
-				if (weg != null)
-					score = weg.getLast().h;
-
-			}
+			
+			else {
+				PlayState.scoreBoard.reduceLife(damage);
+				this.delete = true;
+				this.tot = true;
+			}			
+		}
 
 	}
 
@@ -366,10 +375,12 @@ public abstract class Enemy extends BodyDef {
 			sdamage.draw(spriteBatch);
 			washit = false;
 		}
-
-		sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
-		sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
-		sdamage.draw(spriteBatch);
+		
+		if(weg.size()>0) {
+			sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
+			sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
+			sdamage.draw(spriteBatch);			
+		}
 	}
 
 	public float getScore() {
