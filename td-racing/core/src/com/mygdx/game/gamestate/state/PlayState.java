@@ -165,7 +165,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		for (int i = 0; i < 2; i++) {
 			Enemy e = new Enemy_small(220,20,world, map);
-			Enemy f= new Enemy_fat(220,20,world,map);
+			Enemy f= new Enemy_fat(220,25,world,map);
 			Enemy b= new Enemy_bicycle(220,20,world,map);
 			f.startMove();
 			e.startMove();
@@ -386,12 +386,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		scoreBoard.update(deltaTime);
 		
 		// update enemy waves
-		for (int i = 0; i < currentEnemyWaves.size; i++) {
-			if (currentEnemyWaves.get(i).getTime() <= scoreBoard.getTime()) {
-				enemies.addAll(currentEnemyWaves.get(i).getEnemies());
-				currentEnemyWaves.removeIndex(i);
-			}
-		}
+//		for (int i = 0; i < currentEnemyWaves.size; i++) {
+//			if (currentEnemyWaves.get(i).getTime() <= scoreBoard.getTime()) {
+//				enemies.addAll(currentEnemyWaves.get(i).getEnemies());
+//				currentEnemyWaves.removeIndex(i);
+//			}
+//		}
 
 		// update camera
 		camera.update();

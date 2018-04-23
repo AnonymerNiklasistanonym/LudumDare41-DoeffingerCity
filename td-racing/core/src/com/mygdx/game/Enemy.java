@@ -242,7 +242,7 @@ public abstract class Enemy extends BodyDef {
 			}
 			//Für alle Wege die benutzt werden ein Erschwernis eintragen			
 			
-			map.nodes2DList[(int)aktuellerNode.x][(int)aktuellerNode.y].erschwernis = MathUtils.random(10);
+			//map.nodes2DList[(int)aktuellerNode.x][(int)aktuellerNode.y].erschwernis = MathUtils.random(10);
 			
 			// Hinzufügen
 			tempweg.add(aktuellerNode);
@@ -346,7 +346,7 @@ public abstract class Enemy extends BodyDef {
 				System.out.println("Distance to target: "+body.getPosition().dst(weg.getLast().x, weg.getLast().y));
 				if(body.getPosition().dst(weg.getLast().x*PlayState.PIXEL_TO_METER, weg.getLast().y*PlayState.PIXEL_TO_METER)<distancetonode)
 					weg.remove(weg.indexOf(weg.getLast()));
-				
+				if(weg!=null)
 				score = weg.getLast().h;
 				//if(body.getPosition().x < weg.getLast().x + distancetonode && body.getPosition().x > weg.getLast().x - distancetonode &&  body.getPosition().y > weg.getLast().y - distancetonode && body.getPosition().y < weg.getLast().y + distancetonode)
 				//	weg.remove(weg.indexOf(weg.getLast()));
@@ -376,8 +376,11 @@ public abstract class Enemy extends BodyDef {
 			//killLateral(1f);
 			distancetonode=saussehen.getWidth();
 			System.out.println("Distance to target: "+body.getPosition().dst(weg.getLast().x, weg.getLast().y));
-			if(body.getPosition().dst(weg.getLast().x*PlayState.PIXEL_TO_METER, weg.getLast().y*PlayState.PIXEL_TO_METER)<distancetonode)
+			if(body.getPosition().dst(weg.getLast().x*PlayState.PIXEL_TO_METER, weg.getLast().y*PlayState.PIXEL_TO_METER)<distancetonode) {
+				if(weg.size()>1)
 				weg.remove(weg.indexOf(weg.getLast()));
+			
+			}
 			
 			
 			//if(body.getPosition().x < weg.getLast().x + distancetonode && body.getPosition().x > weg.getLast().x - distancetonode &&  body.getPosition().y > weg.getLast().y - distancetonode && body.getPosition().y < weg.getLast().y + distancetonode)
