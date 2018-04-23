@@ -1,6 +1,7 @@
 package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -46,7 +47,11 @@ public class MenuState extends GameState {
 				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
 		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
 				"ABOUT", false);
-		menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
+		if(Gdx.app.getType() != ApplicationType.WebGL) {
+			menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
+		} else {
+			menuButtons = new MenuButton[] { startButton, aboutButton };
+		}
 
 		System.out.println("Menu state entered");
 	}
