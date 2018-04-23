@@ -27,6 +27,7 @@ public class MainMap {
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
 	Array<EnemyWaveEntry> enemyWave;
+	Vector2 spawn;
 
 	public MainMap(String mapName, World world, Body finishLine) {
 
@@ -208,5 +209,15 @@ public class MainMap {
 					}
 				}
 	}
+
+	public Vector2 getSpawn() {
+		return spawn;
+	}
+
+	public void setSpawn(Vector2 spawn) {
+		this.spawn = spawn;
+	}
+	
+	
 
 } 
