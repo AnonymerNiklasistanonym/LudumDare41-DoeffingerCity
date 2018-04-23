@@ -103,19 +103,25 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		strack1top = createScaledSprite("maps/track1top.png");
 		smaincar = createScaledSprite("cars/car_standard.png");
 		sfinishline = createScaledSprite("maps/finishline.png");
+		
+		final Sprite s1=createScaledSprite("buttons/cannonbutton.png");
+		final Sprite s2=createScaledSprite("buttons/laserbutton.png");
+		final Sprite s3=createScaledSprite("buttons/cannonbutton.png");
+		final Sprite s4=createScaledSprite("buttons/cannonbutton.png");
+		final Sprite s5=createScaledSprite("buttons/cannonbutton.png");
+		
 		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
 		NormalCheckpoint.normalCheckPointDisabled = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
+		
 		Tower.circleTexture = new Texture(Gdx.files.internal("tower/range.png"));
 		
 		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
 		MGTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-		
-		
 		
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
@@ -133,51 +139,35 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
 		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
 		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
-
-		
-		
-		enemies = new Array<Enemy>();
-
-		towers = new Array<Tower>();
-
-		collis = new CollisionListener(this);
-		Sprite s1=createScaledSprite("buttons/cannonbutton.png");
-		Sprite s2=createScaledSprite("buttons/laserbutton.png");
-		Sprite s3=createScaledSprite("buttons/cannonbutton.png");
-		Sprite s4=createScaledSprite("buttons/cannonbutton.png");
-		Sprite s5=createScaledSprite("buttons/cannonbutton.png");
-
-		
-		
 		
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
+
+		enemies = new Array<Enemy>();
+		towers = new Array<Tower>();
+		collis = new CollisionListener(this);
+		
+		world = new World(new Vector2(0, 0), true);
+		world.setContactListener(collis);
+		debugRender = new Box2DDebugRenderer();
+		
+		car = new Car(world, smaincar, 440, 220);
+		finishline = new FinishLine(world, sfinishline, 380, 220);
 
 		debugBox2D = false;
 		debugCollision = false;
 		debugWay = false;
 		debugEntfernung = false;
 
-		world = new World(new Vector2(0, 0), true);
-
-		world.setContactListener(collis);
-		debugRender = new Box2DDebugRenderer();
-		car = new Car(world, smaincar, 440, 220);
-		finishline = new FinishLine(world, sfinishline, 380, 220);
-
-		map = new MainMap("test", world,finishline.body );
-		turmmenu=new TurmMenu(s1, s2, s3, s4, s5,world,enemies);
+		map = new MainMap("test", world,finishline.body);
+		turmmenu = new TurmMenu(s1, s2, s3, s4, s5, world, enemies);
 	
-		// create example checkpoints
 		checkpoints = new Checkpoint[4];
 		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
-		for (int i = 0; i < checkpoints.length; i++) {
+		for (int i = 0; i < checkpoints.length; i++)
 			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER,
 					checkPointPosition[i][1] * PIXEL_TO_METER);
-		}
-
-		// create example towers
 
 		Tower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, world);
 		t.activate();
@@ -185,14 +175,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		t=new LaserTower(550*PIXEL_TO_METER,350*PIXEL_TO_METER,enemies,world);
 		t.activate();
 		towers.add(t);
-		// create example pit stop
+		
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
-		System.out.println("Play state entered");
-		//startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, world));
-
 		
 		currentEnemyWaves = map.getEnemyWaves();
+
+		System.out.println("Play state entered");
 	}
 
 	public static Sprite createScaledSprite(String location) {
@@ -206,10 +195,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		System.out.println("Start building");
 		buildingtower = t;
 		buildingtower.setBuildingMode(true);
-		for (final Tower tower : towers) {
+		for (final Tower tower : towers)
 			tower.activateRange(true);
-			System.out.println(tower.getCost());
-		}
 	}
 	
 	public boolean buildingPositionIsAllowed(final Tower tower) {
@@ -307,20 +294,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void update(float deltaTime) {
-		laptime=laptime+deltaTime;
-		handleInput();
-		car.update(deltaTime);
-
-		// get mouse position
+		
 		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(mousePos);		
+		camera.unproject(mousePos);	
+		
+		handleInput();
+		
+		car.update(deltaTime);
+			
 		if(buildingtower==null){
 			buildingtower=turmmenu.getCurrentTower();
 			if(buildingtower!=null)
 			startBuilding(buildingtower);
 		}
 
-		// update towers
 		if (buildingtower != null) {
 			buildingtower.update(deltaTime, mousePos);
 			buildingtower = turmmenu.getCurrentTower();
@@ -328,18 +315,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
 		
-		// update score board time information
 		scoreBoard.update(deltaTime);
 		
-		// update enemy waves
-//		for (int i = 0; i < currentEnemyWaves.size; i++) {
-//			if (currentEnemyWaves.get(i).getTime() <= scoreBoard.getTime()) {
-//				enemies.addAll(currentEnemyWaves.get(i).getEnemies());
-//				currentEnemyWaves.removeIndex(i);
-//			}
-//		}
-
-		// update camera
 		camera.update();
 	}
 
@@ -361,10 +338,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (buildingtower != null) buildingtower.draw(spriteBatch);
 		for (final Tower tower : towers)
 			tower.draw(spriteBatch);
-
 		// draw pitstop
 		pitStop.draw(spriteBatch);
-
 		// draw enemies
 		for (Enemy e : enemies) {
 			e.update(Gdx.graphics.getDeltaTime());
@@ -377,16 +352,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (debugCollision) {
 			Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.1f);
-			for (int i = 0; i < this.RESOLUTION_WIDTH; i = i + 10) {
-				for (int j = 0; j < this.RESOLUTION_HEIGHT; j = j + 10) {
-					if (test[i][j].getNoUse()) {
+			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
+				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
+					if (test[i][j].getNoUse())
 						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
 								j * PlayState.PIXEL_TO_METER);
-
-					} else {
+					else
 						MainGame.font.draw(spriteBatch, "T", i * PlayState.PIXEL_TO_METER,
 								j * PlayState.PIXEL_TO_METER);
-					}
 				}
 			}
 		}
@@ -394,28 +367,23 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (debugEntfernung) {
 			Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.01f);
-			for (int i = 0; i < this.RESOLUTION_WIDTH; i = i + 10) {
-				for (int j = 0; j < this.RESOLUTION_HEIGHT; j = j + 10) {
+			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
+				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10)
 						MainGame.font.draw(spriteBatch, test[i][j].getH()+"", i * PlayState.PIXEL_TO_METER,
 								j * PlayState.PIXEL_TO_METER);
-
-				}
 			}
 		}
 
 		if (debugWay) {
 			MainGame.font.getData().setScale(0.02f);
 			for (Enemy e : enemies) {
-
 				e.findWay();
-				LinkedList<Node> weg;
+				final LinkedList<Node> weg;
 				weg = e.getWeg();
-				for (Node node : weg) {
+				for (Node node : weg)
 					MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
 							node.getY() * PlayState.PIXEL_TO_METER);
-				}
 			}
-
 		}
 
 		// draw car
@@ -427,9 +395,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		spriteBatch.end();
 
-		if (debugBox2D) {
+		if (debugBox2D)
 			debugRender.render(world, camera.combined);
-		}
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
 
@@ -441,25 +408,23 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		while (physicsaccumulator >= TIME_STEP) {
 			world.step(TIME_STEP, 6, 2);
 			physicsaccumulator -= TIME_STEP;
-
 		}
 
-		for (Enemy enemy : enemies) {
+		for (final Enemy enemy : enemies) {
 			if (enemy.justDied) {
 				enemy.body.setActive(false);
 				enemy.justDied = false;
 				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 			}
-			Array<Enemy> toremove=new Array<Enemy>();
-			for (Enemy e : toremove) {
+			final Array<Enemy> toremove=new Array<Enemy>();
+			for (final Enemy e : toremove) {
 				if(e.delete) {
 					toremove.add(e);
 					world.destroyBody(e.body);
 				}
 			}
-			for (Enemy e : toremove) {
+			for (Enemy e : toremove)
 				enemies.removeValue(e, true);
-			}
 		}
 	}
 
@@ -468,28 +433,30 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// dispose STATIC textures
 		NormalCheckpoint.normalCheckPointActivated.dispose();
 		NormalCheckpoint.normalCheckPointDisabled.dispose();
+		Tower.circleTexture.dispose();
 		MGTower.groundTower.dispose();
 		MGTower.upperTower.dispose();
 		MGTower.towerFiring.dispose();
+		MGTower.soundShoot.dispose();
 		LaserTower.groundTower.dispose();
 		LaserTower.upperTower.dispose();
 		LaserTower.towerFiring.dispose();
-		Tower.circleTexture.dispose();
+		LaserTower.soundShoot.dispose();
 		Enemy_small.normalTexture.dispose();
 		Enemy_small.deadTexture.dispose();
+		Enemy_fat.normalTexture.dispose();
+		Enemy_fat.deadTexture.dispose();
+		Enemy_bicycle.normalTexture.dispose();
+		Enemy_bicycle.deadTexture.dispose();
 	}
 
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
-
 		car.hitEnemy(enemy);
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint) {
-		// TODO Auto-generated method stub
 		checkpoint.setActivated(true);
 	}
 
@@ -498,9 +465,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		boolean allCheckpointsChecked = true;
 
 		for (final Checkpoint checkpoint : this.checkpoints) {
-			if (checkpoint.isActivated() == false) {
+			if (checkpoint.isActivated() == false)
 				allCheckpointsChecked = false;
-			}
 			checkpoint.setActivated(false);
 		}
 		if(allCheckpointsChecked) {
@@ -508,12 +474,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
 		}
 		
-	}
-
-	@Override
-	public void collisionCarTower(Car car, Tower tower) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

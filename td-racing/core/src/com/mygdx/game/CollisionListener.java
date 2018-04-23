@@ -41,15 +41,6 @@ public class CollisionListener implements ContactListener {
 				else
 					this.collisionCallbackInterface.collisionCarCheckpoint((Car) a, (Checkpoint) b);
 			}
-
-			// and the other object is a Checkpoint
-			if (a instanceof Tower || b instanceof Tower) {
-				System.out.println("Collision detected >> Tower");
-				if (a instanceof Tower)
-					this.collisionCallbackInterface.collisionCarTower((Car) b, (Tower) a);
-				else
-					this.collisionCallbackInterface.collisionCarTower((Car) a, (Tower) b);
-			}
 			
 			// and the other object is a Checkpoint
 			if (a instanceof FinishLine || b instanceof FinishLine) {
@@ -65,19 +56,16 @@ public class CollisionListener implements ContactListener {
 	@Override
 	public void endContact(Contact contact) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		// TODO Auto-generated method stub
-
 	}
 
 }
