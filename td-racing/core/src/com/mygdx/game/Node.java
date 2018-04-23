@@ -25,7 +25,7 @@ public class Node {
 	public Node(float x, float y, float zielX, float zielY) {
 		this.x = x;
 		this.y = y;
-		erschwernis = MathUtils.random(3f);
+		erschwernis = MathUtils.random(1f,3f);
 		h = 99999;
 		nachbarn = new ArrayList();
 	}
@@ -35,7 +35,7 @@ public class Node {
 	}
 	
 	public float getKosten() {
-		return 4*g + h * erschwernis;
+		return g + h*7 + erschwernis*20;
 	}
 	
 	public boolean getNoUse() {

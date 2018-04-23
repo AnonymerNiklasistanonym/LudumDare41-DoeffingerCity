@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -140,6 +141,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		FireTower.groundTower = new Texture(Gdx.files.internal("tower/tower_fire_bottom.png"));
 		FireTower.upperTower = new Texture(Gdx.files.internal("tower/tower_fire_upper.png"));
 		FireTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_fire_firing.png"));
+		FireTower.tflame = new Texture(Gdx.files.internal("tower/flame.png"));
 		FireTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
@@ -393,7 +395,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (debugWay) {
 			MainGame.font.getData().setScale(0.02f);
 			for (Enemy e : enemies) {
-				e.findWay();
+//				e.findWay();
 				final LinkedList<Node> weg;
 				weg = e.getWeg();
 				for (Node node : weg)
@@ -439,6 +441,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		for (Enemy e : toremove) {
 			enemies.removeValue(e, true);
+		}
+		
+		for (Tower t : towers) {
+			Array<Body> ab=new Array<Body>();
+			Array<Body> rb=new Array<Body>();
+			rb=t.removeProjectiles();
+			if(rb!=null)
+			ab.addAll(rb);
+			System.out.println("Found to remove: "+ab.size);
+			for (Body body : ab) {
+				
+				world.destroyBody(body);
+			}
 		}
 		
 	}
