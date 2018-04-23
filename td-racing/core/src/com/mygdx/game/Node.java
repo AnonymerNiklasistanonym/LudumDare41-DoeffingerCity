@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class Node {
@@ -24,7 +25,7 @@ public class Node {
 	public Node(float x, float y, float zielX, float zielY) {
 		this.x = x;
 		this.y = y;
-		erschwernis = 1;
+		erschwernis = MathUtils.random(3f);
 		h = 99999;
 		nachbarn = new ArrayList();
 	}
