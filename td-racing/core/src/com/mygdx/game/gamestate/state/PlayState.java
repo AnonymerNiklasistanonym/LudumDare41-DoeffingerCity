@@ -224,7 +224,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		System.out.println("buildingMoneyIsEnough");
 		// if there is enough money return true
 		if(tower.getCost() <= this.scoreBoard.getMoney()) {
-			 this.scoreBoard.addMoney(-tower.getCost());
 				System.out.println("cost ok");
 			 return true;
 		} else {
@@ -322,7 +321,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void buildTowerIfAllowed() {
 		// if position and money is ok build it
 		if (buildingMoneyIsEnough(this.buildingtower) && buildingPositionIsAllowed(this.buildingtower)) {
-			// Add tower to the tower list
+			// Add tower to the tower list			 
+			this.scoreBoard.addMoney(-this.buildingtower.getCost());
 			final Tower newTower = this.buildingtower;
 			newTower.activate();
 			towers.add(newTower);
