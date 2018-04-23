@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -78,6 +79,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private int moneyPerLap = 50;
 
 	private float laptime = 0f;
+	private Sound splatt;
 
 	/**
 	 * Time since last physic Steps
@@ -172,6 +174,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_Lincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
 		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		
+		splatt =  MGTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
@@ -205,10 +209,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 
-		
-
 		System.out.println("Play state entered");
-		loadLevel(1);
+		loadLevel(2);
 	}
 
 	public void loadLevel(int i) {
@@ -220,12 +222,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break;
 		case 2:
 			map = new MainMap("track2", world, finishline.body);
-			map.setSpawn(new Vector2(220,20));
+			map.setSpawn(new Vector2(230,100));
 			scurrenttrack=strack2; 
 			break;
 		case 3:
 			map = new MainMap("track3", world, finishline.body);
-			map.setSpawn(new Vector2(220,20));
+			map.setSpawn(new Vector2(220,50));
 			scurrenttrack=strack3; 
 			break;
 
@@ -422,7 +424,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		strack1.draw(spriteBatch);
+		scurrenttrack.draw(spriteBatch);
 		finishline.draw(spriteBatch);
 
 		// draw checkpoints
@@ -563,6 +565,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
 		car.hitEnemy(enemy);
+		if(enemy.tot) {
+//			if(soundon)
+			splatt.play();
+		}
 	}
 
 	@Override
