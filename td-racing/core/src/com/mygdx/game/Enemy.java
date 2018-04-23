@@ -32,7 +32,7 @@ public abstract class Enemy extends BodyDef {
 	boolean washit = false;
 	LinkedList<Node> weg;
 	public boolean justDied = false;
-	float damage = 10;
+	float damage;
 	boolean delete;
 
 	public boolean tot = false;
