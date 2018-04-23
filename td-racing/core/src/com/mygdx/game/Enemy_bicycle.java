@@ -12,5 +12,6 @@ public class Enemy_bicycle extends Enemy {
 		super(x,y,w, normalTexture, deadTexture,damageTexture,map);
 		this.speed = 5f;
 		this.health = 10;
+		this.damage = 2;
 	}
 }
