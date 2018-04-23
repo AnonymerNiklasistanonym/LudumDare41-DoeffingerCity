@@ -173,6 +173,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			enemies.add(e);
 			enemies.add(f);
 			enemies.add(b);
+//			Enemy e = new Enemy_small(220,20,world, map);
+//			Enemy f= new Enemy_fat(220,20,world,map);
+//			Enemy b= new Enemy_bicycle(220,20,world,map);
+//			f.startMove();
+//			e.startMove();
+//			b.startMove();
+//			enemies.add(e);
+//			enemies.add(f);
+//			enemies.add(b);
 		}
 
 		// create example checkpoints
@@ -379,9 +388,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// update enemy waves
 		for (int i = 0; i < currentEnemyWaves.size; i++) {
 			if (currentEnemyWaves.get(i).getTime() <= scoreBoard.getTime()) {
-				System.out.println("ADD " + currentEnemyWaves.get(i).getEnemies().length + " Enemies after "
-						+ currentEnemyWaves.get(i).getTime() + "min (scoreboard: " + scoreBoard.getTime()
-						+ ", currentEnemyWaves.getTime(): " + currentEnemyWaves.get(i).getTime() + ")");
 				enemies.addAll(currentEnemyWaves.get(i).getEnemies());
 				currentEnemyWaves.removeIndex(i);
 			}

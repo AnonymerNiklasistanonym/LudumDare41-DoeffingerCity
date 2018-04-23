@@ -23,11 +23,11 @@ public class EnemyWave {
 	public static Enemy[] createEnemies(final World world, final MainMap map, final int smallEnemies, final int fatEnemies) {
 		final Enemy[] newEnemies = new Enemy[smallEnemies + fatEnemies];
 		for (int i = 0; i < smallEnemies; i++) {
-			newEnemies[i] = new Enemy_small(world, map);
+			newEnemies[i] = new Enemy_small(220, 20, world, map);
 		}
 		if (smallEnemies != 0) {
 		for (int i = smallEnemies - 1; i < smallEnemies + fatEnemies; i++) {
-			newEnemies[i] = new Enemy_fat(world, map);
+			newEnemies[i] = new Enemy_fat(220, 40, world, map);
 		}
 		}
 		for (int i = 0; i < newEnemies.length; i++) {
