@@ -21,7 +21,7 @@ import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
-import com.mygdx.game.EnemyWave;
+import com.mygdx.game.EnemyWaveEntry;
 import com.mygdx.game.Enemy_bicycle;
 import com.mygdx.game.Enemy_fat;
 import com.mygdx.game.Enemy_small;
@@ -458,7 +458,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			rb=t.removeProjectiles();
 			if(rb!=null)
 			ab.addAll(rb);
-			System.out.println("Found to remove: "+ab.size);
 			for (Body body : ab) {
 				
 				world.destroyBody(body);
