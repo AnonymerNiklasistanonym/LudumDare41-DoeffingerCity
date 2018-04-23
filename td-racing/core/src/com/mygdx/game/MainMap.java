@@ -61,9 +61,9 @@ public class MainMap {
 		// The following line would throw ExceptionInInitializerError
 		tMap = new Texture(Gdx.files.internal("maps/test.png"));
 		sMap = new Sprite(tMap);
-		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/test.json"));
-		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/ziel.json"));
-		BodyEditorLoader loaderZombieWay = new BodyEditorLoader(Gdx.files.internal("maps/zombieway.json"));
+		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/"+mapName+"solid.json"));
+		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/"+mapName+"ziel.json"));
+		BodyEditorLoader loaderZombieWay = new BodyEditorLoader(Gdx.files.internal("maps/"+mapName+"zombieway.json"));
 
 		debug = new Sprite(new Texture(Gdx.files.internal("maps/test.png")));
 
