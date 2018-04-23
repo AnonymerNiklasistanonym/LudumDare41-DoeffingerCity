@@ -28,7 +28,7 @@ public class MainMap {
 	Sprite debug;
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
-	final Array<EnemyWave> enemyWaves;
+	Array<EnemyWave> enemyWaves;
 
 	public MainMap(String mapName, World world, Body finishLine) {
 
@@ -36,7 +36,6 @@ public class MainMap {
 		createSolidMap(mapName, world);
 		this.finishLine=finishLine;
 		createAStarArray();
-		this.enemyWaves = setEnemyWave(world);
 	}
 	
 	public Array<EnemyWave> setEnemyWave(final World world) {
