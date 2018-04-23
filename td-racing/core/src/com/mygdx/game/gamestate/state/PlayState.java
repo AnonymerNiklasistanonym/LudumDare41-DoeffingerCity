@@ -395,7 +395,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (debugWay) {
 			MainGame.font.getData().setScale(0.02f);
 			for (Enemy e : enemies) {
-				e.findWay();
+//				e.findWay();
 				final LinkedList<Node> weg;
 				weg = e.getWeg();
 				for (Node node : weg)
