@@ -16,7 +16,7 @@ public class LaserTower extends Tower {
 	public static Texture upperTower;
 	public static Texture towerFiring;
 	public static final int range = 10;
-	public static int costTower = 400;
+	public static int costTower = 150;
 
 
 	public LaserTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final Sound soundShoot,

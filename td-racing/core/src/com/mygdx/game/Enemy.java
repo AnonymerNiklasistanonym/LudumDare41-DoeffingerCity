@@ -34,8 +34,9 @@ public abstract class Enemy extends BodyDef {
 	public boolean justDied = false;
 
 	public boolean tot = false;
+	float distancetonode=50f;
 
-	public Enemy(World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
+	public Enemy(float x, float y,World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
 		final Sprite spriteSprite = new Sprite(sprite);
 		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER, spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		spriteSprite.setOriginCenter();
@@ -59,14 +60,14 @@ public abstract class Enemy extends BodyDef {
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
-		bodydef.position.set(400 * PlayState.PIXEL_TO_METER, 200 * PlayState.PIXEL_TO_METER);
+		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(saussehen.getHeight() * 0.35f);
 		
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
-		fdef.density=0.1f;
+		fdef.density=1f;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 
@@ -275,7 +276,8 @@ public abstract class Enemy extends BodyDef {
 		Vector2 vlat=getOrthogonal();
 		vlat.scl(drift);
 		vlat.scl(lat);
-		vlat=vlat.scl(-1);
+		//vlat.scl(body.getFixtureList().first().getDensity());
+		//vlat=vlat.scl(-1);
 		body.applyLinearImpulse(vlat,body.getPosition(),true);
 	}
 	
@@ -296,6 +298,18 @@ public abstract class Enemy extends BodyDef {
 		ort.rotate90(1);
 		return ort;
 	}
+	
+	public void reduceToMaxSpeed(float maxspeed) {
+		float speed=getForwardVelocity().x;
+		if (speed < maxspeed * -1)
+			speed = maxspeed * -1;
+		if (speed > maxspeed)
+			speed = maxspeed;
+	
+		Vector2 newSpeed=new Vector2(speed,getForwardVelocity().y);
+		newSpeed.rotateRad(body.getAngle());
+		body.setLinearVelocity(newSpeed);
+	}
 
 	public void update(float delta) {
 		float angle = 0;
@@ -315,18 +329,30 @@ public abstract class Enemy extends BodyDef {
 			testY =getBodyY()-weg.getLast().y;
 			
 			angle = (float) ((Math.atan2(weg.getLast().x*PlayState.PIXEL_TO_METER - getBodyX(), -(weg.getLast().y*PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
-			body.setTransform(body.getPosition(), (float) Math.toRadians( angle ));
-			Vector2 velo=new Vector2(speed,0);
+			body.setTransform(body.getPosition(), (float) Math.toRadians( angle-90 ));
+			Vector2 velo=new Vector2(1,0);
 			velo.rotateRad(body.getAngle());
-			body.applyForceToCenter(velo,true);
-			killLateral(0.5f);
-			if(body.getPosition().x < weg.getLast().x + 5 && body.getPosition().x > weg.getLast().x - 5 &&  body.getPosition().y > weg.getLast().y - 5 && body.getPosition().y < weg.getLast().y + 5)
+			body.setLinearVelocity(velo);
+			//body.applyForceToCenter(velo,true);
+			//reduceToMaxSpeed(speed);
+			//killLateral(1f);
+			distancetonode=saussehen.getWidth();
+			System.out.println("Distance to target: "+body.getPosition().dst(weg.getLast().x, weg.getLast().y));
+			if(body.getPosition().dst(weg.getLast().x*PlayState.PIXEL_TO_METER, weg.getLast().y*PlayState.PIXEL_TO_METER)<distancetonode)
 				weg.remove(weg.indexOf(weg.getLast()));
+			
+			
+			//if(body.getPosition().x < weg.getLast().x + distancetonode && body.getPosition().x > weg.getLast().x - distancetonode &&  body.getPosition().y > weg.getLast().y - distancetonode && body.getPosition().y < weg.getLast().y + distancetonode)
+			//	weg.remove(weg.indexOf(weg.getLast()));
+			
+			
 		}
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
 		saussehen.setPosition(getX(), getY());
+		saussehen.setRotation(MathUtils.radDeg*body.getAngle());
+		stot.setRotation(MathUtils.radDeg*body.getAngle());
 		saussehen.draw(spriteBatch);
 		if(washit) {
 			sdamage.setX(getX()+saussehen.getWidth()/2+MathUtils.random(-0.2f,0.2f));
@@ -334,6 +360,10 @@ public abstract class Enemy extends BodyDef {
 			sdamage.draw(spriteBatch);
 			washit=false;
 		}
+		
+		sdamage.setX(weg.getLast().x*PlayState.PIXEL_TO_METER);
+		sdamage.setY(weg.getLast().y*PlayState.PIXEL_TO_METER);
+		sdamage.draw(spriteBatch);
 	}
 
 	public float getScore() {

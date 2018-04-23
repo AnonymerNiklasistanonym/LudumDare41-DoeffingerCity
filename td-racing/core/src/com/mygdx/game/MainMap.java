@@ -24,6 +24,7 @@ public class MainMap {
 	Body mapModel;
 	Body mapZiel;
 	Body finishLine;
+	Body mapZombieWay;
 	Sprite debug;
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
@@ -60,6 +61,7 @@ public class MainMap {
 		sMap = new Sprite(tMap);
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/test.json"));
 		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/ziel.json"));
+		BodyEditorLoader loaderZombieWay = new BodyEditorLoader(Gdx.files.internal("maps/zombieway.json"));
 
 		debug = new Sprite(new Texture(Gdx.files.internal("maps/test.png")));
 
@@ -69,6 +71,9 @@ public class MainMap {
 
 		BodyDef ziel = new BodyDef();
 		ziel.type = BodyType.StaticBody;
+
+		BodyDef zombieway = new BodyDef();
+		zombieway.type = BodyType.StaticBody;
 
 		// 2. Create a FixtureDef, as usual.
 		FixtureDef solid = new FixtureDef();
@@ -80,15 +85,17 @@ public class MainMap {
 		nonSolid.density = 1;
 		nonSolid.friction = 0.5f;
 		nonSolid.restitution = 0.3f;
-		// nonSolid.isSensor = true;
+		nonSolid.isSensor = true;
 
 		// 3. Create a Body, as usual.
 		mapModel = world.createBody(bd);
 		mapZiel = world.createBody(ziel);
+		mapZombieWay = world.createBody(ziel);
 
 		// // 4. Create the body fixture automatically by using the loader.
 		loader.attachFixture(mapModel, "Name", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
-		loaderZiel.attachFixture(mapZiel, "Ziel", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+		loaderZiel.attachFixture(mapZiel, "Ziel", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+		loaderZombieWay.attachFixture(mapZombieWay, "Zombieway", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		System.out.println();
 	}
 	
@@ -110,7 +117,7 @@ public class MainMap {
 			for (int j = 0; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
 				// Im befahrbaren Bereich?
 				befahrbar = true;
-				for (Fixture f : mapModel.getFixtureList()) {
+				for (Fixture f : mapZombieWay.getFixtureList()) {
 					if(f.testPoint(i*PlayState.PIXEL_TO_METER, j*PlayState.PIXEL_TO_METER)) {
 						befahrbar = false;
 					}				

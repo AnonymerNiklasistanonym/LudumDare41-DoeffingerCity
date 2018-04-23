@@ -19,6 +19,7 @@ import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
 import com.mygdx.game.EnemyWave;
+import com.mygdx.game.Enemy_bicycle;
 import com.mygdx.game.Enemy_fat;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
@@ -129,6 +130,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_fat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
 		Enemy_fat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
 		Enemy_fat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		
+		Enemy_bicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
+		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
+		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
 		enemies = new Array<Enemy>();
 
@@ -157,14 +162,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		finishline = new FinishLine(world, sfinishline, 380, 220);
 
 		map = new MainMap("test", world,finishline.body );
-//		for (int i = 0; i < 4; i++) {
-//			Enemy e = new Enemy_small(world, map);
-//			Enemy f= new Enemy_fat(world,map);
-//			f.startMove();
-//			e.startMove();
-//			enemies.add(e);
-//			enemies.add(f);
-//		}
+
+		for (int i = 0; i < 2; i++) {
+			Enemy e = new Enemy_small(220,20,world, map);
+			Enemy f= new Enemy_fat(220,20,world,map);
+			Enemy b= new Enemy_bicycle(220,20,world,map);
+			f.startMove();
+			e.startMove();
+			b.startMove();
+			enemies.add(e);
+			enemies.add(f);
+			enemies.add(b);
+		}
 
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
