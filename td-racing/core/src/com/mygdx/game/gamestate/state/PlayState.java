@@ -362,6 +362,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			turmmenu.unselectAll();
 			this.scoreBoard.addMoney(-this.buildingtower.getCost());
 			final Tower newTower = this.buildingtower;
+			buildingtower=null;
 			newTower.activate();
 			towers.add(newTower);
 			stopBuilding();
