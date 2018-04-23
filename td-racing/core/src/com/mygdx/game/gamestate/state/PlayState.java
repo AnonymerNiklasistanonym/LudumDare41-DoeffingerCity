@@ -48,11 +48,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	CollisionListener collis;
 	private Sprite smaincar;
 	private Sprite sfinishline;
-	private Sprite scurrenttrack;
 	private Sprite strack1;
 	private Sprite strack2;
 	private Sprite strack3;
-	
+	private Sprite scurrenttrack;
 	private World world;
 	private Car car;
 	private FinishLine finishline;
@@ -79,7 +78,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private int moneyPerLap = 50;
 
 	private float laptime = 0f;
-	private Sound splatt;
+	private Sound splatt,money,carsound;
 
 	/**
 	 * Time since last physic Steps
@@ -110,7 +109,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager) {
-		
 		super(gameStateManager);
 
 		scoreBoard = new ScoreBoard(this);
@@ -118,14 +116,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		preferencesManager = new PreferencesManager();
 		preferencesManager.checkHighscore();
-		
-		currentEnemyWaves=new Array<EnemyWaveEntry>();
-		
+
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
-		strack2 = createScaledSprite("maps/track2.png");
-		strack3 = createScaledSprite("maps/track3.png");
-
+		strack1 = createScaledSprite("maps/track2.png");
+		strack1 = createScaledSprite("maps/track3.png");
+		
 		smaincar = createScaledSprite("cars/car_standard.png");
 		sfinishline = createScaledSprite("maps/finishline.png");
 
@@ -171,12 +167,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
 		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
+
 		Enemy_Lincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
 		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 		
-		splatt =  MGTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
-
+		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
+		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
+		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -209,10 +207,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 
-		System.out.println("Play state entered");
-		loadLevel(2);
+		loadLevel(1);
 	}
-
+	
 	public void loadLevel(int i) {
 		switch (i) {
 		case 1:
@@ -234,6 +231,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		default:
 			break;
 		}
+
+		currentEnemyWaves = map.getEnemyWaves();
+		System.out.println("Play state entered");
+
 	}
 
 	public static Sprite createScaledSprite(String location) {
@@ -353,6 +354,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		handleInput();
 
 		car.update(deltaTime);
+		if(car.getForward().x != 0) {
+			carsound.play();
+			
+		}
 
 		if (buildingtower == null) {
 			buildingtower = turmmenu.getCurrentTower();
@@ -363,12 +368,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (buildingtower != null) {
 			buildingtower.update(deltaTime, mousePos);
 			buildingtower = turmmenu.getCurrentTower();
-			if (buildingtower == null) {
+			if(buildingtower==null) {
 				stopBuilding();
 			}
 		}
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
+
 
 		for (final EnemyWaveEntry entry : currentEnemyWaves) {
 			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
@@ -390,32 +396,34 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				enemies.add(e);
 			}
 
-			// for (final EnemyWaveEntry entry : currentEnemyWaves) {
-			// if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
-			// enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
-			// currentEnemyWaves.removeValue(entry, true);
-			// }
-			// }
-			if (infiniteenemies) {
-				if (MathUtils.random(1000) > 950) {
-					Enemy e = new Enemy_small(220, 20, world, map);
-					enemies.add(e);
-				}
-				if (MathUtils.random(1000) > 990) {
-					Enemy e = new Enemy_bicycle(220, 20, world, map);
-					enemies.add(e);
-				}
-				if (MathUtils.random(1000) > 995) {
-					Enemy e = new Enemy_fat(220, 20, world, map);
-					enemies.add(e);
-				}
+		
+//		for (final EnemyWaveEntry entry : currentEnemyWaves) {
+//			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
+//				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
+//				currentEnemyWaves.removeValue(entry, true);
+//			}
+//		}
+		if(infiniteenemies) {
+		if(MathUtils.random(1000)>950) {
+			Enemy e=new Enemy_small(220, 20, world, map);
+			enemies.add(e);
+		}
+		if(MathUtils.random(1000)>990) {
+			Enemy e=new Enemy_bicycle(220, 20, world, map);
+			enemies.add(e);
+		}
+		if(MathUtils.random(1000)>995) {
+			Enemy e=new Enemy_fat(220, 20, world, map);
+			enemies.add(e);
+		}
+		
 
-			}
+		}
 		}
 		scoreBoard.update(deltaTime);
 		camera.update();
 		updateWaves2();
-
+		
 	}
 
 	@Override
@@ -424,7 +432,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		scurrenttrack.draw(spriteBatch);
+		strack1.draw(spriteBatch);
 		finishline.draw(spriteBatch);
 
 		// draw checkpoints
@@ -565,9 +573,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
 		car.hitEnemy(enemy);
-		if(enemy.tot) {
-//			if(soundon)
-			splatt.play();
+		if(enemy.health < 0) {
+			if(soundon)
+			splatt.play(1, MathUtils.random(0.5f,2f), 0);
 		}
 	}
 
@@ -590,6 +598,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
 		}
+		
+		if(soundon)
+			money.play();
 
 	}
 
@@ -716,7 +727,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			}
 		}
 	}
-
+	
 	public void updateWaves2() {
 
 		int totalwaves = 10;
@@ -816,6 +827,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			}
 		}
 	}
+	
+	
 
 	public void startNewLevel() {
 
