@@ -175,7 +175,7 @@ public abstract class Enemy extends BodyDef {
 		
 
 		aktuellerNode = openList.getFirst();
-		int zaehler = 1000;
+		int zaehler = 10000;
 		while(!found) {
 			
 			zaehler--;
@@ -206,13 +206,20 @@ public abstract class Enemy extends BodyDef {
 						openList.add(node);	
 					}
 					else {
-						if(node.kosten > node.getKosten())
-						{
-							openList.remove(openList.indexOf(node));
-							openList.add(node);							
-						}
+//						if(node.kosten > node.getKosten())
+//						{
+//							openList.remove(openList.indexOf(node));
+//							openList.add(node);							
+//						}
 					}
 				}
+				else {
+					if(closedList.indexOf(node) > 1 && node.getKosten() > (aktuellerNode.g+1) * node.h) {
+						closedList.remove(closedList.indexOf(node));
+						openList.add(node);
+					}
+				}
+				
 			}
 			
 			if(aktuellerNode.x == zielX && aktuellerNode.y == zielY) {
