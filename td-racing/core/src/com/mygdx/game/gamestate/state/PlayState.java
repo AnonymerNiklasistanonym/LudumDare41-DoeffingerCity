@@ -189,13 +189,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER,
 					checkPointPosition[i][1] * PIXEL_TO_METER);
 
-		Tower t = new MGTower(850 * PIXEL_TO_METER, 350 * PIXEL_TO_METER, enemies, world);
-		t.activate();
-		towers.add(t);
-		t=new LaserTower(550*PIXEL_TO_METER,350*PIXEL_TO_METER,enemies,world);
-		t.activate();
-		towers.add(t);
-		
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 		
