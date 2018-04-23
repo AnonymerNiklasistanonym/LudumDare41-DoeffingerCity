@@ -81,7 +81,7 @@ public class GameOverState extends GameState {
 						gameStateManager.setGameState(new HighscoreState(gameStateManager));
 						break;
 					case ABOUT_ID:
-						System.out.println("ABOUT_ID IDK?");
+						gameStateManager.setGameState(new CreditState(gameStateManager));
 						break;
 					}
 				}
@@ -98,7 +98,7 @@ public class GameOverState extends GameState {
 						gameStateManager.setGameState(new HighscoreState(gameStateManager));
 						break;
 					case ABOUT_ID:
-						System.out.println("ABOUT_ID IDK?");
+						gameStateManager.setGameState(new CreditState(gameStateManager));
 						break;
 					}
 				}
