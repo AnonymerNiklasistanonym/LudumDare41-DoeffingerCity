@@ -18,6 +18,7 @@ import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
+import com.mygdx.game.EnemyWave;
 import com.mygdx.game.Enemy_fat;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
@@ -92,6 +93,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	// Zur identifizierung von Collisions Entitys
 	public final static short PLAYER_BOX = 0x1; // 0001
 	public final static short ENEMY_BOX = 0x1 << 1; // 0010 or 0x2 in hex
+	
+	public Array<EnemyWave> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
@@ -154,14 +157,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		finishline = new FinishLine(world, sfinishline, 380, 220);
 
 		map = new MainMap("test", world,finishline.body );
-		for (int i = 0; i < 4; i++) {
-			Enemy e = new Enemy_small(world, map);
-			Enemy f= new Enemy_fat(world,map);
-			f.startMove();
-			e.startMove();
-			enemies.add(e);
-			enemies.add(f);
-		}
+//		for (int i = 0; i < 4; i++) {
+//			Enemy e = new Enemy_small(world, map);
+//			Enemy f= new Enemy_fat(world,map);
+//			f.startMove();
+//			e.startMove();
+//			enemies.add(e);
+//			enemies.add(f);
+//		}
 
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
@@ -187,6 +190,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
 
 		
+		currentEnemyWaves = map.getEnemyWaves();
 	}
 
 	public static Sprite createScaledSprite(String location) {
@@ -342,6 +346,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (this.buildingtower != null)
 			this.buildingtower.setBlockBuildingMode(b);
 	}
+	
+	private Vector3 mousePos;
 
 	@Override
 	protected void update(float deltaTime) {
@@ -349,22 +355,31 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		handleInput();
 		car.update(deltaTime);
 
-		float mousex = Gdx.input.getX();
-		float mousey = Gdx.input.getY();
-		Vector3 mpos = new Vector3(mousex, mousey, 0);
-		camera.unproject(mpos);
-		Vector2 mousepos = new Vector2(mpos.x, mpos.y);
+		// get mouse position
+		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+		camera.unproject(mousePos);		
 		
-		// update tower
-		if (buildingtower != null) buildingtower.update(deltaTime, mousepos);
+		// update towers
+		if (buildingtower != null) buildingtower.update(deltaTime, mousePos);
 		for (final Tower t : towers)
-			t.update(deltaTime, mousepos);
+			t.update(deltaTime, mousePos);
 		
-		
+		// update score board time information
 		scoreBoard.update(deltaTime);
+		
+		// update enemy waves
+		for (int i = 0; i < currentEnemyWaves.size; i++) {
+			if (currentEnemyWaves.get(i).getTime() <= scoreBoard.getTime()) {
+				System.out.println("ADD " + currentEnemyWaves.get(i).getEnemies().length + " Enemies after "
+						+ currentEnemyWaves.get(i).getTime() + "min (scoreboard: " + scoreBoard.getTime()
+						+ ", currentEnemyWaves.getTime(): " + currentEnemyWaves.get(i).getTime() + ")");
+				enemies.addAll(currentEnemyWaves.get(i).getEnemies());
+				currentEnemyWaves.removeIndex(i);
+			}
+		}
 
+		// update camera
 		camera.update();
-
 	}
 
 	@Override
