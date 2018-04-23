@@ -23,7 +23,7 @@ public abstract class Enemy extends BodyDef {
 	Texture taussehen;
 	Sprite saussehen;
 	Sprite stot;
-	Sprite damage;
+	Sprite sdamage;
 	float score = 0;
 	World world;
 	ArrayList<Node> nodesList;
@@ -33,7 +33,7 @@ public abstract class Enemy extends BodyDef {
 
 	public boolean tot = false;
 
-	public Enemy(World w, Texture sprite, Texture deadsprite, MainMap map) {
+	public Enemy(World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
 		final Sprite spriteSprite = new Sprite(sprite);
 		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER, spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		spriteSprite.setOriginCenter();
@@ -42,15 +42,16 @@ public abstract class Enemy extends BodyDef {
 		deadspriteSprite.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		deadspriteSprite.setOriginCenter();
 		
-		final Sprite damage = new Sprite(deadsprite);
-		damage.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER*0.5f, deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER*0.5f);
-		damage.setOriginCenter();
+		final Sprite damageSprite = new Sprite(damagesprite);
+		damageSprite.setSize(damageSprite.getWidth() * PlayState.PIXEL_TO_METER*0.5f, damageSprite.getHeight() * PlayState.PIXEL_TO_METER*0.5f);
+		damageSprite.setOriginCenter();
 		
 
 		this.speed = 80;
 		this.health = 10;
 		this.saussehen = spriteSprite;
 		this.stot = deadspriteSprite;
+		this.sdamage=damageSprite;
 		this.score = MathUtils.random(100);
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
@@ -274,9 +275,9 @@ public abstract class Enemy extends BodyDef {
 		saussehen.setPosition(getX(), getY());
 		saussehen.draw(spriteBatch);
 		if(washit) {
-			stot.setX(getX()+MathUtils.random(-0.2f,0.2f));
-			stot.setY(getY()+MathUtils.random(-0.2f,0.2f));
-			stot.draw(spriteBatch);
+			sdamage.setX(getX()+saussehen.getWidth()/2+MathUtils.random(-0.2f,0.2f));
+			sdamage.setY(getY()+saussehen.getHeight()/2+MathUtils.random(-0.2f,0.2f));
+			sdamage.draw(spriteBatch);
 			washit=false;
 		}
 	}
