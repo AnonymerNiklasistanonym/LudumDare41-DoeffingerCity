@@ -66,6 +66,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private int money = 100;
 	private int moneyPerLap = 100;
 
+	private float laptime=0f;
+	
 	/**
 	 * Time since last physic Steps
 	 */
@@ -262,7 +264,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void update(float deltaTime) {
-
+		laptime=laptime+deltaTime;
 		handleInput();
 		car.update(deltaTime);
 		for (Tower t : towers) {
@@ -368,7 +370,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		scoreBoard.draw(spriteBatch);
 		String stringmoney="Money: ";
 		stringmoney=stringmoney+money;
-		MainGame.font.draw(spriteBatch, stringmoney, 900,50);
+		
+		MainGame.font.draw(spriteBatch,""+stringmoney,50,2);
 		spriteBatch.end();
 
 		if (debugBox2D) {
@@ -431,17 +434,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			}
 			checkpoint.setActivated(false);
 		}
-
-		final int oldMoney = this.money;
-
-		if (allCheckpointsChecked) {
-			final long timeDelta = lapTimeBegin - System.currentTimeMillis();
-			this.money += moneyLap + timeDelta * millisecondsTimeMalus;
+		if(allCheckpointsChecked) {
+			money=money+moneyPerLap;
+			money=money+(100-(int)laptime*2);
 		}
-
-		lapTimeBegin = System.currentTimeMillis();
-
-		System.out.println("Lap Finished, new Money: " + money + " (old: " + oldMoney + ")");
+		
 	}
 
 	@Override
