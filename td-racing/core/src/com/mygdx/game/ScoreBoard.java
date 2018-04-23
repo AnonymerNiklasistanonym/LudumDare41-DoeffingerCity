@@ -38,6 +38,7 @@ public class ScoreBoard {
 		(layout.width / 2), Gdx.graphics.getHeight() - 300);
 
 		// MainGame.fontTest.draw(spriteBatch, "100", 800 * PlayState.PIXEL_TO_METER,
+		// MainGame.font.draw(spriteBatch, "100", 800 * PlayState.PIXEL_TO_METER,
 		// 100 * PlayState.PIXEL_TO_METER);
 		// MainGame.smallFont.draw(spriteBatch, str, x, y, start, end, targetWidth,
 		// halign, wrap, truncate)

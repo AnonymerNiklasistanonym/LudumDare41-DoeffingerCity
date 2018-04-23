@@ -12,7 +12,7 @@ public class MGTower extends Tower {
 	public static Texture groundTower;
 	public static Texture upperTower;
 	public static Texture towerFiring;
-	public static final int range = 10;
+	public static final int range = 100;
 
 	public MGTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final Sound soundShoot,
 			World w) {

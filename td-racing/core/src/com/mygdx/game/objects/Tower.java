@@ -51,7 +51,8 @@ public abstract class Tower {
 	public Body body;
 	boolean isactive = false;
 	private boolean isInBuildingMode;
-
+	boolean isSoundPlaying=false;
+	
 	public void draw(final SpriteBatch spriteBatch) {
 
 		spriteBody.draw(spriteBatch);
@@ -188,7 +189,8 @@ public abstract class Tower {
 		} else {
 			setDegrees(getDegrees() - turnspeed * delta);
 		}
-		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < 1) {
+		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < turnspeed*delta) {
+			setDegrees(getAngleToEnemy(e));
 			if (timesincelastshot > speed)
 				shoot(e);
 		}
@@ -199,13 +201,29 @@ public abstract class Tower {
 	}
 
 	public void shoot(Enemy e) {
+		if(isTargetInRange(e)) {
+			
+		
 		e.takeDamage(power);
 		if (PlayState.soundon)
-			soundShoot.play();
+			if(permanentsound)
+				if(!isSoundPlaying) {
+					soundShoot.loop();
+					System.out.println("loop");
+					isSoundPlaying=true;
+				}
+			
+			else
+				soundShoot.play();
 		timesincelastshot = 0;
 		shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
 		shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
 		// TODO: Versatz Dynamisch machen!
+		}
+		else
+		{
+			target=null;
+		}
 	}
 
 	public float getAngleToEnemy(Enemy e) {
@@ -267,11 +285,15 @@ public abstract class Tower {
 		this.delta = delta;
 		if (isactive) {
 			timesincelastshot = timesincelastshot + delta;
-			if (target == null)
+			if (target == null) {
 				selectNewTarget();
+				soundShoot.stop();
+				isSoundPlaying=false;
+			}
 			else
 				tryshoot(target);
 		}
+		
 	}
 
 	private void selectNewTarget() {
