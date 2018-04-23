@@ -81,7 +81,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	 * Time since last physic Steps
 	 */
 
-	boolean infiniteenemies=true;
+	boolean infiniteenemies=false;
 	
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
