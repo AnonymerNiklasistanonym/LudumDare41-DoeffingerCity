@@ -18,6 +18,8 @@ public class HighscoreState extends GameState {
 	public HighscoreState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 		
+		System.out.println("Highscore state entered");
+		
 		HighscoreButton.texture = new Texture(Gdx.files.internal("buttons/button_highscore.png"));
 		
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
@@ -28,7 +30,7 @@ public class HighscoreState extends GameState {
 
 		final HighscoreButton buttonOne = new HighscoreButton(1, entries[0].getScore(), entries[0].getName(), MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 5);
-		final HighscoreButton buttonTwo = new HighscoreButton(2, entries[1].getScore(), entries[1].getName(), MainGame.GAME_WIDTH / 2,
+		final HighscoreButton buttonTwo = new HighscoreButton(2, entries[1]	.getScore(), entries[1].getName(), MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 4);
 		final HighscoreButton buttonThree = new HighscoreButton(3, entries[2].getScore(), entries[2].getName(), MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 3);
@@ -64,8 +66,7 @@ public class HighscoreState extends GameState {
 
 	@Override
 	protected void dispose() {
-		// TODO dispose static button
-		
+		System.out.println("Highscore state disposed");		
 	}
 
 }
