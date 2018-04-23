@@ -29,7 +29,9 @@ public class EnemyWave {
 		for (int i = 0; i < newEnemies.length; i++)
 			if (newEnemies[i] == null) {
 				System.out.println("enemy is null");
+				System.out.println("enemy is null in waves");
 			}
+		}
 		return newEnemies;
 	}
 
