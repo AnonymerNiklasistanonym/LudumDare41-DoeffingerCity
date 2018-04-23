@@ -57,6 +57,25 @@ public class EnemyWaveEntry {
 		return entries;
 	}
 	
+	public static EnemyWaveEntry[] createEnemyEntries(
+			final Vector2 entryPoint, final int entryTime, final int smallNumber,
+			final int fatNumber,
+			final int bicycleNumber) {
+		
+		final EnemyWaveEntry[] entries = new EnemyWaveEntry[smallNumber + fatNumber + bicycleNumber];
+		
+		final float countingTime = 0.2f;
+		int counter = 0;
+		
+		for (int i = 0; i < smallNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_SMALL);
+		for (int i = 0 + smallNumber; i < fatNumber + smallNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_FAT);
+		for (int i = 0 + smallNumber + fatNumber; i < bicycleNumber + smallNumber + fatNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_BYCICLE);
+		return entries;
+	}
+	
 	public static Enemy createEnemy(final EnemyWaveEntry entry, final World world, final MainMap map) {
 		switch (entry.getId()) {
 		case ENEMY_SMALL:
