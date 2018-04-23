@@ -163,7 +163,7 @@ public class Car {
 	}
 
 	public void hitEnemy(Enemy e) {
-		e.takeDamage(getForwardVelocity().x);
+		e.takeDamage(getForwardVelocity().x*4);
 		
 	}
 
