@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
@@ -300,6 +301,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				debugEntfernung = true;
 		}
 
+		// B >> Activate building mode
 		if (Gdx.input.isKeyJustPressed(Keys.B)) {
 			if (this.buildingtower == null) {
 				startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
@@ -307,13 +309,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				stopBuilding();
 			}
 		}
-		
-		if (Gdx.input.isKeyJustPressed(Keys.O)) {
-			if (this.buildingtower != null) {
-				this.buildingtower.setBlockBuildingMode(!this.buildingtower.buildingModeBlocked());
-			}
-		}
 
+		// Screen clicked >> Build tower
 		if(Gdx.input.isTouched()) {
 			// if in build mode build tower at the current mouse positin if allowed
 			if (this.buildingtower != null)
@@ -324,13 +321,25 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	
 	public void buildTowerIfAllowed() {
 		// if position and money is ok build it
-		if (buildingPositionIsAllowed(this.buildingtower) && buildingMoneyIsEnough(this.buildingtower)) {
+		if (buildingMoneyIsEnough(this.buildingtower) && buildingPositionIsAllowed(this.buildingtower)) {
 			// Add tower to the tower list
 			final Tower newTower = this.buildingtower;
 			newTower.activate();
 			towers.add(newTower);
 			stopBuilding();
+		} else {
+			blockBuildingTower(true);
+			Timer.schedule(new Timer.Task() {
+				public void run() {
+					blockBuildingTower(false);
+				}
+			}, 1);
 		}
+	}
+	
+	public void blockBuildingTower(final boolean b) {
+		if (this.buildingtower != null)
+			this.buildingtower.setBlockBuildingMode(b);
 	}
 
 	@Override
