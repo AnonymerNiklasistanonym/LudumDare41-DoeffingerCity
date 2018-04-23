@@ -111,6 +111,35 @@ public class MainMap {
 					|| (nodeMain.x == nodeNachbar.x && nodeMain.y-10 == nodeNachbar.y))  nodeMain.nachbarn.add(nodeNachbar);
 			}
 		}
+		
+		// Vom Ziel ausgehend noch die Entfernung in jeden Node schreiben
+		
+		// Ende normalisiesrn?
+		float zielX = 1,zielY = 1;
+		if(vector.x%10 < 5) {
+			zielX = vector.x - vector.x%10;
+		}
+		if(vector.x%10 >= 5) {
+			zielX = vector.x + (10-vector.x%10);
+		}if(vector.y%10 < 5) {
+			zielY = vector.y - vector.y%10;
+		}
+		if(vector.y%10 >= 5) {
+			zielY = vector.y + (10-vector.y%10);
+		}
+		
+		Node zielNode = new Node(true);
+		
+		for (Node node : nodesList) {
+			if(node.x == zielX && node.y == zielY) {
+				node.h = 1;
+				zielNode = node;
+				break;
+			}				
+		}
+		
+		werteSetzen(zielNode);
+				
 		System.out.println();
 		boolean isFound = false;
 		Node uebergebNode = new Node(true);
@@ -136,6 +165,17 @@ public class MainMap {
 			}
 		}
 		
+		
+	}
+	
+	public void werteSetzen(Node meinNode) {
+		if(meinNode != null) 
+			if(meinNode.nachbarn != null)
+				for (Node node : meinNode.nachbarn) {
+					if(node.h > meinNode.h+1)
+						node.h = meinNode.h+1;
+					werteSetzen(node);
+				}
 	}
 
 } 

@@ -25,7 +25,7 @@ public class Node {
 		this.x = x;
 		this.y = y;
 		erschwernis = 1;
-		h = (float) Math.sqrt((((x - zielX*PlayState.METER_TO_PIXEL) * (x - zielX*PlayState.METER_TO_PIXEL)) + ((y - zielY*PlayState.METER_TO_PIXEL) * (y - zielY*PlayState.METER_TO_PIXEL))));
+		h = 99999;
 		nachbarn = new ArrayList();
 	}
 	
@@ -34,7 +34,7 @@ public class Node {
 	}
 	
 	public float getKosten() {
-		return g * h * erschwernis;
+		return 4*g + h * erschwernis;
 	}
 	
 	public boolean getNoUse() {
@@ -47,5 +47,9 @@ public class Node {
 	
 	public float getY() {
 		return y;
+	}
+	
+	public float getH() {
+		return h;
 	}
 }

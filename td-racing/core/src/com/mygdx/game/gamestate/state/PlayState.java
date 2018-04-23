@@ -48,6 +48,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	private boolean debugBox2D;
 	private boolean debugCollision;
+	private boolean debugEntfernung;
 
 	public static boolean soundon = false;
 	private boolean debugWay;
@@ -141,6 +142,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugBox2D = false;
 		debugCollision = false;
 		debugWay = false;
+		debugEntfernung = false;
 
 		world = new World(new Vector2(0, 0), true);
 
@@ -267,6 +269,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				debugWay = true;
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.J)) {
+			if (debugEntfernung)
+				debugEntfernung = false;
+			else
+				debugEntfernung = true;
+		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.B)) {
 			if (this.buildingtower == null) {
@@ -361,9 +369,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				}
 			}
 		}
+		
+		if (debugEntfernung) {
+			Node[][] test = this.map.getNodesList();
+			MainGame.font.getData().setScale(0.01f);
+			for (int i = 0; i < this.RESOLUTION_WIDTH; i = i + 10) {
+				for (int j = 0; j < this.RESOLUTION_HEIGHT; j = j + 10) {
+						MainGame.font.draw(spriteBatch, test[i][j].getH()+"", i * PlayState.PIXEL_TO_METER,
+								j * PlayState.PIXEL_TO_METER);
+
+				}
+			}
+		}
 
 		if (debugWay) {
-			MainGame.font.getData().setScale(0.1f);
+			MainGame.font.getData().setScale(0.02f);
 			for (Enemy e : enemies) {
 
 				e.findWay();
