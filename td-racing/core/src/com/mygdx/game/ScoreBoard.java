@@ -13,10 +13,11 @@ public class ScoreBoard {
 	private int lapNumber;
 	private int killCount;
 	private float healthPoints;
-	
+	private final PlayState playState;
 	private final int COLUMN;
 
-	public ScoreBoard() {
+	public ScoreBoard(PlayState playState) {
+		this.playState = playState;
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 		COLUMN = 53;
 		this.healthPoints = 100;
@@ -35,10 +36,9 @@ public class ScoreBoard {
 	}
 	
 	public void reduceLife(float damage) {
-		healthPoints -= damage;
-		if(healthPoints < 0) {
-			// Ende aufrufen
-		}
+		this.healthPoints -= damage;
+		if(this.healthPoints < 0)
+			playState.playIsDeadCallback();
 	}
 	
 	public void update(final float deltaTime) {
@@ -84,6 +84,10 @@ public class ScoreBoard {
 
 	public float getTime() {
 		return this.wholeTime;
+	}
+
+	public int getScore() {
+		return (int) this.score;
 	}
 
 }

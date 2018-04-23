@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Car;
@@ -25,6 +27,7 @@ import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
+import com.mygdx.game.PreferencesManager;
 import com.mygdx.game.ScoreBoard;
 import com.mygdx.game.TurmMenu;
 import com.mygdx.game.gamestate.GameState;
@@ -57,6 +60,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugWay;
 	
 	private TurmMenu turmmenu;
+	
+	private PreferencesManager preferencesManager;
 
 	private MainMap map;
 	private Sprite pitStop;
@@ -95,8 +100,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 	
-		scoreBoard = new ScoreBoard();
+		scoreBoard = new ScoreBoard(this);
 		scoreBoard.reset(500);
+		
+		preferencesManager = new PreferencesManager();
+		preferencesManager.checkHighscore();
 		
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
@@ -478,6 +486,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarFinishLine(Car car, FinishLine finishLine) {
 		lapFinished();
+	}
+
+	public void playIsDeadCallback() {
+		Gdx.input.getTextInput(new TextInputListener() {
+			public void input(String text) {
+				preferencesManager.saveHighscore(text.trim(), scoreBoard.getScore());	
+				gameStateManager.setGameState(new HighscoreState(gameStateManager));
+			}
+			public void canceled() {
+				gameStateManager.setGameState(new HighscoreState(gameStateManager));
+			}
+		}, "Enter your name", "", "");
 	}
 
 }
