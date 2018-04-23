@@ -196,11 +196,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public static Sprite createScaledSprite(String location) {
-		Texture t = new Texture(Gdx.files.internal(location));
-		Sprite s = new Sprite(t);
+		final Sprite s = new Sprite(new Texture(Gdx.files.internal(location)));
 		s.setSize(s.getWidth() * PIXEL_TO_METER, s.getHeight() * PIXEL_TO_METER);
 		s.setOriginCenter();
-		// t.dispose();
 		return s;
 	}
 
@@ -215,34 +213,25 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 	
 	public boolean buildingPositionIsAllowed(final Tower tower) {
-		System.out.println("buildingPositionIsAllowed");
 		final float[][] cornerPoints = tower.getCornerPoints();
 		boolean isAllowed = true;
-		for (int i = 0; i < cornerPoints.length; i++) {
+		for (int i = 0; i < cornerPoints.length; i++)
 			isAllowed = this.map.isInBody(cornerPoints[i][0], cornerPoints[i][1]);
-			System.out.println("isAllowed: " + isAllowed + ", x: " + cornerPoints[i][0] + ", y: " + cornerPoints[i][1]);
-		}
-		System.out.println("isAllowed: " + isAllowed);
+		System.out.println("buildingPositionIsAllowed: " + isAllowed);
 		return isAllowed;
 	}
 	
 	public boolean buildingMoneyIsEnough(final Tower tower) {
-		System.out.println("buildingMoneyIsEnough");
-		// if there is enough money return true
-		if(tower.getCost() <= this.scoreBoard.getMoney()) {
-				System.out.println("cost ok");
-			 return true;
-		} else {
-			System.out.println("cost not ok");
-			return false;
-		}
+		final boolean moneyIsEnough = tower.getCost() <= scoreBoard.getMoney();
+		System.out.println("buildingMoneyIsEnough: " + moneyIsEnough);
+		return moneyIsEnough;
 	}
 
 	public void stopBuilding() {
+		System.out.println("Stop building");
 		turmmenu.unselectAll();
-		for (final Tower tower : towers) {
+		for (final Tower tower : towers)
 			tower.activateRange(false);
-		}
 	}
 
 	@Override
@@ -292,8 +281,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (buildingMoneyIsEnough(this.buildingtower) && buildingPositionIsAllowed(this.buildingtower)) {
 			// Add tower to the tower list		
 			turmmenu.unselectAll();
-			this.scoreBoard.addMoney(-this.buildingtower.getCost());
-			Tower newTower = this.buildingtower;
+			scoreBoard.addMoney(-this.buildingtower.getCost());
+			final Tower newTower = this.buildingtower;
 			buildingtower=null;
 			newTower.activate();
 			newTower.setBuildingMode(false);
@@ -333,13 +322,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// update towers
 		if (buildingtower != null) {
-			
 			buildingtower.update(deltaTime, mousePos);
-			buildingtower=turmmenu.getCurrentTower();
-		}
-		else
-		{
-			stopBuilding();
+			buildingtower = turmmenu.getCurrentTower();
 		}
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
