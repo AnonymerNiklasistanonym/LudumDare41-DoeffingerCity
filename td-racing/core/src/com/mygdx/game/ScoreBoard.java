@@ -31,7 +31,7 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", COLUMN, 5);
 		MainGame.font.draw(spriteBatch, "Whole Time: " + String.format("%.2f", this.wholeTime) + "s", COLUMN, 4);
 		MainGame.font.draw(spriteBatch, "Lap Time: " + String.format("%.2f", this.currentTime) + "s", COLUMN, 3);
-		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber + "s", COLUMN, 2);
+		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber, COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 1);
 	}
 	
