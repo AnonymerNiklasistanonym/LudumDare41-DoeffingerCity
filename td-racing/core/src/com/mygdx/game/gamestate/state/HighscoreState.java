@@ -41,7 +41,6 @@ public class HighscoreState extends GameState {
 
 	@Override
 	protected void handleInput() {
-		// TODO Do nothing right now
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey())) {
 			gameStateManager.setGameState(new MenuState(gameStateManager));
 		}
@@ -51,6 +50,7 @@ public class HighscoreState extends GameState {
 	@Override
 	protected void update(float deltaTime) {
 		// TODO Do nothing right now
+		handleInput();
 		
 	}
 

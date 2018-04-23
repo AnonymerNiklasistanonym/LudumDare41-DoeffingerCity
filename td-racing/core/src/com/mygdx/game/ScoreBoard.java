@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class ScoreBoard {
@@ -29,18 +30,20 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, COLUMN, 7);
 		MainGame.font.draw(spriteBatch, "Kill Count: " + (int) this.killCount, COLUMN, 6);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", COLUMN, 5);
-		MainGame.font.draw(spriteBatch, "Whole Time: " + String.format("%.2f", this.wholeTime) + "s", COLUMN, 4);
-		MainGame.font.draw(spriteBatch, "Lap Time: " + String.format("%.2f", this.currentTime) + "s", COLUMN, 3);
+		// String.format("%.2f", this.wholeTime) - HTML BUILD GOES CRAZY
+		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + "s", COLUMN, 4);
+		// String.format("%.2f", this.currentTime) - HTML BUILD GOES CRAZY
+		MainGame.font.draw(spriteBatch, "Lap Time: " + (int) this.currentTime + "s", COLUMN, 3);
 		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber, COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 1);
 	}
-	
+
 	public void reduceLife(float damage) {
 		this.healthPoints -= damage;
-		if(this.healthPoints < 0)
+		if (this.healthPoints < 0)
 			playState.playIsDeadCallback();
 	}
-	
+
 	public void update(final float deltaTime) {
 		this.wholeTime += deltaTime;
 		this.currentTime += deltaTime;
@@ -79,7 +82,7 @@ public class ScoreBoard {
 	}
 
 	public void addMoney(final int cost) {
-		this.money += cost;		
+		this.money += cost;
 	}
 
 	public float getTime() {
