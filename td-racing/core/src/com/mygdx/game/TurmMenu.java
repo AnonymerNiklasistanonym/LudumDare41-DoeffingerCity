@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.Tower;
+import com.mygdx.game.objects.tower.FireTower;
 import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MGTower;
 
@@ -188,7 +189,7 @@ public class TurmMenu {
 		if(tower2selected&&tower2unlocked)
 			buildingtower=new LaserTower(10, 10, enemies, w);
 		if(tower3selected&&tower3unlocked)
-			buildingtower=new MGTower(10, 10, enemies, w);
+			buildingtower=new FireTower(10, 10, enemies, w);
 		if(tower4selected&&tower4unlocked)
 			buildingtower=new MGTower(10, 10, enemies, w);
 		if(tower5selected&&tower5unlocked)

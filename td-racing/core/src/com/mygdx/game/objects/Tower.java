@@ -79,7 +79,15 @@ public abstract class Tower {
 			spriteFiring.draw(spriteBatch);
 		}
 	}
+	
+	public void drawProjectile(final SpriteBatch spriteBatch) {
+		
+	}
 
+	public Array<Body> removeProjectiles() {
+	return null;	
+	}
+	
 	public void drawLine(final SpriteBatch spriteBatch) {
 			sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 			sRender.begin(ShapeType.Filled);

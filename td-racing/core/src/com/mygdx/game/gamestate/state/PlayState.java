@@ -36,6 +36,7 @@ import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
+import com.mygdx.game.objects.tower.FireTower;
 import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MGTower;
 
@@ -114,7 +115,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		final Sprite s1=createScaledSprite("buttons/cannonbutton.png");
 		final Sprite s2=createScaledSprite("buttons/laserbutton.png");
-		final Sprite s3=createScaledSprite("buttons/cannonbutton.png");
+		final Sprite s3=createScaledSprite("buttons/flamebutton.png");
 		final Sprite s4=createScaledSprite("buttons/cannonbutton.png");
 		final Sprite s5=createScaledSprite("buttons/cannonbutton.png");
 		
@@ -135,6 +136,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
 		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
 		LaserTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		
+		FireTower.groundTower = new Texture(Gdx.files.internal("tower/tower_fire_bottom.png"));
+		FireTower.upperTower = new Texture(Gdx.files.internal("tower/tower_fire_upper.png"));
+		FireTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_fire_firing.png"));
+		FireTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
@@ -354,8 +360,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			e.draw(spriteBatch);
 		}
 		
-		for (final Tower tower : towers)
+		for (final Tower tower : towers) {
+			tower.drawProjectile(spriteBatch);
 			tower.drawUpperBuddy(spriteBatch);
+		}
 
 		if (debugCollision) {
 			Node[][] test = this.map.getNodesList();
