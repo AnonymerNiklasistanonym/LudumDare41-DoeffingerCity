@@ -19,7 +19,7 @@ import com.mygdx.game.gamestate.state.PlayState;
 public abstract class Enemy extends BodyDef {
 	public Body body;
 	float speed = 80;
-	float health = 0;
+	public float health = 0;
 	Texture taussehen;
 	Sprite saussehen;
 	Sprite stot;

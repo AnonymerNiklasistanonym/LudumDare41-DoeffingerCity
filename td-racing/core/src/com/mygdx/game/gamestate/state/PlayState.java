@@ -46,11 +46,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	CollisionListener collis;
 	private Sprite smaincar;
 	private Sprite sfinishline;
-	private Sprite scurrenttrack;
 	private Sprite strack1;
 	private Sprite strack2;
 	private Sprite strack3;
-	
+	private Sprite scurrenttrack;
 	private World world;
 	private Car car;
 	private FinishLine finishline;
@@ -60,6 +59,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugBox2D;
 	private boolean debugCollision;
 	private boolean debugEntfernung;
+	private boolean carsoundPlaying = false;
 
 	public static boolean soundon = false;
 	private boolean debugWay;
@@ -77,6 +77,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private int moneyPerLap = 50;
 
 	private float laptime = 0f;
+	private Sound splatt, money, carsound;
 
 	/**
 	 * Time since last physic Steps
@@ -107,7 +108,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager) {
-		
 		super(gameStateManager);
 
 		scoreBoard = new ScoreBoard(this);
@@ -115,14 +115,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		preferencesManager = new PreferencesManager();
 		preferencesManager.checkHighscore();
-		
-		currentEnemyWaves=new Array<EnemyWaveEntry>();
-		
+
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
 		strack2 = createScaledSprite("maps/track2.png");
 		strack3 = createScaledSprite("maps/track3.png");
-
+		scurrenttrack = strack1;
 		smaincar = createScaledSprite("cars/car_standard.png");
 		sfinishline = createScaledSprite("maps/finishline.png");
 
@@ -172,6 +170,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
+		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
+		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
+		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound2.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -192,7 +193,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugWay = false;
 		debugEntfernung = false;
 
-		
 		turmmenu = new TurmMenu(s1, s2, s3, s4, s5, world, enemies);
 
 		checkpoints = new Checkpoint[4];
@@ -201,12 +201,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER,
 					checkPointPosition[i][1] * PIXEL_TO_METER);
 
-		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
+		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
+
 		pitStop.setPosition(100, 100);
 
-		
-
-		System.out.println("Play state entered");
 		loadLevel(1);
 	}
 
@@ -214,23 +212,28 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		switch (i) {
 		case 1:
 			map = new MainMap("track1", world, finishline.body);
-			map.setSpawn(new Vector2(220,20));
-			scurrenttrack=strack1; 
+			map.setSpawn(new Vector2(220, 20));
+			scurrenttrack = strack1;
+			pitStop.setPosition(210 * PIXEL_TO_METER, 20 * PIXEL_TO_METER);
 			break;
 		case 2:
 			map = new MainMap("track2", world, finishline.body);
-			map.setSpawn(new Vector2(220,20));
-			scurrenttrack=strack2; 
+			map.setSpawn(new Vector2(200, 500));
+			scurrenttrack = strack2;
 			break;
 		case 3:
 			map = new MainMap("track3", world, finishline.body);
-			map.setSpawn(new Vector2(220,20));
-			scurrenttrack=strack3; 
+			map.setSpawn(new Vector2(220, 50));
+			scurrenttrack = strack3;
 			break;
 
 		default:
 			break;
 		}
+
+		currentEnemyWaves = map.getEnemyWaves();
+		System.out.println("Play state entered");
+
 	}
 
 	public static Sprite createScaledSprite(String location) {
@@ -353,6 +356,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		car.update(deltaTime);
 
+		if (soundon)
+			if (car.getForward().x != 0 && !carsoundPlaying) {
+				carsound.loop();
+				carsoundPlaying = true;
+			} else {
+				if (car.getForward().x == 0) {
+					carsound.stop();
+					carsoundPlaying = false;
+
+				}
+			}
+
 		if (buildingtower == null) {
 			buildingtower = turmmenu.getCurrentTower();
 			if (buildingtower != null)
@@ -423,7 +438,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		strack1.draw(spriteBatch);
+		scurrenttrack.draw(spriteBatch);
 		finishline.draw(spriteBatch);
 
 		// draw checkpoints
@@ -564,6 +579,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
 		car.hitEnemy(enemy);
+		if (enemy.health < 0) {
+			if (soundon)
+				splatt.play(1, MathUtils.random(0.5f, 2f), 0);
+		}
 	}
 
 	@Override
@@ -585,6 +604,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
 		}
+
+		if (soundon)
+			money.play();
 
 	}
 
