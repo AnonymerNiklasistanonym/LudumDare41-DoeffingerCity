@@ -387,7 +387,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		}
 		scoreBoard.update(deltaTime);
-		System.out.println("delta" +deltaTime);
 		camera.update();
 		updateWaves1();
 		
