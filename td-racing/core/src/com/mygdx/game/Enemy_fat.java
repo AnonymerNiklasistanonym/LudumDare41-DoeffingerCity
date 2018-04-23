@@ -13,5 +13,6 @@ import com.badlogic.gdx.physics.box2d.World;
 			super(x,y,w, normalTexture, deadTexture,damageTexture,map);
 			this.speed = 0.5f;
 			this.health = 100;
+			this.damage = 20;
 		}
 }

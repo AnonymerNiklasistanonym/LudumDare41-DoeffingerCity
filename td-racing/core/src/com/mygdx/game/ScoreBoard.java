@@ -12,16 +12,19 @@ public class ScoreBoard {
 	private float currentTime;
 	private int lapNumber;
 	private int killCount;
+	private float healthPoints;
 	
 	private final int COLUMN;
 
 	public ScoreBoard() {
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 		COLUMN = 53;
+		this.healthPoints = 100;
 		reset(0);
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
+		MainGame.font.draw(spriteBatch, "Leben: " + (int) this.healthPoints, COLUMN, 8);
 		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, COLUMN, 7);
 		MainGame.font.draw(spriteBatch, "Kill Count: " + (int) this.killCount, COLUMN, 6);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", COLUMN, 5);
@@ -30,7 +33,14 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber + "s", COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 1);
 	}
-
+	
+	public void reduceLife(float damage) {
+		healthPoints -= damage;
+		if(healthPoints < 0) {
+			// Ende aufrufen
+		}
+	}
+	
 	public void update(final float deltaTime) {
 		this.wholeTime += deltaTime;
 		this.currentTime += deltaTime;
@@ -61,6 +71,7 @@ public class ScoreBoard {
 		this.currentTime = 0f;
 		this.lapNumber = 0;
 		this.waveNumber = 0;
+		this.healthPoints = 100;
 	}
 
 	public int getMoney() {
