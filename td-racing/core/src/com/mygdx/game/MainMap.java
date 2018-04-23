@@ -40,9 +40,10 @@ public class MainMap {
 	
 	public Array<EnemyWaveEntry> setEnemyWave() {
 		final Array<EnemyWaveEntry> enemyWavesToSet = new Array<EnemyWaveEntry>();
-		enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
-		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
-		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 100, 4, 10));
+		//enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 10,0.1f, 20,1f, 10,0.01f));
+		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 0,0.1f, 10,1f, 0,0.01f));
 		//enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2(220,20), 2, 0, 0, 10));
 		return enemyWavesToSet;
 	}
@@ -93,7 +94,7 @@ public class MainMap {
 		mapZombieWay = world.createBody(ziel);
 
 		// // 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "Name", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+		loader.attachFixture(mapModel, "Map", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		loaderZiel.attachFixture(mapZiel, "Ziel", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		loaderZombieWay.attachFixture(mapZombieWay, "Zombieway", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		System.out.println();

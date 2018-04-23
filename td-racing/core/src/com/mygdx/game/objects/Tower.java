@@ -351,7 +351,7 @@ public abstract class Tower {
 					if (isTargetInRange(e))
 						best = e;
 			if (best != null)
-				if (e.getScore() > best.getScore() && e.tot == false)
+				if (e.getScore() < best.getScore() && e.tot == false)
 					if (isTargetInRange(e))
 						best = e;
 		}
