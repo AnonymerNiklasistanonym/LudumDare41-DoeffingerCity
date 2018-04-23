@@ -163,35 +163,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		world.setContactListener(collis);
 		debugRender = new Box2DDebugRenderer();
-
 		car = new Car(world, smaincar, 440, 220);
-
 		finishline = new FinishLine(world, sfinishline, 380, 220);
 
 		map = new MainMap("test", world,finishline.body );
-
-		for (int i = 0; i < 2; i++) {
-			Enemy e = new Enemy_small(220,20,world, map);
-			Enemy f= new Enemy_fat(220,25,world,map);
-			Enemy b= new Enemy_bicycle(220,20,world,map);
-			f.startMove();
-			e.startMove();
-			b.startMove();
-			enemies.add(e);
-			enemies.add(f);
-			enemies.add(b);
-//			Enemy e = new Enemy_small(220,20,world, map);
-//			Enemy f= new Enemy_fat(220,20,world,map);
-//			Enemy b= new Enemy_bicycle(220,20,world,map);
-//			f.startMove();
-//			e.startMove();
-//			b.startMove();
-//			enemies.add(e);
-//			enemies.add(f);
-//			enemies.add(b);
-			turmmenu=new TurmMenu(s1, s2, s3, s4, s5,world,enemies);
-		}
-
+		turmmenu=new TurmMenu(s1, s2, s3, s4, s5,world,enemies);
+	
 		// create example checkpoints
 		checkpoints = new Checkpoint[4];
 		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
@@ -301,6 +278,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				soundon = false;
 			else
 				soundon = true;
+		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.F)) {
+			Enemy e=new Enemy_small(220, 20, world, map);
+			enemies.add(e);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.G)) {
+			Enemy e=new Enemy_fat(220, 20, world, map);
+			enemies.add(e);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.H)) {
+			Enemy e=new Enemy_bicycle(220, 20, world, map);
+			enemies.add(e);
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.I)) {
@@ -437,6 +427,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		finishline.draw(spriteBatch);
 		strack1top.draw(spriteBatch);
 		// draw checkpoints
+		if(debugBox2D)
 		for (final Checkpoint checkpoint : checkpoints)
 			checkpoint.draw(spriteBatch);
 		// draw tower
@@ -532,6 +523,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				enemy.body.setActive(false);
 				enemy.justDied = false;
 				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
+			}
+			Array<Enemy> toremove=new Array<Enemy>();
+			for (Enemy e : toremove) {
+				if(e.delete) {
+					toremove.add(e);
+					world.destroyBody(e.body);
+				}
+			}
+			for (Enemy e : toremove) {
+				enemies.removeValue(e, true);
 			}
 		}
 	}
