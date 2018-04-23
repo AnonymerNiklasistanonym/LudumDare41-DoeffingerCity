@@ -28,7 +28,6 @@ import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
-import com.mygdx.game.objects.tower.EmptyTower;
 import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MGTower;
 
@@ -108,6 +107,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		NormalCheckpoint.normalCheckPointDisabled = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
 		Tower.circleTexture = new Texture(Gdx.files.internal("tower/range.png"));
+		
 		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
@@ -115,7 +115,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
 		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
-		
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
@@ -194,6 +193,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		buildingtower.setBuildingMode(true);
 		for (final Tower tower : towers) {
 			tower.activateRange(true);
+			System.out.println(tower.getCost());
 		}
 	}
 
@@ -264,6 +264,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
 			} else {
 				stopBuilding();
+			}
+		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.O)) {
+			if (this.buildingtower != null) {
+				this.buildingtower.setBlockBuildingMode(!this.buildingtower.buildingModeBlocked());
 			}
 		}
 
@@ -399,8 +405,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// dispose STATIC textures
 		NormalCheckpoint.normalCheckPointActivated.dispose();
 		NormalCheckpoint.normalCheckPointDisabled.dispose();
-		// EmptyTower.groundTower.dispose();
-		// EmptyTower.upperTower.dispose();
+		MGTower.groundTower.dispose();
+		MGTower.upperTower.dispose();
+		MGTower.towerFiring.dispose();
+		LaserTower.groundTower.dispose();
+		LaserTower.upperTower.dispose();
+		LaserTower.towerFiring.dispose();
+		Tower.circleTexture.dispose();
 		Enemy_small.normalTexture.dispose();
 		Enemy_small.deadTexture.dispose();
 	}

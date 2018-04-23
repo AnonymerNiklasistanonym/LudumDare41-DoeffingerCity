@@ -16,17 +16,20 @@ public class LaserTower extends Tower {
 	public static Texture upperTower;
 	public static Texture towerFiring;
 	public static final int range = 10;
+	public static int costTower = 400;
+
 
 	public LaserTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final Sound soundShoot,
 			World w) {
 		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, soundShoot, w, range);
 
-		maxHealth = -1;
-		speed = 0.0f;
-		firingSpriteTime=0.1f;
-		power = 0.2f;
-		turnspeed = 500;
-		permanentsound=true;
+		this.maxHealth = -1;
+		this.speed = 0.0f;
+		this.firingSpriteTime=0.1f;
+		this.power = 0.2f;
+		this.turnspeed = 500;
+		this.permanentsound=true;
+		this.cost = LaserTower.costTower;
 	}
 
 	@Override
