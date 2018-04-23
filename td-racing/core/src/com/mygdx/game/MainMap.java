@@ -36,8 +36,7 @@ public class MainMap {
 		createSolidMap(mapName, world);
 		this.finishLine=finishLine;
 		createAStarArray();
-		//this.enemyWaves = setEnemyWave(world);
-		this.enemyWaves=null;
+		this.enemyWaves = setEnemyWave(world);
 	}
 	
 	public Array<EnemyWave> setEnemyWave(final World world) {
@@ -161,7 +160,7 @@ public class MainMap {
 		Node zielNode = new Node(true);
 		
 		for (Node node : nodesList) {
-			if(node.x == zielX && node.y == zielY) {
+			if(node.x == zielX*PlayState.METER_TO_PIXEL && node.y == zielY*PlayState.METER_TO_PIXEL) {
 				node.h = 1;
 				zielNode = node;
 				break;
@@ -202,9 +201,10 @@ public class MainMap {
 		if(meinNode != null) 
 			if(meinNode.nachbarn != null)
 				for (Node node : meinNode.nachbarn) {
-					if(node.h > meinNode.h+1)
+					if(node.h > meinNode.h+1) {
 						node.h = meinNode.h+1;
-					werteSetzen(node);
+						werteSetzen(node);						
+					}
 				}
 	}
 

@@ -36,7 +36,7 @@ public abstract class Enemy extends BodyDef {
 	public boolean delete;
 
 	public boolean tot = false;
-	float distancetonode = 50f;
+	float distancetonode = 100f;
 
 	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
 		final Sprite spriteSprite = new Sprite(sprite);
@@ -165,23 +165,24 @@ public abstract class Enemy extends BodyDef {
 		if (tempNodes2DList[(int) startX][(int) startY].noUse)
 			System.out.println("Halt");
 
-		if (tempNodes2DList[(int) startX][(int) startY].nachbarn != null) {
-			for (Node node : tempNodes2DList[(int) startX][(int) startY].nachbarn) {
-				if (!node.noUse)
-					if (lowCost > node.getKosten()) {
-						node.g = 1;
-						openList.add(node);
-						lowCost = node.getKosten();
-					}
-			}
-		} else {
-			// Irgendwo im Nirgendwo... Raus da
-			LinkedList<Node> blub = new LinkedList<Node>();
-			blub.add(tempNodes2DList[(int) startX][(int) startY]);
-			return blub;
-		}
+//		if (tempNodes2DList[(int) startX][(int) startY].nachbarn != null) {
+//			for (Node node : tempNodes2DList[(int) startX][(int) startY].nachbarn) {
+//				if (!node.noUse)
+//					if (lowCost > node.getKosten()) {
+//						node.g = 1;
+//						openList.add(node);
+//						lowCost = node.getKosten();
+//					}
+//			}
+//		} else {
+//			// Irgendwo im Nirgendwo... Raus da
+//			LinkedList<Node> blub = new LinkedList<Node>();
+//			blub.add(tempNodes2DList[(int) startX][(int) startY]);
+//			return blub;
+//		}
 
-		aktuellerNode = openList.getFirst();
+		openList.add(tempNodes2DList[(int) startX][(int) startY]);
+		aktuellerNode = tempNodes2DList[(int) startX][(int) startY];
 		int zaehler = 10000;
 		while (!found) {
 
@@ -191,7 +192,7 @@ public abstract class Enemy extends BodyDef {
 
 				break;
 			}
-
+			
 			// NEU *********************************************
 			lowCost = 999999;
 			for (Node node : openList) {
@@ -219,10 +220,10 @@ public abstract class Enemy extends BodyDef {
 						// }
 					}
 				} else {
-					if (closedList.indexOf(node) > 1 && node.getKosten() > (aktuellerNode.g + 1) * node.h) {
-						closedList.remove(closedList.indexOf(node));
-						openList.add(node);
-					}
+//					if (closedList.indexOf(node) > 1 && node.getKosten() > (aktuellerNode.g + 1) * node.h) {
+//						closedList.remove(closedList.indexOf(node));
+//						openList.add(node);
+//					}
 				}
 
 			}
@@ -243,7 +244,7 @@ public abstract class Enemy extends BodyDef {
 			}
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10f);
+			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(1f,3f);
 
 			// Hinzufuegen
 			tempweg.add(aktuellerNode);
