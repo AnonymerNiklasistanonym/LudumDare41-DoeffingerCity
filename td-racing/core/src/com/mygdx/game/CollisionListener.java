@@ -26,7 +26,7 @@ public class CollisionListener implements ContactListener {
 
 			// and the other object is an Enemy
 			if (a instanceof Enemy || b instanceof Enemy) {
-				System.out.println("Collision detected >> Enemy");
+				
 				if (a instanceof Enemy)
 					this.collisionCallbackInterface.collisionCarEnemy((Car) b, (Enemy) a);
 				else
@@ -35,7 +35,7 @@ public class CollisionListener implements ContactListener {
 
 			// and the other object is a Checkpoint
 			if (a instanceof Checkpoint || b instanceof Checkpoint) {
-				System.out.println("Collision detected >> Checkpoint");
+				
 				if (a instanceof Checkpoint)
 					this.collisionCallbackInterface.collisionCarCheckpoint((Car) b, (Checkpoint) a);
 				else
@@ -44,7 +44,7 @@ public class CollisionListener implements ContactListener {
 			
 			// and the other object is a Checkpoint
 			if (a instanceof FinishLine || b instanceof FinishLine) {
-				System.out.println("Collision detected >> Tower");
+				
 				if (a instanceof FinishLine)
 					this.collisionCallbackInterface.collisionCarFinishLine((Car) b, (FinishLine) a);
 				else

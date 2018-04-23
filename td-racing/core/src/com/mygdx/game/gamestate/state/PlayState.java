@@ -409,23 +409,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			world.step(TIME_STEP, 6, 2);
 			physicsaccumulator -= TIME_STEP;
 		}
-
+		Array<Enemy> toremove=new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
 			if (enemy.justDied) {
 				enemy.body.setActive(false);
 				enemy.justDied = false;
 				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 			}
-			final Array<Enemy> toremove=new Array<Enemy>();
-			for (final Enemy e : toremove) {
-				if(e.delete) {
-					toremove.add(e);
-					world.destroyBody(e.body);
-				}
-			}
-			for (Enemy e : toremove)
-				enemies.removeValue(e, true);
+			if(enemy.delete) {
+				toremove.add(enemy);
+				world.destroyBody(enemy.body);
+			}	
 		}
+		for (Enemy e : toremove) {
+			enemies.removeValue(e, true);
+		}
+		
 	}
 
 	@Override

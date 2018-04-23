@@ -243,7 +243,7 @@ public abstract class Enemy extends BodyDef {
 			}
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			//map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10f);
+			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10f);
 
 			// Hinzufuegen
 			tempweg.add(aktuellerNode);
