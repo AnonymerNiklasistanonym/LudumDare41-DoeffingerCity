@@ -132,6 +132,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		FireTower.groundTower = new Texture(Gdx.files.internal("tower/tower_fire_bottom.png"));
 		FireTower.upperTower = new Texture(Gdx.files.internal("tower/tower_fire_upper.png"));
 		FireTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_fire_firing.png"));
+		FireTower.tflame = new Texture(Gdx.files.internal("tower/flame.png"));
 		FireTower.soundShoot=Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));

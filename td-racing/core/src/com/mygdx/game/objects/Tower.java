@@ -334,6 +334,7 @@ public abstract class Tower {
 			}
 			else
 				tryshoot(target);
+			updateProjectiles();
 		}
 		
 	}
@@ -398,6 +399,10 @@ public abstract class Tower {
 	
 	public boolean rangeIsActivated() {
 		return this.rangeActivated;
+	}
+
+	public void updateProjectiles() {
+		
 	}
 
 }
