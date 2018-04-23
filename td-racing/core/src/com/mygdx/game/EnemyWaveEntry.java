@@ -25,7 +25,7 @@ public class EnemyWaveEntry {
 	}
 
 	public EnemyWaveEntry(final float timeInSeconds, final Vector2 positon, final int id) {
-		System.out.println("time: " + timeInSeconds + ", position: " + positon.x + ", " + positon.y + ", id: " + id);
+		// System.out.println("time: " + timeInSeconds + ", position: " + positon.x + ", " + positon.y + ", id: " + id);
 		this.timeInSeconds =  timeInSeconds;
 		this.positon = positon;
 		this.id = id;
@@ -66,13 +66,12 @@ public class EnemyWaveEntry {
 		
 		final float countingTime = 0.2f;
 		int counter = 0;
-		
+		for (int i = 0 + smallNumber + fatNumber; i < bicycleNumber + smallNumber + fatNumber; i++)
+			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_BYCICLE);
 		for (int i = 0; i < smallNumber; i++)
 			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_SMALL);
 		for (int i = 0 + smallNumber; i < fatNumber + smallNumber; i++)
 			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_FAT);
-		for (int i = 0 + smallNumber + fatNumber; i < bicycleNumber + smallNumber + fatNumber; i++)
-			entries[i] = new EnemyWaveEntry(entryTime + counter++ * countingTime, entryPoint, ENEMY_BYCICLE);
 		return entries;
 	}
 	

@@ -81,7 +81,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	 * Time since last physic Steps
 	 */
 
-	boolean infiniteenemies=true;
+	boolean infiniteenemies=false;
 	
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
@@ -330,7 +330,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		for (final EnemyWaveEntry entry : currentEnemyWaves) {
 			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
-				System.out.println("entry.getTimeInSeconds()" + entry.getTimeInSeconds() + "> scoreBoard.getTime()" + scoreBoard.getTime());
 				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
 				currentEnemyWaves.removeValue(entry, true);
 			}

@@ -229,7 +229,7 @@ public abstract class Enemy extends BodyDef {
 			}
 
 			if (aktuellerNode.x == zielX && aktuellerNode.y == zielY) {
-				System.out.println("Gefunden");
+				// System.out.println("Gefunden");
 				break;
 			}
 
