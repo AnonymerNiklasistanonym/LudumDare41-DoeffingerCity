@@ -163,10 +163,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
 		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
+
 		Enemy_Lincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
 		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
-		
+
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -199,13 +200,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop = new Sprite(new Texture(Gdx.files.internal("pit_stop/pit_stop_01.png")));
 		pitStop.setPosition(100, 100);
 
+
 		currentEnemyWaves = map.getEnemyWaves();
 		
-
-		Enemy e=new Enemy_Lincoln(220, 40, world, map);
-		enemies.add(e);
 		
-//		currentEnemyWaves = map.getEnemyWaves();
+
+		
+		
+
 
 		System.out.println("Play state entered");
 	}
@@ -341,6 +343,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
 
+
 		for (final EnemyWaveEntry entry : currentEnemyWaves) {
 			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
 				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
@@ -361,7 +364,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				enemies.add(e);
 			}
 
-=======
 		
 //		for (final EnemyWaveEntry entry : currentEnemyWaves) {
 //			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
@@ -383,12 +385,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			enemies.add(e);
 		}
 		
->>>>>>> f17783ead2e5070256fc43d031add3e781a6d31b
+
 		}
 		scoreBoard.update(deltaTime);
 
 		camera.update();
 		updateWaves1();
+		}
 	}
 
 	@Override
