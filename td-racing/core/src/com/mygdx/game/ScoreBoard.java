@@ -18,7 +18,7 @@ public class ScoreBoard {
 	public ScoreBoard() {
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 		COLUMN = 53;
-		reset();
+		reset(0);
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
@@ -52,11 +52,11 @@ public class ScoreBoard {
 		this.waveNumber++;
 	}
 
-	public void reset() {
+	public void reset(final int money) {
 		this.currentTime = 0f;
 		this.score = 0;
 		this.killCount = 0;
-		this.money = 0;
+		this.money = money;
 		this.wholeTime = 0;
 		this.currentTime = 0f;
 		this.lapNumber = 0;

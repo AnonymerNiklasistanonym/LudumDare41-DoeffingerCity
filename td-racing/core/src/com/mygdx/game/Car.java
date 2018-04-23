@@ -42,8 +42,7 @@ public class Car {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
-		
-		
+		body.setTransform(body.getPosition(), (float) Math.toRadians( 180 ));
 		sprite = scar;
 		
 	}

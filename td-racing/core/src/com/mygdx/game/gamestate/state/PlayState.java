@@ -63,7 +63,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private ScoreBoard scoreBoard;
 	private Tower buildingtower;
 
-	private int money = 100;
 	private int moneyPerLap = 100;
 
 	private float laptime=0f;
@@ -97,7 +96,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		super(gameStateManager);
 	
 		scoreBoard = new ScoreBoard();
-		scoreBoard.reset();
+		scoreBoard.reset(100);
 
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
