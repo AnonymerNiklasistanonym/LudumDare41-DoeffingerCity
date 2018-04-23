@@ -25,7 +25,7 @@ public class EnemyWaveEntry {
 	}
 
 	public EnemyWaveEntry(final float timeInSeconds, final Vector2 positon, final int id) {
-		System.out.println("time: " + timeInSeconds + ", position: " + positon.x + ", " + positon.y + ", id: " + id);
+		// System.out.println("time: " + timeInSeconds + ", position: " + positon.x + ", " + positon.y + ", id: " + id);
 		this.timeInSeconds =  timeInSeconds;
 		this.positon = positon;
 		this.id = id;

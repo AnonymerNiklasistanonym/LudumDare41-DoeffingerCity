@@ -330,7 +330,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		for (final EnemyWaveEntry entry : currentEnemyWaves) {
 			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
-				System.out.println("entry.getTimeInSeconds()" + entry.getTimeInSeconds() + "> scoreBoard.getTime()" + scoreBoard.getTime());
 				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
 				currentEnemyWaves.removeValue(entry, true);
 			}

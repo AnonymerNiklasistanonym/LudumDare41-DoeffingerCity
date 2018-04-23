@@ -53,7 +53,7 @@ public class MainGame extends ApplicationAdapter {
 		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));
 		spriteBatch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
-		gameStateManager.pushState(new MenuState(gameStateManager));
+		gameStateManager.pushState(new GameOverState(gameStateManager));
 	}
 
 	@Override

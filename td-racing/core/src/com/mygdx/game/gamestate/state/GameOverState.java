@@ -3,6 +3,7 @@ package com.mygdx.game.gamestate.state;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainGame;
@@ -122,6 +123,8 @@ public class GameOverState extends GameState {
 		spriteBatch.begin();
 		if (loading) {
 			spriteBatch.draw(backgroundLoading, 0, 0);
+			final GlyphLayout test = new GlyphLayout(MainGame.fontBig, "LOADING");
+			MainGame.fontBig.draw(spriteBatch, "LOADING", MainGame.GAME_WIDTH / 2 - test.width / 2, MainGame.GAME_HEIGHT / 2 + test.height / 2);
 			changeToPlayState = true;
 		} else {
 			spriteBatch.draw(backgroundGameOver, 0, 0);
