@@ -97,7 +97,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		super(gameStateManager);
 	
 		scoreBoard = new ScoreBoard();
-		scoreBoard.reset(100);
+		scoreBoard.reset(500);
 		
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
@@ -391,8 +391,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (Enemy e : enemies) {
 			e.update(Gdx.graphics.getDeltaTime());
 			e.draw(spriteBatch);
-
 		}
+		
+		for (final Tower tower : towers)
+			tower.drawUpperBuddy(spriteBatch);
 
 		if (debugCollision) {
 			Node[][] test = this.map.getNodesList();

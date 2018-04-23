@@ -67,31 +67,28 @@ public abstract class Tower {
 
 		spriteBody.draw(spriteBatch);
 		
-		if (firingLineTime > timesincelastshot) {
-			spriteBatch.end();
-			sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-			sRender.begin(ShapeType.Filled);
-			sRender.setColor(Color.YELLOW);
-			sRender.rectLine(center, shotposition, 0.2f);
-			sRender.end();
-			spriteBatch.begin();
-		}
-		
-		if (firingSpriteTime > timesincelastshot)
-			spriteFiring.draw(spriteBatch);
-		else
+		if (!(firingSpriteTime > timesincelastshot))
 			spriteUpperBody.draw(spriteBatch);
 		
 		if (healthBar)
 			drawHealthBar();
 	}
+	
+	public void drawUpperBuddy(final SpriteBatch spriteBatch) {
+		if (firingLineTime > timesincelastshot) {
+			spriteBatch.end();
+			drawLine(spriteBatch);
+			spriteBatch.begin();
+			spriteFiring.draw(spriteBatch);
+		}
+	}
 
 	public void drawLine(final SpriteBatch spriteBatch) {
-		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-		sRender.begin(ShapeType.Filled);
-		sRender.setColor(Color.YELLOW);
-		sRender.rectLine(center, shotposition, 0.2f);
-		sRender.end();
+			sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+			sRender.begin(ShapeType.Filled);
+			sRender.setColor(Color.YELLOW);
+			sRender.rectLine(center, shotposition, 0.2f);
+			sRender.end();
 	}
 	
 	public void setBuildingMode(final boolean buildingMode) {
