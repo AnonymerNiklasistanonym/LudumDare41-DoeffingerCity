@@ -57,17 +57,27 @@ public class FireTower extends Tower {
 	
 	@Override
 	public void drawProjectile(final SpriteBatch spriteBatch) {
+		
 		for (Flame flame : flames) {
+			
 			flame.draw(spriteBatch);
 		}
 	}
 
+	
+	@Override
+	public void updateProjectiles(float delta) {
+		for (Flame flame : flames) {
+			flame.update(delta);
+		}
+	}
 	@Override
 	public void shoot(Enemy e) {
 		Flame f=new Flame(body.getPosition().x*PlayState.METER_TO_PIXEL, body.getPosition().y*PlayState.METER_TO_PIXEL, sflame, w, 1);
 		flames.add(f);
-		Vector2 aim=new Vector2(100,0);
+		Vector2 aim=new Vector2(500,0);
 		aim.rotateRad(getDegrees());
+		aim.rotate90(-1);
 		f.body.applyForceToCenter(aim, true);
 	}
 	

@@ -244,8 +244,7 @@ public abstract class Tower {
 
 	public void shoot(Enemy e) {
 		if(isTargetInRange(e)) {
-			
-		
+
 		e.takeDamage(power);
 		if (PlayState.soundon)
 			if(permanentsound)
@@ -334,7 +333,7 @@ public abstract class Tower {
 			}
 			else
 				tryshoot(target);
-			updateProjectiles();
+			updateProjectiles(delta);
 		}
 		
 	}
@@ -401,7 +400,7 @@ public abstract class Tower {
 		return this.rangeActivated;
 	}
 
-	public void updateProjectiles() {
+	public void updateProjectiles(float delta) {
 		
 	}
 

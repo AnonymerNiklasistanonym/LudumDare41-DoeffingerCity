@@ -17,7 +17,7 @@ public class Flame {
 	Sprite sprite;
 	public boolean killme=false;
 	public Flame(float x, float y,Sprite sprite, World w, float damage) {
-		System.out.println("Created flame");
+		
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
@@ -47,6 +47,7 @@ public class Flame {
 	
 	public void draw(SpriteBatch batch) {
 		sprite.setPosition(getX(),getY());
+		//sprite.scale(0.0001f);
 		//sprite.setSize(spritescale*originalsize, spritescale*originalsize);
 		sprite.setOriginCenter();
 		sprite.draw(batch);
