@@ -96,6 +96,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		super(gameStateManager);
 	
 		scoreBoard = new ScoreBoard();
+		scoreBoard.reset();
 
 		// import textures
 		strack1 = createScaledSprite("maps/track1.png");
@@ -304,6 +305,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (buildingtower != null) buildingtower.update(deltaTime, mousepos);
 		for (final Tower t : towers)
 			t.update(deltaTime, mousepos);
+		
+		
+		scoreBoard.update(deltaTime);
 
 		camera.update();
 
@@ -373,10 +377,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		car.draw(spriteBatch);
 		
 		scoreBoard.draw(spriteBatch);
-		String stringmoney="Money: ";
-		stringmoney=stringmoney+money;
 		
-		MainGame.font.draw(spriteBatch,""+stringmoney,50,2);
 		spriteBatch.end();
 
 		if (debugBox2D) {
@@ -397,9 +398,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 
 		for (Enemy enemy : enemies) {
-			if (enemy.tot) {
+			if (enemy.justDied) {
 				enemy.body.setActive(false);
-
+				enemy.justDied = false;
+				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 			}
 		}
 	}
@@ -445,8 +447,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			checkpoint.setActivated(false);
 		}
 		if(allCheckpointsChecked) {
-			money=money+moneyPerLap;
-			money=money+(100-(int)laptime*2);
+			final int fastBonus = (100-(int)laptime*2);
+			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
 		}
 		
 	}

@@ -24,12 +24,14 @@ public abstract class Enemy extends BodyDef {
 	Sprite saussehen;
 	Sprite stot;
 	Sprite damage;
-	float score = 0;
+	float score = 10;
+	float money = 0;
 	World world;
 	ArrayList<Node> nodesList;
 	MainMap map;
 	boolean washit=false;
 	LinkedList<Node> weg;
+	public boolean justDied = false;
 
 	public boolean tot = false;
 
@@ -92,10 +94,11 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void die() {
+		System.out.println("Enemy died");
 		tot = true;
 		speed = 0;
 		saussehen = stot;
-
+		justDied = true;
 	}
 
 	public void takeDamage(float amount) {
@@ -263,11 +266,13 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void update(float delta) {
+		if (!this.tot) {
 		if (health < 0) {
 			this.die();
 		}
 		body.applyForceToCenter(new Vector2(MathUtils.random(speed * -1, speed), MathUtils.random(speed * -1, speed)),
 				true);
+		}
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
@@ -283,5 +288,9 @@ public abstract class Enemy extends BodyDef {
 
 	public float getScore() {
 		return score;
+	}
+
+	public float getMoney() {
+		return money;
 	}
 }

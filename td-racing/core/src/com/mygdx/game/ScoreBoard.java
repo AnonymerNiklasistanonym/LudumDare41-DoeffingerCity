@@ -1,48 +1,63 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Align;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class ScoreBoard {
 
 	private float score;
 	private float money;
-	private float timeWhole;
-	private float timeRound;
-	private float timeBegin;
-	private int enemyNumber;
 	private int waveNumber;
+	private float wholeTime;
+	private float currentTime;
+	private int lapNumber;
+	private int killCount;
 
 	public ScoreBoard() {
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
-
+		reset();
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
+		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 50, 7);
+		MainGame.font.draw(spriteBatch, "Kill Count: " + (int) this.killCount, 50, 6);
+		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", 50, 5);
+		MainGame.font.draw(spriteBatch, "Whole Time: " + this.wholeTime + "s", 50, 4);
+		MainGame.font.draw(spriteBatch, "Lap Time: " + this.currentTime + "s", 50, 3);
+		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber + "s", 50, 2);
+		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, 50, 1);
+	}
 
-		MainGame.font.draw(spriteBatch, "TEXTTEST", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,
-				MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
+	public void update(final float deltaTime) {
+		this.wholeTime += deltaTime;
+		this.currentTime += deltaTime;
+	}
 
-		// System.out.println("Money: " + this.money + ", timeRound: " + this.timeWhole + ", ");
+	public void killedEnemy(final float score, final float money) {
+		this.killCount++;
+		this.score += score;
+		this.money += money;
+	}
 
-		String completeText= "In this text there are multi lines";
+	public void newLap(final int newMoney) {
+		this.lapNumber++;
+		this.currentTime = 0;
+		this.money += newMoney;
+	}
 
-		GlyphLayout layout = new GlyphLayout();
-		MainGame.font.draw(spriteBatch, completeText, 800 * PlayState.PIXEL_TO_METER,
-		200 * PlayState.PIXEL_TO_METER);
-		layout.setText(MainGame.font, "100");
-		MainGame.font.draw(spriteBatch, "Play", Gdx.graphics.getWidth() / 2 -
-		(layout.width / 2), Gdx.graphics.getHeight() - 300);
+	public void newWave() {
+		this.waveNumber++;
+	}
 
-		// MainGame.fontTest.draw(spriteBatch, "100", 800 * PlayState.PIXEL_TO_METER,
-		// MainGame.font.draw(spriteBatch, "100", 800 * PlayState.PIXEL_TO_METER,
-		// 100 * PlayState.PIXEL_TO_METER);
-		// MainGame.smallFont.draw(spriteBatch, str, x, y, start, end, targetWidth,
-		// halign, wrap, truncate)
-
+	public void reset() {
+		this.currentTime = 0f;
+		this.score = 0;
+		this.killCount = 0;
+		this.money = 0;
+		this.wholeTime = 0;
+		this.currentTime = 0f;
+		this.lapNumber = 0;
+		this.waveNumber = 0;
 	}
 
 }
