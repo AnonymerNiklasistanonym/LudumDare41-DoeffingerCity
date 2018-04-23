@@ -31,8 +31,8 @@ public class MainMap {
 
 		nodesList = new ArrayList<Node>();
 		createSolidMap(mapName, world);
+		this.finishLine=finishLine;
 		createAStarArray();
-
 	}
 	
 	public Node[][] getNodesList(){
@@ -92,6 +92,11 @@ public class MainMap {
 					if(f.testPoint(i*PlayState.PIXEL_TO_METER, j*PlayState.PIXEL_TO_METER)) {
 						befahrbar = false;
 					}				
+				}
+				for (Fixture f : finishLine.getFixtureList()) {
+					if(f.testPoint(i*PlayState.PIXEL_TO_METER, j*PlayState.PIXEL_TO_METER)) {
+						befahrbar = false;
+					}	
 				}
 				if(befahrbar) nodesList.add(new Node((float) i, (float) j,vector.x, vector.y));
 			}

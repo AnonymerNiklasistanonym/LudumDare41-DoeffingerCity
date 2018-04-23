@@ -17,6 +17,7 @@ import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.Enemy;
+import com.mygdx.game.Enemy_fat;
 import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
@@ -117,7 +118,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
 		
 		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
-		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_tot.png"));
+		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
+		
+		Enemy_fat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
+		Enemy_fat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
 
 		enemies = new Array<Enemy>();
 
