@@ -97,7 +97,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static short PLAYER_BOX = 0x1; // 0001
 	public final static short ENEMY_BOX = 0x1 << 1; // 0010 or 0x2 in hex
 	
-	public Array<EnemyWave> currentEnemyWaves;
+	public Array<EnemyWaveEntry> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
@@ -330,6 +330,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		for (final Tower t : towers)
 			t.update(deltaTime, mousePos);
+		
+		for (final EnemyWaveEntry entry : currentEnemyWaves) {
+			if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
+				System.out.println("entry.getTimeInSeconds()" + entry.getTimeInSeconds() + "> scoreBoard.getTime()" + scoreBoard.getTime());
+				enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
+				currentEnemyWaves.removeValue(entry, true);
+			}
+		}
+		
 		
 		scoreBoard.update(deltaTime);
 		

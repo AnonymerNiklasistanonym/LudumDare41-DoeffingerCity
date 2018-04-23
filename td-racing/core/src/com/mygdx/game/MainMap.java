@@ -28,7 +28,7 @@ public class MainMap {
 	Sprite debug;
 	ArrayList<Node> nodesList;
 	Node[][] nodes2DList;
-	Array<EnemyWave> enemyWaves;
+	Array<EnemyWaveEntry> enemyWave;
 
 	public MainMap(String mapName, World world, Body finishLine) {
 
@@ -36,18 +36,19 @@ public class MainMap {
 		createSolidMap(mapName, world);
 		this.finishLine=finishLine;
 		createAStarArray();
+		
+		this.enemyWave = setEnemyWave();
 	}
 	
-	public Array<EnemyWave> setEnemyWave(final World world) {
-		final Array<EnemyWave> enemyWavesToSet = new Array<EnemyWave>();
-		enemyWavesToSet.add(new EnemyWave(1, EnemyWave.createEnemies(world, this, 1, 0)));
-		enemyWavesToSet.add(new EnemyWave(10, EnemyWave.createEnemies(world, this, 3, 0)));
-		enemyWavesToSet.add(new EnemyWave(20, EnemyWave.createEnemies(world, this, 0, 2)));
+	public Array<EnemyWaveEntry> setEnemyWave() {
+		final Array<EnemyWaveEntry> enemyWavesToSet = new Array<EnemyWaveEntry>();
+		enemyWavesToSet.add(new EnemyWaveEntry(10, new Vector2(220, 20), EnemyWaveEntry.ENEMY_BYCICLE));
+		enemyWavesToSet.addAll(EnemyWaveEntry.createEnemyEntries(new Vector2[] {new Vector2(220, 20), new Vector2(220, 20)}, 15, null, 0, null, 0));
 		return enemyWavesToSet;
 	}
 	
-	public Array<EnemyWave> getEnemyWaves() {
-		return this.enemyWaves;
+	public Array<EnemyWaveEntry> getEnemyWaves() {
+		return this.enemyWave;
 	}
 	
 	public Node[][] getNodesList(){
