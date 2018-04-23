@@ -163,13 +163,7 @@ public class Car {
 	}
 
 	public void hitEnemy(Enemy e) {
-//		float oldspeed=speed;
-//		float collisionpower=speed-e.health;
-//		if(collisionpower<0)
-//			collisionpower=0;
-//		//speed=speed-e.health*armor;
-//		e.takeDamage(oldspeed*2);
-//		health=health-collisionpower*armor;
+		e.takeDamage(getForwardVelocity().x);
 		
 	}
 

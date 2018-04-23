@@ -36,7 +36,8 @@ public class MainMap {
 		createSolidMap(mapName, world);
 		this.finishLine=finishLine;
 		createAStarArray();
-		this.enemyWaves = setEnemyWave(world);
+		//this.enemyWaves = setEnemyWave(world);
+		this.enemyWaves=null;
 	}
 	
 	public Array<EnemyWave> setEnemyWave(final World world) {

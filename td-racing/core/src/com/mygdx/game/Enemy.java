@@ -33,7 +33,7 @@ public abstract class Enemy extends BodyDef {
 	LinkedList<Node> weg;
 	public boolean justDied = false;
 	float damage;
-	boolean delete;
+	public boolean delete;
 
 	public boolean tot = false;
 	float distancetonode = 50f;
@@ -243,7 +243,7 @@ public abstract class Enemy extends BodyDef {
 			}
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			//map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10);
+			//map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(10f);
 
 			// Hinzufuegen
 			tempweg.add(aktuellerNode);
@@ -376,11 +376,11 @@ public abstract class Enemy extends BodyDef {
 			washit = false;
 		}
 		
-		if(weg.size()>0) {
-			sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
-			sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
-			sdamage.draw(spriteBatch);			
-		}
+//		if(weg.size()>0) {
+//			sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
+//			sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
+//			sdamage.draw(spriteBatch);			
+//		}
 	}
 
 	public float getScore() {

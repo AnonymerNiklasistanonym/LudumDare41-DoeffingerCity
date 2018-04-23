@@ -8,7 +8,7 @@ import com.mygdx.game.MainGame;
 public class DesktopLauncher {
 	public static void main(String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		// set width and height of window
+		// seft width and height of window
 		config.height = MainGame.GAME_HEIGHT;
 		config.width = MainGame.GAME_WIDTH;
 		// set window name
