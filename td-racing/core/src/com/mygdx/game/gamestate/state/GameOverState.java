@@ -12,11 +12,14 @@ import com.mygdx.game.menu.MenuButton;
 
 public class GameOverState extends GameState {
 
-	private final MenuButton playAgainButton;
-	private final MenuButton highScoreButton;
+	private final MenuButton[] menuButtons;
 
 	private final Texture backgroundGameOver;
 	private final Texture backgroundLoading;
+
+	private final static int PLAY_AGAIN_ID = 0;
+	private final static int HIGHSCORE_ID = 1;
+	private final static int ABOUT_ID = 2;
 
 	private Vector3 touchPos;
 
@@ -24,10 +27,9 @@ public class GameOverState extends GameState {
 
 	public GameOverState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-		
+
 		MenuButton.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active.png"));
 		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
-
 		backgroundGameOver = new Texture(Gdx.files.internal("background/background_game_over.png"));
 		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
 
@@ -36,46 +38,57 @@ public class GameOverState extends GameState {
 		changeToPlayState = false;
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
-
-		highScoreButton = new MenuButton(0, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 8 * 2, "HIGHSCORES", false);
-		playAgainButton = new MenuButton(0, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT /8 * 4, "RESTART LEVEL", true);
+		
+		final MenuButton playAgainButton = new MenuButton(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT /8 * 4, "RESTART LEVEL", true);
+		final MenuButton highScoreButton = new MenuButton(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 8 * 2, "HIGHSCORES", false);
+		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
+				"ABOUT", false);
+		menuButtons = new MenuButton[] { playAgainButton, highScoreButton, aboutButton };
 
 		System.out.println("Menu state entered");
 	}
-
+	
 	@Override
 	public void handleInput() {
 
-		// If enter, space or screen touched do something
-		if (Gdx.input.justTouched()
-				|| (Gdx.input.isKeyJustPressed(Keys.SPACE) || Gdx.input.isKeyJustPressed(Keys.ENTER))) {
-			if (highScoreButton.contains(touchPos)) System.out.println("IDK?");
-			else if (playAgainButton.contains(touchPos)) loading = true;
+		touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+		camera.unproject(touchPos);
+
+		// determine on which button the mouse cursor is and select this button
+		boolean oneIsSelected = false;
+		for (final MenuButton menuButton : menuButtons) {
+			if (menuButton.contains(touchPos))
+				oneIsSelected = true;
+		}
+		if (oneIsSelected) {
+			for (final MenuButton menuButton : menuButtons)
+				menuButton.setActive(menuButton.contains(touchPos));
 		}
 
-		if (Gdx.input.isKeyJustPressed(Keys.DOWN) || Gdx.input.isKeyJustPressed(Keys.UP)) {
-			if (highScoreButton.isActive()) {
-				highScoreButton.setActive(false);
-				playAgainButton.setActive(true);
-			} else if (playAgainButton.isActive()) {
-				highScoreButton.setActive(true);
-				playAgainButton.setActive(false);
+		// If a button is touched do something or Space or Enter is pressed execue the
+		// action for the selected button
+		if (Gdx.input.justTouched()
+				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
+			for (final MenuButton menuButton : menuButtons) {
+				if (menuButton.isActive()) {
+					switch (menuButton.getId()) {
+					case PLAY_AGAIN_ID:
+						loading = true;
+						break;
+					case HIGHSCORE_ID:
+						System.out.println("HIGHSCORES_ID IDK?");
+						break;
+					case ABOUT_ID:
+						System.out.println("ABOUT_ID IDK?");
+						break;
+					}
+				}
 			}
 		}
 
-		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+		// if excape or back is pressed quit
+		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			Gdx.app.exit();
-		}
-
-		touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(touchPos);
-		if (highScoreButton.contains(touchPos)) {
-			highScoreButton.setActive(true);
-			playAgainButton.setActive(false);
-		} else if (playAgainButton.contains(touchPos)) {
-			playAgainButton.setActive(true);
-			highScoreButton.setActive(false);
-		}
 	}
 
 	@Override
@@ -94,9 +107,10 @@ public class GameOverState extends GameState {
 			changeToPlayState = true;
 		} else {
 			spriteBatch.draw(backgroundGameOver, 0, 0);
-			playAgainButton.draw(spriteBatch);
-			highScoreButton.draw(spriteBatch);
+			for (final MenuButton menuButton : menuButtons)
+				menuButton.draw(spriteBatch);
 			MainGame.font.draw(spriteBatch, "GAME OVER", MainGame.GAME_WIDTH / 2, MainGame.GAME_WIDTH / 6 * 5);
+
 		}
 		spriteBatch.end();
 	}
@@ -107,7 +121,7 @@ public class GameOverState extends GameState {
 		backgroundLoading.dispose();
 		MenuButton.textureActive.dispose();
 		MenuButton.textureNotActive.dispose();
-		
+
 		System.out.println("Menu state disposed");
 	}
 
