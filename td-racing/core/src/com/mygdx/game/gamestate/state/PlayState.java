@@ -247,102 +247,44 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	protected void handleInput() {
-
-		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			gameStateManager.setGameState(new MenuState(gameStateManager));
-		}
-
-		// Check if somehow the screen was touched
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-			System.out.println("Do something");
-
-			// turn checkpoint on
-			checkpoints[0].setActivated(!checkpoints[0].isActivated());
-		}
-		if (Gdx.input.isKeyPressed(Keys.W)) {
+		if (Gdx.input.isKeyPressed(Keys.W))
 			car.accelarate();
-		}
-		if (Gdx.input.isKeyPressed(Keys.S)) {
+		if (Gdx.input.isKeyPressed(Keys.S))
 			car.brake();
-		}
-		if (Gdx.input.isKeyPressed(Keys.A)) {
+		if (Gdx.input.isKeyPressed(Keys.A))
 			car.steerLeft();
-		}
-		if (Gdx.input.isKeyPressed(Keys.D)) {
+		if (Gdx.input.isKeyPressed(Keys.D))
 			car.steerRight();
-		}
-	
-
-		if (Gdx.input.isKeyJustPressed(Keys.U)) {
-			if (soundon)
-				soundon = false;
-			else
-				soundon = true;
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Keys.F)) {
-			Enemy e=new Enemy_small(220, 20, world, map);
-			enemies.add(e);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.G)) {
-			Enemy e=new Enemy_fat(220, 20, world, map);
-			enemies.add(e);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.H)) {
-			Enemy e=new Enemy_bicycle(220, 20, world, map);
-			enemies.add(e);
-		}
-
-		if (Gdx.input.isKeyJustPressed(Keys.I)) {
-			if (debugBox2D)
-				debugBox2D = false;
-			else
-				debugBox2D = true;
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.K)) {
-			if (debugCollision)
-				debugCollision = false;
-			else
-				debugCollision = true;
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.L)) {
-			if (debugWay)
-				debugWay = false;
-			else
-				debugWay = true;
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.J)) {
-			if (debugEntfernung)
-				debugEntfernung = false;
-			else
-				debugEntfernung = true;
-		}
-		
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_1)) {
+		if (Gdx.input.isKeyJustPressed(Keys.U))
+			soundon = !soundon;
+		if (Gdx.input.isKeyJustPressed(Keys.F))
+			enemies.add(new Enemy_small(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.G))
+			enemies.add(new Enemy_fat(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.H))
+			enemies.add(new Enemy_bicycle(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.I))
+			debugBox2D = !debugBox2D;
+		if (Gdx.input.isKeyJustPressed(Keys.K))
+			debugCollision = !debugCollision;
+		if (Gdx.input.isKeyJustPressed(Keys.L))
+			debugWay = !debugWay;
+		if (Gdx.input.isKeyJustPressed(Keys.J))
+			debugEntfernung = !debugEntfernung;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			turmmenu.selectTower(1);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_2)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
 			turmmenu.selectTower(2);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_3)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_3))
 			turmmenu.selectTower(3);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_4)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_4))
 			turmmenu.selectTower(4);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_5))
 			turmmenu.selectTower(5);
-		}
-		
-		// B >> Activate building mode
-
-		// Screen clicked >> Build tower
-		if(Gdx.input.justTouched()) {
-			// if in build mode build tower at the current mouse positin if allowed
-			if (this.buildingtower != null)
+		if(Gdx.input.justTouched() && this.buildingtower != null)
 				buildTowerIfAllowed();
-		}
-
 	}
 	
 	public void buildTowerIfAllowed() {
