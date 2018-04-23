@@ -1,11 +1,8 @@
 package com.mygdx.game.menu;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MainGame;
 
 public class HighscoreButton {

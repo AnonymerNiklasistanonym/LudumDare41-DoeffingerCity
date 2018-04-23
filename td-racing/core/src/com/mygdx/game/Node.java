@@ -3,7 +3,6 @@ package com.mygdx.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.gamestate.state.PlayState;
 
 public class Node {
 	float x, y;

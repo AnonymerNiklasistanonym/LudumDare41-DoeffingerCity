@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
-import com.mygdx.game.gamestate.state.GameOverState;
-import com.mygdx.game.gamestate.state.HighscoreState;
 import com.mygdx.game.gamestate.state.MenuState;
-import com.mygdx.game.gamestate.state.PlayState;
 
 public class MainGame extends ApplicationAdapter {
 	
@@ -26,6 +23,9 @@ public class MainGame extends ApplicationAdapter {
 	 * Small game font "Cornerstone"
 	 */
 	public static BitmapFont fontBig;
+	/**
+	 * Highscore/Credits size game font "Cornerstone"
+	 */
 	public static BitmapFont highscoreFont;
 	/**
 	 * Name of the game
@@ -59,6 +59,10 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+		font.dispose();
+		smallFont.dispose();
+		highscoreFont.dispose();
+		fontBig.dispose();
 	}
 
 	@Override
@@ -66,7 +70,6 @@ public class MainGame extends ApplicationAdapter {
 		// wipes the screen clear
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 		// update state (deltaTime gives the time between render/ed times/frames)
 		gameStateManager.update(Gdx.graphics.getDeltaTime());
 		// render state
