@@ -240,11 +240,11 @@ public abstract class Enemy extends BodyDef {
 			if(zaehler < 0) {
 				break;
 			}
-			//Fï¿½r alle Wege die benutzt werden ein Erschwernis eintragen			
+			//Für alle Wege die benutzt werden ein Erschwernis eintragen			
 			
 			map.nodes2DList[(int)aktuellerNode.x][(int)aktuellerNode.y].erschwernis = MathUtils.random(10);
 			
-			// Hinzufï¿½gen
+			// Hinzufügen
 			tempweg.add(aktuellerNode);
 			aktuellerNode = aktuellerNode.parent;
 		}
@@ -318,9 +318,6 @@ public abstract class Enemy extends BodyDef {
 
 	public void update(float delta) {
 		float angle = 0;
-		if (!this.tot) {
-			if (health < 0) {
-				this.die();
 		if(weg.getLast() != null)
 			if (!this.tot) {
 				if (health < 0) {
@@ -356,7 +353,7 @@ public abstract class Enemy extends BodyDef {
 				
 				
 			}
-<<<<<<< HEAD
+
 			
 			float testX,testY,bodX,bodY,getLastX,getLastY,getFirstX,getFirstY;
 			bodX =  getBodyX();
@@ -370,7 +367,7 @@ public abstract class Enemy extends BodyDef {
 			
 			angle = (float) ((Math.atan2(weg.getLast().x*PlayState.PIXEL_TO_METER - getBodyX(), -(weg.getLast().y*PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			body.setTransform(body.getPosition(), (float) Math.toRadians( angle-90 ));
-			Vector2 velo=new Vector2(1,0);
+			
 			Vector2 velo=new Vector2(speed,0);
 			velo.rotateRad(body.getAngle());
 			body.setLinearVelocity(velo);
@@ -387,9 +384,8 @@ public abstract class Enemy extends BodyDef {
 			//	weg.remove(weg.indexOf(weg.getLast()));
 			
 			
-		}
-=======
->>>>>>> 1cc9202a3b4add448f395eb9ab759fce0838c8c5
+	
+
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
