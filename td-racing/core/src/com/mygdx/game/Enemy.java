@@ -36,7 +36,7 @@ public abstract class Enemy extends BodyDef {
 	public boolean delete;
 
 	public boolean tot = false;
-	float distancetonode = 100f;
+	float distancetonode = 50f;
 
 	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
 		final Sprite spriteSprite = new Sprite(sprite);
