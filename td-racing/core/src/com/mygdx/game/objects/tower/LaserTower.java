@@ -12,34 +12,30 @@ import com.mygdx.game.objects.Tower;
 
 public class LaserTower extends Tower {
 
-
 	public static Texture groundTower;
 	public static Texture upperTower;
 	public static Texture towerFiring;
+	public static final int range = 10;
 
-	public LaserTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final Sound soundShoot, World w) {
-		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, soundShoot,w);
+	public LaserTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final Sound soundShoot,
+			World w) {
+		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, soundShoot, w, range);
 
 		maxHealth = -1;
 		speed = 0.0f;
 		firingSpriteTime=0.1f;
 		power = 0.2f;
-		range = 10;
 		turnspeed = 500;
 		permanentsound=true;
-		
-		
-		
 	}
+
 	@Override
 	public void drawLine(final SpriteBatch spriteBatch) {
-		spriteBatch.end();
 		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 		sRender.begin(ShapeType.Filled);
 		sRender.setColor(Color.ORANGE);
 		sRender.rectLine(center, shotposition, 0.4f);
 		sRender.end();
-		spriteBatch.begin();
 	}
 
 }

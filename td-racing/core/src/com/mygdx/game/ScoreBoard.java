@@ -26,7 +26,7 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "TEXTTEST", MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER / 2,
 				MainGame.GAME_HEIGHT * PlayState.PIXEL_TO_METER / 2);
 
-		//System.out.println("Money: " + this.money + ", timeRound: " + this.timeWhole + ", ");
+		// System.out.println("Money: " + this.money + ", timeRound: " + this.timeWhole + ", ");
 
 		String completeText= "In this text there are multi lines";
 
@@ -37,6 +37,7 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Play", Gdx.graphics.getWidth() / 2 -
 		(layout.width / 2), Gdx.graphics.getHeight() - 300);
 
+		// MainGame.fontTest.draw(spriteBatch, "100", 800 * PlayState.PIXEL_TO_METER,
 		// MainGame.font.draw(spriteBatch, "100", 800 * PlayState.PIXEL_TO_METER,
 		// 100 * PlayState.PIXEL_TO_METER);
 		// MainGame.smallFont.draw(spriteBatch, str, x, y, start, end, targetWidth,

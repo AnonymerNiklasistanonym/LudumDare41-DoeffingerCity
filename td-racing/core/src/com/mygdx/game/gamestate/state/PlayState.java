@@ -51,7 +51,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugCollision;
 
 	public static boolean soundon = false;
-	private boolean placingtowers = false;
 	private boolean debugWay;
 	
 	
@@ -103,13 +102,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		strack1 = createScaledSprite("maps/track1.png");
 		strack1top = createScaledSprite("maps/track1top.png");
 		smaincar = createScaledSprite("cars/car_standard.png");
-		srangecircle = createScaledSprite("tower/range.png");
 		sfinishline = createScaledSprite("maps/finishline.png");
 		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
 		NormalCheckpoint.normalCheckPointDisabled = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
+		Tower.circleTexture = new Texture(Gdx.files.internal("tower/range.png"));
 		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
@@ -181,6 +180,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		System.out.println("Play state entered");
 		startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
 
+		
 	}
 
 	public static Sprite createScaledSprite(String location) {
@@ -193,13 +193,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void startBuilding(Tower t) {
+		System.out.println("Start building");
 		buildingtower = t;
-		placingtowers = true;
+		buildingtower.setBuildingMode(true);
+		for (final Tower tower : towers) {
+			tower.activateRange(true);
+		}
 	}
 
 	public void stopBuilding() {
+		System.out.println("Stop building");
+		buildingtower.setBuildingMode(false);
 		buildingtower = null;
-		placingtowers = false;
+		for (final Tower tower : towers) {
+			tower.activateRange(false);
+		}
 	}
 
 	@Override
@@ -254,13 +262,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				debugWay = true;
 		}
-		
+
+		if (Gdx.input.isKeyJustPressed(Keys.B)) {
+			if (this.buildingtower == null) {
+				startBuilding(new MGTower(Gdx.input.getX(), Gdx.input.getY(), enemies, soundmgshoot, world));
+			} else {
+				stopBuilding();
+			}
+		}
+
 		if(Gdx.input.isTouched()) {
-			if(placingtowers&&buildingtower!=null) {
+			if(this.buildingtower != null) {
 				buildingtower.activate();
-				towers.add(buildingtower);
-				//buildingtower=null;
-				placingtowers=false;
+				final Tower newTower = buildingtower;
+				towers.add(newTower);
+				stopBuilding();
 			}
 		}
 
@@ -271,11 +287,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		laptime=laptime+deltaTime;
 		handleInput();
 		car.update(deltaTime);
-		for (Tower t : towers) {
 
-			t.update(deltaTime);
-			
-		}
+		float mousex = Gdx.input.getX();
+		float mousey = Gdx.input.getY();
+		Vector3 mpos = new Vector3(mousex, mousey, 0);
+		camera.unproject(mpos);
+		Vector2 mousepos = new Vector2(mpos.x, mpos.y);
+		
+		// update tower
+		if (buildingtower != null) buildingtower.update(deltaTime, mousepos);
+		for (final Tower t : towers)
+			t.update(deltaTime, mousepos);
 
 		camera.update();
 
@@ -283,6 +305,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	public void render(SpriteBatch spriteBatch) {
+
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
@@ -290,38 +313,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		finishline.draw(spriteBatch);
 		strack1top.draw(spriteBatch);
 		// draw checkpoints
-		for (Checkpoint checkpoint : checkpoints)
+		for (final Checkpoint checkpoint : checkpoints)
 			checkpoint.draw(spriteBatch);
-
 		// draw tower
 		pitStop.draw(spriteBatch);
-		for (Tower tower : towers) {
-			srangecircle.setSize(tower.getRange() * 2, tower.getRange() * 2);
-			srangecircle.setOriginCenter();
-			srangecircle.setOriginBasedPosition(tower.getX() + tower.getSpriteBody().getWidth() / 2,
-					tower.getY() + tower.getSpriteBody().getHeight() / 2);
-			if (placingtowers)
-				srangecircle.draw(spriteBatch);
+		if (buildingtower != null) buildingtower.draw(spriteBatch);
+		for (final Tower tower : towers)
 			tower.draw(spriteBatch);
-		}
-
-		if (placingtowers && buildingtower != null) {
-			Vector2 target;
-			float mousex = Gdx.input.getX();
-			float mousey = Gdx.input.getY();
-			Vector3 mpos = new Vector3(mousex, mousey, 0);
-			camera.unproject(mpos);
-			Vector2 mousepos = new Vector2(mpos.x, mpos.y);
-
-			buildingtower.body.setTransform(mousepos, 0);
-			buildingtower.updateSprites(mousepos.x,mousepos.y);
-			buildingtower.draw(spriteBatch);
-			srangecircle.setSize(buildingtower.getRange() * 2, buildingtower.getRange() * 2);
-			srangecircle.setOriginCenter();
-			srangecircle.setOriginBasedPosition(buildingtower.getX() + buildingtower.getSpriteBody().getWidth() / 2,
-					buildingtower.getY() + buildingtower.getSpriteBody().getHeight() / 2);
-			srangecircle.draw(spriteBatch);
-		}
 
 		// draw pitstop
 		pitStop.draw(spriteBatch);

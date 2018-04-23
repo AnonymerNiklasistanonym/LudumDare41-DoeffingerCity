@@ -117,8 +117,11 @@ public abstract class Enemy extends BodyDef {
 	private LinkedList<Node> getPath(float startX,float startY,float zielX,float zielY){
 		LinkedList<Node> openList = new LinkedList();
 		LinkedList<Node> closedList = new LinkedList();
+		Node[][] tempNodes2DList = map.nodes2DList;
+		LinkedList<Node> tempweg = new LinkedList();
 		Node aktuellerNode,tempNode;
 		boolean isLower;
+		float kostenAlt;
 		
 		boolean found = false;
 		// Welcher Node ist der nächste?
@@ -149,69 +152,90 @@ public abstract class Enemy extends BodyDef {
 		
 		// Welcher Nachbar ist der beste
 		float lowCost = 9999999;
-		if(map.nodes2DList[(int)startX][(int)startY].noUse)
+		if(tempNodes2DList[(int)startX][(int)startY].noUse)
 			System.out.println("Halt");
-		for (Node node : map.nodes2DList[(int)startX][(int)startY].nachbarn) {
-			if(!node.noUse) 
-				if(lowCost > node.getKosten()) {
-					node.g = 1;
-					openList.add(node);
-					lowCost = node.getKosten();
-				}
+		
+		if (tempNodes2DList[(int)startX][(int)startY].nachbarn != null)
+		{
+			for (Node node : tempNodes2DList[(int)startX][(int)startY].nachbarn) {
+				if(!node.noUse) 
+					if(lowCost > node.getKosten()) {
+						node.g = 1;
+						openList.add(node);
+						lowCost = node.getKosten();
+					}
+			}
+		}
+		else {
+			// Irgendwo im Nirgendwo... Raus da
+			LinkedList<Node>blub = new LinkedList<Node>();
+			blub.add(tempNodes2DList[(int)startX][(int)startY]);
+			return blub;
 		}
 		
 
 		aktuellerNode = openList.getFirst();
-		int zaehler = 100;
+		int zaehler = 1000;
 		while(!found) {
+			
 			zaehler--;
 			if(zaehler < 0) {
 				//Bisherige Liste zurückgeben
 				
 				break;
 			}
-			// Wer hat den besten Wert in openList
+			
+			// NEU *********************************************
 			lowCost = 999999;
 			for (Node node : openList) {
 				if(lowCost > node.getKosten())
 					aktuellerNode = node;
-			}
-			if(aktuellerNode.getX() == zielX && aktuellerNode.getY() == zielY)
-				break;
-			// Alle Nachbarn des Nodes untersuchen
-			lowCost = 9999999;
-			isLower = false;
-			tempNode = aktuellerNode;
-			for (Node node : aktuellerNode.nachbarn) {
-				node.g = aktuellerNode.g+1;
-				if(lowCost > node.getKosten()) {
-					tempNode = node;
-					isLower = true;
 					lowCost = node.getKosten();
+			}
+			
+			openList.remove(openList.indexOf(aktuellerNode));
+			closedList.add(aktuellerNode);
+			
+			for (Node node : aktuellerNode.nachbarn) {
+				if(closedList.indexOf(node) == -1) {
+					node.g = aktuellerNode.g+1;
+					node.parent = aktuellerNode;
+					if(openList.indexOf(node) == -1)
+					{
+						node.kosten = node.getKosten();
+						openList.add(node);	
+					}
+					else {
+						if(node.kosten > node.getKosten())
+						{
+							openList.remove(openList.indexOf(node));
+							openList.add(node);							
+						}
+					}
 				}
-//				else {
-//					int index = openList.indexOf(node);
-//					if(index > 0)
-//					openList.remove(index);
-//				}
 			}
-			// Ist er schon in der openList?
-			tempNode.parent = aktuellerNode;
-			lowCost = tempNode.getKosten();
-			if(openList.indexOf(tempNode) == -1) {
-				openList.add(tempNode);						
+			
+			if(aktuellerNode.x == zielX && aktuellerNode.y == zielY) {
+				System.out.println("Gefunden");
+				break;
 			}
-			else {
-				if(openList.get(openList.indexOf(tempNode)).kosten > tempNode.kosten) {
-					openList.remove(openList.indexOf(tempNode));
-					openList.add(tempNode);
-				}
-			}
-			System.out.println("X:"+tempNode.x+" Y:"+tempNode.y);
+			
+			// NEU ENDE ***************************************
+		
+
 		}
 		System.out.println("test");
+		zaehler =1000;
+		while(aktuellerNode != null) {
+			zaehler--;
+			if(zaehler < 0) {
+				break;
+			}
+			tempweg.add(aktuellerNode);
+			aktuellerNode = aktuellerNode.parent;
+		}
 		
-		return openList;
+		return tempweg;
 	}
 	
 	public LinkedList<Node> getWeg(){
