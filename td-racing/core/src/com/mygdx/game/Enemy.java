@@ -59,7 +59,7 @@ public abstract class Enemy extends BodyDef {
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
-		bodydef.position.set(300 * PlayState.PIXEL_TO_METER, 150 * PlayState.PIXEL_TO_METER);
+		bodydef.position.set(400 * PlayState.PIXEL_TO_METER, 200 * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(saussehen.getHeight() * 0.35f);
@@ -124,8 +124,6 @@ public abstract class Enemy extends BodyDef {
 		Node[][] tempNodes2DList = map.nodes2DList;
 		LinkedList<Node> tempweg = new LinkedList();
 		Node aktuellerNode,tempNode;
-		boolean isLower;
-		float kostenAlt;
 		
 		boolean found = false;
 		// Welcher Node ist der nächste?
@@ -271,28 +269,59 @@ public abstract class Enemy extends BodyDef {
 	public float getBodyY() {
 		return body.getPosition().y;
 	}
+	
+	public void killLateral(float drift) {
+		float lat=getVelocityVector().dot(getOrthogonal());
+		Vector2 vlat=getOrthogonal();
+		vlat.scl(drift);
+		vlat.scl(lat);
+		vlat=vlat.scl(-1);
+		body.applyLinearImpulse(vlat,body.getPosition(),true);
+	}
+	
+	public Vector2 getForwardVelocity() {
+		Vector2 velo=getVelocityVector();
+		velo.rotateRad(body.getAngle()*-1);
+		return velo;
+	}
+	
+	public Vector2 getVelocityVector() {
+		return body.getLinearVelocity();
+	}
+
+
+	public Vector2 getOrthogonal() {
+		Vector2 ort = new Vector2(1, 0);
+		ort.rotateRad(body.getAngle());
+		ort.rotate90(1);
+		return ort;
+	}
 
 	public void update(float delta) {
 		float angle = 0;
 		if (!this.tot) {
-		if (health < 0) {
-			this.die();
-		}
-//		float testX,testY,bodX,bodY,getLastX,getLastY,getFirstX,getFirstY;
-//		bodX =  getBodyX();
-//		bodY =  getBodyY();
-//		getLastX = weg.getLast().x;
-//		getLastY = weg.getLast().y;
-//		getFirstX = weg.getFirst().x;
-//		getFirstY = weg.getFirst().y;
-//		testX = getBodyX()-weg.getLast().x;
-//		testY =getBodyY()-weg.getLast().y;
-		
-		angle = (float) ((Math.atan2(weg.getLast().x - getBodyX(), -(weg.getLast().y - getBodyY())) * 180.0d / Math.PI));
-		body.setTransform(body.getPosition(), (float) Math.toRadians( angle ));
-
-		body.applyForceToCenter(new Vector2(1,0),
-				true);
+			if (health < 0) {
+				this.die();
+			}
+			
+			float testX,testY,bodX,bodY,getLastX,getLastY,getFirstX,getFirstY;
+			bodX =  getBodyX();
+			bodY =  getBodyY();
+			getLastX = weg.getLast().x*PlayState.PIXEL_TO_METER;
+			getLastY = weg.getLast().y*PlayState.PIXEL_TO_METER;
+			getFirstX = weg.getFirst().x;
+			getFirstY = weg.getFirst().y;
+			testX = getBodyX()-weg.getLast().x;
+			testY =getBodyY()-weg.getLast().y;
+			
+			angle = (float) ((Math.atan2(weg.getLast().x*PlayState.PIXEL_TO_METER - getBodyX(), -(weg.getLast().y*PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+			body.setTransform(body.getPosition(), (float) Math.toRadians( angle ));
+			Vector2 velo=new Vector2(speed,0);
+			velo.rotateRad(body.getAngle());
+			body.applyForceToCenter(velo,true);
+			killLateral(0.5f);
+			if(body.getPosition().x < weg.getLast().x + 5 && body.getPosition().x > weg.getLast().x - 5 &&  body.getPosition().y > weg.getLast().y - 5 && body.getPosition().y < weg.getLast().y + 5)
+				weg.remove(weg.indexOf(weg.getLast()));
 		}
 	}
 
