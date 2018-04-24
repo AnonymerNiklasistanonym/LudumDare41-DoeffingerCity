@@ -10,11 +10,11 @@ import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MGTower;
 
 public class TurmMenu {
-	boolean tower1unlocked = true;
-	boolean tower2unlocked = true;
-	boolean tower3unlocked = true;
-	boolean tower4unlocked = true;
-	boolean tower5unlocked = false;
+	public boolean tower1unlocked = true;
+	public boolean tower2unlocked = false;
+	public boolean tower3unlocked = false;
+	public boolean tower4unlocked = false;
+	public boolean tower5unlocked = false;
 
 	boolean tower1selected = false;
 	boolean tower2selected = false;

@@ -21,7 +21,7 @@ public class FireTower extends Tower {
 	public Sprite sflame;
 	public static Sound soundShoot;
 	public static final int range = 7;
-	public static int costTower = 200;
+	public static int costTower = 300;
 	World w;
 	Array<Flame> flames;
 	public FireTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, World w) {
@@ -34,7 +34,7 @@ public class FireTower extends Tower {
 		this.maxHealth = -1;
 		this.speed = 0.05f;
 		this.firingSpriteTime = 0.2f;
-		this.power = 0.1f;
+		this.power = 0.2f;
 		this.turnspeed = 700;
 		this.permanentsound = true;
 		this.cost = FireTower.costTower;
