@@ -130,10 +130,10 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	private LinkedList<Node> getPath(float startX, float startY, float zielX, float zielY) {
-		final LinkedList<Node> openList = new LinkedList<Node>();
-		final LinkedList<Node> closedList = new LinkedList<Node>();
-		final Node[][] tempNodes2DList = map.nodes2DList;
-		final LinkedList<Node> tempweg = new LinkedList<Node>();
+		LinkedList<Node> openList = new LinkedList<Node>();
+		LinkedList<Node> closedList = new LinkedList<Node>();
+		Node[][] tempNodes2DList = map.nodes2DList;
+		LinkedList<Node> tempweg = new LinkedList<Node>();
 		Node aktuellerNode;
 
 		boolean found = false;
@@ -191,7 +191,7 @@ public abstract class Enemy extends BodyDef {
 			}
 
 			// NEU *********************************************
-			lowCost = 999999;
+			lowCost = 999999999;
 			for (Node node : openList) {
 				if (lowCost > node.getKosten())
 					aktuellerNode = node;
