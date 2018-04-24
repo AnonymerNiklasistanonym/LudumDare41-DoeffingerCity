@@ -73,6 +73,7 @@ public abstract class Enemy extends BodyDef {
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
 		fdef.density = 1f;
+		//fdef.isSensor=true;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 

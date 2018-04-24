@@ -89,6 +89,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	int currentwave = 0;
 	boolean wongame = false;
 	boolean infiniteenemies = false;
+	boolean deploy=false;
 
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
@@ -210,16 +211,31 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					checkPointPosition[i][1] * PIXEL_TO_METER);
 
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
+
 		// pitStop.setPosition(100, 100);
 
+		
+		//Sicherstellen dass bei deploy alle test sachen aus sind
+		if(deploy) {
+			
+			soundon=true;
+		}
+		else {
+			MainGame.level=3;
+		}
 		loadLevel(MainGame.level);
 
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.6f);
+		
+		
+		
 		if (soundon)
 			backgroundMusic.play();
 
+		
+		
 	}
 
 	public void loadLevel(int i) {
@@ -336,22 +352,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			if (soundon == true)
 				backgroundMusic.play();
 		}
-		// if (Gdx.input.isKeyJustPressed(Keys.F))
-		// enemies.add(new Enemy_small(220, 20, world, map));
-		// if (Gdx.input.isKeyJustPressed(Keys.G))
-		// enemies.add(new Enemy_fat(220, 20, world, map));
-		// if (Gdx.input.isKeyJustPressed(Keys.H))
-		// enemies.add(new Enemy_bicycle(220, 20, world, map));
-		// if (Gdx.input.isKeyJustPressed(Keys.I))
-		// debugBox2D = !debugBox2D;
-		// if (Gdx.input.isKeyJustPressed(Keys.K))
-		// debugCollision = !debugCollision;
-		// if (Gdx.input.isKeyJustPressed(Keys.L))
-		// debugWay = !debugWay;
-		// if (Gdx.input.isKeyJustPressed(Keys.COMMA))
-		// scoreBoard.addMoney(1000);
-		// if (Gdx.input.isKeyJustPressed(Keys.J))
-		// debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			turmmenu.selectTower(0);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
@@ -366,7 +366,35 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		}
+		
+		if(deploy==false)
+			debugInputs();
 
+	}
+	
+	public void debugInputs() {
+		 if (Gdx.input.isKeyJustPressed(Keys.F))
+		 enemies.add(new EnemySmall(220, 20, world, map));
+		 if (Gdx.input.isKeyJustPressed(Keys.G))
+		 enemies.add(new EnemyFat(220, 20, world, map));
+		 if (Gdx.input.isKeyJustPressed(Keys.H))
+		 enemies.add(new EnemyBicycle(220, 20, world, map));
+		 if (Gdx.input.isKeyJustPressed(Keys.I))
+		 debugBox2D = !debugBox2D;
+		 if (Gdx.input.isKeyJustPressed(Keys.K))
+		 debugCollision = !debugCollision;
+		 if (Gdx.input.isKeyJustPressed(Keys.L))
+		 debugWay = !debugWay;
+		 if (Gdx.input.isKeyJustPressed(Keys.COMMA))
+		 scoreBoard.addMoney(1000);
+		 if (Gdx.input.isKeyJustPressed(Keys.J))
+		 debugEntfernung = !debugEntfernung;
+		 if (Gdx.input.isKeyJustPressed(Keys.X)) {
+			 for (Enemy e : enemies) {
+				 currentwave=100;
+				e.takeDamage(1000);
+			}
+		 }
 	}
 
 	public void buildTowerIfAllowed() {
@@ -503,7 +531,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
+		if (wongame) {
+			victory.draw(spriteBatch);
+			spriteBatch.end();
+			return;
+		}
 		scurrenttrack.draw(spriteBatch);
+		
 		finishline.draw(spriteBatch);
 
 		// draw checkpoints
