@@ -173,15 +173,15 @@ public class TurmMenu {
 		if(tower5unlocked)
 			stower5button.setColor(1,1,1,0.5f);
 		
-		if(tower1selected)
+		if(tower1selected&&tower1unlocked)
 			stower1button.setColor(1,1,1,1);
-		if(tower2selected)
+		if(tower2selected&&tower2unlocked)
 			stower2button.setColor(1,1,1,1);
-		if(tower3selected)
+		if(tower3selected&&tower3unlocked)
 			stower3button.setColor(1,1,1,1);
-		if(tower4selected)
+		if(tower4selected&&tower4unlocked)
 			stower4button.setColor(1,1,1,1);
-		if(tower5selected)
+		if(tower5selected&&tower5unlocked)
 			stower5button.setColor(1,1,1,1);
 		
 		if(tower1selected&&tower1unlocked)
