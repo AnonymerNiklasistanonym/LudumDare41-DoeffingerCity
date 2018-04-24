@@ -32,6 +32,7 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 1, 34);
 		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 1, 33);
 		MainGame.font.draw(spriteBatch, "Level: " + this.level, 1, 32);
+		MainGame.font.draw(spriteBatch, "Wave: " + this.waveNumber, 1, 31);
 		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 3);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);		
