@@ -12,11 +12,12 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Checkpoint extends BodyDef {
 
+	private final Texture activatedTexture;
+	private final Body body;
+	private final Texture disabledTexture;
+	private final Sprite sprite;
+
 	private boolean activated;
-	protected final Body body;
-	protected final Sprite sprite;
-	protected final Texture activatedTexture;
-	protected final Texture disabledTexture;
 
 	public Checkpoint(final World world, float xPosition, float yPosition, final Texture disabled,
 			final Texture activated) {
@@ -39,13 +40,9 @@ public abstract class Checkpoint extends BodyDef {
 		this.disabledTexture = disabled;
 	}
 
-	public void setActivated(final boolean activated) {
-		this.activated = activated;
-		this.sprite.setTexture(this.activated ? activatedTexture : disabledTexture);
-	}
-
-	public boolean isActivated() {
-		return activated;
+	public void draw(final SpriteBatch spriteBatch) {
+		this.sprite.setPosition(getX(), getY());
+		this.sprite.draw(spriteBatch);
 	}
 
 	private float getX() {
@@ -56,9 +53,13 @@ public abstract class Checkpoint extends BodyDef {
 		return this.body.getPosition().y - this.sprite.getWidth() / 2;
 	}
 
-	public void draw(final SpriteBatch spriteBatch) {
-		this.sprite.setPosition(getX(), getY());
-		this.sprite.draw(spriteBatch);
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(final boolean activated) {
+		this.activated = activated;
+		this.sprite.setTexture(this.activated ? activatedTexture : disabledTexture);
 	}
 
 }

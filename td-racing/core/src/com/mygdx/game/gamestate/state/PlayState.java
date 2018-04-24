@@ -133,11 +133,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		smaincar = createScaledSprite("cars/car_standard.png");
 		sfinishline = createScaledSprite("maps/finishline.png");
 
-		final Sprite s1 = createScaledSprite("buttons/cannonbutton.png");
-		final Sprite s2 = createScaledSprite("buttons/laserbutton.png");
-		final Sprite s3 = createScaledSprite("buttons/flamebutton.png");
-		final Sprite s4 = createScaledSprite("buttons/cannonbutton.png");
-		final Sprite s5 = createScaledSprite("buttons/cannonbutton.png");
+		TurmMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
+		TurmMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
+		TurmMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
 
 		victory = createScaledSprite("screens/victory.png");
 		// set STATIC textures
@@ -203,7 +201,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugWay = false;
 		debugEntfernung = false;
 
-		turmmenu = new TurmMenu(s1, s2, s3, s4, s5, world, enemies);
+		turmmenu = new TurmMenu(world, enemies);
 
 		checkpoints = new Checkpoint[4];
 		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
@@ -235,7 +233,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugRender = new Box2DDebugRenderer();
 		switch (i) {
 		case 1:
-
 			finishline = new FinishLine(world, sfinishline, 380, 220);
 
 			map = new MainMap("track1", world, finishline.getBody());
@@ -246,10 +243,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition[j][0] * PIXEL_TO_METER,
 						checkPointPosition[j][1] * PIXEL_TO_METER);
+			turmmenu.unlockTower(0);
 			break;
 		case 2:
-			;
-
 			finishline = new FinishLine(world, sfinishline, 360, 240);
 
 			map = new MainMap("track2", world, finishline.getBody());
@@ -260,11 +256,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
 						checkPointPosition1[j][1] * PIXEL_TO_METER);
-			turmmenu.tower2unlocked = true;
-			turmmenu.updateAlpha();
+			turmmenu.unlockTower(1);
 			break;
 		case 3:
-
 			finishline = new FinishLine(world, sfinishline, 350, 150);
 
 			map = new MainMap("track3", world, finishline.getBody());
@@ -276,8 +270,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
 						checkPointPosition11[j][1] * PIXEL_TO_METER);
-			turmmenu.tower3unlocked = true;
-			turmmenu.updateAlpha();
+			turmmenu.unlockTower(2);
 			break;
 
 		default:
@@ -360,15 +353,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// if (Gdx.input.isKeyJustPressed(Keys.J))
 		// debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
-			turmmenu.selectTower(1);
+			turmmenu.selectTower(0);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
-			turmmenu.selectTower(2);
+			turmmenu.selectTower(1);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_3))
-			turmmenu.selectTower(3);
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_4))
-			turmmenu.selectTower(4);
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_5))
-			turmmenu.selectTower(5);
+			turmmenu.selectTower(2);
 		if (Gdx.input.justTouched() && this.buildingtower != null)
 			buildTowerIfAllowed();
 		if (Gdx.input.isKeyJustPressed(Keys.F11)) {
@@ -584,6 +573,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		scoreBoard.draw(spriteBatch);
 
 		turmmenu.draw(spriteBatch);
+
 		if (timeforwavetext > 0) {
 			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
 
@@ -658,6 +648,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		EnemyFat.deadTexture.dispose();
 		EnemyBicycle.normalTexture.dispose();
 		EnemyBicycle.deadTexture.dispose();
+		TurmMenu.cannonButton.dispose();
+		TurmMenu.laserButton.dispose();
+		TurmMenu.flameButton.dispose();
 		backgroundMusic.dispose();
 		carsound.dispose();
 		MainGame.waveFont.getData().setScale(10f);
