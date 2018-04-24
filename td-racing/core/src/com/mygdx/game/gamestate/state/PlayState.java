@@ -1008,6 +1008,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		currentwave=0;
 		MainGame.level++;
 		loadLevel(MainGame.level);
+		victorysound.play();
 
 	}
 	
