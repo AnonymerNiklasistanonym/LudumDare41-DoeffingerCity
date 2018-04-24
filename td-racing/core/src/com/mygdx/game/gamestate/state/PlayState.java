@@ -381,6 +381,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			turmmenu.selectTower(5);
 		if (Gdx.input.justTouched() && this.buildingtower != null)
 			buildTowerIfAllowed();
+		if (Gdx.input.isKeyJustPressed(Keys.F11)) {
+			if (Gdx.graphics.isFullscreen())
+				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+			else
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		}
+		
 	}
 
 	public void buildTowerIfAllowed() {

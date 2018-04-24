@@ -114,6 +114,12 @@ public class GameOverState extends GameState {
 		// if escape or back is pressed quit
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			Gdx.app.exit();
+		if (Gdx.input.isKeyJustPressed(Keys.F11)) {
+			if (Gdx.graphics.isFullscreen())
+				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+			else
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		}
 	}
 
 	@Override

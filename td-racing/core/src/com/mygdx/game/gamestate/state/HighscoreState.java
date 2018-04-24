@@ -46,7 +46,12 @@ public class HighscoreState extends GameState {
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey())) {
 			gameStateManager.setGameState(new MenuState(gameStateManager));
 		}
-		
+		if (Gdx.input.isKeyJustPressed(Keys.F11)) {
+			if (Gdx.graphics.isFullscreen())
+				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+			else
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+		}
 	}
 
 	@Override
