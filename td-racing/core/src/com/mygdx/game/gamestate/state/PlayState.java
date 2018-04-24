@@ -138,7 +138,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		TurmMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
 		TurmMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
 
-		victory = createScaledSprite("screens/victory.png");
+		victory = createScaledSprite("fullscreens/victorycard.png");
 		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));

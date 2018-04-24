@@ -35,7 +35,7 @@ public class MenuState extends GameState {
 		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
 		backgroundStars = new Texture(Gdx.files.internal("background/background_stars.png"));
 		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
-		title = new Texture(Gdx.files.internal("Screens/titel.png"));
+		title = new Texture(Gdx.files.internal("buttons/titel.png"));
 
 		touchPos = new Vector3();
 		loading = false;

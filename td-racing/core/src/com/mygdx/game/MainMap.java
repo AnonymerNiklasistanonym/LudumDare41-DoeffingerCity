@@ -17,8 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class MainMap {
-	Sprite sMap;
-	Texture tMap;
+
 	Body mapModel;
 	public Body mapZiel;
 	Body finishLine;
@@ -64,14 +63,12 @@ public class MainMap {
 
 	public void createSolidMap(String mapName, World world) {
 		// The following line would throw ExceptionInInitializerError
-		tMap = new Texture(Gdx.files.internal("maps/test.png"));
-		sMap = new Sprite(tMap);
+
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "solid.json"));
 		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "ziel.json"));
 		BodyEditorLoader loaderZombieWay = new BodyEditorLoader(
 				Gdx.files.internal("maps/" + mapName + "zombieway.json"));
 
-		debug = new Sprite(new Texture(Gdx.files.internal("maps/test.png")));
 
 		// 1. Create a BodyDef, as usual.
 		BodyDef bd = new BodyDef();
