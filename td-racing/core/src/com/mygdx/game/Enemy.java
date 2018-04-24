@@ -202,7 +202,10 @@ public abstract class Enemy extends BodyDef {
 			}
 			if (aktuellerNode == null)
 				System.out.println("aktueller Node ist 0");
-			openList.remove(openList.indexOf(aktuellerNode));
+			if(openList.indexOf(aktuellerNode) < 0)
+				System.out.println("aktueller Node ist 0");
+//			if(openList.indexOf(aktuellerNode) > 0)
+				openList.remove(openList.indexOf(aktuellerNode));
 			closedList.add(aktuellerNode);
 
 			for (Node node : aktuellerNode.nachbarn) {

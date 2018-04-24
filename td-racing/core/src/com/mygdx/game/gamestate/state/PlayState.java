@@ -152,7 +152,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
 		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
-		LaserTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		LaserTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
 
 		FireTower.groundTower = new Texture(Gdx.files.internal("tower/tower_fire_bottom.png"));
 		FireTower.upperTower = new Texture(Gdx.files.internal("tower/tower_fire_upper.png"));
@@ -245,7 +245,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			world.setContactListener(collis);
 			debugRender = new Box2DDebugRenderer();
 			car = new Car(world, smaincar, 440, 220);
-			finishline = new FinishLine(world, sfinishline, 380, 220);
+			finishline = new FinishLine(world, sfinishline, 360, 240);
 			
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));
