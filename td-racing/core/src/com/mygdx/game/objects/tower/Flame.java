@@ -13,7 +13,7 @@ public class Flame {
 	Body body;
 	float spritescale = 0.1f;
 	float originalsize = 0;
-	float lifetime = 1.0f;
+	float lifetime = 0.5f;
 	Sprite sprite;
 	float damage;
 	public boolean killme = false;
@@ -24,10 +24,10 @@ public class Flame {
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
-		CircleShape enemyCircle = new CircleShape();
-		enemyCircle.setRadius(sprite.getHeight() * 0.35f);
+		CircleShape flameCircle = new CircleShape();
+		flameCircle.setRadius(sprite.getHeight() * 0.45f);
 		FixtureDef fdef = new FixtureDef();
-		fdef.shape = enemyCircle;
+		fdef.shape = flameCircle;
 		fdef.density = 1f;
 		fdef.isSensor = true;
 		body.createFixture(fdef);
@@ -47,10 +47,9 @@ public class Flame {
 	}
 
 	public void draw(SpriteBatch batch) {
-		sprite.setPosition(getX(), getY());
-		// sprite.scale(0.0001f);
 		sprite.setSize(spritescale * originalsize, spritescale * originalsize);
 		sprite.setOriginCenter();
+		sprite.setPosition(getX(), getY());
 		sprite.draw(batch);
 	}
 

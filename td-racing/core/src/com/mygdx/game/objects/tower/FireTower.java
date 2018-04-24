@@ -34,9 +34,9 @@ public class FireTower extends Tower {
 				sflame.getHeight() * PlayState.PIXEL_TO_METER);
 
 		this.maxHealth = -1;
-		this.speed = 0.05f;
+		this.speed = 0.04f;
 		this.firingSpriteTime = 0.2f;
-		this.power = 0.2f;
+		this.power = 0.15f;
 		this.turnspeed = 700;
 		this.permanentsound = true;
 		this.cost = FireTower.costTower;
@@ -68,7 +68,7 @@ public class FireTower extends Tower {
 	@Override
 	public void shoot(Enemy e) {
 		if (isTargetInRange(e)) {
-			final Vector2 aim = new Vector2(10000, 0);
+			final Vector2 aim = new Vector2(2000, 0);
 			aim.rotate(getDegrees());
 			aim.rotate90(1);
 			timesincelastshot = 0;

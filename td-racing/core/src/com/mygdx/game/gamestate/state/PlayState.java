@@ -89,7 +89,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	int currentwave = 0;
 	boolean wongame = false;
 	boolean infiniteenemies = false;
-	boolean deploy=false;
+	boolean deploy = true;
 
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
@@ -214,28 +214,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// pitStop.setPosition(100, 100);
 
-		
-		//Sicherstellen dass bei deploy alle test sachen aus sind
-		if(deploy) {
-			
-			soundon=true;
-		}
-		else {
-			MainGame.level=1;
+		// Sicherstellen dass bei deploy alle test sachen aus sind
+		if (deploy) {
+
+			soundon = true;
+		} else {
+			MainGame.level = 1;
 		}
 		loadLevel(MainGame.level);
 
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.6f);
-		
-		
-		
+
 		if (soundon)
 			backgroundMusic.play();
 
-		
-		
 	}
 
 	public void loadLevel(int i) {
@@ -288,17 +282,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		default:
 			break;
-		
 
-		
 		}
-		if(deploy==false) {
+		if (deploy == false) {
 			turmmenu.unlockTower(0);
 			turmmenu.unlockTower(1);
 			turmmenu.unlockTower(2);
 		}
 		currentEnemyWaves = new Array<EnemyWaveEntry>();
-
+		scoreBoard.reset(0);
+		
+		
+		turmmenu.updateMenu(world, enemies);
 	}
 
 	public static Sprite createScaledSprite(String location) {
@@ -323,6 +318,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			isAllowed = this.map.isInBody(cornerPoints[i][0], cornerPoints[i][1]);
 		System.out.println("buildingPositionIsAllowed: " + isAllowed);
 		return isAllowed;
+
 	}
 
 	public boolean buildingMoneyIsEnough(final Tower tower) {
@@ -371,35 +367,35 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		}
-		
-		if(deploy==false)
+
+		if (deploy == false)
 			debugInputs();
 
 	}
-	
+
 	public void debugInputs() {
-		 if (Gdx.input.isKeyJustPressed(Keys.F))
-		 enemies.add(new EnemySmall(220, 20, world, map));
-		 if (Gdx.input.isKeyJustPressed(Keys.G))
-		 enemies.add(new EnemyFat(220, 20, world, map));
-		 if (Gdx.input.isKeyJustPressed(Keys.H))
-		 enemies.add(new EnemyBicycle(220, 20, world, map));
-		 if (Gdx.input.isKeyJustPressed(Keys.I))
-		 debugBox2D = !debugBox2D;
-		 if (Gdx.input.isKeyJustPressed(Keys.K))
-		 debugCollision = !debugCollision;
-		 if (Gdx.input.isKeyJustPressed(Keys.L))
-		 debugWay = !debugWay;
-		 if (Gdx.input.isKeyJustPressed(Keys.COMMA))
-		 scoreBoard.addMoney(1000);
-		 if (Gdx.input.isKeyJustPressed(Keys.J))
-		 debugEntfernung = !debugEntfernung;
-		 if (Gdx.input.isKeyJustPressed(Keys.X)) {
-			 for (Enemy e : enemies) {
-				 currentwave=100;
+		if (Gdx.input.isKeyJustPressed(Keys.F))
+			enemies.add(new EnemySmall(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.G))
+			enemies.add(new EnemyFat(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.H))
+			enemies.add(new EnemyBicycle(220, 20, world, map));
+		if (Gdx.input.isKeyJustPressed(Keys.I))
+			debugBox2D = !debugBox2D;
+		if (Gdx.input.isKeyJustPressed(Keys.K))
+			debugCollision = !debugCollision;
+		if (Gdx.input.isKeyJustPressed(Keys.L))
+			debugWay = !debugWay;
+		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
+			scoreBoard.addMoney(1000);
+		if (Gdx.input.isKeyJustPressed(Keys.J))
+			debugEntfernung = !debugEntfernung;
+		if (Gdx.input.isKeyJustPressed(Keys.X)) {
+			for (Enemy e : enemies) {
+				currentwave = 100;
 				e.takeDamage(1000);
 			}
-		 }
+		}
 	}
 
 	public void buildTowerIfAllowed() {
@@ -542,7 +538,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			return;
 		}
 		scurrenttrack.draw(spriteBatch);
-		
+
 		finishline.draw(spriteBatch);
 
 		// draw checkpoints
@@ -660,8 +656,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			if (rb != null)
 				ab.addAll(rb);
 			for (Body body : ab) {
-				if(body.getWorld()==world)
-				world.destroyBody(body);
+				if (body.getWorld() == world)
+					world.destroyBody(body);
 			}
 		}
 
@@ -1031,12 +1027,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		currentwave = 0;
 		MainGame.level++;
 		loadLevel(MainGame.level);
+		if(soundon)
 		victorysound.play();
 
 	}
 
 	public void GameVictory() {
 		wongame = true;
+		if(soundon)
+		victorysound.play();
 	}
 
 	public boolean allEnemiesDead() {

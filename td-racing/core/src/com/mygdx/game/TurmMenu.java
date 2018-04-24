@@ -113,5 +113,10 @@ public class TurmMenu {
 		buildingtower = null;
 		updateAlpha();
 	}
+	
+	public void updateMenu(World w, Array<Enemy> enemies) {
+		this.world=w;
+				this.enemies=enemies;
+	}
 
 }
