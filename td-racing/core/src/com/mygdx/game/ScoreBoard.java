@@ -15,6 +15,7 @@ public class ScoreBoard {
 	private float healthPoints;
 	private final PlayState playState;
 	private final int COLUMN;
+	private int level ;
 
 	public ScoreBoard(PlayState playState) {
 		this.playState = playState;
@@ -27,9 +28,10 @@ public class ScoreBoard {
 	public void draw(final SpriteBatch spriteBatch) {
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
-		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", 2, 35);
-		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 2, 34);
-		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 2, 33);
+		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", 1, 35);
+		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 1, 34);
+		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 1, 33);
+		MainGame.font.draw(spriteBatch, "Level: " + this.level, 1, 32);
 		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 3);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);		
@@ -101,6 +103,10 @@ public class ScoreBoard {
 
 	public void setWaveNumber(int waveNumber) {
 		this.waveNumber = waveNumber;
+	}
+
+	public void setLevel(int i) {
+		this.level = i;
 	}
 
 }
