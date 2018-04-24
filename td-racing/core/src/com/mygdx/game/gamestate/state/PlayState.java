@@ -255,6 +255,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
 						checkPointPosition1[j][1] * PIXEL_TO_METER);
 			turmmenu.tower2unlocked=true;
+			turmmenu.updateAlpha();
 			break;
 		case 3:
 			world = new World(new Vector2(), true);
@@ -271,6 +272,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
 						checkPointPosition11[j][1] * PIXEL_TO_METER);
 			turmmenu.tower3unlocked=true;
+			turmmenu.updateAlpha();
 			break;
 
 		default:
