@@ -19,7 +19,7 @@ public class ScoreBoard {
 	public ScoreBoard(PlayState playState) {
 		this.playState = playState;
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
-		COLUMN = 50;
+		COLUMN = 53;
 		this.healthPoints = 100;
 		reset(0);
 	}
@@ -27,15 +27,13 @@ public class ScoreBoard {
 	public void draw(final SpriteBatch spriteBatch) {
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
-		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 7);
-		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 6);
-		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 5);
-		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 4);
-		// String.format("%.2f", this.wholeTime) - HTML BUILD GOES CRAZY
-		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", COLUMN, 3);
-		// String.format("%.2f", this.currentTime) - HTML BUILD GOES CRAZY
-		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, COLUMN, 2);
-		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, COLUMN, 1);
+		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", 2, 35);
+		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 2, 34);
+		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 2, 33);
+		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 3);
+		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 2);
+		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);		
+		
 	}
 
 	public void reduceLife(float damage) {

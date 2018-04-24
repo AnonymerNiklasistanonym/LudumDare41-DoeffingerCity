@@ -217,7 +217,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
 		backgroundMusic.setLooping(true);
-		backgroundMusic.setVolume(0.4f);
+		backgroundMusic.setVolume(0.6f);
 		if (soundon) backgroundMusic.play();
 
 	}
