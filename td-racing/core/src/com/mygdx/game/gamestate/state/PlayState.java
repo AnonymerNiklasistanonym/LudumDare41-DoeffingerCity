@@ -64,7 +64,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugEntfernung;
 	private boolean carsoundPlaying = false;
 
-	public static boolean soundon = false;
+	public static boolean soundon = true;
 	private boolean debugWay;
 
 	private TurmMenu turmmenu;
@@ -79,7 +79,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	private int moneyPerLap = 50;
 
-	private Sound splatt, money, carsound;
+	private Sound splatt, money, carsound,victorysound;
 
 	/**
 	 * Time since last physic Steps
@@ -181,6 +181,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
 		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound2.wav"));
+		victorysound = Gdx.audio.newSound(Gdx.files.internal("sounds/LevelUp3.wav.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -216,7 +217,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 
 
-		loadLevel(2);
+		loadLevel(1);
 		
 
 
@@ -712,7 +713,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public void updateWaves1() {
 
-		int totalwaves = 1;
+		int totalwaves = 10;
 		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
 			if (currentwave > totalwaves)
