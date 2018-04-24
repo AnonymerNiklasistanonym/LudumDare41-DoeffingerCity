@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -104,6 +105,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float RESOLUTION_HEIGHT = 720f;
 
 	private Checkpoint[] checkpoints;
+	
+	private Music backgroundMusic;
 
 	// Zur identifizierung von Collisions Entitys
 	public final static short PLAYER_BOX = 0x1; // 0001
@@ -210,6 +213,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop.setPosition(100, 100);
 
 		loadLevel(2);
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(0.4f);
+		if (soundon) backgroundMusic.play();
+
 	}
 
 	public void loadLevel(int i) {
@@ -289,8 +297,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			car.steerLeft();
 		if (Gdx.input.isKeyPressed(Keys.D))
 			car.steerRight();
-		if (Gdx.input.isKeyJustPressed(Keys.U))
+		if (Gdx.input.isKeyJustPressed(Keys.U)) {
 			soundon = !soundon;
+			if (soundon == false && backgroundMusic.isPlaying()) backgroundMusic.pause();
+			if (soundon == true) backgroundMusic.play();
+		}	
 		if (Gdx.input.isKeyJustPressed(Keys.F))
 			enemies.add(new Enemy_small(220, 20, world, map));
 		if (Gdx.input.isKeyJustPressed(Keys.G))
@@ -578,6 +589,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_fat.deadTexture.dispose();
 		Enemy_bicycle.normalTexture.dispose();
 		Enemy_bicycle.deadTexture.dispose();
+		backgroundMusic.dispose();
+		carsound.dispose();
 	}
 
 	@Override
