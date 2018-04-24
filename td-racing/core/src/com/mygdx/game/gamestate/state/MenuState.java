@@ -18,6 +18,7 @@ public class MenuState extends GameState {
 
 	private final Texture backgroundStars;
 	private final Texture backgroundLoading;
+	private final Texture title;
 
 	private final static int START_ID = 0;
 	private final static int HIGHSCORES_ID = 1;
@@ -34,6 +35,7 @@ public class MenuState extends GameState {
 		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
 		backgroundStars = new Texture(Gdx.files.internal("background/background_stars.png"));
 		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
+		title = new Texture(Gdx.files.internal("Screens/titel.png"));
 
 		touchPos = new Vector3();
 		loading = false;
@@ -41,17 +43,17 @@ public class MenuState extends GameState {
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		final MenuButton startButton = new MenuButton(START_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 5,
+		final MenuButton startButton = new MenuButton(START_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2.5f,
 				"START", true);
 		final MenuButton highscoreButton = new MenuButton(HIGHSCORES_ID, MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
 		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
 				"ABOUT", false);
-		if (Gdx.app.getType() != ApplicationType.WebGL) {
-			menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
-		} else {
+//		if (Gdx.app.getType() != ApplicationType.WebGL) {
+//			menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
+//		} else {
 			menuButtons = new MenuButton[] { startButton, aboutButton };
-		}
+//		}
 
 		System.out.println("Menu state entered");
 	}
@@ -143,6 +145,7 @@ public class MenuState extends GameState {
 			for (final MenuButton menuButton : menuButtons)
 				menuButton.draw(spriteBatch);
 		}
+		spriteBatch.draw(title,0,0);
 		spriteBatch.end();
 	}
 
