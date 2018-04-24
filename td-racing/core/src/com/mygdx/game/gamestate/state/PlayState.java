@@ -227,6 +227,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		switch (i) {
 		case 1:
 			world = new World(new Vector2(), true);
+			world.setContactListener(collis);
+			debugRender = new Box2DDebugRenderer();
+			car = new Car(world, smaincar, 440, 220);
+			finishline = new FinishLine(world, sfinishline, 380, 220);
+			
 			map = new MainMap("track1", world, finishline.body);
 			map.setSpawn(new Vector2(220, 20));
 			scurrenttrack = strack1;
@@ -238,6 +243,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break; 
 		case 2:
 			world = new World(new Vector2(), true);
+			world.setContactListener(collis);
+			debugRender = new Box2DDebugRenderer();
+			car = new Car(world, smaincar, 440, 220);
+			finishline = new FinishLine(world, sfinishline, 380, 220);
+			
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
@@ -249,8 +259,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break;
 		case 3:
 			world = new World(new Vector2(), true);
+			world.setContactListener(collis);
+			debugRender = new Box2DDebugRenderer();
+			car = new Car(world, smaincar, 440, 220);
+			finishline = new FinishLine(world, sfinishline, 350, 150);
+			
 			map = new MainMap("track3", world, finishline.body);
-			map.setSpawn(new Vector2(220, 50));
+			map.setSpawn(new Vector2(170, 100));
 			scurrenttrack = strack3;
 			float[][] checkPointPosition11 = { { 300, 170 }, { 320, 570 }, { 850, 570 }, { 850, 170 } };
 			for (int j = 0; j < checkpoints.length; j++)
