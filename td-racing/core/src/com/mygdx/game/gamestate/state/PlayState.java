@@ -350,16 +350,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			enemies.add(new Enemy_fat(220, 20, world, map));
 		if (Gdx.input.isKeyJustPressed(Keys.H))
 			enemies.add(new Enemy_bicycle(220, 20, world, map));
-		if (Gdx.input.isKeyJustPressed(Keys.I))
-			debugBox2D = !debugBox2D;
-		if (Gdx.input.isKeyJustPressed(Keys.K))
-			debugCollision = !debugCollision;
-		if (Gdx.input.isKeyJustPressed(Keys.L))
-			debugWay = !debugWay;
-		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
-			scoreBoard.addMoney(1000);
-		if (Gdx.input.isKeyJustPressed(Keys.J))
-			debugEntfernung = !debugEntfernung;
+//		if (Gdx.input.isKeyJustPressed(Keys.I))
+//			debugBox2D = !debugBox2D;
+//		if (Gdx.input.isKeyJustPressed(Keys.K))
+//			debugCollision = !debugCollision;
+//		if (Gdx.input.isKeyJustPressed(Keys.L))
+//			debugWay = !debugWay;
+//		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
+//			scoreBoard.addMoney(1000);
+//		if (Gdx.input.isKeyJustPressed(Keys.J))
+//			debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			turmmenu.selectTower(1);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
