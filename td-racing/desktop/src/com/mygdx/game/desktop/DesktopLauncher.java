@@ -16,7 +16,7 @@ public class DesktopLauncher {
 		config.fullscreen=false;
 		
 		// add application icon that will be shown if the program is running
-		for (int size : new int[] { 16, 32, 128 }) {
+		for (int size : new int[] { 16, 32, 64 }) {
 			config.addIcon("icon/icon_" + size + ".png", FileType.Internal);
 		}
 		new LwjglApplication(new MainGame(), config);

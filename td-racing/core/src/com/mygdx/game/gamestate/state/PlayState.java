@@ -215,8 +215,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 
 
+
 		loadLevel(2);
 		
+
+
 
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
@@ -348,22 +351,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			if (soundon == false && backgroundMusic.isPlaying()) backgroundMusic.pause();
 			if (soundon == true) backgroundMusic.play();
 		}	
-		if (Gdx.input.isKeyJustPressed(Keys.F))
-			enemies.add(new Enemy_small(220, 20, world, map));
-		if (Gdx.input.isKeyJustPressed(Keys.G))
-			enemies.add(new Enemy_fat(220, 20, world, map));
-		if (Gdx.input.isKeyJustPressed(Keys.H))
-			enemies.add(new Enemy_bicycle(220, 20, world, map));
-		if (Gdx.input.isKeyJustPressed(Keys.I))
-			debugBox2D = !debugBox2D;
-		if (Gdx.input.isKeyJustPressed(Keys.K))
-			debugCollision = !debugCollision;
-		if (Gdx.input.isKeyJustPressed(Keys.L))
-			debugWay = !debugWay;
-		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
-			scoreBoard.addMoney(1000);
-		if (Gdx.input.isKeyJustPressed(Keys.J))
-			debugEntfernung = !debugEntfernung;
+//		if (Gdx.input.isKeyJustPressed(Keys.F))
+//			enemies.add(new Enemy_small(220, 20, world, map));
+//		if (Gdx.input.isKeyJustPressed(Keys.G))
+//			enemies.add(new Enemy_fat(220, 20, world, map));
+//		if (Gdx.input.isKeyJustPressed(Keys.H))
+//			enemies.add(new Enemy_bicycle(220, 20, world, map));
+//		if (Gdx.input.isKeyJustPressed(Keys.I))
+//			debugBox2D = !debugBox2D;
+//		if (Gdx.input.isKeyJustPressed(Keys.K))
+//			debugCollision = !debugCollision;
+//		if (Gdx.input.isKeyJustPressed(Keys.L))
+//			debugWay = !debugWay;
+//		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
+//			scoreBoard.addMoney(1000);
+//		if (Gdx.input.isKeyJustPressed(Keys.J))
+//			debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			turmmenu.selectTower(1);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
