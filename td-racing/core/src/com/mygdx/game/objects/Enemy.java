@@ -83,20 +83,20 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void startMove() {
-		getBody().applyForceToCenter(
+		this.body.applyForceToCenter(
 				new Vector2(MathUtils.random(speed * -1, speed), MathUtils.random(speed * -1, speed)), true);
 	}
 
 	public void endMove() {
-		getBody().applyForceToCenter(new Vector2(speed * -1, 0), true);
+		this.body.applyForceToCenter(new Vector2(speed * -1, 0), true);
 	}
 
 	public void steerLeft() {
-		getBody().applyTorque(45, true);
+		this.body.applyTorque(45, true);
 	}
 
 	public void steerRight() {
-		getBody().applyTorque(45 * -1, true);
+		this.body.applyTorque(45 * -1, true);
 	}
 
 	public void die() {
@@ -112,10 +112,10 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void takeDamage(float amount) {
-		setHealth(getHealth() - amount);
-		washit = true;
-		spriteDamadge.setPosition(getX() + spriteAlive.getWidth() / 2 + MathUtils.random(-0.2f, 0.2f),
-				getY() + spriteAlive.getHeight() / 2 + MathUtils.random(-0.2f, 0.2f));
+		this.health -= amount;
+		this.washit = true;
+		this.spriteDamadge.setPosition(getX() + this.spriteAlive.getWidth() / 2 + MathUtils.random(-0.2f, 0.2f),
+				getY() + this.spriteAlive.getHeight() / 2 + MathUtils.random(-0.2f, 0.2f));
 	}
 
 	public void findWay() {
@@ -260,19 +260,19 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public float getX() {
-		return getBody().getPosition().x - spriteAlive.getWidth() / 2;
+		return this.body.getPosition().x - spriteAlive.getWidth() / 2;
 	}
 
 	public float getY() {
-		return getBody().getPosition().y - spriteAlive.getHeight() / 2;
+		return this.body.getPosition().y - spriteAlive.getHeight() / 2;
 	}
 
 	public float getBodyX() {
-		return getBody().getPosition().x;
+		return this.body.getPosition().x;
 	}
 
 	public float getBodyY() {
-		return getBody().getPosition().y;
+		return this.body.getPosition().y;
 	}
 
 	public void killLateral(final float drift) {
@@ -282,20 +282,20 @@ public abstract class Enemy extends BodyDef {
 		vlat.scl(lat);
 		// vlat.scl(body.getFixtureList().first().getDensity());
 		// vlat=vlat.scl(-1);
-		getBody().applyLinearImpulse(vlat, getBody().getPosition(), true);
+		this.body.applyLinearImpulse(vlat, this.body.getPosition(), true);
 	}
 
 	public Vector2 getForwardVelocity() {
-		return getVelocityVector().rotateRad(getBody().getAngle() * -1);
+		return getVelocityVector().rotateRad(this.body.getAngle() * -1);
 	}
 
 	public Vector2 getVelocityVector() {
-		return getBody().getLinearVelocity();
+		return this.body.getLinearVelocity();
 	}
 
 	public Vector2 getOrthogonal() {
 		final Vector2 ort = new Vector2(1, 0);
-		ort.rotateRad(getBody().getAngle());
+		ort.rotateRad(this.body.getAngle());
 		ort.rotate90(1);
 		return ort;
 	}
@@ -308,8 +308,8 @@ public abstract class Enemy extends BodyDef {
 			speed = maxspeed;
 
 		final Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
-		newSpeed.rotateRad(getBody().getAngle());
-		getBody().setLinearVelocity(newSpeed);
+		newSpeed.rotateRad(this.body.getAngle());
+		this.body.setLinearVelocity(newSpeed);
 	}
 
 	public void update(float delta) {
@@ -322,7 +322,7 @@ public abstract class Enemy extends BodyDef {
 		if (weg.size() > 0) {
 			final float angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
 					-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
-			getBody().setTransform(getBody().getPosition(), (float) Math.toRadians(angle - 90));
+			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
 			final Vector2 velo = new Vector2(speed, 0);
 			velo.rotateRad(this.body.getAngle());
 			this.body.setLinearVelocity(velo);
@@ -343,7 +343,7 @@ public abstract class Enemy extends BodyDef {
 		}
 
 		spriteAlive.setPosition(getX(), getY());
-		spriteAlive.setRotation(MathUtils.radDeg * getBody().getAngle());
+		spriteAlive.setRotation(MathUtils.radDeg * this.body.getAngle());
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
@@ -368,10 +368,6 @@ public abstract class Enemy extends BodyDef {
 
 	public Body getBody() {
 		return body;
-	}
-
-	public void setBody(Body body) {
-		this.body = body;
 	}
 
 	public float getHealth() {

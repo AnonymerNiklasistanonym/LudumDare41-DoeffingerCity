@@ -14,17 +14,17 @@ import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Enemy;
 
 public class Car {
-	public Body body;
-	Sprite sprite;
-	float maxspeed = 15;
-	float acceleration = 2000f;
-	float armor = 0.3f;
-	float brakepower = 5000f;
-	float backacc = 1000f;
-	float steerpower = 2000;
-	float friction = 0.99f;
-	float health = 100;
-	float delta = 0;
+	private Body body;
+	private Sprite sprite;
+	private float maxspeed = 15;
+	private float acceleration = 2000f;
+	private float armor = 0.3f;
+	private float brakepower = 5000f;
+	private float backacc = 1000f;
+	private float steerpower = 2000;
+	private float friction = 0.99f;
+	private float health = 100;
+	private float delta = 0;
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -48,46 +48,31 @@ public class Car {
 	}
 
 	public void accelarate() {
-		Vector2 acc = new Vector2(acceleration * delta, 0);
+		final Vector2 acc = new Vector2(acceleration * delta, 0);
 		acc.rotateRad(body.getAngle());
 		body.applyForceToCenter(acc, true);
 	}
 
 	public void brake() {
-		Vector2 acc = new Vector2(0, 0);
-		if (getForwardVelocity().x >= 0) {
-			acc = new Vector2(brakepower * -1 * delta, 0);
-		} else {
-			acc = new Vector2(backacc * -1 * delta, 0);
-		}
+		final Vector2 acc = new Vector2(((getForwardVelocity().x >= 0) ? brakepower : backacc) * -1 * delta, 0);
 		acc.rotateRad(body.getAngle());
 		body.applyForceToCenter(acc, true);
 	}
 
-	public void steerLeft() {
-		int i = 1;
-		if (getForwardVelocity().x < 0)
-			i = i * -1;
-		body.applyTorque(steerpower * delta * i, true);
-
+	public void steerLeft() {		
+		this.body.applyTorque(this.steerpower * this.delta * ((getForwardVelocity().x < 0) ? -1 : 1), true);
 	}
 
 	public void steerRight() {
-		int i = 1;
-		if (getForwardVelocity().x < 0)
-			i = i * -1;
-		body.applyTorque(steerpower * -1 * delta * i, true);
+		this.body.applyTorque(this.steerpower * -1 * this.delta * ((getForwardVelocity().x < 0) ? -1 : 1), true);
 	}
 
 	public void update(float delta) {
 		this.delta = delta;
-
 		reduceToMaxSpeed(maxspeed);
 		killLateral(0.95f);
-	}
-
-	public void steerZero() {
-
+		sprite.setPosition(getX(), getY());
+		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 	}
 
 	public void reduceToMaxSpeed(float maxspeed) {
@@ -97,7 +82,7 @@ public class Car {
 		if (speed > maxspeed)
 			speed = maxspeed;
 
-		Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
+		final Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
 		newSpeed.rotateRad(body.getAngle());
 		body.setLinearVelocity(newSpeed);
 	}
@@ -130,15 +115,12 @@ public class Car {
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
-		sprite.setPosition(getX(), getY());
-		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
-
 		sprite.draw(spriteBatch);
 	}
 
 	public Vector2 getForward() {
-		Vector2 fwd = new Vector2(0, 0);
-		fwd.x = body.getAngle();
+		final Vector2 fwd = new Vector2(0, 0);
+		fwd.x = this.body.getAngle();
 		return fwd;
 	}
 
@@ -147,19 +129,14 @@ public class Car {
 	}
 
 	public Vector2 getOrthogonal() {
-		Vector2 ort = new Vector2(1, 0);
-		ort.rotateRad(body.getAngle());
+		final Vector2 ort = new Vector2(1, 0);
+		ort.rotateRad(this.body.getAngle());
 		ort.rotate90(1);
 		return ort;
 	}
 
-	public void hitCheckpoint(Checkpoint checkpoint) {
-		// TODO Auto-generated method stub
-	}
-
-	public void hitEnemy(Enemy e) {
-		e.takeDamage(getForwardVelocity().x * 4);
-
+	public void hitEnemy(final Enemy e) {
+		e.takeDamage(Math.abs(getForwardVelocity().x * 4));
 	}
 
 }
