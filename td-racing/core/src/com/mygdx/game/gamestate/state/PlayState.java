@@ -116,6 +116,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager, int level) {
 		super(gameStateManager);
+		System.out.println("Play state entered");
 		MainGame.waveFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
 		scoreBoard.reset(0);
@@ -211,10 +212,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
 		//pitStop.setPosition(100, 100);
 
+		
 
 
-		loadLevel(level);
-		loadLevel(1);
+		loadLevel(2);
+		
 
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
@@ -227,6 +229,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void loadLevel(int i) {
 		System.out.println("Load Level "+i);
 		scoreBoard.setLevel(i);
+		enemies.clear();
+		towers.clear();
 		switch (i) {
 		case 1:
 			world = new World(new Vector2(), true);
@@ -285,9 +289,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		default:
 			break;
 		}
-
-		currentEnemyWaves = map.getEnemyWaves();
-		System.out.println("Play state entered");
+		currentEnemyWaves = new Array<EnemyWaveEntry>();
+		
 
 	}
 
@@ -706,7 +709,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public void updateWaves1() {
 
-		int totalwaves = 0;
+		int totalwaves = 1;
 		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
 			if (currentwave > totalwaves)
@@ -717,7 +720,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				switch (currentwave) {
 				case 1:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 10, 0.0f, 2, 4f, 0, 0.0f));
+							(int) scoreBoard.getTime() + 2, 10, 0.0f, 2, 4f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 25, 20, 0.0f, 3, 3f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
