@@ -115,7 +115,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-		MainGame.highscoreFont.getData().setScale(0.10f);
+		MainGame.waveFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
 		scoreBoard.reset(0);
 
