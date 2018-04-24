@@ -116,7 +116,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager, int level) {
 		super(gameStateManager);
-		MainGame.highscoreFont.getData().setScale(0.10f);
+		MainGame.waveFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
 		scoreBoard.reset(0);
 
@@ -573,7 +573,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		turmmenu.draw(spriteBatch);
 		if(timeforwavetext>0) {
-		MainGame.highscoreFont.draw(spriteBatch,wavetext,20,25);
+		MainGame.waveFont.draw(spriteBatch,wavetext,20,25);
 		
 		timeforwavetext=timeforwavetext-Gdx.graphics.getDeltaTime();
 		}spriteBatch.end();
@@ -644,7 +644,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.deadTexture.dispose();
 		backgroundMusic.dispose();
 		carsound.dispose();
-		MainGame.highscoreFont.getData().setScale(10f);
+		MainGame.waveFont.getData().setScale(10f);
 	}
 
 	@Override
