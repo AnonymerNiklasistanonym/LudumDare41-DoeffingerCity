@@ -223,20 +223,35 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void loadLevel(int i) {
 		switch (i) {
 		case 1:
+			world = new World(new Vector2(), true);
 			map = new MainMap("track1", world, finishline.body);
 			map.setSpawn(new Vector2(220, 20));
 			scurrenttrack = strack1;
 			pitStop.setPosition(210 * PIXEL_TO_METER, 20 * PIXEL_TO_METER);
-			break;
+			float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
+			for (int j = 0; j < checkpoints.length; j++)
+				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition[j][0] * PIXEL_TO_METER,
+						checkPointPosition[j][1] * PIXEL_TO_METER);
+			break; 
 		case 2:
+			world = new World(new Vector2(), true);
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
+			float[][] checkPointPosition1 = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
+			for (int j = 0; j < checkpoints.length; j++)
+				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
+						checkPointPosition1[j][1] * PIXEL_TO_METER);
 			break;
 		case 3:
+			world = new World(new Vector2(), true);
 			map = new MainMap("track3", world, finishline.body);
 			map.setSpawn(new Vector2(220, 50));
 			scurrenttrack = strack3;
+			float[][] checkPointPosition11 = { { 300, 170 }, { 320, 570 }, { 850, 570 }, { 850, 170 } };
+			for (int j = 0; j < checkpoints.length; j++)
+				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
+						checkPointPosition11[j][1] * PIXEL_TO_METER);
 			break;
 
 		default:
