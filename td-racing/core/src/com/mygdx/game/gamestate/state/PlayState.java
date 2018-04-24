@@ -744,7 +744,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					break;
 				case 3:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 35, 30, 0, 5, 0f, 0, 0));
+							(int) scoreBoard.getTime() + 35, 30, 0, 0, 0f, 0, 0));
 					break;
 				case 4:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
@@ -759,40 +759,33 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 5, 45, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 10, 50, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 20, 50, 0, 0));
 					break;
 				case 6:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 45, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 50, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 50, 0, 0));
+				
 					break;
 				case 7:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 50, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 55, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 60, 0, 0));
+				
 					break;
 				case 8:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 55, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 60, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 70, 0, 0));
+				
 					break;
 				case 9:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 60, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 70, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 80, 0, 0));
 					break;
 				case 10:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
@@ -800,7 +793,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 90, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 100, 1, 0));
+							(int) scoreBoard.getTime() + 25, 100, 0, 0));
 					break;
 
 				default:
