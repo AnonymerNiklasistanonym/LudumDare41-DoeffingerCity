@@ -214,7 +214,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 
 		loadLevel(level);
-		loadLevel(3);
+		loadLevel(1);
 
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
@@ -225,6 +225,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void loadLevel(int i) {
+		System.out.println("Load Level "+i);
 		scoreBoard.setLevel(i);
 		switch (i) {
 		case 1:
@@ -706,7 +707,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves1() {
 
 		int totalwaves = 0;
-		if (currentEnemyWaves.size == 0) {
+		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
 			if (currentwave > totalwaves)
 				LevelVictory();
@@ -798,7 +799,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves2() {
 
 		int totalwaves = 10;
-		if (currentEnemyWaves.size == 0) {
+		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
 			if (currentwave > totalwaves) {
 				LevelVictory();
@@ -891,7 +892,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves3() {
 
 		int totalwaves = 10;
-		if (currentEnemyWaves.size == 0) {
+		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
 			if (currentwave > totalwaves) {
 				GameVictory();
@@ -985,6 +986,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void LevelVictory() {
+		System.out.println("Level finished "+MainGame.level);
 		wavetext="LEVEL CLEAR!";
 		timeforwavetext=2f;
 		currentwave=0;
@@ -999,7 +1001,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 	
 	public void GameVictory() {
-		
+	Timer.schedule(new Timer.Task() {
+			
+			@Override
+			public void run() {
+				MainGame.level=1;
+				loadLevel(MainGame.level);;
+			}
+		},3f);
 	}
 
 }
