@@ -20,8 +20,8 @@ public class HighscoreButton {
 		this.place = place;
 		this.name = name;
 		this.score = score;
-		this.button = new Sprite(texture);
-		this.button.setSize(texture.getWidth() / 2, texture.getHeight() / 2);
+		this.button = new Sprite(HighscoreButton.texture);
+		this.button.setSize(HighscoreButton.texture.getWidth() / 2, HighscoreButton.texture.getHeight() / 2);
 		this.button.setPosition(xPosition - this.button.getWidth() / 2, yPosition - this.button.getHeight() / 2);
 		this.fontXNumber = xPosition - this.button.getWidth() / 2 + 20;
 		this.fontYNumber = yPosition + this.button.getHeight() / 5 * 2;

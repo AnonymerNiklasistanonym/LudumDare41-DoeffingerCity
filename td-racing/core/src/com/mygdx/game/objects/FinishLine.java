@@ -12,43 +12,42 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public class FinishLine {
 
-	Sprite sprite;
-	public Body body;
+	private final Sprite sprite;
+	private final Body body;
 
-	public FinishLine(World w, Sprite s, float xPosition, float yPosition) {
-		BodyDef bodydef = new BodyDef();
-		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(xPosition * PlayState.PIXEL_TO_METER, yPosition * PlayState.PIXEL_TO_METER);
-		body = w.createBody(bodydef);
-		PolygonShape carBox = new PolygonShape();
-		carBox.setAsBox(s.getWidth() * 0.5f, s.getHeight() * 0.5f);
-		FixtureDef fdef = new FixtureDef();
+	public FinishLine(final World world, final Sprite sprite, final float xPos, final float yPos) {
+		final BodyDef bodydef = new BodyDef();
+		bodydef.type = BodyDef.BodyType.StaticBody;
+		bodydef.position.set(xPos * PlayState.PIXEL_TO_METER, yPos * PlayState.PIXEL_TO_METER);
+		this.body = world.createBody(bodydef);
+		final PolygonShape carBox = new PolygonShape();
+		carBox.setAsBox(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
+		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = carBox;
 		fdef.density = 1f;
 		fdef.friction = 1f;
 		fdef.isSensor = true;
-		body.createFixture(fdef);
-		body.setUserData(this);
-		body.setAngularDamping(2);
-		sprite = s;
+		this.body.createFixture(fdef);
+		this.body.setUserData(this);
+		this.body.setAngularDamping(2);
+		this.sprite = sprite;
+		sprite.setPosition(getX(), getY());
+		sprite.setRotation(this.body.getAngle() * MathUtils.radDeg);
 	}
 
 	public float getX() {
-		float carx = body.getPosition().x;
-		carx = carx - sprite.getWidth() / 2;
-		return carx;
+		return this.body.getPosition().x - sprite.getWidth() / 2;
 	}
 
 	public float getY() {
-		float cary = body.getPosition().y;
-		cary = cary - sprite.getHeight() / 2;
-		return cary;
+		return this.body.getPosition().y - sprite.getHeight() / 2;
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
-		sprite.setPosition(getX(), getY());
-		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 		sprite.draw(spriteBatch);
+	}
 
+	public Body getBody() {
+		return body;
 	}
 }

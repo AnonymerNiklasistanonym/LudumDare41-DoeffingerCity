@@ -17,7 +17,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.Enemy;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Tower {
@@ -238,7 +237,7 @@ public abstract class Tower {
 				shoot(e);
 		}
 
-		if (e.tot)
+		if (e.isTot())
 			target = null;
 
 	}
@@ -341,11 +340,11 @@ public abstract class Tower {
 		Enemy best = null;
 		for (Enemy e : enemies) {
 			if (best == null)
-				if (e.tot == false)
+				if (e.isTot() == false)
 					if (isTargetInRange(e))
 						best = e;
 			if (best != null)
-				if (e.getScore() < best.getScore() && e.tot == false)
+				if (e.getScore() < best.getScore() && e.isTot() == false)
 					if (isTargetInRange(e))
 						best = e;
 		}

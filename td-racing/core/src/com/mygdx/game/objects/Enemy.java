@@ -1,6 +1,5 @@
-package com.mygdx.game;
+package com.mygdx.game.objects;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -14,29 +13,30 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.MainMap;
+import com.mygdx.game.Node;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Enemy extends BodyDef {
-	public Body body;
-	float speed = 80;
-	public float health = 0;
-	Texture taussehen;
-	Sprite saussehen;
-	Sprite stot;
-	float score = 10;
-	float money = 1;
-	Sprite sdamage;
-	World world;
-	ArrayList<Node> nodesList;
-	MainMap map;
-	boolean washit = false;
-	LinkedList<Node> weg;
-	public boolean justDied = false;
-	float damage;
-	public boolean delete;
 
-	public boolean tot = false;
-	float distancetonode = 50f;
+	private final Sprite spriteAlive;
+	private final Sprite spriteDead;
+	private final Sprite spriteDamadge;
+
+	protected float health = 0;
+	protected float money = 1;
+	protected float score = 10;
+	protected float speed = 80;
+	protected float damage;
+
+	private Body body;
+	private MainMap map;
+	private boolean washit = false;
+	private LinkedList<Node> weg;
+	private boolean justDied = false;
+	private boolean delete;
+	private boolean tot = false;
+	private float distancetonode = 50f;
 
 	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
 		final Sprite spriteSprite = new Sprite(sprite);
@@ -56,109 +56,105 @@ public abstract class Enemy extends BodyDef {
 
 		this.speed = 80;
 		this.health = 10;
-		this.saussehen = spriteSprite;
-		this.stot = deadspriteSprite;
-		this.sdamage = damageSprite;
+		this.spriteAlive = spriteSprite;
+		this.spriteDead = deadspriteSprite;
+		this.spriteDamadge = damageSprite;
 		this.score = MathUtils.random(100);
-		BodyDef bodydef = new BodyDef();
+
+		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
-		body = w.createBody(bodydef);
-		CircleShape enemyCircle = new CircleShape();
-		enemyCircle.setRadius(saussehen.getHeight() * 0.35f);
+		this.body = w.createBody(bodydef);
+		final CircleShape enemyCircle = new CircleShape();
+		enemyCircle.setRadius(spriteAlive.getHeight() * 0.35f);
 
-		FixtureDef fdef = new FixtureDef();
+		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
 		fdef.density = 1f;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 
-		body.createFixture(fdef);
-		body.setUserData(this);
-		this.world = w;
+		this.body.createFixture(fdef);
+		this.body.setUserData(this);
 		this.map = map;
 		this.findWay();
 	}
 
 	public void startMove() {
-		body.applyForceToCenter(new Vector2(MathUtils.random(speed * -1, speed), MathUtils.random(speed * -1, speed)),
-				true);
+		getBody().applyForceToCenter(
+				new Vector2(MathUtils.random(speed * -1, speed), MathUtils.random(speed * -1, speed)), true);
 	}
 
 	public void endMove() {
-		body.applyForceToCenter(new Vector2(speed * -1, 0), true);
+		getBody().applyForceToCenter(new Vector2(speed * -1, 0), true);
 	}
 
 	public void steerLeft() {
-		body.applyTorque(45, true);
+		getBody().applyTorque(45, true);
 	}
 
 	public void steerRight() {
-		body.applyTorque(45 * -1, true);
+		getBody().applyTorque(45 * -1, true);
 	}
 
 	public void die() {
+		// set dead
+		this.setTot(true);
+		// set position of dead sprite to the current one
+		this.spriteDead.setPosition(spriteAlive.getX(), spriteAlive.getY());
+		this.spriteDead.setRotation(MathUtils.radDeg * this.body.getAngle());
 
-		tot = true;
+		// ???
 		speed = 0;
-		saussehen = stot;
-		justDied = true;
+		setJustDied(true);
 	}
 
 	public void takeDamage(float amount) {
-		health = health - amount;
+		setHealth(getHealth() - amount);
 		washit = true;
-
+		spriteDamadge.setPosition(getX() + spriteAlive.getWidth() / 2 + MathUtils.random(-0.2f, 0.2f),
+				getY() + spriteAlive.getHeight() / 2 + MathUtils.random(-0.2f, 0.2f));
 	}
 
 	public void findWay() {
 		// Wo bin ich wo will ich hin
 		// Aus Map auslesen wo das Ziel ist
-		PolygonShape ps = (PolygonShape) map.mapZiel.getFixtureList().first().getShape();
-		Vector2 vector = new Vector2();
+		final PolygonShape ps = (PolygonShape) map.mapZiel.getFixtureList().first().getShape();
+		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
-
 		weg = getPath(this.getBodyX() * PlayState.METER_TO_PIXEL, this.getBodyY() * PlayState.METER_TO_PIXEL,
 				vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL);
 	}
 
 	private LinkedList<Node> getPath(float startX, float startY, float zielX, float zielY) {
-		LinkedList<Node> openList = new LinkedList();
-		LinkedList<Node> closedList = new LinkedList();
-		Node[][] tempNodes2DList = map.nodes2DList;
-		LinkedList<Node> tempweg = new LinkedList();
-		Node aktuellerNode, tempNode;
+		final LinkedList<Node> openList = new LinkedList<Node>();
+		final LinkedList<Node> closedList = new LinkedList<Node>();
+		final Node[][] tempNodes2DList = map.nodes2DList;
+		final LinkedList<Node> tempweg = new LinkedList<Node>();
+		Node aktuellerNode;
 
 		boolean found = false;
 		// Welcher Node ist der naechste?
-		if (startX % 10 < 5) {
+		if (startX % 10 < 5)
 			startX = startX - startX % 10;
-		}
-		if (startX % 10 >= 5) {
+		else
 			startX = startX + (10 - startX % 10);
-		}
-		if (startY % 10 < 5) {
+		if (startY % 10 < 5)
 			startY = startY - startY % 10;
-		}
-		if (startY % 10 >= 5) {
+		else
 			startY = startY + (10 - startY % 10);
-		}
 
 		// Ende normalisiesrn?
-		if (zielX % 10 < 5) {
+		if (zielX % 10 < 5)
 			zielX = zielX - zielX % 10;
-		}
-		if (zielX % 10 >= 5) {
+		else
 			zielX = zielX + (10 - zielX % 10);
-		}
-		if (zielY % 10 < 5) {
+		if (zielY % 10 < 5)
 			zielY = zielY - zielY % 10;
-		}
-		if (zielY % 10 >= 5) {
+		else
 			zielY = zielY + (10 - zielY % 10);
-		}
 
 		// Welcher Nachbar ist der beste
 		float lowCost = 9999999;
@@ -264,127 +260,102 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public float getX() {
-		float carx = body.getPosition().x;
-		carx = carx - saussehen.getWidth() / 2;
-		return carx;
+		return getBody().getPosition().x - spriteAlive.getWidth() / 2;
 	}
 
 	public float getY() {
-		float cary = body.getPosition().y;
-		cary = cary - saussehen.getWidth() / 2;
-		return cary;
+		return getBody().getPosition().y - spriteAlive.getHeight() / 2;
 	}
 
 	public float getBodyX() {
-		return body.getPosition().x;
+		return getBody().getPosition().x;
 	}
 
 	public float getBodyY() {
-		return body.getPosition().y;
+		return getBody().getPosition().y;
 	}
 
-	public void killLateral(float drift) {
-		float lat = getVelocityVector().dot(getOrthogonal());
-		Vector2 vlat = getOrthogonal();
+	public void killLateral(final float drift) {
+		final float lat = getVelocityVector().dot(getOrthogonal());
+		final Vector2 vlat = getOrthogonal();
 		vlat.scl(drift);
 		vlat.scl(lat);
 		// vlat.scl(body.getFixtureList().first().getDensity());
 		// vlat=vlat.scl(-1);
-		body.applyLinearImpulse(vlat, body.getPosition(), true);
+		getBody().applyLinearImpulse(vlat, getBody().getPosition(), true);
 	}
 
 	public Vector2 getForwardVelocity() {
-		Vector2 velo = getVelocityVector();
-		velo.rotateRad(body.getAngle() * -1);
-		return velo;
+		return getVelocityVector().rotateRad(getBody().getAngle() * -1);
 	}
 
 	public Vector2 getVelocityVector() {
-		return body.getLinearVelocity();
+		return getBody().getLinearVelocity();
 	}
 
 	public Vector2 getOrthogonal() {
-		Vector2 ort = new Vector2(1, 0);
-		ort.rotateRad(body.getAngle());
+		final Vector2 ort = new Vector2(1, 0);
+		ort.rotateRad(getBody().getAngle());
 		ort.rotate90(1);
 		return ort;
 	}
 
-	public void reduceToMaxSpeed(float maxspeed) {
+	public void reduceToMaxSpeed(final float maxspeed) {
 		float speed = getForwardVelocity().x;
 		if (speed < maxspeed * -1)
 			speed = maxspeed * -1;
 		if (speed > maxspeed)
 			speed = maxspeed;
 
-		Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
-		newSpeed.rotateRad(body.getAngle());
-		body.setLinearVelocity(newSpeed);
+		final Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
+		newSpeed.rotateRad(getBody().getAngle());
+		getBody().setLinearVelocity(newSpeed);
 	}
 
 	public void update(float delta) {
-		float angle = 0;
-		if (!this.tot) {
-			if (weg.size() > 0) {
-				if (health < 0) {
-					this.die();
-				}
+		if (this.isTot())
+			return;
 
-				float testX, testY, bodX, bodY, getLastX, getLastY, getFirstX, getFirstY;
-				bodX = getBodyX();
-				bodY = getBodyY();
-				getLastX = weg.getLast().x * PlayState.PIXEL_TO_METER;
-				getLastY = weg.getLast().y * PlayState.PIXEL_TO_METER;
-				getFirstX = weg.getFirst().x;
-				getFirstY = weg.getFirst().y;
-				testX = getBodyX() - weg.getLast().x;
-				testY = getBodyY() - weg.getLast().y;
+		if (getHealth() < 0)
+			this.die();
 
-				angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
-						-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
-				body.setTransform(body.getPosition(), (float) Math.toRadians(angle - 90));
-				Vector2 velo = new Vector2(speed, 0);
-				velo.rotateRad(body.getAngle());
-				body.setLinearVelocity(velo);
-				// body.applyForceToCenter(velo,true);
-				// reduceToMaxSpeed(speed);
-				// killLateral(1f);
-				distancetonode = saussehen.getWidth() * 4;
+		if (weg.size() > 0) {
+			final float angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
+					-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+			getBody().setTransform(getBody().getPosition(), (float) Math.toRadians(angle - 90));
+			final Vector2 velo = new Vector2(speed, 0);
+			velo.rotateRad(this.body.getAngle());
+			this.body.setLinearVelocity(velo);
+			// body.applyForceToCenter(velo,true);
+			// reduceToMaxSpeed(speed);
+			// killLateral(1f);
+			distancetonode = spriteAlive.getWidth() * 4;
 
-				if (body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
-						weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
-					weg.remove(weg.indexOf(weg.getLast()));
-				if (weg.size() > 0)
-					score = weg.getLast().h;
-
-			}
-
-			else {
-				PlayState.scoreBoard.reduceLife(damage);
-				this.delete = true;
-				this.tot = true;
-			}
+			if (this.body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
+					weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
+				weg.remove(weg.indexOf(weg.getLast()));
+			if (weg.size() > 0)
+				score = weg.getLast().h;
+		} else {
+			PlayState.scoreBoard.reduceLife(damage);
+			this.setDelete(true);
+			this.setTot(true);
 		}
 
+		spriteAlive.setPosition(getX(), getY());
+		spriteAlive.setRotation(MathUtils.radDeg * getBody().getAngle());
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
-		saussehen.setPosition(getX(), getY());
-		saussehen.setRotation(MathUtils.radDeg * body.getAngle());
-		stot.setRotation(MathUtils.radDeg * body.getAngle());
-		saussehen.draw(spriteBatch);
-		if (washit) {
-			sdamage.setX(getX() + saussehen.getWidth() / 2 + MathUtils.random(-0.2f, 0.2f));
-			sdamage.setY(getY() + saussehen.getHeight() / 2 + MathUtils.random(-0.2f, 0.2f));
-			sdamage.draw(spriteBatch);
-			washit = false;
+		if (this.isTot())
+			spriteDead.draw(spriteBatch);
+		else {
+			spriteAlive.draw(spriteBatch);
+			if (washit) {
+				spriteDamadge.draw(spriteBatch);
+				washit = false;
+			}
 		}
-
-		// if(weg.size()>0) {
-		// sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
-		// sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
-		// sdamage.draw(spriteBatch);
-		// }
 	}
 
 	public float getScore() {
@@ -393,5 +364,45 @@ public abstract class Enemy extends BodyDef {
 
 	public float getMoney() {
 		return money;
+	}
+
+	public Body getBody() {
+		return body;
+	}
+
+	public void setBody(Body body) {
+		this.body = body;
+	}
+
+	public float getHealth() {
+		return health;
+	}
+
+	public void setHealth(float health) {
+		this.health = health;
+	}
+
+	public boolean isJustDied() {
+		return justDied;
+	}
+
+	public void setJustDied(boolean justDied) {
+		this.justDied = justDied;
+	}
+
+	public boolean isDelete() {
+		return delete;
+	}
+
+	public void setDelete(boolean delete) {
+		this.delete = delete;
+	}
+
+	public boolean isTot() {
+		return tot;
+	}
+
+	public void setTot(boolean tot) {
+		this.tot = tot;
 	}
 }

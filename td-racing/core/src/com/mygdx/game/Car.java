@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.Enemy;
 
 public class Car {
 	public Body body;

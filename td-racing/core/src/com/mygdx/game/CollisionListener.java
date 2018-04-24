@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.tower.Flame;
 

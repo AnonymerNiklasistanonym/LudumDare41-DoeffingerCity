@@ -20,12 +20,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
-import com.mygdx.game.Enemy;
 import com.mygdx.game.EnemyWaveEntry;
-import com.mygdx.game.Enemy_Lincoln;
-import com.mygdx.game.Enemy_bicycle;
-import com.mygdx.game.Enemy_fat;
-import com.mygdx.game.Enemy_small;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
@@ -35,13 +30,18 @@ import com.mygdx.game.TurmMenu;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
+import com.mygdx.game.objects.enemies.EnemyBicycle;
+import com.mygdx.game.objects.enemies.EnemyFat;
+import com.mygdx.game.objects.enemies.EnemyLincoln;
+import com.mygdx.game.objects.enemies.EnemySmall;
 import com.mygdx.game.objects.tower.FireTower;
 import com.mygdx.game.objects.tower.Flame;
 import com.mygdx.game.objects.tower.LaserTower;
-import com.mygdx.game.objects.tower.MGTower;
+import com.mygdx.game.objects.tower.MgTower;
 
 public class PlayState extends GameState implements CollisionCallbackInterface {
 
@@ -148,10 +148,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		Tower.circleTexture = new Texture(Gdx.files.internal("tower/range.png"));
 
-		MGTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
-		MGTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
-		MGTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
-		MGTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		MgTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
+		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
+		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
+		MgTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
@@ -164,21 +164,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		FireTower.tflame = new Texture(Gdx.files.internal("tower/flame.png"));
 		FireTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 
-		Enemy_small.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
-		Enemy_small.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
-		Enemy_small.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		EnemySmall.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
+		EnemySmall.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
+		EnemySmall.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
-		Enemy_fat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
-		Enemy_fat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
-		Enemy_fat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		EnemyFat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
+		EnemyFat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
+		EnemyFat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
-		Enemy_bicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
-		Enemy_bicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
-		Enemy_bicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		EnemyBicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
+		EnemyBicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
+		EnemyBicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
-		Enemy_Lincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
-		Enemy_Lincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
-		Enemy_Lincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		EnemyLincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
+		EnemyLincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
+		EnemyLincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
@@ -238,7 +238,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 			finishline = new FinishLine(world, sfinishline, 380, 220);
 
-			map = new MainMap("track1", world, finishline.body);
+			map = new MainMap("track1", world, finishline.getBody());
 			map.setSpawn(new Vector2(220, 20));
 			scurrenttrack = strack1;
 			pitStop.setPosition(165 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
@@ -252,7 +252,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 			finishline = new FinishLine(world, sfinishline, 360, 240);
 
-			map = new MainMap("track2", world, finishline.body);
+			map = new MainMap("track2", world, finishline.getBody());
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
 			pitStop.setPosition(165 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
@@ -267,7 +267,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 			finishline = new FinishLine(world, sfinishline, 350, 150);
 
-			map = new MainMap("track3", world, finishline.body);
+			map = new MainMap("track3", world, finishline.getBody());
 			map.setSpawn(new Vector2(170, 100));
 			scurrenttrack = strack3;
 			pitStop.setPosition(100 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
@@ -455,15 +455,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		if (infiniteenemies) {
 			if (MathUtils.random(1000) > 950) {
-				Enemy e = new Enemy_small(220, 20, world, map);
+				Enemy e = new EnemySmall(220, 20, world, map);
 				enemies.add(e);
 			}
 			if (MathUtils.random(1000) > 990) {
-				Enemy e = new Enemy_bicycle(220, 20, world, map);
+				Enemy e = new EnemyBicycle(220, 20, world, map);
 				enemies.add(e);
 			}
 			if (MathUtils.random(1000) > 995) {
-				Enemy e = new Enemy_fat(220, 20, world, map);
+				Enemy e = new EnemyFat(220, 20, world, map);
 				enemies.add(e);
 			}
 
@@ -475,15 +475,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			// }
 			if (infiniteenemies) {
 				if (MathUtils.random(1000) > 950) {
-					Enemy e = new Enemy_small(220, 20, world, map);
+					Enemy e = new EnemySmall(220, 20, world, map);
 					enemies.add(e);
 				}
 				if (MathUtils.random(1000) > 990) {
-					Enemy e = new Enemy_bicycle(220, 20, world, map);
+					Enemy e = new EnemyBicycle(220, 20, world, map);
 					enemies.add(e);
 				}
 				if (MathUtils.random(1000) > 995) {
-					Enemy e = new Enemy_fat(220, 20, world, map);
+					Enemy e = new EnemyFat(220, 20, world, map);
 					enemies.add(e);
 				}
 
@@ -610,14 +610,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		Array<Enemy> toremove = new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
-			if (enemy.justDied) {
-				enemy.body.setActive(false);
-				enemy.justDied = false;
+			if (enemy.isJustDied()) {
+				enemy.getBody().setActive(false);
+				enemy.setJustDied(false);
 				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 			}
-			if (enemy.delete) {
+			if (enemy.isDelete()) {
 				toremove.add(enemy);
-				world.destroyBody(enemy.body);
+				world.destroyBody(enemy.getBody());
 			}
 		}
 		for (Enemy e : toremove) {
@@ -644,20 +644,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		NormalCheckpoint.normalCheckPointActivated.dispose();
 		NormalCheckpoint.normalCheckPointDisabled.dispose();
 		Tower.circleTexture.dispose();
-		MGTower.groundTower.dispose();
-		MGTower.upperTower.dispose();
-		MGTower.towerFiring.dispose();
-		MGTower.soundShoot.dispose();
+		MgTower.groundTower.dispose();
+		MgTower.upperTower.dispose();
+		MgTower.towerFiring.dispose();
+		MgTower.soundShoot.dispose();
 		LaserTower.groundTower.dispose();
 		LaserTower.upperTower.dispose();
 		LaserTower.towerFiring.dispose();
 		LaserTower.soundShoot.dispose();
-		Enemy_small.normalTexture.dispose();
-		Enemy_small.deadTexture.dispose();
-		Enemy_fat.normalTexture.dispose();
-		Enemy_fat.deadTexture.dispose();
-		Enemy_bicycle.normalTexture.dispose();
-		Enemy_bicycle.deadTexture.dispose();
+		EnemySmall.normalTexture.dispose();
+		EnemySmall.deadTexture.dispose();
+		EnemyFat.normalTexture.dispose();
+		EnemyFat.deadTexture.dispose();
+		EnemyBicycle.normalTexture.dispose();
+		EnemyBicycle.deadTexture.dispose();
 		backgroundMusic.dispose();
 		carsound.dispose();
 		MainGame.waveFont.getData().setScale(10f);
@@ -666,10 +666,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	public void collisionCarEnemy(Car car, Enemy enemy) {
 		car.hitEnemy(enemy);
-		if (enemy.health < 0) {
-			if (soundon)
-				splatt.play(1, MathUtils.random(0.5f, 2f), 0);
-		}
+		if (enemy.getHealth() < 0 && soundon)
+			splatt.play(1, MathUtils.random(0.5f, 2f), 0);
 	}
 
 	@Override
@@ -708,9 +706,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	@Override
-	public void collisionFlameEnemy(Enemy e, Flame f) {
-		// TODO Auto-generated method stub
-
+	public void collisionFlameEnemy(final Enemy enemy, final Flame flame) {
+		enemy.takeDamage(flame.getDamage());
 	}
 
 	public void updateWaves1() {
@@ -1013,7 +1010,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public boolean allEnemiesDead() {
 		boolean alldead = true;
 		for (Enemy e : enemies) {
-			if (!e.tot)
+			if (!e.isTot())
 				alldead = false;
 		}
 		if (alldead) {

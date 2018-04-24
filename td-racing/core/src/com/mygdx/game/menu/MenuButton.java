@@ -5,20 +5,18 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MainGame;
 
-public class MenuButton implements Disposable {
+public class MenuButton {
 
 	public static Texture textureActive;
 	public static Texture textureNotActive;
 
-	private final Sprite button;
 	private boolean activated;
+
+	private final Sprite button;
 	private final String content;
-
 	private final int id;
-
 	private final float fontX, fontY;
 
 	public MenuButton(final int id, final float xPosition, final float yPosition, final String content,
@@ -49,19 +47,9 @@ public class MenuButton implements Disposable {
 		MainGame.fontBig.draw(spriteBatch, this.content, this.fontX, this.fontY);
 	}
 
-	public boolean contains(Vector3 touchPos) {
-		if (touchPos.x > this.button.getX() && touchPos.x < this.button.getX() + this.button.getWidth()) {
-			if (touchPos.y > this.button.getY() && touchPos.y < this.button.getY() + this.button.getHeight()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public void dispose() {
-		textureActive.dispose();
-		textureNotActive.dispose();
+	public boolean contains(final Vector3 touchPos) {
+		return (touchPos.x > this.button.getX() && touchPos.x < this.button.getX() + this.button.getWidth())
+				&& (touchPos.y > this.button.getY() && touchPos.y < this.button.getY() + this.button.getHeight());
 	}
 
 	public int getId() {

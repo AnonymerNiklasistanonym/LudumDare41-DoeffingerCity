@@ -20,12 +20,12 @@ public class MainMap {
 	Sprite sMap;
 	Texture tMap;
 	Body mapModel;
-	Body mapZiel;
+	public Body mapZiel;
 	Body finishLine;
 	Body mapZombieWay;
 	Sprite debug;
 	ArrayList<Node> nodesList;
-	Node[][] nodes2DList;
+	public Node[][] nodes2DList;
 	Array<EnemyWaveEntry> enemyWave;
 	Vector2 spawn;
 

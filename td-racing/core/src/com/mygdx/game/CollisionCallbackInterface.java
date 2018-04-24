@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.mygdx.game.objects.Checkpoint;
+import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.tower.Flame;
 

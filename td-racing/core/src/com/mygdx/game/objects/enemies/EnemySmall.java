@@ -1,0 +1,21 @@
+package com.mygdx.game.objects.enemies;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.MainMap;
+import com.mygdx.game.objects.Enemy;
+
+public class EnemySmall extends Enemy {
+
+	public static Texture damageTexture;
+	public static Texture deadTexture;
+	public static Texture normalTexture;
+
+	public EnemySmall(float xPos, float yPos, World world, MainMap map) {
+		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map);
+		this.health = 10;
+		this.damage = 1;
+		this.speed = 2;
+	}
+
+}

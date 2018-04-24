@@ -2,6 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.objects.Enemy;
+import com.mygdx.game.objects.enemies.EnemyBicycle;
+import com.mygdx.game.objects.enemies.EnemyFat;
+import com.mygdx.game.objects.enemies.EnemySmall;
 
 public class EnemyWaveEntry {
 
@@ -92,11 +96,11 @@ public class EnemyWaveEntry {
 	public static Enemy createEnemy(final EnemyWaveEntry entry, final World world, final MainMap map) {
 		switch (entry.getId()) {
 		case ENEMY_SMALL:
-			return new Enemy_small(entry.getPositon().x, entry.getPositon().y, world, map);
+			return new EnemySmall(entry.getPositon().x, entry.getPositon().y, world, map);
 		case ENEMY_FAT:
-			return new Enemy_fat(entry.getPositon().x, entry.getPositon().y, world, map);
+			return new EnemyFat(entry.getPositon().x, entry.getPositon().y, world, map);
 		case ENEMY_BYCICLE:
-			return new Enemy_bicycle(entry.getPositon().x, entry.getPositon().y, world, map);
+			return new EnemyBicycle(entry.getPositon().x, entry.getPositon().y, world, map);
 		}
 		return null;
 	}

@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Node {
-	float x, y;
+	public float x;
+	public float y;
 	// Kosten von Start hierher
-	float g = 1;
+	public float g = 1;
 	// Kosten bis zum Ziel
-	float h;
+	public float h;
 	// Erschwernis
-	float erschwernis;
+	public float erschwernis;
 	// Kosten
-	float kosten;
+	public float kosten;
 
-	boolean noUse = false;
+	public boolean noUse = false;
 
-	Node parent;
+	public Node parent;
 
-	ArrayList<Node> nachbarn;
+	public ArrayList<Node> nachbarn;
 
 	public Node(float x, float y, float zielX, float zielY) {
 		this.x = x;
