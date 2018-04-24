@@ -25,16 +25,15 @@ public class ScoreBoard {
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		MainGame.font.draw(spriteBatch, "Leben: " + (int) this.healthPoints, COLUMN, 8);
-		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, COLUMN, 7);
-		MainGame.font.draw(spriteBatch, "Kill Count: " + (int) this.killCount, COLUMN, 6);
-		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", COLUMN, 5);
+		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 7);
+		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + "$", COLUMN, 6);
+		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + "s (#" + this.lapNumber + ")", COLUMN, 5);
+		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 4);
 		// String.format("%.2f", this.wholeTime) - HTML BUILD GOES CRAZY
-		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + "s", COLUMN, 4);
+		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + "s", COLUMN, 3);
 		// String.format("%.2f", this.currentTime) - HTML BUILD GOES CRAZY
-		MainGame.font.draw(spriteBatch, "Lap Time: " + (int) this.currentTime + "s", COLUMN, 3);
-		MainGame.font.draw(spriteBatch, "Lap: #" + this.lapNumber, COLUMN, 2);
-		MainGame.font.draw(spriteBatch, "Wave: #" + this.waveNumber, COLUMN, 1);
+		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, COLUMN, 2);
+		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, COLUMN, 1);
 	}
 
 	public void reduceLife(float damage) {
