@@ -699,7 +699,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public void updateWaves1() {
 
-		int totalwaves = 10;
+		int totalwaves = 0;
 		if (currentEnemyWaves.size == 0) {
 			currentwave++;
 			if (currentwave > totalwaves)
@@ -888,7 +888,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (currentEnemyWaves.size == 0) {
 			currentwave++;
 			if (currentwave > totalwaves) {
-				LevelVictory();
+				GameVictory();
 			}
 			else {
 				wavetext="WAVE "+currentwave;
@@ -980,7 +980,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public void LevelVictory() {
 		wavetext="LEVEL CLEAR!";
-		timeforwavetext=4f;
+		timeforwavetext=2f;
+		currentwave=0;
 		Timer.schedule(new Timer.Task() {
 			
 			@Override
@@ -988,7 +989,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				MainGame.level++;
 				loadLevel(MainGame.level);;
 			}
-		},4f);
+		},3f);
+	}
+	
+	public void GameVictory() {
+		
 	}
 
 }
