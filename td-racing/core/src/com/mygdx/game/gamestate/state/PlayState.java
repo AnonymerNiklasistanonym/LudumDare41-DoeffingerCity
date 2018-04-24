@@ -721,9 +721,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves1() {
 
 		int totalwaves = 10;
+		if (currentwave > totalwaves&&allEnemiesDead()) {
+			LevelVictory();
+		}
 		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
-			if (currentwave > totalwaves&&enemies.size<1)
+			if (currentwave > totalwaves&&allEnemiesDead())
 				
 				LevelVictory();
 			else {
@@ -740,11 +743,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					break;
 				case 2:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 20, 0, 0, 4f, 0, 0));
+							(int) scoreBoard.getTime() + 35, 20, 0, 0, 4f, 0, 0));
 					break;
 				case 3:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 35, 30, 0, 0, 0f, 0, 0));
+							(int) scoreBoard.getTime() + 5, 30, 0, 0, 0f, 0, 0));
 					break;
 				case 4:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
@@ -807,9 +810,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves2() {
 
 		int totalwaves = 10;
+		if (currentwave > totalwaves&&allEnemiesDead()) {
+			LevelVictory();
+		}
 		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
-			if (currentwave > totalwaves&&enemies.size<1) {
+			if (currentwave > totalwaves&&allEnemiesDead()) {
 				LevelVictory();
 			}
 			else {
@@ -898,11 +904,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	
 	
 	public void updateWaves3() {
-
 		int totalwaves = 10;
+		if (currentwave > totalwaves&&allEnemiesDead()) {
+			GameVictory();
+		}
+		
 		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
 			currentwave++;
-			if (currentwave > totalwaves&&enemies.size<1) {
+			if (currentwave > totalwaves&&allEnemiesDead()) {
 				GameVictory();
 			}
 			else {
@@ -1007,5 +1016,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	
 	public void GameVictory() {
 	wongame=true;
+	}
+
+	public boolean allEnemiesDead() {
+		boolean alldead=true;
+		for (Enemy e : enemies) {
+			if(!e.tot)
+				alldead=false;
+		}
+		if(alldead)
+		{
+		System.out.println(	"All enemies are dead");
+		}
+		return alldead;
 	}
 }
