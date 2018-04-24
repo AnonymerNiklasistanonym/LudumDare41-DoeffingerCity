@@ -252,7 +252,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			map = new MainMap("track3", world, finishline.body);
 			map.setSpawn(new Vector2(220, 50));
 			scurrenttrack = strack3;
-<<<<<<< HEAD
 			float[][] checkPointPosition11 = { { 300, 170 }, { 320, 570 }, { 850, 570 }, { 850, 170 } };
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
