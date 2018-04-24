@@ -119,7 +119,7 @@ public class MenuState extends GameState {
 	public void update(float number) {
 		handleInput();
 		if (changeToPlayState)
-			gameStateManager.setGameState(new PlayState(gameStateManager));
+			gameStateManager.setGameState(new PlayState(gameStateManager, MainGame.level));
 	}
 
 	@Override
