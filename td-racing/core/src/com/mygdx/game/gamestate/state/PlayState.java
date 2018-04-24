@@ -786,8 +786,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				wavetext="WAVE "+currentwave;
 				if(currentwave==totalwaves){
 					wavetext="FINAL WAVE";
-					timeforwavetext=2;
+					
 				}
+				timeforwavetext=2;
 				scoreBoard.setWaveNumber(currentwave);
 				System.out.println("Starte Wave" + currentwave);
 				switch (currentwave) {
@@ -855,7 +856,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 15, 00, 0.5f, 20, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 40, 20, 0.5f, 0, 1f, 0, 0.0f));
-					
 					break;
 
 				default:
