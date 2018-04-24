@@ -63,7 +63,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugEntfernung;
 	private boolean carsoundPlaying = false;
 
-	public static boolean soundon = true;
+	public static boolean soundon = false;
 	private boolean debugWay;
 
 	private TurmMenu turmmenu;
@@ -221,7 +221,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			soundon=true;
 		}
 		else {
-			MainGame.level=3;
+			MainGame.level=1;
 		}
 		loadLevel(MainGame.level);
 
@@ -273,6 +273,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
 						checkPointPosition1[j][1] * PIXEL_TO_METER);
 			turmmenu.unlockTower(1);
+			turmmenu.unlockTower(2);
 			break;
 		case 3:
 			finishline = new FinishLine(world, sfinishline, 350, 150);

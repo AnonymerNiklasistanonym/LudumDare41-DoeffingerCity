@@ -28,11 +28,11 @@ public class ScoreBoard {
 	public void draw(final SpriteBatch spriteBatch) {
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
-		MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", 1, 35);
-		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 1, 34);
-		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 1, 33);
-		MainGame.font.draw(spriteBatch, "Level: " + this.level, 1, 32);
-		MainGame.font.draw(spriteBatch, "Wave: " + this.waveNumber, 1, 31);
+		//MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", 1, 35);
+		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 0.2f, 5);
+		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 0.2f, 4);
+		MainGame.font.draw(spriteBatch, "Level: " + this.level, 0.2f, 2);
+		MainGame.font.draw(spriteBatch, "Wave: " + this.waveNumber, 0.2f, 1);
 		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 3);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);
