@@ -24,7 +24,7 @@ public abstract class Enemy extends BodyDef {
 	Sprite saussehen;
 	Sprite stot;
 	float score = 10;
-	float money = 0;
+	float money = 1;
 	Sprite sdamage;
 	World world;
 	ArrayList<Node> nodesList;

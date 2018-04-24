@@ -13,5 +13,6 @@ public class Enemy_Lincoln extends Enemy{
 		this.speed = 0.9f;
 		this.health = 100;
 		this.damage = 20;
+		this.money = 10000;
 	}
 }

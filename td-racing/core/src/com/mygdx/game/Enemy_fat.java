@@ -14,5 +14,6 @@ import com.badlogic.gdx.physics.box2d.World;
 			this.speed = 0.8f;
 			this.health = 100;
 			this.damage = 20;
+			this.money = 10;
 		}
 }
