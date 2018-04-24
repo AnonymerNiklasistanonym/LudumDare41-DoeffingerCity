@@ -36,7 +36,7 @@ public class MainGame extends ApplicationAdapter {
 	/**
 	 * Name of the game
 	 */
-	public final static String GAME_NAME = "LudumDare 41 - TnT (Track n` Towers)";
+	public final static String GAME_NAME = "LudumDare 41 - TnT (Track `n Towers)";
 	/**
 	 * Width of the game screen (the window)
 	 */
