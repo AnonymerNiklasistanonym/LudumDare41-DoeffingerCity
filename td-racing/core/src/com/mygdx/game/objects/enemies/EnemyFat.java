@@ -15,7 +15,7 @@ public class EnemyFat extends Enemy {
 		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map);
 		this.damage = 20;
 		this.setHealth(100);
-		this.money = 10;
+		this.money = 3;
 		this.speed = 0.8f;
 	}
 }
