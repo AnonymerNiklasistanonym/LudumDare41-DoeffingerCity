@@ -1,6 +1,7 @@
 package com.mygdx.game.gamestate.state;
 
 import java.util.LinkedList;
+import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -113,7 +114,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 
-	public PlayState(GameStateManager gameStateManager) {
+	public PlayState(GameStateManager gameStateManager, int level) {
 		super(gameStateManager);
 		MainGame.highscoreFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
@@ -212,7 +213,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		pitStop.setPosition(100, 100);
 
 
-		loadLevel(2);
+		loadLevel(level);
 
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
@@ -780,8 +781,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		int totalwaves = 10;
 		if (currentEnemyWaves.size == 0) {
 			currentwave++;
-			if (currentwave > totalwaves)
+			if (currentwave > totalwaves) {
 				LevelVictory();
+			}
 			else {
 				wavetext="WAVE "+currentwave;
 				if(currentwave==totalwaves){
@@ -871,7 +873,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void LevelVictory() {
-
+		wavetext="LEVEL CLEAR!";
+		timeforwavetext=4f;
+		Timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				MainGame.level++;
+				loadLevel(MainGame.level);;
+				
+			}
+		}, 4f);
 	}
 
 }
