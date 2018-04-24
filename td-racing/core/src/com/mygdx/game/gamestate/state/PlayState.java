@@ -78,14 +78,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	private int moneyPerLap = 50;
 
-	private float laptime = 0f;
 	private Sound splatt, money, carsound;
 
 	/**
 	 * Time since last physic Steps
 	 */
 
-	int currentwave = 1;
+	int currentwave = 0;
 
 	boolean infiniteenemies = false;
 
@@ -809,67 +808,52 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					break;
 				case 3:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 90, 1f, 20, 4f, 0, 0));
+							(int) scoreBoard.getTime() + 5, 50, 1f, 0, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 20, 90, 0.5f, 20, 4f, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 90, 0.2f, 20, 4f, 0, 0));
+							(int) scoreBoard.getTime() + 55, 0, 0.0f, 8, 1f, 0, 0.0f));
 					break;
 				case 4:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 60, 0.4f, 0, 0, 0, 0));
+							(int) scoreBoard.getTime() + 5, 10, 0.1f, 0, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 60, 0.4f, 0, 0, 0, 0));
+							(int) scoreBoard.getTime() + 10, 0, 0.0f, 2, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 70, 0.4f, 0, 0, 0, 0));
+							(int) scoreBoard.getTime() + 15, 50, 1f, 0, 1f, 0, 0.0f));
 					break;
 				case 5:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 45, 0, 0));
+							(int) scoreBoard.getTime() + 5, 10, 0.1f, 0, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 10, 50, 0, 0));
+							(int) scoreBoard.getTime() + 10, 0, 0.0f, 4, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 20, 50, 0, 0));
+							(int) scoreBoard.getTime() + 15, 50, 1f, 0, 1f, 0, 0.0f));
 					break;
 				case 6:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 45, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 50, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 50, 0, 0));
+							(int) scoreBoard.getTime() + 5, 150, 0, 0));
 					break;
 				case 7:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 50, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 55, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 60, 0, 0));
+							(int) scoreBoard.getTime() + 5, 0, 15, 0));
 					break;
 				case 8:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 55, 0, 0));
+							(int) scoreBoard.getTime() + 5, 100, 1f, 0, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 60, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 70, 0, 0));
+							(int) scoreBoard.getTime() + 5, 0, 0.0f, 10, 3f, 0, 0.0f));
 					break;
 				case 9:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 60, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 70, 0, 0));
-					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 80, 0, 0));
+							(int) scoreBoard.getTime() + 5, 200, 0.5f, 0, 1f, 0, 0.0f));
 					break;
 				case 10:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 80, 0, 0));
+							(int) scoreBoard.getTime() + 5, 20, 0.5f, 0, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 15, 90, 0, 0));
+							(int) scoreBoard.getTime() + 15, 00, 0.5f, 20, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 100, 1, 0));
+							(int) scoreBoard.getTime() + 40, 20, 0.5f, 0, 1f, 0, 0.0f));
+					
 					break;
 
 				default:
