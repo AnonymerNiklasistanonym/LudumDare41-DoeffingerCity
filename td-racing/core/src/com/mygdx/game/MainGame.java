@@ -11,6 +11,8 @@ import com.mygdx.game.gamestate.state.MenuState;
 
 public class MainGame extends ApplicationAdapter {
 	
+	public static int level=1;
+	
 	/**
 	 * Normal/Big game font "Cornerstone"
 	 */
