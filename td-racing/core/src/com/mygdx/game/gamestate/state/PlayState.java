@@ -250,7 +250,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		switch (i) {
 		case 1:
 			finishline = new FinishLine(world, sfinishline, 380, 220);
-
 			map = new MainMap("track1", world, finishline.getBody());
 			map.setSpawn(new Vector2(220, 20));
 			scurrenttrack = strack1;
@@ -263,7 +262,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break;
 		case 2:
 			finishline = new FinishLine(world, sfinishline, 360, 240);
-
 			map = new MainMap("track2", world, finishline.getBody());
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
@@ -273,11 +271,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
 						checkPointPosition1[j][1] * PIXEL_TO_METER);
 			turmmenu.unlockTower(1);
-			turmmenu.unlockTower(2);
 			break;
 		case 3:
 			finishline = new FinishLine(world, sfinishline, 350, 150);
-
 			map = new MainMap("track3", world, finishline.getBody());
 			map.setSpawn(new Vector2(170, 100));
 			scurrenttrack = strack3;
@@ -292,6 +288,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		default:
 			break;
+		
+
+		
+		}
+		if(deploy==false) {
+			turmmenu.unlockTower(0);
+			turmmenu.unlockTower(1);
+			turmmenu.unlockTower(2);
 		}
 		currentEnemyWaves = new Array<EnemyWaveEntry>();
 
@@ -656,7 +660,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			if (rb != null)
 				ab.addAll(rb);
 			for (Body body : ab) {
-
+				if(body.getWorld()==world)
 				world.destroyBody(body);
 			}
 		}

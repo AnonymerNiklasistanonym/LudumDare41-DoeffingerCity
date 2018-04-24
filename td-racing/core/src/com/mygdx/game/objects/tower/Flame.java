@@ -22,8 +22,6 @@ public class Flame {
 
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
-		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
 		body = w.createBody(bodydef);
 		CircleShape enemyCircle = new CircleShape();

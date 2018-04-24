@@ -68,7 +68,7 @@ public class FireTower extends Tower {
 	@Override
 	public void shoot(Enemy e) {
 		if (isTargetInRange(e)) {
-			final Vector2 aim = new Vector2(1000, 0);
+			final Vector2 aim = new Vector2(10000, 0);
 			aim.rotate(getDegrees());
 			aim.rotate90(1);
 			timesincelastshot = 0;
