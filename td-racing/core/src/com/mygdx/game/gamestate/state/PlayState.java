@@ -85,7 +85,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	 * Time since last physic Steps
 	 */
 
-	int currentwave = 0;
+	int currentwave = 1;
 
 	boolean infiniteenemies = false;
 
@@ -116,7 +116,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager) {
 		super(gameStateManager);
-
+		MainGame.highscoreFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
 		scoreBoard.reset(0);
 
@@ -212,7 +212,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		pitStop.setPosition(100, 100);
 
+
 		loadLevel(2);
+
+		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.4f);
@@ -232,11 +235,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
+			turmmenu.tower2unlocked=true;
 			break;
 		case 3:
 			map = new MainMap("track3", world, finishline.body);
 			map.setSpawn(new Vector2(220, 50));
 			scurrenttrack = strack3;
+			turmmenu.tower3unlocked=true;
 			break;
 
 		default:
@@ -522,8 +527,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		scoreBoard.draw(spriteBatch);
 
 		turmmenu.draw(spriteBatch);
-		//MainGame.highscoreFont.(spriteBatch,wavetext,10,10);
-		spriteBatch.end();
+		if(timeforwavetext>0) {
+		MainGame.highscoreFont.draw(spriteBatch,wavetext,20,25);
+		
+		timeforwavetext=timeforwavetext-Gdx.graphics.getDeltaTime();
+		}spriteBatch.end();
 
 		if (debugBox2D)
 			debugRender.render(world, camera.combined);
@@ -591,6 +599,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Enemy_bicycle.deadTexture.dispose();
 		backgroundMusic.dispose();
 		carsound.dispose();
+		MainGame.highscoreFont.getData().setScale(10f);
 	}
 
 	@Override
@@ -743,6 +752,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			if (currentwave > totalwaves)
 				LevelVictory();
 			else {
+				wavetext="WAVE "+currentwave;
+				if(currentwave==totalwaves){
+					wavetext="FINAL WAVE";
+					timeforwavetext=2;
+				}
 				scoreBoard.setWaveNumber(currentwave);
 				System.out.println("Starte Wave" + currentwave);
 				switch (currentwave) {
@@ -756,11 +770,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					break;
 				case 2:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 5, 60, 1f, 15, 4f, 0, 0));
+							(int) scoreBoard.getTime() + 5, 10, 0.2f, 2, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 20, 60, 0.5f, 15, 4f, 0, 0));
+							(int) scoreBoard.getTime() + 15, 10, 0.2f, 2, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
-							(int) scoreBoard.getTime() + 25, 60, 0.2f, 15, 4f, 0, 0));
+							(int) scoreBoard.getTime() + 25, 10, 0.2f, 2, 1f, 0, 0.0f));
+					
 					break;
 				case 3:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
