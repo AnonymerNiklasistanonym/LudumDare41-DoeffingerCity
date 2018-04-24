@@ -209,11 +209,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					checkPointPosition[i][1] * PIXEL_TO_METER);
 
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
+		//pitStop.setPosition(100, 100);
 
-		pitStop.setPosition(100, 100);
 
 
 		loadLevel(level);
+		loadLevel(3);
 
 		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/zombiecar3.wav"));
@@ -224,6 +225,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void loadLevel(int i) {
+		scoreBoard.setLevel(i);
 		switch (i) {
 		case 1:
 			world = new World(new Vector2(), true);
@@ -235,7 +237,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			map = new MainMap("track1", world, finishline.body);
 			map.setSpawn(new Vector2(220, 20));
 			scurrenttrack = strack1;
-			pitStop.setPosition(210 * PIXEL_TO_METER, 20 * PIXEL_TO_METER);
+			pitStop.setPosition(165 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
 			float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition[j][0] * PIXEL_TO_METER,
@@ -251,6 +253,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
+			pitStop.setPosition(165 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
 			float[][] checkPointPosition1 = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
@@ -268,6 +271,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			map = new MainMap("track3", world, finishline.body);
 			map.setSpawn(new Vector2(170, 100));
 			scurrenttrack = strack3;
+			pitStop.setPosition(100 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
+
 			float[][] checkPointPosition11 = { { 300, 170 }, { 320, 570 }, { 850, 570 }, { 850, 170 } };
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
@@ -516,13 +521,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			buildingtower.draw(spriteBatch);
 		for (final Tower tower : towers)
 			tower.draw(spriteBatch);
-		// draw pitstop
-		pitStop.draw(spriteBatch);
+
 		// draw enemies
 		for (Enemy e : enemies) {
 			e.update(Gdx.graphics.getDeltaTime());
 			e.draw(spriteBatch);
 		}
+		// draw pitstop
+		pitStop.draw(spriteBatch);
 
 		for (final Tower tower : towers) {
 			tower.drawProjectile(spriteBatch);

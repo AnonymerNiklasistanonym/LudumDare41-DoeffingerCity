@@ -252,7 +252,7 @@ public abstract class Tower {
 		e.takeDamage(power);
 		if (PlayState.soundon)
 			if(!isSoundPlaying) {
-				soundShoot.loop();
+				soundShoot.loop(0.5f);
 				isSoundPlaying=true;
 			}
 		timesincelastshot = 0;
