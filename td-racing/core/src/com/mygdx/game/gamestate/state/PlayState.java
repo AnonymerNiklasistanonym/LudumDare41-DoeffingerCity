@@ -245,7 +245,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			world.setContactListener(collis);
 			debugRender = new Box2DDebugRenderer();
 			car = new Car(world, smaincar, 440, 220);
-			finishline = new FinishLine(world, sfinishline, 380, 220);
+			finishline = new FinishLine(world, sfinishline, 360, 240);
 			
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));

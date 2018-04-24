@@ -19,12 +19,14 @@ public class ScoreBoard {
 	public ScoreBoard(PlayState playState) {
 		this.playState = playState;
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
-		COLUMN = 53;
+		COLUMN = 50;
 		this.healthPoints = 100;
 		reset(0);
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
+		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
+		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
 		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 7);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 6);
 		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 5);

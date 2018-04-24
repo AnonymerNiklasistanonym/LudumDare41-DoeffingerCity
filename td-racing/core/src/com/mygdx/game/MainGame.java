@@ -28,6 +28,10 @@ public class MainGame extends ApplicationAdapter {
 	 */
 	public static BitmapFont highscoreFont;
 	/**
+	 * Wave size game font "Cornerstone"
+	 */
+	public static BitmapFont waveFont;
+	/**
 	 * Name of the game
 	 */
 	public final static String GAME_NAME = "td-racing";
@@ -51,6 +55,7 @@ public class MainGame extends ApplicationAdapter {
 		smallFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_small.fnt"));
 		highscoreFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_highscore.fnt"));
 		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));
+		waveFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_wave.fnt"));
 		spriteBatch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
 		gameStateManager.pushState(new MenuState(gameStateManager));
