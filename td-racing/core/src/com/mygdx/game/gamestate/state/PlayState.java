@@ -521,13 +521,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			buildingtower.draw(spriteBatch);
 		for (final Tower tower : towers)
 			tower.draw(spriteBatch);
-		// draw pitstop
-		pitStop.draw(spriteBatch);
+
 		// draw enemies
 		for (Enemy e : enemies) {
 			e.update(Gdx.graphics.getDeltaTime());
 			e.draw(spriteBatch);
 		}
+		// draw pitstop
+		pitStop.draw(spriteBatch);
 
 		for (final Tower tower : towers) {
 			tower.drawProjectile(spriteBatch);
