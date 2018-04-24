@@ -251,15 +251,10 @@ public abstract class Tower {
 
 		e.takeDamage(power);
 		if (PlayState.soundon)
-			if(permanentsound)
-				if(!isSoundPlaying) {
-					soundShoot.loop();
-					System.out.println("loop");
-					isSoundPlaying=true;
-				}
-			
-			else
-				soundShoot.play();
+			if(!isSoundPlaying) {
+				soundShoot.loop();
+				isSoundPlaying=true;
+			}
 		timesincelastshot = 0;
 		shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
 		shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
@@ -268,6 +263,10 @@ public abstract class Tower {
 		else
 		{
 			target=null;
+			if(isSoundPlaying) {
+				soundShoot.stop();;
+				isSoundPlaying=false;
+			}
 		}
 	}
 
