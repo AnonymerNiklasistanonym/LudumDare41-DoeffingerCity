@@ -6,16 +6,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 
 public class HighscoreButton {
-	
+
 	public static Texture texture;
-	
+
 	private final Sprite button;
 	private final int place;
 	private final String name;
-	private final int score;	
+	private final int score;
 	private final float fontXNumber, fontYNumber, fontXName, fontYName, fontXScore, fontYScore;
-	
-	public HighscoreButton(final int place, final int score, final String name, final float xPosition, final float yPosition) {
+
+	public HighscoreButton(final int place, final int score, final String name, final float xPosition,
+			final float yPosition) {
 		this.place = place;
 		this.name = name;
 		this.score = score;
@@ -29,7 +30,7 @@ public class HighscoreButton {
 		this.fontXScore = xPosition + this.button.getWidth() / 8;
 		this.fontYScore = yPosition + this.button.getHeight() / 5 * 2;
 	}
-	
+
 	public void draw(final SpriteBatch spriteBatch) {
 		this.button.draw(spriteBatch);
 		MainGame.highscoreFont.draw(spriteBatch, "" + this.place, this.fontXNumber, this.fontYNumber);

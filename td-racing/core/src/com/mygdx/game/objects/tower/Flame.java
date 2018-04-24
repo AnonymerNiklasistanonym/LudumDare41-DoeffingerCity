@@ -11,14 +11,15 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public class Flame {
 	Body body;
-	float spritescale=0.1f;
-	float originalsize=0;
-	float lifetime=1.0f;
+	float spritescale = 0.1f;
+	float originalsize = 0;
+	float lifetime = 1.0f;
 	Sprite sprite;
 	float damage;
-	public boolean killme=false;
-	public Flame(float x, float y,Sprite sprite, World w, float damage) {
-		
+	public boolean killme = false;
+
+	public Flame(float x, float y, Sprite sprite, World w, float damage) {
+
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
@@ -30,31 +31,31 @@ public class Flame {
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
 		fdef.density = 1f;
-		fdef.isSensor=true;
+		fdef.isSensor = true;
 		body.createFixture(fdef);
 		body.setUserData(this);
-		this.sprite=new Sprite(sprite);
-		originalsize=sprite.getWidth();
-		this.damage=damage;
+		this.sprite = new Sprite(sprite);
+		originalsize = sprite.getWidth();
+		this.damage = damage;
 	}
-	
+
 	public void update(float delta) {
-		spritescale=spritescale+delta;
-		if(spritescale>1)
-			spritescale=1;
-		lifetime=lifetime-delta;
-		if(lifetime<0)
-			killme=true;
+		spritescale = spritescale + delta;
+		if (spritescale > 1)
+			spritescale = 1;
+		lifetime = lifetime - delta;
+		if (lifetime < 0)
+			killme = true;
 	}
-	
+
 	public void draw(SpriteBatch batch) {
-		sprite.setPosition(getX(),getY());
-		//sprite.scale(0.0001f);
-		sprite.setSize(spritescale*originalsize, spritescale*originalsize);
+		sprite.setPosition(getX(), getY());
+		// sprite.scale(0.0001f);
+		sprite.setSize(spritescale * originalsize, spritescale * originalsize);
 		sprite.setOriginCenter();
 		sprite.draw(batch);
 	}
-	
+
 	public float getX() {
 		float carx = body.getPosition().x;
 		carx = carx - sprite.getWidth() / 2;
@@ -66,7 +67,7 @@ public class Flame {
 		cary = cary - sprite.getWidth() / 2;
 		return cary;
 	}
-	
+
 	public float getDamage() {
 		return damage;
 	}

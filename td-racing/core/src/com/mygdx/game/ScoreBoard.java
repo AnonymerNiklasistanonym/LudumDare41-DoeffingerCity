@@ -15,7 +15,7 @@ public class ScoreBoard {
 	private float healthPoints;
 	private final PlayState playState;
 	private final int COLUMN;
-	private int level ;
+	private int level;
 
 	public ScoreBoard(PlayState playState) {
 		this.playState = playState;
@@ -35,8 +35,8 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Wave: " + this.waveNumber, 1, 31);
 		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 3);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 2);
-		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);		
-		
+		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);
+
 	}
 
 	public void reduceLife(float damage) {

@@ -1,7 +1,6 @@
 package com.mygdx.game.gamestate.state;
 
 import java.util.LinkedList;
-import java.util.TimerTask;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -79,24 +78,24 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	private int moneyPerLap = 50;
 
-	private Sound splatt, money, carsound,victorysound;
+	private Sound splatt, money, carsound, victorysound;
 
 	/**
 	 * Time since last physic Steps
 	 */
 
 	Sprite victory;
-	
+
 	int currentwave = 0;
-	boolean wongame=false;
+	boolean wongame = false;
 	boolean infiniteenemies = false;
 
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
 
-	private float timeforwavetext=3f;
-	private String wavetext="";
-	
+	private float timeforwavetext = 3f;
+	private String wavetext = "";
+
 	/**
 	 * Time for physic Steps
 	 */
@@ -107,7 +106,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float RESOLUTION_HEIGHT = 720f;
 
 	private Checkpoint[] checkpoints;
-	
+
 	private Music backgroundMusic;
 
 	// Zur identifizierung von Collisions Entitys
@@ -140,8 +139,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		final Sprite s4 = createScaledSprite("buttons/cannonbutton.png");
 		final Sprite s5 = createScaledSprite("buttons/cannonbutton.png");
 
-		
-		victory=createScaledSprite("screens/victory.png");
+		victory = createScaledSprite("screens/victory.png");
 		// set STATIC textures
 		NormalCheckpoint.normalCheckPointActivated = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
@@ -198,7 +196,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		world.setContactListener(collis);
 		debugRender = new Box2DDebugRenderer();
 
-		
 		finishline = new FinishLine(world, sfinishline, 380, 220);
 
 		debugBox2D = false;
@@ -215,28 +212,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					checkPointPosition[i][1] * PIXEL_TO_METER);
 
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
-		//pitStop.setPosition(100, 100);
-
-		
-
-
+		// pitStop.setPosition(100, 100);
 
 		loadLevel(MainGame.level);
 
-		
-
-
-
-		
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.6f);
-		if (soundon) backgroundMusic.play();
+		if (soundon)
+			backgroundMusic.play();
 
 	}
 
 	public void loadLevel(int i) {
-		System.out.println("Load Level "+i);
+		System.out.println("Load Level " + i);
 		scoreBoard.setLevel(i);
 		enemies.clear();
 		towers.clear();
@@ -246,9 +235,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugRender = new Box2DDebugRenderer();
 		switch (i) {
 		case 1:
-				
+
 			finishline = new FinishLine(world, sfinishline, 380, 220);
-			
+
 			map = new MainMap("track1", world, finishline.body);
 			map.setSpawn(new Vector2(220, 20));
 			scurrenttrack = strack1;
@@ -257,12 +246,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition[j][0] * PIXEL_TO_METER,
 						checkPointPosition[j][1] * PIXEL_TO_METER);
-			break; 
+			break;
 		case 2:
 			;
-			
+
 			finishline = new FinishLine(world, sfinishline, 360, 240);
-			
+
 			map = new MainMap("track2", world, finishline.body);
 			map.setSpawn(new Vector2(230, 50));
 			scurrenttrack = strack2;
@@ -271,13 +260,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
 						checkPointPosition1[j][1] * PIXEL_TO_METER);
-			turmmenu.tower2unlocked=true;
+			turmmenu.tower2unlocked = true;
 			turmmenu.updateAlpha();
 			break;
 		case 3:
-			
+
 			finishline = new FinishLine(world, sfinishline, 350, 150);
-			
+
 			map = new MainMap("track3", world, finishline.body);
 			map.setSpawn(new Vector2(170, 100));
 			scurrenttrack = strack3;
@@ -287,7 +276,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
 						checkPointPosition11[j][1] * PIXEL_TO_METER);
-			turmmenu.tower3unlocked=true;
+			turmmenu.tower3unlocked = true;
 			turmmenu.updateAlpha();
 			break;
 
@@ -295,7 +284,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break;
 		}
 		currentEnemyWaves = new Array<EnemyWaveEntry>();
-		
 
 	}
 
@@ -350,25 +338,27 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			car.steerRight();
 		if (Gdx.input.isKeyJustPressed(Keys.U)) {
 			soundon = !soundon;
-			if (soundon == false && backgroundMusic.isPlaying()) backgroundMusic.pause();
-			if (soundon == true) backgroundMusic.play();
-		}	
-//		if (Gdx.input.isKeyJustPressed(Keys.F))
-//			enemies.add(new Enemy_small(220, 20, world, map));
-//		if (Gdx.input.isKeyJustPressed(Keys.G))
-//			enemies.add(new Enemy_fat(220, 20, world, map));
-//		if (Gdx.input.isKeyJustPressed(Keys.H))
-//			enemies.add(new Enemy_bicycle(220, 20, world, map));
-//		if (Gdx.input.isKeyJustPressed(Keys.I))
-//			debugBox2D = !debugBox2D;
-//		if (Gdx.input.isKeyJustPressed(Keys.K))
-//			debugCollision = !debugCollision;
-//		if (Gdx.input.isKeyJustPressed(Keys.L))
-//			debugWay = !debugWay;
-//		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
-//			scoreBoard.addMoney(1000);
-//		if (Gdx.input.isKeyJustPressed(Keys.J))
-//			debugEntfernung = !debugEntfernung;
+			if (soundon == false && backgroundMusic.isPlaying())
+				backgroundMusic.pause();
+			if (soundon == true)
+				backgroundMusic.play();
+		}
+		// if (Gdx.input.isKeyJustPressed(Keys.F))
+		// enemies.add(new Enemy_small(220, 20, world, map));
+		// if (Gdx.input.isKeyJustPressed(Keys.G))
+		// enemies.add(new Enemy_fat(220, 20, world, map));
+		// if (Gdx.input.isKeyJustPressed(Keys.H))
+		// enemies.add(new Enemy_bicycle(220, 20, world, map));
+		// if (Gdx.input.isKeyJustPressed(Keys.I))
+		// debugBox2D = !debugBox2D;
+		// if (Gdx.input.isKeyJustPressed(Keys.K))
+		// debugCollision = !debugCollision;
+		// if (Gdx.input.isKeyJustPressed(Keys.L))
+		// debugWay = !debugWay;
+		// if (Gdx.input.isKeyJustPressed(Keys.COMMA))
+		// scoreBoard.addMoney(1000);
+		// if (Gdx.input.isKeyJustPressed(Keys.J))
+		// debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			turmmenu.selectTower(1);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
@@ -387,7 +377,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			else
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		}
-		
+
 	}
 
 	public void buildTowerIfAllowed() {
@@ -501,7 +491,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		scoreBoard.update(deltaTime);
 		camera.update();
-			
+
 		switch (MainGame.level) {
 		case 1:
 			updateWaves1();
@@ -511,7 +501,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			break;
 		case 3:
 			updateWaves3();
-	break;
+			break;
 		default:
 			break;
 		}
@@ -594,13 +584,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		scoreBoard.draw(spriteBatch);
 
 		turmmenu.draw(spriteBatch);
-		if(timeforwavetext>0) {
-		MainGame.waveFont.draw(spriteBatch,wavetext,20,25);
-		
-		timeforwavetext=timeforwavetext-Gdx.graphics.getDeltaTime();
+		if (timeforwavetext > 0) {
+			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
+
+			timeforwavetext = timeforwavetext - Gdx.graphics.getDeltaTime();
 		}
 
-		if(wongame)
+		if (wongame)
 			victory.draw(spriteBatch);
 		spriteBatch.end();
 
@@ -608,9 +598,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			debugRender.render(world, camera.combined);
 
 		updatePhysics(Gdx.graphics.getDeltaTime());
-		
-			
-		
+
 	}
 
 	public void updatePhysics(float deltaTime) {
@@ -728,13 +716,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves1() {
 
 		int totalwaves = 10;
-		if (currentwave > totalwaves&&allEnemiesDead()) {
+		if (currentwave > totalwaves && allEnemiesDead()) {
 			LevelVictory();
 		}
-		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
+		if (currentEnemyWaves.size == 0 && currentwave < totalwaves + 1) {
 			currentwave++;
-			if (currentwave > totalwaves&&allEnemiesDead())
-				
+			if (currentwave > totalwaves && allEnemiesDead())
+
 				LevelVictory();
 			else {
 				scoreBoard.setWaveNumber(currentwave);
@@ -775,21 +763,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 5, 45, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 50, 0, 0));
-				
+
 					break;
 				case 7:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 50, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 55, 0, 0));
-				
+
 					break;
 				case 8:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 55, 0, 0));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 15, 60, 0, 0));
-				
+
 					break;
 				case 9:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
@@ -817,21 +805,20 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updateWaves2() {
 
 		int totalwaves = 10;
-		if (currentwave > totalwaves&&allEnemiesDead()) {
+		if (currentwave > totalwaves && allEnemiesDead()) {
 			LevelVictory();
 		}
-		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
+		if (currentEnemyWaves.size == 0 && currentwave < totalwaves + 1) {
 			currentwave++;
-			if (currentwave > totalwaves&&allEnemiesDead()) {
+			if (currentwave > totalwaves && allEnemiesDead()) {
 				LevelVictory();
-			}
-			else {
-				wavetext="WAVE "+currentwave;
-				if(currentwave==totalwaves){
-					wavetext="FINAL WAVE";
-					
+			} else {
+				wavetext = "WAVE " + currentwave;
+				if (currentwave == totalwaves) {
+					wavetext = "FINAL WAVE";
+
 				}
-				timeforwavetext=2;
+				timeforwavetext = 2;
 				scoreBoard.setWaveNumber(currentwave);
 				System.out.println("Starte Wave" + currentwave);
 				switch (currentwave) {
@@ -850,7 +837,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 15, 10, 0.2f, 2, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 25, 10, 0.2f, 2, 1f, 0, 0.0f));
-					
+
 					break;
 				case 3:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
@@ -908,26 +895,24 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			}
 		}
 	}
-	
-	
+
 	public void updateWaves3() {
 		int totalwaves = 10;
-		if (currentwave > totalwaves&&allEnemiesDead()) {
+		if (currentwave > totalwaves && allEnemiesDead()) {
 			GameVictory();
 		}
-		
-		if (currentEnemyWaves.size == 0&&currentwave<totalwaves+1) {
+
+		if (currentEnemyWaves.size == 0 && currentwave < totalwaves + 1) {
 			currentwave++;
-			if (currentwave > totalwaves&&allEnemiesDead()) {
+			if (currentwave > totalwaves && allEnemiesDead()) {
 				GameVictory();
-			}
-			else {
-				wavetext="WAVE "+currentwave;
-				if(currentwave==totalwaves){
-					wavetext="FINAL WAVE";
-					
+			} else {
+				wavetext = "WAVE " + currentwave;
+				if (currentwave == totalwaves) {
+					wavetext = "FINAL WAVE";
+
 				}
-				timeforwavetext=2;
+				timeforwavetext = 2;
 				scoreBoard.setWaveNumber(currentwave);
 				System.out.println("Starte Wave" + currentwave);
 				switch (currentwave) {
@@ -938,7 +923,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 20, 00, 0f, 0, 1f, 10, 0.2f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 30, 00, 0f, 0, 1f, 10, 0.2f));
-						break;
+					break;
 				case 2:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 10, 0.2f, 2, 1f, 5, 0.0f));
@@ -946,7 +931,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 15, 10, 0.2f, 2, 1f, 10, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 25, 10, 0.2f, 2, 1f, 0, 0.0f));
-					
+
 					break;
 				case 3:
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
@@ -995,7 +980,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 							(int) scoreBoard.getTime() + 5, 0, 0.1f, 20, 1f, 0, 0.0f));
 					currentEnemyWaves.addAll(EnemyWaveEntry.createEnemyEntries(map.getSpawn(),
 							(int) scoreBoard.getTime() + 5, 0, 0.1f, 0, 1f, 50, 0.0f));
-					
+
 					break;
 
 				default:
@@ -1011,29 +996,28 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	public void LevelVictory() {
-		System.out.println("Level finished "+MainGame.level);
-		wavetext="LEVEL CLEAR!";
-		timeforwavetext=2f;
-		currentwave=0;
+		System.out.println("Level finished " + MainGame.level);
+		wavetext = "LEVEL CLEAR!";
+		timeforwavetext = 2f;
+		currentwave = 0;
 		MainGame.level++;
 		loadLevel(MainGame.level);
 		victorysound.play();
 
 	}
-	
+
 	public void GameVictory() {
-	wongame=true;
+		wongame = true;
 	}
 
 	public boolean allEnemiesDead() {
-		boolean alldead=true;
+		boolean alldead = true;
 		for (Enemy e : enemies) {
-			if(!e.tot)
-				alldead=false;
+			if (!e.tot)
+				alldead = false;
 		}
-		if(alldead)
-		{
-		System.out.println(	"All enemies are dead");
+		if (alldead) {
+			System.out.println("All enemies are dead");
 		}
 		return alldead;
 	}

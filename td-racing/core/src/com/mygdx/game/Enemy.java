@@ -100,7 +100,7 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void die() {
-		
+
 		tot = true;
 		speed = 0;
 		saussehen = stot;
@@ -165,21 +165,21 @@ public abstract class Enemy extends BodyDef {
 		if (tempNodes2DList[(int) startX][(int) startY].noUse)
 			System.out.println("Halt");
 
-//		if (tempNodes2DList[(int) startX][(int) startY].nachbarn != null) {
-//			for (Node node : tempNodes2DList[(int) startX][(int) startY].nachbarn) {
-//				if (!node.noUse)
-//					if (lowCost > node.getKosten()) {
-//						node.g = 1;
-//						openList.add(node);
-//						lowCost = node.getKosten();
-//					}
-//			}
-//		} else {
-//			// Irgendwo im Nirgendwo... Raus da
-//			LinkedList<Node> blub = new LinkedList<Node>();
-//			blub.add(tempNodes2DList[(int) startX][(int) startY]);
-//			return blub;
-//		}
+		// if (tempNodes2DList[(int) startX][(int) startY].nachbarn != null) {
+		// for (Node node : tempNodes2DList[(int) startX][(int) startY].nachbarn) {
+		// if (!node.noUse)
+		// if (lowCost > node.getKosten()) {
+		// node.g = 1;
+		// openList.add(node);
+		// lowCost = node.getKosten();
+		// }
+		// }
+		// } else {
+		// // Irgendwo im Nirgendwo... Raus da
+		// LinkedList<Node> blub = new LinkedList<Node>();
+		// blub.add(tempNodes2DList[(int) startX][(int) startY]);
+		// return blub;
+		// }
 
 		openList.add(tempNodes2DList[(int) startX][(int) startY]);
 		aktuellerNode = tempNodes2DList[(int) startX][(int) startY];
@@ -192,7 +192,7 @@ public abstract class Enemy extends BodyDef {
 
 				break;
 			}
-			
+
 			// NEU *********************************************
 			lowCost = 999999;
 			for (Node node : openList) {
@@ -202,11 +202,11 @@ public abstract class Enemy extends BodyDef {
 			}
 			if (aktuellerNode == null)
 				System.out.println("aktueller Node ist null");
-			if(openList.indexOf(aktuellerNode) < 0) 
+			if (openList.indexOf(aktuellerNode) < 0)
 				System.out.println("aktueller Node ist 0");
-//			if(openList.indexOf(aktuellerNode) > 0)
-				openList.remove(openList.indexOf(aktuellerNode));
-			
+			// if(openList.indexOf(aktuellerNode) > 0)
+			openList.remove(openList.indexOf(aktuellerNode));
+
 			closedList.add(aktuellerNode);
 
 			for (Node node : aktuellerNode.nachbarn) {
@@ -224,10 +224,11 @@ public abstract class Enemy extends BodyDef {
 						// }
 					}
 				} else {
-//					if (closedList.indexOf(node) > 1 && node.getKosten() > (aktuellerNode.g + 1) * node.h) {
-//						closedList.remove(closedList.indexOf(node));
-//						openList.add(node);
-//					}
+					// if (closedList.indexOf(node) > 1 && node.getKosten() > (aktuellerNode.g + 1)
+					// * node.h) {
+					// closedList.remove(closedList.indexOf(node));
+					// openList.add(node);
+					// }
 				}
 
 			}
@@ -248,7 +249,7 @@ public abstract class Enemy extends BodyDef {
 			}
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(1f,3f);
+			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(1f, 3f);
 
 			// Hinzufuegen
 			tempweg.add(aktuellerNode);
@@ -325,49 +326,47 @@ public abstract class Enemy extends BodyDef {
 		float angle = 0;
 		if (!this.tot) {
 			if (weg.size() > 0) {
-					if (health < 0) {
-						this.die();
-					}
-	
-					float testX, testY, bodX, bodY, getLastX, getLastY, getFirstX, getFirstY;
-					bodX = getBodyX();
-					bodY = getBodyY();
-					getLastX = weg.getLast().x * PlayState.PIXEL_TO_METER;
-					getLastY = weg.getLast().y * PlayState.PIXEL_TO_METER;
-					getFirstX = weg.getFirst().x;
-					getFirstY = weg.getFirst().y;
-					testX = getBodyX() - weg.getLast().x;
-					testY = getBodyY() - weg.getLast().y;
-	
-					angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
-							-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
-					body.setTransform(body.getPosition(), (float) Math.toRadians(angle - 90));
-					Vector2 velo = new Vector2(speed, 0);
-					velo.rotateRad(body.getAngle());
-					body.setLinearVelocity(velo);
-					// body.applyForceToCenter(velo,true);
-					// reduceToMaxSpeed(speed);
-					// killLateral(1f);
-					distancetonode = saussehen.getWidth()*4;
-	
-					if (body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
-							weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
-						weg.remove(weg.indexOf(weg.getLast()));
-					if (weg.size() > 0)
-						score = weg.getLast().h;
-					
+				if (health < 0) {
+					this.die();
 				}
-			
+
+				float testX, testY, bodX, bodY, getLastX, getLastY, getFirstX, getFirstY;
+				bodX = getBodyX();
+				bodY = getBodyY();
+				getLastX = weg.getLast().x * PlayState.PIXEL_TO_METER;
+				getLastY = weg.getLast().y * PlayState.PIXEL_TO_METER;
+				getFirstX = weg.getFirst().x;
+				getFirstY = weg.getFirst().y;
+				testX = getBodyX() - weg.getLast().x;
+				testY = getBodyY() - weg.getLast().y;
+
+				angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
+						-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+				body.setTransform(body.getPosition(), (float) Math.toRadians(angle - 90));
+				Vector2 velo = new Vector2(speed, 0);
+				velo.rotateRad(body.getAngle());
+				body.setLinearVelocity(velo);
+				// body.applyForceToCenter(velo,true);
+				// reduceToMaxSpeed(speed);
+				// killLateral(1f);
+				distancetonode = saussehen.getWidth() * 4;
+
+				if (body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
+						weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
+					weg.remove(weg.indexOf(weg.getLast()));
+				if (weg.size() > 0)
+					score = weg.getLast().h;
+
+			}
+
 			else {
 				PlayState.scoreBoard.reduceLife(damage);
 				this.delete = true;
 				this.tot = true;
-			}			
+			}
 		}
 
 	}
-
-	
 
 	public void draw(SpriteBatch spriteBatch) {
 		saussehen.setPosition(getX(), getY());
@@ -380,12 +379,12 @@ public abstract class Enemy extends BodyDef {
 			sdamage.draw(spriteBatch);
 			washit = false;
 		}
-		
-//		if(weg.size()>0) {
-//			sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
-//			sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
-//			sdamage.draw(spriteBatch);			
-//		}
+
+		// if(weg.size()>0) {
+		// sdamage.setX(weg.getLast().x * PlayState.PIXEL_TO_METER);
+		// sdamage.setY(weg.getLast().y * PlayState.PIXEL_TO_METER);
+		// sdamage.draw(spriteBatch);
+		// }
 	}
 
 	public float getScore() {

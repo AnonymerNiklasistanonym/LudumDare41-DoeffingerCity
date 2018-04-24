@@ -8,8 +8,8 @@ public class Enemy_bicycle extends Enemy {
 	public static Texture deadTexture;
 	public static Texture damageTexture;
 
-	public Enemy_bicycle(float x, float y,World w, MainMap map) {
-		super(x,y,w, normalTexture, deadTexture,damageTexture,map);
+	public Enemy_bicycle(float x, float y, World w, MainMap map) {
+		super(x, y, w, normalTexture, deadTexture, damageTexture, map);
 		this.speed = 5f;
 		this.health = 10;
 		this.damage = 2;

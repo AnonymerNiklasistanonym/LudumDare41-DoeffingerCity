@@ -22,9 +22,8 @@ public class Car {
 	float backacc = 1000f;
 	float steerpower = 2000;
 	float friction = 0.99f;
-	float health=100;
-	float delta=0;
-	
+	float health = 100;
+	float delta = 0;
 
 	public Car(World w, Sprite scar, final float xPostion, final float yPosition) {
 		BodyDef bodydef = new BodyDef();
@@ -42,81 +41,78 @@ public class Car {
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
-		body.setTransform(body.getPosition(), (float) Math.toRadians( 180 ));
+		body.setTransform(body.getPosition(), (float) Math.toRadians(180));
 		sprite = scar;
-		
+
 	}
 
 	public void accelarate() {
-		Vector2 acc=new Vector2(acceleration*delta,0);
+		Vector2 acc = new Vector2(acceleration * delta, 0);
 		acc.rotateRad(body.getAngle());
-		body.applyForceToCenter(acc,true);
+		body.applyForceToCenter(acc, true);
 	}
 
 	public void brake() {
-		Vector2 acc=new Vector2(0,0);
-		if(getForwardVelocity().x>=0) {
-		acc=new Vector2(brakepower*-1*delta,0);
-		}
-		else
-		{
-			acc=new Vector2(backacc*-1*delta,0);
+		Vector2 acc = new Vector2(0, 0);
+		if (getForwardVelocity().x >= 0) {
+			acc = new Vector2(brakepower * -1 * delta, 0);
+		} else {
+			acc = new Vector2(backacc * -1 * delta, 0);
 		}
 		acc.rotateRad(body.getAngle());
-		body.applyForceToCenter(acc,true);
+		body.applyForceToCenter(acc, true);
 	}
 
 	public void steerLeft() {
-		int i=1;
-		if(getForwardVelocity().x<0)
-			i=i*-1;
-		body.applyTorque(steerpower*delta*i, true);
+		int i = 1;
+		if (getForwardVelocity().x < 0)
+			i = i * -1;
+		body.applyTorque(steerpower * delta * i, true);
 
 	}
 
 	public void steerRight() {
-		int i=1;
-		if(getForwardVelocity().x<0)
-			i=i*-1;
-		body.applyTorque(steerpower* -1*delta*i, true);
+		int i = 1;
+		if (getForwardVelocity().x < 0)
+			i = i * -1;
+		body.applyTorque(steerpower * -1 * delta * i, true);
 	}
 
 	public void update(float delta) {
-		this.delta=delta;
-		
-		
+		this.delta = delta;
+
 		reduceToMaxSpeed(maxspeed);
 		killLateral(0.95f);
 	}
-	
+
 	public void steerZero() {
-		
+
 	}
-	
+
 	public void reduceToMaxSpeed(float maxspeed) {
-		float speed=getForwardVelocity().x;
+		float speed = getForwardVelocity().x;
 		if (speed < maxspeed * -1)
 			speed = maxspeed * -1;
 		if (speed > maxspeed)
 			speed = maxspeed;
-	
-		Vector2 newSpeed=new Vector2(speed,getForwardVelocity().y);
+
+		Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
 		newSpeed.rotateRad(body.getAngle());
 		body.setLinearVelocity(newSpeed);
 	}
-	
+
 	public void killLateral(float drift) {
-		float lat=getVelocityVector().dot(getOrthogonal());
-		Vector2 vlat=getOrthogonal();
+		float lat = getVelocityVector().dot(getOrthogonal());
+		Vector2 vlat = getOrthogonal();
 		vlat.scl(drift);
 		vlat.scl(lat);
-		vlat=vlat.scl(-1);
-		body.applyLinearImpulse(vlat,body.getPosition(),true);
+		vlat = vlat.scl(-1);
+		body.applyLinearImpulse(vlat, body.getPosition(), true);
 	}
-	
+
 	public Vector2 getForwardVelocity() {
-		Vector2 velo=getVelocityVector();
-		velo.rotateRad(body.getAngle()*-1);
+		Vector2 velo = getVelocityVector();
+		velo.rotateRad(body.getAngle() * -1);
 		return velo;
 	}
 
@@ -139,7 +135,6 @@ public class Car {
 		sprite.draw(spriteBatch);
 	}
 
-
 	public Vector2 getForward() {
 		Vector2 fwd = new Vector2(0, 0);
 		fwd.x = body.getAngle();
@@ -149,7 +144,6 @@ public class Car {
 	public Vector2 getVelocityVector() {
 		return body.getLinearVelocity();
 	}
-
 
 	public Vector2 getOrthogonal() {
 		Vector2 ort = new Vector2(1, 0);
@@ -163,8 +157,8 @@ public class Car {
 	}
 
 	public void hitEnemy(Enemy e) {
-		e.takeDamage(getForwardVelocity().x*4);
-		
+		e.takeDamage(getForwardVelocity().x * 4);
+
 	}
 
 }

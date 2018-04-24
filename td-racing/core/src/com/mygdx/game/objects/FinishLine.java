@@ -10,13 +10,12 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 
-
-
 public class FinishLine {
-	
+
 	Sprite sprite;
 	public Body body;
-	public FinishLine(World w, Sprite s,float xPosition,float yPosition) {
+
+	public FinishLine(World w, Sprite s, float xPosition, float yPosition) {
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(xPosition * PlayState.PIXEL_TO_METER, yPosition * PlayState.PIXEL_TO_METER);
@@ -27,14 +26,13 @@ public class FinishLine {
 		fdef.shape = carBox;
 		fdef.density = 1f;
 		fdef.friction = 1f;
-		fdef.isSensor=true;
+		fdef.isSensor = true;
 		body.createFixture(fdef);
 		body.setUserData(this);
 		body.setAngularDamping(2);
 		sprite = s;
 	}
-	
-	
+
 	public float getX() {
 		float carx = body.getPosition().x;
 		carx = carx - sprite.getWidth() / 2;

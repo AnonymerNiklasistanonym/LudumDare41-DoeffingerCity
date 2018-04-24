@@ -18,7 +18,8 @@ public class CreditState extends GameState {
 		super(gameStateManager);
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		contentToDisplay = new String[] { "", "This game was made by", "Daniel Czeppel","Niklas Mikeler", "Patrick Ulmer", "", "Music by Sascha Czeppel", "",};
+		contentToDisplay = new String[] { "", "This game was made by", "Daniel Czeppel", "Niklas Mikeler",
+				"Patrick Ulmer", "", "Music by Sascha Czeppel", "", };
 
 		final Vector2[] testVector = new Vector2[contentToDisplay.length];
 		for (int i = 0; i < contentToDisplay.length; i++) {

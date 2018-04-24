@@ -48,7 +48,7 @@ public class TurmMenu {
 		versatz = s1.getWidth();
 		float x = startx;
 		float y = starty;
-		
+
 		stower1button.setPosition(x, y);
 		x = x + versatz;
 		stower2button.setPosition(x, y);
@@ -59,7 +59,7 @@ public class TurmMenu {
 		x = x + versatz;
 		stower5button.setPosition(x, y);
 		x = x + versatz;
-		
+
 		updateAlpha();
 	}
 
@@ -156,57 +156,57 @@ public class TurmMenu {
 	}
 
 	public void updateAlpha() {
-		stower1button.setColor(1,1,1,0);
-		stower2button.setColor(1,1,1,0);
-		stower3button.setColor(1,1,1,0);
-		stower4button.setColor(1,1,1,0);
-		stower5button.setColor(1,1,1,0);
-		
-		if(tower1unlocked)
-			stower1button.setColor(1,1,1,0.5f);
-		if(tower2unlocked)
-			stower2button.setColor(1,1,1,0.5f);
-		if(tower3unlocked)
-			stower3button.setColor(1,1,1,0.5f);
-		if(tower4unlocked)
-			stower4button.setColor(1,1,1,0.5f);
-		if(tower5unlocked)
-			stower5button.setColor(1,1,1,0.5f);
-		
-		if(tower1selected&&tower1unlocked)
-			stower1button.setColor(1,1,1,1);
-		if(tower2selected&&tower2unlocked)
-			stower2button.setColor(1,1,1,1);
-		if(tower3selected&&tower3unlocked)
-			stower3button.setColor(1,1,1,1);
-		if(tower4selected&&tower4unlocked)
-			stower4button.setColor(1,1,1,1);
-		if(tower5selected&&tower5unlocked)
-			stower5button.setColor(1,1,1,1);
-		
-		if(tower1selected&&tower1unlocked)
-			buildingtower=new MGTower(10, 10, enemies, w);
-		if(tower2selected&&tower2unlocked)
-			buildingtower=new LaserTower(10, 10, enemies, w);
-		if(tower3selected&&tower3unlocked)
-			buildingtower=new FireTower(10, 10, enemies, w);
-		if(tower4selected&&tower4unlocked)
-			buildingtower=new MGTower(10, 10, enemies, w);
-		if(tower5selected&&tower5unlocked)
-			buildingtower=new MGTower(10, 10, enemies, w);
+		stower1button.setColor(1, 1, 1, 0);
+		stower2button.setColor(1, 1, 1, 0);
+		stower3button.setColor(1, 1, 1, 0);
+		stower4button.setColor(1, 1, 1, 0);
+		stower5button.setColor(1, 1, 1, 0);
+
+		if (tower1unlocked)
+			stower1button.setColor(1, 1, 1, 0.5f);
+		if (tower2unlocked)
+			stower2button.setColor(1, 1, 1, 0.5f);
+		if (tower3unlocked)
+			stower3button.setColor(1, 1, 1, 0.5f);
+		if (tower4unlocked)
+			stower4button.setColor(1, 1, 1, 0.5f);
+		if (tower5unlocked)
+			stower5button.setColor(1, 1, 1, 0.5f);
+
+		if (tower1selected && tower1unlocked)
+			stower1button.setColor(1, 1, 1, 1);
+		if (tower2selected && tower2unlocked)
+			stower2button.setColor(1, 1, 1, 1);
+		if (tower3selected && tower3unlocked)
+			stower3button.setColor(1, 1, 1, 1);
+		if (tower4selected && tower4unlocked)
+			stower4button.setColor(1, 1, 1, 1);
+		if (tower5selected && tower5unlocked)
+			stower5button.setColor(1, 1, 1, 1);
+
+		if (tower1selected && tower1unlocked)
+			buildingtower = new MGTower(10, 10, enemies, w);
+		if (tower2selected && tower2unlocked)
+			buildingtower = new LaserTower(10, 10, enemies, w);
+		if (tower3selected && tower3unlocked)
+			buildingtower = new FireTower(10, 10, enemies, w);
+		if (tower4selected && tower4unlocked)
+			buildingtower = new MGTower(10, 10, enemies, w);
+		if (tower5selected && tower5unlocked)
+			buildingtower = new MGTower(10, 10, enemies, w);
 	}
 
 	public Tower getCurrentTower() {
 		return buildingtower;
 	}
-	
+
 	public void unselectAll() {
 		tower1selected = false;
 		tower2selected = false;
 		tower3selected = false;
 		tower4selected = false;
 		tower5selected = false;
-		buildingtower=null;
+		buildingtower = null;
 		updateAlpha();
 	}
 

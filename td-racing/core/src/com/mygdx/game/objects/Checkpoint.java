@@ -18,7 +18,8 @@ public abstract class Checkpoint extends BodyDef {
 	protected final Texture activatedTexture;
 	protected final Texture disabledTexture;
 
-	public Checkpoint(final World world, float xPosition, float yPosition, final Texture disabled, final Texture activated) {
+	public Checkpoint(final World world, float xPosition, float yPosition, final Texture disabled,
+			final Texture activated) {
 		this.type = BodyType.StaticBody;
 		this.position.set(xPosition, yPosition);
 		this.body = world.createBody(this);

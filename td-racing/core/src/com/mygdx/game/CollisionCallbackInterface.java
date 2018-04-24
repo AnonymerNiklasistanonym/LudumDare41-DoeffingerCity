@@ -9,12 +9,9 @@ public interface CollisionCallbackInterface {
 	public void collisionCarEnemy(Car car, Enemy enemy);
 
 	public void collisionCarCheckpoint(Car car, Checkpoint checkpoint);
-	
-	public void collisionCarFinishLine(Car car, FinishLine finishLine);
 
-	
+	public void collisionCarFinishLine(Car car, FinishLine finishLine);
 
 	public void collisionFlameEnemy(Enemy e, Flame f);
 
-	
 }
