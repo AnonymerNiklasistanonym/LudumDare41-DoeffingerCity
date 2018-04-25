@@ -354,7 +354,7 @@ public abstract class Enemy extends BodyDef {
 			if (weg.size() > 0)
 				score = weg.getLast().getH();
 		} else {
-			PlayState.scoreBoard.reduceLife(damage);
+			PlayState.enemyHitsYourHome(damage);
 			this.setDelete(true);
 			this.setTot(true);
 		}

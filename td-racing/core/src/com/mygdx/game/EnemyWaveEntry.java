@@ -78,14 +78,14 @@ public class EnemyWaveEntry {
 		return entries;
 	}
 
-	public static Array<Enemy> createEnemyEntries2(final Vector2 entryPoint, final int entryTime, final int smallNumber,
-			final int fatNumber, final int bicycleNumber, World world, MainMap map) {
+	public static Array<Enemy> createEnemyEntries2(final Vector2 entryPoint, final float entryTime,
+			final int smallNumber, final int fatNumber, final int bicycleNumber, World world, MainMap map) {
 		final float countingTime = 0.2f;
 		return createEnemyEntries2(entryPoint, entryTime, smallNumber, countingTime, fatNumber, countingTime,
 				bicycleNumber, countingTime, world, map);
 	}
 
-	public static EnemyWaveEntry[] createEnemyEntries(final Vector2 entryPoint, final int entryTime,
+	public static EnemyWaveEntry[] createEnemyEntries(final Vector2 entryPoint, final float entryTime,
 			final int smallNumber, final float smallTimeDelta, final int fatNumber, final float fatTimeDelta,
 			final int bicycleNumber, final float bicycleTimeDelta) {
 
@@ -101,9 +101,9 @@ public class EnemyWaveEntry {
 		return entries;
 	}
 
-	public static Array<Enemy> createEnemyEntries2(final Vector2 entryPoint, final int entryTime, final int smallNumber,
-			final float smallTimeDelta, final int fatNumber, final float fatTimeDelta, final int bicycleNumber,
-			final float bicycleTimeDelta, World world, MainMap map) {
+	public static Array<Enemy> createEnemyEntries2(final Vector2 entryPoint, final float entryTime,
+			final int smallNumber, final float smallTimeDelta, final int fatNumber, final float fatTimeDelta,
+			final int bicycleNumber, final float bicycleTimeDelta, World world, MainMap map) {
 
 		final Array<Enemy> allEnemies = new Array<Enemy>(smallNumber + fatNumber + bicycleNumber);
 

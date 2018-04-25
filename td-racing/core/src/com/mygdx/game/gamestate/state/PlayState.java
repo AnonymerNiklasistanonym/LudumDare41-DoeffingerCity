@@ -1,7 +1,5 @@
 package com.mygdx.game.gamestate.state;
 
-import java.util.LinkedList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
@@ -66,19 +64,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public static boolean soundon = false;
 	private boolean debugWay;
 
-	private TurmMenu turmmenu;
+	private final TurmMenu turmmenu;
 
-	private PreferencesManager preferencesManager;
+	private final PreferencesManager preferencesManager;
 
 	private MainMap map;
-	private Sprite pitStop;
+	private final Sprite pitStop;
 
-	public static ScoreBoard scoreBoard;
+	private static ScoreBoard scoreBoard;
 	private Tower buildingtower;
 
-	private int moneyPerLap = 50;
-
-	private Sound splatt, money, carsound, victorysound;
+	private final int moneyPerLap = 50;
+	private final Music backgroundMusic;
+	private final Sound splatt, money, carsound, victorysound;
 
 	/**
 	 * Time since last physic Steps
@@ -100,7 +98,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private String wavetext = "";
 	private boolean threadActive = false;
 
-
 	/**
 	 * Time for physic Steps
 	 */
@@ -111,8 +108,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public final static float RESOLUTION_HEIGHT = 720f;
 
 	private Checkpoint[] checkpoints;
-
-	private Music backgroundMusic;
 
 	// Zur identifizierung von Collisions Entitys
 	public final static short PLAYER_BOX = 0x1; // 0001
@@ -183,10 +178,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		EnemyLincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		EnemyLincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
 		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound2.wav"));
 		victorysound = Gdx.audio.newSound(Gdx.files.internal("sounds/LevelUp3.wav"));
+
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -225,7 +222,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			MainGame.level = 1;
 		loadLevel(MainGame.level);
 
-		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.6f);
 
@@ -406,7 +402,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.J))
 			debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.X)) {
-			for (Enemy e : enemies) {
+			for (final Enemy e : enemies) {
 				currentwave = 100;
 				e.takeDamage(1000);
 			}
@@ -519,11 +515,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			// }
 			// }
 		}
-		
+
 		timeforwavetext -= deltaTime;
 
 		camera.update();
-		
+
 		updatePhysics(Gdx.graphics.getDeltaTime());
 	}
 
@@ -599,12 +595,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 
 		turmmenu.draw(spriteBatch);
-		
+
 		scoreBoard.draw(spriteBatch);
 
 		if (timeforwavetext > 0)
 			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
-		
+
 		spriteBatch.end();
 
 		if (debugBox2D)
@@ -615,9 +611,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updatePhysics(float deltaTime) {
 		float frameTime = Math.min(deltaTime, 0.25f);
 		physicsaccumulator += frameTime;
-		while (physicsaccumulator >= TIME_STEP) {
-			world.step(TIME_STEP, 6, 2);
-			physicsaccumulator -= TIME_STEP;
+		if (!threadActive) {
+			while (physicsaccumulator >= TIME_STEP) {
+				world.step(TIME_STEP, 6, 2);
+				physicsaccumulator -= TIME_STEP;
+			}
 		}
 		Array<Enemy> toremove = new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
@@ -631,11 +629,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				world.destroyBody(enemy.getBody());
 			}
 		}
-		for (Enemy e : toremove) {
+		for (final Enemy e : toremove) {
 			enemies.removeValue(e, true);
 		}
 
-		for (Tower t : towers) {
+		for (final Tower t : towers) {
 			Array<Body> ab = new Array<Body>();
 			Array<Body> rb = new Array<Body>();
 			rb = t.removeProjectiles();
@@ -673,8 +671,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		TurmMenu.laserButton.dispose();
 		TurmMenu.flameButton.dispose();
 		backgroundMusic.dispose();
+		splatt.dispose();
+		money.dispose();
 		carsound.dispose();
+		victorysound.dispose();
 		MainGame.waveFont.getData().setScale(10f);
+		System.out.println("Play state disposed");
 	}
 
 	@Override
@@ -738,87 +740,88 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				scoreBoard.setWaveNumber(currentwave);
 				System.out.println("Starte Wave " + currentwave);
 
-				wavetext = "WAVE " + currentwave;
-				timeforwavetext = 10;
-				
+				if (currentwave < totalwaves)
+					wavetext = "WAVE " + currentwave;
+				else
+					wavetext = "FINAL WAVE";
+
 				threadActive = true;
 				new Thread(new Runnable() {
-					
+
 					@Override
 					public void run() {
 
+						switch (currentwave) {
+						case 1:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 50,
+									1f, 0, 0f, 0, 0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 20,
+									20, 1f, 0, 0f, 0, 0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 40,
+									30, 1f, 0, 3f, 0, 0.0f, world, map));
+							break;
+						case 2:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 30,
+									0.2f, 0, 0f, 0, 0f, world, map));
+							break;
+						case 3:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 40,
+									0.1f, 0, 0f, 0, 0f, world, map));
+							break;
+						case 4:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 60,
+									0.4f, 0, 0, 0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									60, 0.4f, 0, 0, 0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
+									70, 0.4f, 0, 0, 0, 0, world, map));
+							break;
+						case 5:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									45, 0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
+									50, 0, 0, world, map));
+							break;
+						case 6:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 45,
+									0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									50, 0, 0, world, map));
 
-				switch (currentwave) {
-				case 1:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 2,
-							10, 0.0f, 0, 4f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 25,
-							20, 0.0f, 0, 3f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 40,
-							30, 0.5f, 0, 3f, 0, 0.0f, world, map));
-					break;
-				case 2:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 35,
-							20, 0, 0, 4f, 0, 0, world, map));
-					break;
-				case 3:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							30, 0, 0, 0f, 0, 0, world, map));
-					break;
-				case 4:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							60, 0.4f, 0, 0, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							60, 0.4f, 0, 0, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 25,
-							70, 0.4f, 0, 0, 0, 0, world, map));
-					break;
-				case 5:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							45, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 10,
-							50, 0, 0, world, map));
-					break;
-				case 6:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							45, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							50, 0, 0, world, map));
+							break;
+						case 7:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 50,
+									0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									55, 0, 0, world, map));
 
-					break;
-				case 7:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							50, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							55, 0, 0, world, map));
+							break;
+						case 8:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 55,
+									0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									60, 0, 0, world, map));
+							break;
+						case 9:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 60,
+									0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									70, 0, 0, world, map));
+							break;
+						case 10:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 80,
+									0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									90, 0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
+									100, 0, 0, world, map));
+							break;
+						}
 
-					break;
-				case 8:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							55, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							60, 0, 0, world, map));
-					break;
-				case 9:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							60, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							70, 0, 0, world, map));
-					break;
-				case 10:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							80, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							90, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 25,
-							100, 0, 0, world, map));
-					break;
-				}
-				
-				threadActive = false;
-				
-			}
-		}).start();
+						threadActive = false;
+
+					}
+				}).start();
 			}
 		}
 	}
@@ -833,189 +836,203 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public void updateWaves2() {
 
-		int totalwaves = 10;
-		if (currentwave > totalwaves && allEnemiesDead()) {
-			LevelVictory();
-		}
-		if (currentEnemyWaves.size == 0 && currentwave < totalwaves + 1) {
-			currentwave++;
-			if (currentwave > totalwaves && allEnemiesDead()) {
+		// if all enemies are active (this means no enemy is invisible) and dead
+		if (!threadActive && allEnemiesAreActive() && allEnemiesDead()) {
+			// and the current wave is the maximum wave
+			if (currentwave >= totalwaves) {
+				// and all enemies are dead
 				LevelVictory();
 			} else {
-				wavetext = "WAVE " + currentwave;
-				if (currentwave == totalwaves) {
+				// else load the next wave
+				currentwave++;
+				scoreBoard.setWaveNumber(currentwave);
+				System.out.println("Starte Wave " + currentwave);
+
+				if (currentwave < totalwaves)
+					wavetext = "WAVE " + currentwave;
+				else
 					wavetext = "FINAL WAVE";
 
-				}
-				timeforwavetext = 2;
-				scoreBoard.setWaveNumber(currentwave);
-				System.out.println("Starte Wave" + currentwave);
-				switch (currentwave) {
-				case 1:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							30, 1f, 3, 1f, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 50,
-							10, 0.5f, 4, 1f, 0, 0, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 65,
-							10, 0.2f, 5, 1f, 0, 0, world, map));
-					break;
-				case 2:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							10, 0.2f, 2, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							10, 0.2f, 2, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 25,
-							10, 0.2f, 2, 1f, 0, 0.0f, world, map));
+				timeforwavetext = 10;
 
-					break;
-				case 3:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							50, 1f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 55,
-							0, 0.0f, 8, 1f, 0, 0.0f, world, map));
-					break;
-				case 4:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							10, 0.1f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 10,
-							0, 0.0f, 2, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							50, 1f, 0, 1f, 0, 0.0f, world, map));
-					break;
-				case 5:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							10, 0.1f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 10,
-							0, 0.0f, 4, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							50, 1f, 0, 1f, 0, 0.0f, world, map));
-					break;
-				case 6:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							150, 0, 0, world, map));
-					break;
-				case 7:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5, 0,
-							15, 0, world, map));
-					break;
-				case 8:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							100, 1f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5, 0,
-							0.0f, 10, 3f, 0, 0.0f, world, map));
-					break;
-				case 9:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							200, 0.5f, 0, 1f, 0, 0.0f, world, map));
-					break;
-				case 10:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							20, 0.5f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							00, 0.5f, 20, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 40,
-							20, 0.5f, 0, 1f, 0, 0.0f, world, map));
-					break;
+				threadActive = true;
+				new Thread(new Runnable() {
 
-				default:
+					@Override
+					public void run() {
 
-					break;
-				}
+						switch (currentwave) {
+						case 1:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 30,
+									1f, 3, 1f, 0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 50,
+									10, 0.5f, 4, 1f, 0, 0, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 65,
+									10, 0.2f, 5, 1f, 0, 0, world, map));
+							break;
+						case 2:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 10,
+									0.2f, 2, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									10, 0.2f, 2, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
+									10, 0.2f, 2, 1f, 0, 0.0f, world, map));
+
+							break;
+						case 3:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 50,
+									1f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 55,
+									0, 0.0f, 8, 1f, 0, 0.0f, world, map));
+							break;
+						case 4:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 10,
+									0.1f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
+									0, 0.0f, 2, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									50, 1f, 0, 1f, 0, 0.0f, world, map));
+							break;
+						case 5:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 10,
+									0.1f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
+									0, 0.0f, 4, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									50, 1f, 0, 1f, 0, 0.0f, world, map));
+							break;
+						case 6:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 150,
+									0, 0, world, map));
+							break;
+						case 7:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 0,
+									15, 0, world, map));
+							break;
+						case 8:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 100,
+									1f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 0,
+									0.0f, 10, 3f, 0, 0.0f, world, map));
+							break;
+						case 9:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									200, 0.5f, 0, 1f, 0, 0.0f, world, map));
+							break;
+						case 10:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 20,
+									0.5f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
+									00, 0.5f, 20, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 40,
+									20, 0.5f, 0, 1f, 0, 0.0f, world, map));
+							break;
+						}
+
+					}
+				});
 			}
 		}
 	}
 
 	public void updateWaves3() {
-		int totalwaves = 10;
-		if (currentwave > totalwaves && allEnemiesDead()) {
-			GameVictory();
-		}
 
-		if (currentEnemyWaves.size == 0 && currentwave < totalwaves + 1) {
-			currentwave++;
-			if (currentwave > totalwaves && allEnemiesDead()) {
+		// if all enemies are active (this means no enemy is invisible) and dead
+		if (!threadActive && allEnemiesAreActive() && allEnemiesDead()) {
+			// and the current wave is the maximum wave
+			if (currentwave >= totalwaves) {
+				// and all enemies are dead
 				GameVictory();
 			} else {
-				wavetext = "WAVE " + currentwave;
-				if (currentwave == totalwaves) {
+				// else load the next wave
+				currentwave++;
+				scoreBoard.setWaveNumber(currentwave);
+				System.out.println("Starte Wave " + currentwave);
+
+				if (currentwave < totalwaves)
+					wavetext = "WAVE " + currentwave;
+				else
 					wavetext = "FINAL WAVE";
 
-				}
-				timeforwavetext = 2;
-				scoreBoard.setWaveNumber(currentwave);
-				System.out.println("Starte Wave" + currentwave);
-				switch (currentwave) {
-				case 1:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							00, 0f, 0, 1f, 5, 0.2f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 20,
-							00, 0f, 0, 1f, 10, 0.2f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 30,
-							00, 0f, 0, 1f, 10, 0.2f, world, map));
-					break;
-				case 2:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							10, 0.2f, 2, 1f, 5, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							10, 0.2f, 2, 1f, 10, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 25,
-							10, 0.2f, 2, 1f, 0, 0.0f, world, map));
+				timeforwavetext = 10;
 
-					break;
-				case 3:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							50, 1f, 0, 1f, 10, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 55,
-							0, 0.0f, 8, 1f, 10, 0.0f, world, map));
-					break;
-				case 4:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							10, 0.1f, 0, 1f, 10, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 10,
-							0, 0.0f, 2, 1f, 10, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							50, 1f, 0, 1f, 0, 0.0f, world, map));
-					break;
-				case 5:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							10, 0.1f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 10,
-							0, 0.0f, 4, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							50, 1f, 0, 1f, 0, 20.0f, world, map));
-					break;
-				case 6:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							150, 0, 30, world, map));
-					break;
-				case 7:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5, 0,
-							15, 10, world, map));
-					break;
-				case 8:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							100, 1f, 0, 1f, 50, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5, 0,
-							0.0f, 10, 3f, 0, 0.0f, world, map));
-					break;
-				case 9:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5,
-							200, 0.5f, 0, 1f, 0, 0.0f, world, map));
-					break;
-				case 10:
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 15,
-							200, 0.1f, 0, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5, 0,
-							0.1f, 20, 1f, 0, 0.0f, world, map));
-					enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), (int) scoreBoard.getTime() + 5, 0,
-							0.1f, 0, 1f, 50, 0.0f, world, map));
+				threadActive = true;
+				new Thread(new Runnable() {
 
-					break;
+					@Override
+					public void run() {
 
-				default:
+						switch (currentwave) {
+						case 1:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									00, 0f, 0, 1f, 5, 0.2f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 20,
+									00, 0f, 0, 1f, 10, 0.2f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 30,
+									00, 0f, 0, 1f, 10, 0.2f, world, map));
+							break;
+						case 2:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									10, 0.2f, 2, 1f, 5, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									10, 0.2f, 2, 1f, 10, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
+									10, 0.2f, 2, 1f, 0, 0.0f, world, map));
 
-					break;
-				}
+							break;
+						case 3:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									50, 1f, 0, 1f, 10, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 55,
+									0, 0.0f, 8, 1f, 10, 0.0f, world, map));
+							break;
+						case 4:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									10, 0.1f, 0, 1f, 10, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
+									0, 0.0f, 2, 1f, 10, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									50, 1f, 0, 1f, 0, 0.0f, world, map));
+							break;
+						case 5:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									10, 0.1f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
+									0, 0.0f, 4, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									50, 1f, 0, 1f, 0, 20.0f, world, map));
+							break;
+						case 6:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									150, 0, 30, world, map));
+							break;
+						case 7:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									0, 15, 10, world, map));
+							break;
+						case 8:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									100, 1f, 0, 1f, 50, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									0, 0.0f, 10, 3f, 0, 0.0f, world, map));
+							break;
+						case 9:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									200, 0.5f, 0, 1f, 0, 0.0f, world, map));
+							break;
+						case 10:
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
+									200, 0.1f, 0, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									0, 0.1f, 20, 1f, 0, 0.0f, world, map));
+							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
+									0, 0.1f, 0, 1f, 50, 0.0f, world, map));
+
+							break;
+						}
+
+					}
+				});
 			}
 		}
 	}
@@ -1049,5 +1066,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		System.out.println("All enemies are dead");
 		return true;
+	}
+
+	public static void enemyHitsYourHome(float damage) {
+		scoreBoard.reduceLife(damage);
 	}
 }
