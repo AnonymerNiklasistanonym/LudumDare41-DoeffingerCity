@@ -58,15 +58,14 @@ public abstract class Tower {
 	public int getCost() {
 		return this.cost;
 	}
-
-	public void draw(final SpriteBatch spriteBatch) {
-
+	
+	public void drawRange(final SpriteBatch spriteBatch) {
 		if (this.rangeActivated)
 			spriteRange.draw(spriteBatch);
+	}
 
+	public void draw(final SpriteBatch spriteBatch) {
 		spriteBody.draw(spriteBatch);
-
-		drawProjectile(spriteBatch);
 	}
 
 	public void drawUpperBuddy(final SpriteBatch spriteBatch) {

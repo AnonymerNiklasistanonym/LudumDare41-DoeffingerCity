@@ -40,6 +40,8 @@ public abstract class Enemy extends BodyDef {
 	private boolean tot = false;
 	private float distancetonode = 50f;
 	private boolean activated;
+	
+	public static boolean worldIsLocked;
 
 	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map,
 			final float time) {
@@ -72,7 +74,11 @@ public abstract class Enemy extends BodyDef {
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
-		this.body = w.createBody(bodydef);
+		while (worldIsLocked) {};
+		synchronized (w) {
+			this.body = w.createBody(bodydef);
+			this.body.setActive(false);
+		}
 		final CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(spriteAlive.getHeight() * 0.35f);
 
@@ -87,7 +93,6 @@ public abstract class Enemy extends BodyDef {
 		this.body.setUserData(this);
 		this.map = map;
 		this.findWay();
-		this.body.setActive(false);
 	}
 
 	public float getTime() {
@@ -212,8 +217,10 @@ public abstract class Enemy extends BodyDef {
 					aktuellerNode = node;
 				lowCost = node.getKosten();
 			}
-			if (aktuellerNode == null)
+			if (aktuellerNode == null) {
 				System.out.println("aktueller Node ist null");
+				return tempweg;
+			}
 			if (openList.indexOf(aktuellerNode) < 0)
 				System.out.println("aktueller Node ist 0");
 			// if(openList.indexOf(aktuellerNode) > 0)

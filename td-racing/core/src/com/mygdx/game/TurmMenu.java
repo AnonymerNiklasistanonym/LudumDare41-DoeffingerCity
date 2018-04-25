@@ -76,6 +76,7 @@ public class TurmMenu {
 		if (!unselect) {
 			towerSelected[i] = true;
 		} else {
+			world.destroyBody(buildingtower.body);
 			buildingtower = null;
 		}
 
@@ -112,6 +113,9 @@ public class TurmMenu {
 	public void unselectAll() {
 		for (int i = 0; i < towerSelected.length; i++)
 			towerSelected[i] = false;
+		if (buildingtower != null) {
+			world.destroyBody(buildingtower.body);
+		}
 		buildingtower = null;
 		updateAlpha();
 	}

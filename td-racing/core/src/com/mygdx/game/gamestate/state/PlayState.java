@@ -66,6 +66,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugWay;
 
 	private final TurmMenu turmmenu;
+	
+	public static Thread thread;
 
 	private final PreferencesManager preferencesManager;
 
@@ -548,6 +550,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (debugBox2D)
 			for (final Checkpoint checkpoint : checkpoints)
 				checkpoint.draw(spriteBatch);
+		// draw tower range
+		for (final Tower tower : towers)
+			tower.drawRange(spriteBatch);
+		if (buildingtower != null)
+			buildingtower.drawRange(spriteBatch);
 		// draw enemies
 		for (Enemy e : enemies) {
 			e.draw(spriteBatch);
@@ -622,11 +629,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void updatePhysics(float deltaTime) {
 		float frameTime = Math.min(deltaTime, 0.25f);
 		physicsaccumulator += frameTime;
-		if (!threadActive) {
-			while (physicsaccumulator >= TIME_STEP) {
-				world.step(TIME_STEP, 6, 2);
-				physicsaccumulator -= TIME_STEP;
-			}
+		while (physicsaccumulator >= TIME_STEP) {
+			Enemy.worldIsLocked = true;
+			world.step(TIME_STEP, 6, 2);
+			Enemy.worldIsLocked = false;
+			physicsaccumulator -= TIME_STEP;
 		}
 		Array<Enemy> toremove = new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
@@ -757,7 +764,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					wavetext = "FINAL WAVE";
 
 				threadActive = true;
-				new Thread(new Runnable() {
+				thread = new Thread(new Runnable() {
 
 					@Override
 					public void run() {
@@ -832,7 +839,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 						threadActive = false;
 
 					}
-				}).start();
+				});
+				thread.start();
 			}
 		}
 	}
