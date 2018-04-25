@@ -314,11 +314,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public boolean buildingPositionIsAllowed(final Tower tower) {
 		final float[][] cornerPoints = tower.getCornerPoints();
 		boolean isAllowed = true;
-		for (int i = 0; i < cornerPoints.length; i++)
-			isAllowed = this.map.isInBody(cornerPoints[i][0], cornerPoints[i][1]);
+		for (int i = 0; i < cornerPoints.length; i++) {
+			// if tower is placed onto the track do not allow building it
+			if (!this.map.isInBody(cornerPoints[i][0], cornerPoints[i][1]))
+				isAllowed = false;
+			// if tower is placed onto the tower menu do not allow building it
+			if (this.turmmenu.contains(cornerPoints[i][0], cornerPoints[i][1]))
+				isAllowed = false;
+			// if tower is placed onto a tower do not allow building it
+			for (final Tower tower1 : towers) {
+				if (tower1.contains(cornerPoints[i][0], cornerPoints[i][1]))
+					isAllowed = false;
+			}
+		}
 		System.out.println("buildingPositionIsAllowed: " + isAllowed);
 		return isAllowed;
-
 	}
 
 	public boolean buildingMoneyIsEnough(final Tower tower) {
