@@ -1,37 +1,36 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
 
 public class Node {
-	public float x;
-	public float y;
+	private final float x;
+	private final float y;
 	// Kosten von Start hierher
-	public float g = 1;
+	private float g = 1;
 	// Kosten bis zum Ziel
-	public float h;
+	private float h;
 	// Erschwernis
-	public float erschwernis;
-	// Kosten
-	public float kosten;
+	private float erschwernis;
+	private final boolean noUse;
 
-	public boolean noUse = false;
+	private Node parent;
 
-	public Node parent;
+	private Array<Node> nachbarn;
 
-	public ArrayList<Node> nachbarn;
-
-	public Node(float x, float y, float zielX, float zielY) {
+	public Node(final float x, final float y) {
+		this.noUse = false;
 		this.x = x;
 		this.y = y;
-		erschwernis = MathUtils.random(1f, 3f);
-		h = 99999;
-		nachbarn = new ArrayList();
+		this.erschwernis = MathUtils.random(1f, 3f);
+		this.h = 99999;
+		this.nachbarn = new Array<Node>();
 	}
 
-	public Node(boolean noUse) {
+	public Node(final boolean noUse) {
 		this.noUse = noUse;
+		this.x = -1;
+		this.y = -1;
 	}
 
 	public float getKosten() {
@@ -52,5 +51,40 @@ public class Node {
 
 	public float getH() {
 		return h;
+	}
+
+	public Array<Node> getNachbarn() {
+		return this.nachbarn;
+	}
+
+	public float getG() {
+		return this.g;
+	}
+
+	public void setG(final float g) {
+		this.g = g;
+	}
+
+	public void setParent(final Node node) {
+		this.parent = node;
+	}
+
+	public void setKosten(float kosten) {
+	}
+
+	public float getErschwernis() {
+		return this.erschwernis;
+	}
+
+	public Node getParent() {
+		return this.parent;
+	}
+
+	public void setErschwernis(final float erschwernis) {
+		this.erschwernis = erschwernis;
+	}
+
+	public void setH(final float h) {
+		this.h = h;
 	}
 }

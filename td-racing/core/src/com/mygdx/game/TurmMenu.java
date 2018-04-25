@@ -37,7 +37,7 @@ public class TurmMenu {
 		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton) };
 		this.towerSelected = new boolean[sprites.length];
 		this.towerUnlocked = new boolean[sprites.length];
-		
+
 		for (final Sprite sprite : sprites) {
 			sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER, sprite.getHeight() * PlayState.PIXEL_TO_METER);
 			sprite.setOriginCenter();

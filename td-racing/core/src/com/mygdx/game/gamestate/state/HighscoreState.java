@@ -57,8 +57,6 @@ public class HighscoreState extends GameState {
 	@Override
 	protected void update(float deltaTime) {
 		// TODO Do nothing right now
-		handleInput();
-
 	}
 
 	@Override

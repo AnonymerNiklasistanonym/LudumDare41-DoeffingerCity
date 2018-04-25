@@ -11,12 +11,12 @@ public class EnemySmall extends Enemy {
 	public static Texture deadTexture;
 	public static Texture normalTexture;
 
-	public EnemySmall(float xPos, float yPos, World world, MainMap map) {
-		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map);
+	public EnemySmall(float xPos, float yPos, World world, MainMap map, final float time) {
+		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map, time);
 		this.health = 10;
 		this.damage = 1;
 		this.speed = 2;
-		this.money=1;
+		this.money = 1;
 	}
 
 }

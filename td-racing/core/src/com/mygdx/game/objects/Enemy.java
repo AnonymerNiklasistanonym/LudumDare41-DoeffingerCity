@@ -23,6 +23,8 @@ public abstract class Enemy extends BodyDef {
 	private final Sprite spriteDead;
 	private final Sprite spriteDamadge;
 
+	private final float time;
+
 	protected float health = 0;
 	protected float money = 1;
 	protected float score = 10;
@@ -37,8 +39,10 @@ public abstract class Enemy extends BodyDef {
 	private boolean delete;
 	private boolean tot = false;
 	private float distancetonode = 50f;
+	private boolean activated;
 
-	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map) {
+	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map,
+			final float time) {
 		final Sprite spriteSprite = new Sprite(sprite);
 		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER,
 				spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
@@ -60,6 +64,8 @@ public abstract class Enemy extends BodyDef {
 		this.spriteDead = deadspriteSprite;
 		this.spriteDamadge = damageSprite;
 		this.score = MathUtils.random(100);
+		this.activated = false;
+		this.time = time;
 
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
@@ -73,7 +79,7 @@ public abstract class Enemy extends BodyDef {
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
 		fdef.density = 1f;
-		//fdef.isSensor=true;
+		// fdef.isSensor=true;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 
@@ -81,6 +87,16 @@ public abstract class Enemy extends BodyDef {
 		this.body.setUserData(this);
 		this.map = map;
 		this.findWay();
+		this.body.setActive(false);
+	}
+
+	public float getTime() {
+		return this.time;
+	}
+
+	public void activateEnemy() {
+		this.activated = true;
+		this.body.setActive(true);
 	}
 
 	public void startMove() {
@@ -106,7 +122,6 @@ public abstract class Enemy extends BodyDef {
 		// set position of dead sprite to the current one
 		this.spriteDead.setPosition(spriteAlive.getX(), spriteAlive.getY());
 		this.spriteDead.setRotation(MathUtils.radDeg * this.body.getAngle());
-
 		// ???
 		speed = 0;
 		setJustDied(true);
@@ -159,7 +174,7 @@ public abstract class Enemy extends BodyDef {
 
 		// Welcher Nachbar ist der beste
 		float lowCost = 9999999;
-		if (tempNodes2DList[(int) startX][(int) startY].noUse)
+		if (tempNodes2DList[(int) startX][(int) startY].getNoUse())
 			System.out.println("Halt");
 
 		// if (tempNodes2DList[(int) startX][(int) startY].nachbarn != null) {
@@ -206,12 +221,12 @@ public abstract class Enemy extends BodyDef {
 
 			closedList.add(aktuellerNode);
 
-			for (Node node : aktuellerNode.nachbarn) {
+			for (Node node : aktuellerNode.getNachbarn()) {
 				if (closedList.indexOf(node) == -1) {
-					node.g = aktuellerNode.g + 1;
-					node.parent = aktuellerNode;
+					node.setG(aktuellerNode.getG() + 1);
+					node.setParent(aktuellerNode);
 					if (openList.indexOf(node) == -1) {
-						node.kosten = node.getKosten();
+						node.setKosten(node.getKosten());
 						openList.add(node);
 					} else {
 						// if(node.kosten > node.getKosten())
@@ -230,7 +245,7 @@ public abstract class Enemy extends BodyDef {
 
 			}
 
-			if (aktuellerNode.x == zielX && aktuellerNode.y == zielY) {
+			if (aktuellerNode.getX() == zielX && aktuellerNode.getY() == zielY) {
 				// System.out.println("Gefunden");
 				break;
 			}
@@ -246,11 +261,12 @@ public abstract class Enemy extends BodyDef {
 			}
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			map.nodes2DList[(int) aktuellerNode.x][(int) aktuellerNode.y].erschwernis = MathUtils.random(1f, 3f);
+			map.nodes2DList[(int) aktuellerNode.getX()][(int) aktuellerNode.getY()]
+					.setErschwernis(MathUtils.random(1f, 3f));
 
 			// Hinzufuegen
 			tempweg.add(aktuellerNode);
-			aktuellerNode = aktuellerNode.parent;
+			aktuellerNode = aktuellerNode.getParent();
 		}
 
 		return tempweg;
@@ -314,15 +330,15 @@ public abstract class Enemy extends BodyDef {
 	}
 
 	public void update(float delta) {
-		if (this.isTot())
+		if (this.isTot() || !this.activated)
 			return;
 
 		if (getHealth() < 0)
 			this.die();
 
 		if (weg.size() > 0) {
-			final float angle = (float) ((Math.atan2(weg.getLast().x * PlayState.PIXEL_TO_METER - getBodyX(),
-					-(weg.getLast().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+			final float angle = (float) ((Math.atan2(weg.getLast().getX() * PlayState.PIXEL_TO_METER - getBodyX(),
+					-(weg.getLast().getY() * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
 			final Vector2 velo = new Vector2(speed, 0);
 			velo.rotateRad(this.body.getAngle());
@@ -332,11 +348,11 @@ public abstract class Enemy extends BodyDef {
 			// killLateral(1f);
 			distancetonode = spriteAlive.getWidth() * 4;
 
-			if (this.body.getPosition().dst(weg.getLast().x * PlayState.PIXEL_TO_METER,
-					weg.getLast().y * PlayState.PIXEL_TO_METER) < distancetonode)
+			if (this.body.getPosition().dst(weg.getLast().getX() * PlayState.PIXEL_TO_METER,
+					weg.getLast().getY() * PlayState.PIXEL_TO_METER) < distancetonode)
 				weg.remove(weg.indexOf(weg.getLast()));
 			if (weg.size() > 0)
-				score = weg.getLast().h;
+				score = weg.getLast().getH();
 		} else {
 			PlayState.scoreBoard.reduceLife(damage);
 			this.setDelete(true);
@@ -401,5 +417,9 @@ public abstract class Enemy extends BodyDef {
 
 	public void setTot(boolean tot) {
 		this.tot = tot;
+	}
+
+	public boolean isActivated() {
+		return this.activated;
 	}
 }

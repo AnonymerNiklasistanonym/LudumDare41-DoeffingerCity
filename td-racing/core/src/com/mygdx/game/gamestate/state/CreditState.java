@@ -45,7 +45,6 @@ public class CreditState extends GameState {
 
 	@Override
 	protected void update(float deltaTime) {
-		handleInput();
 	}
 
 	@Override

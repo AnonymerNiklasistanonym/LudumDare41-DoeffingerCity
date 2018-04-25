@@ -3,7 +3,6 @@ package com.mygdx.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -69,7 +68,6 @@ public class MainMap {
 		BodyEditorLoader loaderZombieWay = new BodyEditorLoader(
 				Gdx.files.internal("maps/" + mapName + "zombieway.json"));
 
-
 		// 1. Create a BodyDef, as usual.
 		BodyDef bd = new BodyDef();
 		bd.type = BodyType.StaticBody;
@@ -102,7 +100,6 @@ public class MainMap {
 		loaderZiel.attachFixture(mapZiel, "Ziel", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
 		loaderZombieWay.attachFixture(mapZombieWay, "Zombieway", nonSolid,
 				PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
-		System.out.println();
 	}
 
 	public boolean isInBody(final float xPosition, final float yPosition) {
@@ -115,8 +112,8 @@ public class MainMap {
 
 	public void createAStarArray() {
 		boolean befahrbar = true;
-		PolygonShape ps = (PolygonShape) mapZiel.getFixtureList().first().getShape();
-		Vector2 vector = new Vector2();
+		final PolygonShape ps = (PolygonShape) mapZiel.getFixtureList().first().getShape();
+		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
 
 		// Nodes erstellen
@@ -124,29 +121,27 @@ public class MainMap {
 			for (int j = 0; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
 				// Im befahrbaren Bereich?
 				befahrbar = true;
-				for (Fixture f : mapZombieWay.getFixtureList()) {
-					if (f.testPoint(i * PlayState.PIXEL_TO_METER, j * PlayState.PIXEL_TO_METER)) {
+				for (final Fixture f : mapZombieWay.getFixtureList()) {
+					if (f.testPoint(i * PlayState.PIXEL_TO_METER, j * PlayState.PIXEL_TO_METER))
 						befahrbar = false;
-					}
 				}
-				for (Fixture f : finishLine.getFixtureList()) {
-					if (f.testPoint(i * PlayState.PIXEL_TO_METER, j * PlayState.PIXEL_TO_METER)) {
+				for (final Fixture f : finishLine.getFixtureList()) {
+					if (f.testPoint(i * PlayState.PIXEL_TO_METER, j * PlayState.PIXEL_TO_METER))
 						befahrbar = false;
-					}
 				}
 				if (befahrbar)
-					nodesList.add(new Node((float) i, (float) j, vector.x, vector.y));
+					nodesList.add(new Node((float) i, (float) j));
 			}
 		}
 		// Alle Nachbarn in die Nodes eintragen
-		for (Node nodeMain : nodesList) {
+		for (final Node nodeMain : nodesList) {
 			// Nachbar finde
-			for (Node nodeNachbar : nodesList) {
-				if ((nodeMain.x + 10 == nodeNachbar.x && nodeMain.y == nodeNachbar.y)
-						|| (nodeMain.x == nodeNachbar.x && nodeMain.y + 10 == nodeNachbar.y)
-						|| (nodeMain.x - 10 == nodeNachbar.x && nodeMain.y == nodeNachbar.y)
-						|| (nodeMain.x == nodeNachbar.x && nodeMain.y - 10 == nodeNachbar.y))
-					nodeMain.nachbarn.add(nodeNachbar);
+			for (final Node nodeNachbar : nodesList) {
+				if ((nodeMain.getX() + 10 == nodeNachbar.getX() && nodeMain.getY() == nodeNachbar.getY())
+						|| (nodeMain.getX() == nodeNachbar.getX() && nodeMain.getY() + 10 == nodeNachbar.getY())
+						|| (nodeMain.getX() - 10 == nodeNachbar.getX() && nodeMain.getY() == nodeNachbar.getY())
+						|| (nodeMain.getX() == nodeNachbar.getX() && nodeMain.getY() - 10 == nodeNachbar.getY()))
+					nodeMain.getNachbarn().add(nodeNachbar);
 			}
 		}
 
@@ -154,73 +149,60 @@ public class MainMap {
 
 		// Ende normalisiesrn?
 		float zielX = 1, zielY = 1;
-		if (vector.x % 10 < 5) {
+		if (vector.x % 10 < 5)
 			zielX = vector.x - vector.x % 10;
-		}
-		if (vector.x % 10 >= 5) {
+		if (vector.x % 10 >= 5)
 			zielX = vector.x + (10 - vector.x % 10);
-		}
-		if (vector.y % 10 < 5) {
+		if (vector.y % 10 < 5)
 			zielY = vector.y - vector.y % 10;
-		}
-		if (vector.y % 10 >= 5) {
+		if (vector.y % 10 >= 5)
 			zielY = vector.y + (10 - vector.y % 10);
-		}
 
-		Node zielNode = new Node(true);
-
-		for (Node node : nodesList) {
-			if (node.x == zielX * PlayState.METER_TO_PIXEL && node.y == zielY * PlayState.METER_TO_PIXEL) {
-				node.h = 1;
-				zielNode = node;
+		for (final Node node : nodesList) {
+			if (node.getX() == zielX * PlayState.METER_TO_PIXEL && node.getY() == zielY * PlayState.METER_TO_PIXEL) {
+				node.setH(1);
+				// set "Ziel" node
+				werteSetzen(node);
 				break;
 			}
 		}
 
-		werteSetzen(zielNode);
-
-		System.out.println();
 		boolean isFound = false;
-		Node uebergebNode = new Node(true);
 
 		this.nodes2DList = new Node[(int) PlayState.RESOLUTION_WIDTH][(int) PlayState.RESOLUTION_HEIGHT];
 		// In 2d Array schreiben
 		for (int i = 0; i < (int) PlayState.RESOLUTION_WIDTH; i = i + 10) {
 			for (int j = 0; j < (int) PlayState.RESOLUTION_HEIGHT; j = j + 10) {
 				isFound = false;
-				for (Node node : nodesList) {
-					if (node.x == i && node.y == j) {
+				for (final Node node : nodesList) {
+					if (node.getX() == i && node.getY() == j) {
 						isFound = true;
-						uebergebNode = node;
+						nodes2DList[i][j] = node;
 						break;
 					}
 				}
-				if (isFound) {
-					nodes2DList[i][j] = uebergebNode;
-				} else {
+				if (!isFound)
 					nodes2DList[i][j] = new Node(true);
-				}
 			}
 		}
 
 	}
 
-	public void werteSetzen(Node meinNode) {
-		if (meinNode != null)
-			if (meinNode.nachbarn != null)
-				for (Node node : meinNode.nachbarn) {
-					if (node.h > meinNode.h + 1) {
-						node.h = meinNode.h + 1;
-						werteSetzen(node);
-					}
+	public void werteSetzen(final Node meinNode) {
+		if (meinNode != null && meinNode.getNachbarn() != null)
+			for (final Node node : meinNode.getNachbarn()) {
+				if (node.getH() > meinNode.getH() + 1) {
+					node.setH(meinNode.getH() + 1);
+					werteSetzen(node);
 				}
+			}
 	}
 
 	public Vector2 getSpawn() {
 		return spawn;
 	}
 
-	public void setSpawn(Vector2 spawn) {
+	public void setSpawn(final Vector2 spawn) {
 		this.spawn = spawn;
 	}
 
