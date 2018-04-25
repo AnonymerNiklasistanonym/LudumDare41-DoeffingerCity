@@ -1,6 +1,5 @@
 package com.mygdx.game.gamestate.state;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
@@ -43,17 +42,17 @@ public class MenuState extends GameState {
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		final MenuButton startButton = new MenuButton(START_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2.5f,
-				"START", true);
+		final MenuButton startButton = new MenuButton(START_ID, MainGame.GAME_WIDTH / 2,
+				MainGame.GAME_HEIGHT / 6 * 2.5f, "START", true);
 		final MenuButton highscoreButton = new MenuButton(HIGHSCORES_ID, MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
 		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
 				"ABOUT", false);
-//		if (Gdx.app.getType() != ApplicationType.WebGL) {
-//			menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
-//		} else {
-			menuButtons = new MenuButton[] { startButton, aboutButton };
-//		}
+		// if (Gdx.app.getType() != ApplicationType.WebGL) {
+		// menuButtons = new MenuButton[] { startButton, highscoreButton, aboutButton };
+		// } else {
+		menuButtons = new MenuButton[] { startButton, aboutButton };
+		// }
 
 		System.out.println("Menu state entered");
 	}
@@ -125,7 +124,6 @@ public class MenuState extends GameState {
 
 	@Override
 	public void update(float number) {
-		handleInput();
 		if (changeToPlayState)
 			gameStateManager.setGameState(new PlayState(gameStateManager, MainGame.level));
 	}
@@ -145,7 +143,7 @@ public class MenuState extends GameState {
 			for (final MenuButton menuButton : menuButtons)
 				menuButton.draw(spriteBatch);
 		}
-		spriteBatch.draw(title,0,0);
+		spriteBatch.draw(title, 0, 0);
 		spriteBatch.end();
 	}
 

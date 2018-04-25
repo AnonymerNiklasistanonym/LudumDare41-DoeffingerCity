@@ -20,7 +20,6 @@ public class TurmMenu {
 
 	float startx = 30;
 	float starty = 0;
-	float versatz = 0;
 
 	Tower buildingtower;
 
@@ -35,18 +34,20 @@ public class TurmMenu {
 		this.world = world;
 		this.enemies = enemies;
 
-		this.towerSelected = new boolean[3];
-		this.towerUnlocked = new boolean[3];
 		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton) };
-		for (Sprite sprite : sprites) {
+		this.towerSelected = new boolean[sprites.length];
+		this.towerUnlocked = new boolean[sprites.length];
+
+		for (final Sprite sprite : sprites) {
 			sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER, sprite.getHeight() * PlayState.PIXEL_TO_METER);
 			sprite.setOriginCenter();
 		}
-		this.versatz = sprites[0].getWidth();
+
+		float versatz = sprites[0].getWidth();
 		float x = startx;
 		final float y = starty;
 
-		for (Sprite sprite : sprites) {
+		for (final Sprite sprite : sprites) {
 			sprite.setPosition(x, y);
 			x += versatz;
 		}
@@ -99,6 +100,7 @@ public class TurmMenu {
 					buildingtower = new FireTower(10, 10, enemies, world);
 					break;
 				}
+				buildingtower.activateRange(true);
 			}
 		}
 	}
@@ -113,10 +115,20 @@ public class TurmMenu {
 		buildingtower = null;
 		updateAlpha();
 	}
-	
+
 	public void updateMenu(World w, Array<Enemy> enemies) {
-		this.world=w;
-				this.enemies=enemies;
+		this.world = w;
+		this.enemies = enemies;
+	}
+
+	public boolean contains(final float xPos, final float yPos) {
+		float towerMenuWidth = 0;
+		for (int i = 0; i < towerUnlocked.length; i++) {
+			if (towerUnlocked[i])
+				towerMenuWidth += sprites[i].getWidth();
+		}
+		return (xPos >= startx && xPos <= startx + towerMenuWidth)
+				&& (yPos >= starty && yPos <= starty + ((sprites.length > 0) ? sprites[0].getHeight() : 0));
 	}
 
 }

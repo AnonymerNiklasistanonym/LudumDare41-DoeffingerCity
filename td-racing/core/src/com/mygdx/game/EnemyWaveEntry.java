@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.enemies.EnemyBicycle;
 import com.mygdx.game.objects.enemies.EnemyFat;
@@ -77,6 +78,13 @@ public class EnemyWaveEntry {
 		return entries;
 	}
 
+	public static Array<Enemy> createEnemyEntries2(final Vector2 entryPoint, final int entryTime, final int smallNumber,
+			final int fatNumber, final int bicycleNumber, World world, MainMap map) {
+		final float countingTime = 0.2f;
+		return createEnemyEntries2(entryPoint, entryTime, smallNumber, countingTime, fatNumber, countingTime,
+				bicycleNumber, countingTime, world, map);
+	}
+
 	public static EnemyWaveEntry[] createEnemyEntries(final Vector2 entryPoint, final int entryTime,
 			final int smallNumber, final float smallTimeDelta, final int fatNumber, final float fatTimeDelta,
 			final int bicycleNumber, final float bicycleTimeDelta) {
@@ -93,16 +101,43 @@ public class EnemyWaveEntry {
 		return entries;
 	}
 
+	public static Array<Enemy> createEnemyEntries2(final Vector2 entryPoint, final int entryTime, final int smallNumber,
+			final float smallTimeDelta, final int fatNumber, final float fatTimeDelta, final int bicycleNumber,
+			final float bicycleTimeDelta, World world, MainMap map) {
+
+		final Array<Enemy> allEnemies = new Array<Enemy>(smallNumber + fatNumber + bicycleNumber);
+
+		int counter = 0;
+		for (int i = 0; i < bicycleNumber; i++)
+			allEnemies.add(
+					new EnemyBicycle(entryPoint.x, entryPoint.y, world, map, entryTime + counter++ * bicycleTimeDelta));
+		for (int i = 0; i < fatNumber; i++)
+			allEnemies.add(new EnemyFat(entryPoint.x, entryPoint.y, world, map, entryTime + counter++ * fatTimeDelta));
+		for (int i = 0; i < smallNumber; i++)
+			allEnemies.add(
+					new EnemySmall(entryPoint.x, entryPoint.y, world, map, entryTime + counter++ * smallTimeDelta));
+		System.out.println("Length: " + allEnemies.size);
+		return allEnemies;
+	}
+
 	public static Enemy createEnemy(final EnemyWaveEntry entry, final World world, final MainMap map) {
 		switch (entry.getId()) {
 		case ENEMY_SMALL:
-			return new EnemySmall(entry.getPositon().x, entry.getPositon().y, world, map);
+			return new EnemySmall(entry.getPositon().x, entry.getPositon().y, world, map, entry.getTimeInSeconds());
 		case ENEMY_FAT:
-			return new EnemyFat(entry.getPositon().x, entry.getPositon().y, world, map);
+			return new EnemyFat(entry.getPositon().x, entry.getPositon().y, world, map, entry.getTimeInSeconds());
 		case ENEMY_BYCICLE:
-			return new EnemyBicycle(entry.getPositon().x, entry.getPositon().y, world, map);
+			return new EnemyBicycle(entry.getPositon().x, entry.getPositon().y, world, map, entry.getTimeInSeconds());
 		}
 		return null;
+	}
+
+	public static Array<Enemy> createEnemies(final Array<EnemyWaveEntry> currentEnemyWaves, final World world,
+			final MainMap map) {
+		Array<Enemy> allEnemies = new Array<Enemy>(currentEnemyWaves.size);
+		for (final EnemyWaveEntry entry : currentEnemyWaves)
+			allEnemies.add(createEnemy(entry, world, map));
+		return allEnemies;
 	}
 
 }

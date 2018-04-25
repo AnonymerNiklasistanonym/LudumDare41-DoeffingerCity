@@ -28,7 +28,8 @@ public class ScoreBoard {
 	public void draw(final SpriteBatch spriteBatch) {
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
-		//MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + " sec", 1, 35);
+		// MainGame.font.draw(spriteBatch, "Whole Time: " + (int) this.wholeTime + "
+		// sec", 1, 35);
 		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 0.2f, 5);
 		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 0.2f, 4);
 		MainGame.font.draw(spriteBatch, "Level: " + this.level, 0.2f, 2);

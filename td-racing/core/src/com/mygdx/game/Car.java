@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
-import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Enemy;
 
 public class Car {
@@ -59,37 +58,38 @@ public class Car {
 		body.applyForceToCenter(acc, true);
 	}
 
-	public void steerLeft() {		
-		//this.body.applyTorque(this.steerpower * this.delta * ((getForwardVelocity().x < 0) ? -1 : 1), true);
-		
-		this.body.applyTorque(this.steerpower * this.delta *getSpeedFactor(), true);
+	public void steerLeft() {
+		// this.body.applyTorque(this.steerpower * this.delta * ((getForwardVelocity().x
+		// < 0) ? -1 : 1), true);
+
+		this.body.applyTorque(this.steerpower * this.delta * getSpeedFactor(), true);
 	}
 
 	public void steerRight() {
-		this.body.applyTorque(this.steerpower * -1 * this.delta *getSpeedFactor(), true);
+		this.body.applyTorque(this.steerpower * -1 * this.delta * getSpeedFactor(), true);
 	}
-	
+
 	public float getNormalizedSpeed() {
-		float mult=1;
-		if(getForwardVelocity().x<0)
-			mult=-1;
-		float ns=getForwardVelocity().x;
-		ns=ns/maxspeed;
-		return ns*mult;
+		float mult = 1;
+		if (getForwardVelocity().x < 0)
+			mult = -1;
+		float ns = getForwardVelocity().x;
+		ns = ns / maxspeed;
+		return ns * mult;
 	}
-	
+
 	public float getSpeedFactor() {
-		float mult=1;
-		if(getForwardVelocity().x<0)
-			mult=-1;
-		float factor=Math.abs(getNormalizedSpeed());
-		factor=factor-1;
-		factor=factor*factor;
-		factor=1-factor;
-		if(factor<-1||factor>1) {
+		float mult = 1;
+		if (getForwardVelocity().x < 0)
+			mult = -1;
+		float factor = Math.abs(getNormalizedSpeed());
+		factor = factor - 1;
+		factor = factor * factor;
+		factor = 1 - factor;
+		if (factor < -1 || factor > 1) {
 			System.out.println("Speedfactor ist falsch!");
 		}
-		return factor*mult;
+		return factor * mult;
 	}
 
 	public void update(float delta) {

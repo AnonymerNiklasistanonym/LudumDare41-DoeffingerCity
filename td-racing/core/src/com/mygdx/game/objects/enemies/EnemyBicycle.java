@@ -11,8 +11,8 @@ public class EnemyBicycle extends Enemy {
 	public static Texture deadTexture;
 	public static Texture normalTexture;
 
-	public EnemyBicycle(final float xPos, final float yPos, final World world, final MainMap map) {
-		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map);
+	public EnemyBicycle(final float xPos, final float yPos, final World world, final MainMap map, final float time) {
+		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map, time);
 		this.damage = 2;
 		this.setHealth(10);
 		this.money = 2;

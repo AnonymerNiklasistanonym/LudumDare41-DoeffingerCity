@@ -11,8 +11,8 @@ public class EnemyLincoln extends Enemy {
 	public static Texture deadTexture;
 	public static Texture normalTexture;
 
-	public EnemyLincoln(final float xPos, final float yPos, final World world, final MainMap map) {
-		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map);
+	public EnemyLincoln(final float xPos, final float yPos, final World world, final MainMap map, final float time) {
+		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map, time);
 		this.damage = 20;
 		this.setHealth(100);
 		this.money = 10000;

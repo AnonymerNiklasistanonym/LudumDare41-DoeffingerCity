@@ -401,4 +401,9 @@ public abstract class Tower {
 
 	}
 
+	public boolean contains(float xPos, float yPos) {
+		return (xPos >= this.spriteBody.getX() && xPos <= this.spriteBody.getX() + this.spriteBody.getWidth())
+				&& (yPos >= this.spriteBody.getY() && yPos <= this.spriteBody.getY() + this.spriteBody.getHeight());
+	}
+
 }

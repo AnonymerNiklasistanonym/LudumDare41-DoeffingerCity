@@ -123,7 +123,6 @@ public class GameOverState extends GameState {
 
 	@Override
 	public void update(float number) {
-		handleInput();
 		if (changeToPlayState)
 			gameStateManager.setGameState(new PlayState(gameStateManager, MainGame.level));
 	}
