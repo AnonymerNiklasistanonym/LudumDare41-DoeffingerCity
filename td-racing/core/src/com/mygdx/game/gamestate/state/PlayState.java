@@ -21,6 +21,7 @@ import com.mygdx.game.Car;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.EnemyWaveEntry;
+import com.mygdx.game.FPSCounter;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
@@ -85,7 +86,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	 */
 
 	Sprite victory;
-
+	
+	FPSCounter fpscounter;
 	int currentwave = 0;
 	final int totalwaves = 10;
 	boolean wongame = false;
@@ -121,7 +123,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
+		
 		super(gameStateManager);
+		fpscounter=new FPSCounter();
 		System.out.println("Play state entered");
 		MainGame.waveFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
@@ -523,7 +527,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		timeforwavetext -= deltaTime;
 
 		camera.update();
-		
+		fpscounter.update(deltaTime);
 		updatePhysics(Gdx.graphics.getDeltaTime());
 	}
 
@@ -602,6 +606,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		
 		scoreBoard.draw(spriteBatch);
 
+		if(deploy==false){
+			String sfps="FPS: "+fpscounter.getFrames();
+		MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
+		}
+		
 		if (timeforwavetext > 0)
 			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
 		
