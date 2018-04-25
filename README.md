@@ -54,6 +54,9 @@ To export the program as ? `war` web app you need to this:
 4. Then go into the directory `html` and then `build`
 5. Now copy everything in this directory into an directory on you server or into `htdocs` if you use XAMPP and open the page (XAMPP: `127.0.0.1`) 
 
-## Notes
+## Used Software
 
-In here: https://docs.google.com/document/d/1LKWW2drZA4GM1Hnr7rooYiS_hsCx3JeYQyQbryagDJs/edit?usp=sharing
+- To create the LibGDX project the original [LibGDX Setup App](https://libgdx.badlogicgames.com/download.html) was used
+- To edit the Java code and run/debug it [Eclipse Java Oxygen](https://www.eclipse.org/oxygen/) was used in combination with Java 6 (because of LibGdx the version number is this low)
+- To create the bounding maps for the box2D physics the [box2d-editor](https://code.google.com/archive/p/box2d-editor/downloads) was used
+- To create the Bitmap fonts the program [Hiero](https://libgdx.badlogicgames.com/tools.html) was used
