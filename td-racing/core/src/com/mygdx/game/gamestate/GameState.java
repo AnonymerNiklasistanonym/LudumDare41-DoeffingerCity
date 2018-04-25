@@ -3,6 +3,10 @@ package com.mygdx.game.gamestate;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * Abstract class that contains methods that every GameState class needs to
+ * implement to seamlessly work with the GameStateManager class
+ */
 public abstract class GameState {
 
 	/**
@@ -34,7 +38,7 @@ public abstract class GameState {
 	 * 
 	 * @param deltaTime
 	 */
-	protected abstract void update(float deltaTime);
+	protected abstract void update(final float deltaTime);
 
 	/**
 	 * Render method
@@ -42,7 +46,7 @@ public abstract class GameState {
 	 * @param spriteBatch
 	 *            (contains everything that needs to be drawn)
 	 */
-	protected abstract void render(SpriteBatch spriteBatch);
+	protected abstract void render(final SpriteBatch spriteBatch);
 
 	/**
 	 * Dispose any resource for a better memory management

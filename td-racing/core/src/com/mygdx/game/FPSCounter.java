@@ -30,6 +30,6 @@ public class FPSCounter {
 	}
 
 	public int getFrames() {
-		return lastframes;
+		return lastframes + 1;
 	}
 }

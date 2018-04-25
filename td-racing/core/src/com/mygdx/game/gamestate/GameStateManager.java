@@ -4,10 +4,20 @@ import java.util.Stack;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+/**
+ * Class that manages all GameStates which also means a simple input handling,
+ * updating, rendering and disposing of content
+ */
 public class GameStateManager {
 
+	/**
+	 * Stack of GameStates
+	 */
 	private final Stack<GameState> gameStateStack;
 
+	/**
+	 * Constructor that creates a new GameState stack
+	 */
 	public GameStateManager() {
 		this.gameStateStack = new Stack<GameState>();
 	}
@@ -39,7 +49,7 @@ public class GameStateManager {
 	}
 
 	/**
-	 * Update everything
+	 * Update everything (input and then updates)
 	 * 
 	 * @param deltaTime
 	 *            (time between last frame and this)

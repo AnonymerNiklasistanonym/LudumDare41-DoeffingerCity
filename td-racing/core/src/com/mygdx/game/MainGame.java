@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.gamestate.state.LoadingState;
 import com.mygdx.game.gamestate.state.MenuState;
 
 public class MainGame extends ApplicationAdapter {
@@ -33,6 +34,7 @@ public class MainGame extends ApplicationAdapter {
 	 * Wave size game font "Cornerstone"
 	 */
 	public static BitmapFont waveFont;
+	public static BitmapFont fontUpperCaseBig;
 	/**
 	 * Name of the game
 	 */
@@ -51,6 +53,9 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void create() {
+		fontUpperCaseBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_upper_case_big.fnt"));
+
+		
 		font = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone.fnt"));
 		font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		font.setUseIntegerPositions(false);
@@ -58,6 +63,7 @@ public class MainGame extends ApplicationAdapter {
 		highscoreFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_highscore.fnt"));
 		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));
 		waveFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_wave.fnt"));
+		fontUpperCaseBig  = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_upper_case_big.fnt"));
 		spriteBatch = new SpriteBatch();
 		gameStateManager = new GameStateManager();
 		gameStateManager.pushState(new MenuState(gameStateManager));
@@ -66,6 +72,9 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+		fontUpperCaseBig.dispose();
+		
+		
 		font.dispose();
 		smallFont.dispose();
 		highscoreFont.dispose();

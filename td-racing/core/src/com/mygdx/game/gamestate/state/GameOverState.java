@@ -11,6 +11,7 @@ import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.menu.MenuButton;
+import com.mygdx.game.menu.MenuButtonBig;
 
 public class GameOverState extends GameState {
 
@@ -30,8 +31,8 @@ public class GameOverState extends GameState {
 	public GameOverState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
-		MenuButton.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active.png"));
-		MenuButton.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
+		MenuButtonBig.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active.png"));
+		MenuButtonBig.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
 		backgroundGameOver = new Texture(Gdx.files.internal("background/background_game_over.png"));
 		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
 
@@ -41,11 +42,11 @@ public class GameOverState extends GameState {
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		final MenuButton playAgainButton = new MenuButton(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2,
+		final MenuButton playAgainButton = new MenuButtonBig(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 5, "RESTART LEVEL", true);
-		final MenuButton highScoreButton = new MenuButton(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2,
+		final MenuButton highScoreButton = new MenuButtonBig(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2,
 				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
-		final MenuButton aboutButton = new MenuButton(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
+		final MenuButton aboutButton = new MenuButtonBig(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
 				"ABOUT", false);
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
 			menuButtons = new MenuButton[] { playAgainButton, highScoreButton, aboutButton };
@@ -151,8 +152,8 @@ public class GameOverState extends GameState {
 	public void dispose() {
 		backgroundGameOver.dispose();
 		backgroundLoading.dispose();
-		MenuButton.textureActive.dispose();
-		MenuButton.textureNotActive.dispose();
+		MenuButtonBig.textureActive.dispose();
+		MenuButtonBig.textureNotActive.dispose();
 
 		System.out.println("Menu state disposed");
 	}
