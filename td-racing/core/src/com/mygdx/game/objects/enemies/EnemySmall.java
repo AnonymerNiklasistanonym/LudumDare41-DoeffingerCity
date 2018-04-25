@@ -16,6 +16,7 @@ public class EnemySmall extends Enemy {
 		this.health = 10;
 		this.damage = 1;
 		this.speed = 2;
+		this.money=1;
 	}
 
 }

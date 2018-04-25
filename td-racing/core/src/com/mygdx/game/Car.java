@@ -21,7 +21,7 @@ public class Car {
 	private float armor = 0.3f;
 	private float brakepower = 5000f;
 	private float backacc = 1000f;
-	private float steerpower = 2000;
+	private float steerpower = 1500;
 	private float friction = 0.99f;
 	private float health = 100;
 	private float delta = 0;
@@ -60,11 +60,36 @@ public class Car {
 	}
 
 	public void steerLeft() {		
-		this.body.applyTorque(this.steerpower * this.delta * ((getForwardVelocity().x < 0) ? -1 : 1), true);
+		//this.body.applyTorque(this.steerpower * this.delta * ((getForwardVelocity().x < 0) ? -1 : 1), true);
+		
+		this.body.applyTorque(this.steerpower * this.delta *getSpeedFactor(), true);
 	}
 
 	public void steerRight() {
-		this.body.applyTorque(this.steerpower * -1 * this.delta * ((getForwardVelocity().x < 0) ? -1 : 1), true);
+		this.body.applyTorque(this.steerpower * -1 * this.delta *getSpeedFactor(), true);
+	}
+	
+	public float getNormalizedSpeed() {
+		float mult=1;
+		if(getForwardVelocity().x<0)
+			mult=-1;
+		float ns=getForwardVelocity().x;
+		ns=ns/maxspeed;
+		return ns*mult;
+	}
+	
+	public float getSpeedFactor() {
+		float mult=1;
+		if(getForwardVelocity().x<0)
+			mult=-1;
+		float factor=Math.abs(getNormalizedSpeed());
+		factor=factor-1;
+		factor=factor*factor;
+		factor=1-factor;
+		if(factor<-1||factor>1) {
+			System.out.println("Speedfactor ist falsch!");
+		}
+		return factor*mult;
 	}
 
 	public void update(float delta) {
