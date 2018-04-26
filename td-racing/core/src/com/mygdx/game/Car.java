@@ -87,7 +87,8 @@ public class Car {
 //		factor = factor * factor;
 //		factor = 1 - factor;
 		
-		 float x =Math.abs(getNormalizedSpeed());;
+		 float x =Math.abs(getNormalizedSpeed()*2);
+		 x=MathUtils.clamp(x, 0, 1);
 		 float factor = (float) (1-Math.exp(-3*x));
 		
 		
