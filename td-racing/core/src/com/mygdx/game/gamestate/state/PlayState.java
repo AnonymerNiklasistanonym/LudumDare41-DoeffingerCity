@@ -209,7 +209,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugWay = false;
 		debugEntfernung = false;
 
-		turmmenu = new TurmMenu(world, enemies);
+		turmmenu = new TurmMenu(world, enemies,scoreBoard);
 
 		checkpoints = new Checkpoint[4];
 		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
@@ -411,6 +411,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (final Enemy e : enemies) {
 				currentwave = 100;
 				e.takeDamage(1000);
+				LevelVictory();
 			}
 		}
 	}
@@ -523,7 +524,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 
 		timeforwavetext -= deltaTime;
-
+		turmmenu.updateAlpha();
 		camera.update();
 
 		fpscounter.update(deltaTime);
@@ -568,8 +569,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			tower.drawUpperBuddy(spriteBatch);
 		}
 		// draw tower menu tower
-		if (buildingtower != null)
+		if (buildingtower != null) {
 			buildingtower.draw(spriteBatch);
+			buildingtower.drawUpperBuddy(spriteBatch);
+		}
 		// draw pitstop
 		pitStop.draw(spriteBatch);
 

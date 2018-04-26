@@ -16,7 +16,7 @@ public class LaserTower extends Tower {
 	public static Texture towerFiring;
 	public static Texture upperTower;
 	public static Sound soundShoot;
-
+	public static int costTower = 150;
 	public static final int range = 6;
 
 	public LaserTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, World w) {
@@ -27,7 +27,7 @@ public class LaserTower extends Tower {
 		this.power = 0.1f;
 		this.turnspeed = 500;
 		this.permanentsound = true;
-		this.cost = 150;
+		this.cost = LaserTower.costTower;
 	}
 
 	@Override

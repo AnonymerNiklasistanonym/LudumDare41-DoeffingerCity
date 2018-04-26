@@ -163,6 +163,7 @@ public abstract class Tower {
 		spriteRange = new Sprite(circleTexture);
 		spriteRange.setSize(this.range * 2, this.range * 2);
 		spriteRange.setOriginCenter();
+		spriteRange.setColor(1,1,1,0.5f);
 
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteUpperBody = new Sprite(spriteUpperBody);

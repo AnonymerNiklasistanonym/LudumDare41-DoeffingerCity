@@ -23,6 +23,8 @@ public class TurmMenu {
 
 	Tower buildingtower;
 
+	ScoreBoard scoreboard;
+
 	boolean[] towerUnlocked;
 	Sprite[] sprites;
 
@@ -30,10 +32,10 @@ public class TurmMenu {
 	Array<Enemy> enemies;
 	private boolean[] towerSelected;
 
-	public TurmMenu(World world, Array<Enemy> enemies) {
+	public TurmMenu(World world, Array<Enemy> enemies, ScoreBoard scoreboard) {
 		this.world = world;
 		this.enemies = enemies;
-
+		this.scoreboard = scoreboard;
 		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton) };
 		this.towerSelected = new boolean[sprites.length];
 		this.towerUnlocked = new boolean[sprites.length];
@@ -67,6 +69,7 @@ public class TurmMenu {
 
 	public void selectTower(int i) {
 		boolean unselect = false;
+		
 		if (towerSelected[i])
 			unselect = true;
 
@@ -74,10 +77,26 @@ public class TurmMenu {
 			towerSelected[j] = false;
 
 		if (!unselect) {
+			if(canAfford(i))
 			towerSelected[i] = true;
 		} else {
 			world.destroyBody(buildingtower.body);
 			buildingtower = null;
+		}
+
+		if (towerSelected[i] && towerUnlocked[i]) {
+			switch (i) {
+			case 0:
+				buildingtower = new MgTower(10, 10, enemies, world);
+				break;
+			case 1:
+				buildingtower = new LaserTower(10, 10, enemies, world);
+				break;
+			case 2:
+				buildingtower = new FireTower(10, 10, enemies, world);
+				break;
+			}
+			buildingtower.activateRange(true);
 		}
 
 		updateAlpha();
@@ -86,28 +105,42 @@ public class TurmMenu {
 	public void updateAlpha() {
 		for (int i = 0; i < towerUnlocked.length; i++) {
 			sprites[i].setColor(1, 1, 1, 0);
-			if (towerUnlocked[i])
+			if (towerUnlocked[i]) {
 				sprites[i].setColor(1, 1, 1, 0.5f);
-			if (towerSelected[i] && towerUnlocked[i]) {
-				sprites[i].setColor(1, 1, 1, 1);
-				switch (i) {
-				case 0:
-					buildingtower = new MgTower(10, 10, enemies, world);
-					break;
-				case 1:
-					buildingtower = new LaserTower(10, 10, enemies, world);
-					break;
-				case 2:
-					buildingtower = new FireTower(10, 10, enemies, world);
-					break;
-				}
-				buildingtower.activateRange(true);
+			if(canAfford(i))
+				sprites[i].setColor(1, 1, 1, 1f);
+			
+			if (towerSelected[i] && towerUnlocked[i]) 
+				sprites[i].setColor(0.25f, 1, 0.25f, 1);
 			}
 		}
 	}
 
 	public Tower getCurrentTower() {
 		return buildingtower;
+	}
+
+	public boolean canAfford(int i) {
+		int price = 0;
+		switch (i) {
+		case 0:
+			price = MgTower.costTower;
+			break;
+		case 1:
+			price = LaserTower.costTower;
+			break;
+		case 2:
+			price = FireTower.costTower;
+			break;
+
+		default:
+			break;
+		}
+
+		if (scoreboard.getMoney() >= price)
+			return true;
+		else
+			return false;
 	}
 
 	public void unselectAll() {

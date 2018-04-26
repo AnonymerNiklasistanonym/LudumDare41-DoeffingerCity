@@ -19,10 +19,10 @@ public class FireTower extends Tower {
 	public static Texture towerFiring;
 	public static Texture tflame;
 	public static Sound soundShoot;
-
+	
 	private final Sprite sflame;
 	private static final int range = 7;
-	private static int costTower = 300;
+	public static int costTower = 300;
 	private World world;
 	private Array<Flame> flames;
 
