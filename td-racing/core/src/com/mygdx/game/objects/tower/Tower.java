@@ -35,7 +35,6 @@ public abstract class Tower {
 	protected Sprite spriteBody;
 	protected Sprite spriteUpperBody;
 	protected Sprite spriteFiring;
-	protected Sprite spriteRange;
 	protected float timesincelastshot;
 	boolean healthBar;
 	boolean justshot = false;
@@ -44,7 +43,6 @@ public abstract class Tower {
 	protected Enemy target = null;
 	Array<Enemy> enemies;
 	protected Vector2 shotposition;
-	protected ShapeRenderer sRender;
 	float delta = 0;
 	public Body body;
 	boolean isactive = false;
@@ -155,7 +153,6 @@ public abstract class Tower {
 		this.enemies = enemies;
 		this.healthBar = false;
 		this.damage = 0;
-		this.sRender = new ShapeRenderer();
 		this.range = range;
 		this.buildingModeBlocked = false;
 
@@ -210,9 +207,6 @@ public abstract class Tower {
 		// fire position to new position
 		this.spriteFiring.setPosition(xPosition + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2,
 				yPosition + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2);
-		// range position to new position
-		this.spriteRange.setOriginBasedPosition(xPosition + this.spriteBody.getWidth() / 2,
-				yPosition + this.spriteBody.getWidth() / 2);
 
 		// shot position to new position
 		this.shotposition = new Vector2(xPosition + spriteBody.getWidth() / 2, yPosition + spriteBody.getWidth() / 2);

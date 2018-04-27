@@ -149,12 +149,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		TurmMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
 
 		victory = createScaledSprite("fullscreens/victorycard.png");
+		
 		// set STATIC textures
-		NormalCheckpoint.normalCheckPointActivated = new Texture(
-				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
-		NormalCheckpoint.normalCheckPointDisabled = new Texture(
-				Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
-
 		MgTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
@@ -658,8 +654,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		Array<Enemy> toremove = new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
 			if (enemy.isJustDied()) {
-				enemy.getBody().setActive(false);
 				enemy.setJustDied(false);
+				world.destroyBody(enemy.getBody());
 				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 			}
 			if (enemy.isDelete()) {
@@ -688,8 +684,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	protected void dispose() {
 		// dispose STATIC textures
-		NormalCheckpoint.normalCheckPointActivated.dispose();
-		NormalCheckpoint.normalCheckPointDisabled.dispose();
 		MgTower.groundTower.dispose();
 		MgTower.upperTower.dispose();
 		MgTower.towerFiring.dispose();
