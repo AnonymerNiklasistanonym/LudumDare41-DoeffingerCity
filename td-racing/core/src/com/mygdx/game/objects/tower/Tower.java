@@ -1,14 +1,12 @@
-package com.mygdx.game.objects;
+package com.mygdx.game.objects.tower;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,10 +16,10 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.objects.Enemy;
 
 public abstract class Tower {
 
-	public static Texture circleTexture;
 	private boolean rangeActivated = false;
 	protected float turnspeed;
 	protected float maxHealth;
@@ -58,10 +56,13 @@ public abstract class Tower {
 	public int getCost() {
 		return this.cost;
 	}
-	
-	public void drawRange(final SpriteBatch spriteBatch) {
-		if (this.rangeActivated)
-			spriteRange.draw(spriteBatch);
+
+	public void drawRange(final ShapeRenderer shapeRenderer) {
+		if (this.rangeActivated) {
+			shapeRenderer.setColor(1, 0, 0, 0.3f);
+			shapeRenderer.circle(this.spriteBody.getX() + this.spriteBody.getWidth() / 2,
+					this.spriteBody.getY() + this.spriteBody.getHeight() / 2, this.range);
+		}
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
@@ -70,9 +71,7 @@ public abstract class Tower {
 
 	public void drawUpperBuddy(final SpriteBatch spriteBatch) {
 		if (firingLineTime > timesincelastshot) {
-			spriteBatch.end();
-			drawLine(spriteBatch);
-			spriteBatch.begin();
+			drawProjectile(spriteBatch);
 			spriteFiring.draw(spriteBatch);
 		} else {
 			spriteUpperBody.draw(spriteBatch);
@@ -87,13 +86,13 @@ public abstract class Tower {
 		return null;
 	}
 
-	public void drawLine(final SpriteBatch spriteBatch) {
-		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-		sRender.begin(ShapeType.Filled);
-		sRender.setColor(Color.YELLOW);
-		sRender.rectLine(center, shotposition, 0.2f);
-		sRender.end();
+	public void drawLine(final ShapeRenderer shapeRenderer) {
+		if (firingLineTime > timesincelastshot) {
+			drawProjectileShape(shapeRenderer);
+		}
 	}
+
+	public abstract void drawProjectileShape(final ShapeRenderer shapeRenderer);
 
 	public void setBuildingMode(final boolean buildingMode) {
 		this.isInBuildingMode = buildingMode;
@@ -159,11 +158,6 @@ public abstract class Tower {
 		this.sRender = new ShapeRenderer();
 		this.range = range;
 		this.buildingModeBlocked = false;
-
-		spriteRange = new Sprite(circleTexture);
-		spriteRange.setSize(this.range * 2, this.range * 2);
-		spriteRange.setOriginCenter();
-		spriteRange.setColor(1,1,1,0.5f);
 
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteUpperBody = new Sprite(spriteUpperBody);

@@ -20,7 +20,7 @@ public class LoadingState extends GameState {
 
 	public LoadingState(final GameStateManager gameStateManager, final int level) {
 		super(gameStateManager);
-		
+
 		// set font scale to the correct size and disable to use integers for scaling
 		MainGame.fontUpperCaseBig.getData().setScale(0.5f);
 		MainGame.fontUpperCaseBig.setUseIntegerPositions(false);

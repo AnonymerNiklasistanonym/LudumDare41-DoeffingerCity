@@ -3,12 +3,10 @@ package com.mygdx.game.objects.tower;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.Tower;
 
 public class LaserTower extends Tower {
 
@@ -31,12 +29,9 @@ public class LaserTower extends Tower {
 	}
 
 	@Override
-	public void drawLine(final SpriteBatch spriteBatch) {
-		sRender.setProjectionMatrix(spriteBatch.getProjectionMatrix());
-		sRender.begin(ShapeType.Filled);
-		sRender.setColor(Color.ORANGE);
-		sRender.rectLine(center, shotposition, 0.4f);
-		sRender.end();
+	public void drawProjectileShape(final ShapeRenderer shapeRenderer) {
+		shapeRenderer.setColor(Color.ORANGE);
+		shapeRenderer.rectLine(center, shotposition, 0.4f);
 	}
 
 }

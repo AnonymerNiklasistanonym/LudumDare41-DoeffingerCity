@@ -40,7 +40,7 @@ public abstract class Enemy extends BodyDef {
 	private boolean tot = false;
 	private float distancetonode = 50f;
 	private boolean activated;
-	
+
 	public static boolean worldIsLocked;
 
 	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map,
@@ -74,10 +74,15 @@ public abstract class Enemy extends BodyDef {
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
-		while (worldIsLocked) {};
-		synchronized (w) {
-			this.body = w.createBody(bodydef);
-			this.body.setActive(false);
+		boolean enemyCreated = false;
+		while (!enemyCreated) {
+			synchronized (w) {
+				if (!worldIsLocked) {
+					this.body = w.createBody(bodydef);
+					this.body.setActive(false);
+					enemyCreated = true;
+				}
+			}
 		}
 		final CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(spriteAlive.getHeight() * 0.35f);

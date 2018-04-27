@@ -46,7 +46,7 @@ public class Flame {
 			killme = true;
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void draw(final SpriteBatch batch) {
 		sprite.setSize(spritescale * originalsize, spritescale * originalsize);
 		sprite.setOriginCenter();
 		sprite.setPosition(getX(), getY());

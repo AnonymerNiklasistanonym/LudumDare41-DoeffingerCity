@@ -23,7 +23,7 @@ public class FPSCounter {
 
 			lastframes = frames;
 			frames = 0;
-			
+
 		} else {
 			frames++;
 		}

@@ -1,11 +1,12 @@
 package com.mygdx.game.objects.tower;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.Tower;
 
 public class MgTower extends Tower {
 
@@ -26,6 +27,12 @@ public class MgTower extends Tower {
 		this.turnspeed = 50;
 		this.cost = MgTower.costTower;
 
+	}
+
+	@Override
+	public void drawProjectileShape(ShapeRenderer shapeRenderer) {
+		shapeRenderer.setColor(Color.YELLOW);
+		shapeRenderer.rectLine(center, shotposition, 0.2f);
 	}
 
 }

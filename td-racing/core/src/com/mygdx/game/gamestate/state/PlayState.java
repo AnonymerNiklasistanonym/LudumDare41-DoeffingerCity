@@ -4,9 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -31,7 +34,6 @@ import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.FinishLine;
-import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.checkpoints.NormalCheckpoint;
 import com.mygdx.game.objects.enemies.EnemyBicycle;
 import com.mygdx.game.objects.enemies.EnemyFat;
@@ -41,6 +43,7 @@ import com.mygdx.game.objects.tower.FireTower;
 import com.mygdx.game.objects.tower.Flame;
 import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MgTower;
+import com.mygdx.game.objects.tower.Tower;
 
 public class PlayState extends GameState implements CollisionCallbackInterface {
 
@@ -66,7 +69,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugWay;
 
 	private final TurmMenu turmmenu;
-	
+
 	public static Thread thread;
 
 	private final PreferencesManager preferencesManager;
@@ -86,7 +89,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	 */
 
 	Sprite victory;
-	
+
 	FPSCounter fpscounter;
 	int currentwave = 0;
 	final int totalwaves = 10;
@@ -101,6 +104,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private float timeforwavetext = 3f;
 	private String wavetext = "";
 	private boolean threadActive = false;
+
+	private final ShapeRenderer shapeRenderer;
 
 	/**
 	 * Time for physic Steps
@@ -120,9 +125,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
-		
+
 		super(gameStateManager);
-		fpscounter=new FPSCounter();
+		fpscounter = new FPSCounter();
 		System.out.println("Play state entered");
 		MainGame.waveFont.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this);
@@ -149,8 +154,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				Gdx.files.internal("checkpoints/checkpoint_normal_activated.png"));
 		NormalCheckpoint.normalCheckPointDisabled = new Texture(
 				Gdx.files.internal("checkpoints/checkpoint_normal_disabled.png"));
-
-		Tower.circleTexture = new Texture(Gdx.files.internal("tower/range.png"));
 
 		MgTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
@@ -209,7 +212,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugWay = false;
 		debugEntfernung = false;
 
-		turmmenu = new TurmMenu(world, enemies,scoreBoard);
+		turmmenu = new TurmMenu(world, enemies, scoreBoard);
 
 		checkpoints = new Checkpoint[4];
 		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
@@ -234,6 +237,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (soundon)
 			backgroundMusic.play();
 
+		shapeRenderer = new ShapeRenderer();
 	}
 
 	public void loadLevel(int i) {
@@ -537,6 +541,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
+		// draw won game screen
 		spriteBatch.begin();
 		if (wongame) {
 			victory.draw(spriteBatch);
@@ -552,22 +558,33 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (final Checkpoint checkpoint : checkpoints)
 				checkpoint.draw(spriteBatch);
 		// draw tower range
+		spriteBatch.end();
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		shapeRenderer.begin(ShapeType.Filled);
 		for (final Tower tower : towers)
-			tower.drawRange(spriteBatch);
+			tower.drawRange(shapeRenderer);
 		if (buildingtower != null)
-			buildingtower.drawRange(spriteBatch);
+			buildingtower.drawRange(shapeRenderer);
+		shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+		spriteBatch.begin();
 		// draw enemies
-		for (Enemy e : enemies) {
+		for (final Enemy e : enemies)
 			e.draw(spriteBatch);
-		}
 		// draw car
 		car.draw(spriteBatch);
 		// draw tower
-		for (final Tower tower : towers) {
+		for (final Tower tower : towers)
 			tower.draw(spriteBatch);
-			tower.drawProjectile(spriteBatch);
+		spriteBatch.end();
+		shapeRenderer.begin(ShapeType.Filled);
+		for (final Tower tower : towers)
+			tower.drawLine(shapeRenderer);
+		shapeRenderer.end();
+		spriteBatch.begin();
+		for (final Tower tower : towers)
 			tower.drawUpperBuddy(spriteBatch);
-		}
 		// draw tower menu tower
 		if (buildingtower != null) {
 			buildingtower.draw(spriteBatch);
@@ -614,11 +631,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		scoreBoard.draw(spriteBatch);
 
-		if(deploy==false){
-			String sfps="FPS: "+fpscounter.getFrames();
-		MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
+		if (deploy == false) {
+			String sfps = "FPS: " + fpscounter.getFrames();
+			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
 		}
-		
+
 		if (timeforwavetext > 0)
 			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
 
@@ -673,7 +690,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// dispose STATIC textures
 		NormalCheckpoint.normalCheckPointActivated.dispose();
 		NormalCheckpoint.normalCheckPointDisabled.dispose();
-		Tower.circleTexture.dispose();
 		MgTower.groundTower.dispose();
 		MgTower.upperTower.dispose();
 		MgTower.towerFiring.dispose();
@@ -696,7 +712,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		money.dispose();
 		carsound.dispose();
 		victorysound.dispose();
-		MainGame.waveFont.getData().setScale(10f);
+		shapeRenderer.dispose();
 		System.out.println("Play state disposed");
 	}
 

@@ -34,8 +34,8 @@ public abstract class MenuButton {
 		this.scale = scale;
 
 		MainGame.fontBig.getData().setScale(this.scale);
-		this.position = GameStateMethods.calculateCenteredTextPositon(MainGame.fontBig, this.content,
-				xPosition * 2, yPosition * 2);
+		this.position = GameStateMethods.calculateCenteredTextPositon(MainGame.fontBig, this.content, xPosition * 2,
+				yPosition * 2);
 	}
 
 	public MenuButton(final int id, final float xPosition, final float yPosition, final String content,

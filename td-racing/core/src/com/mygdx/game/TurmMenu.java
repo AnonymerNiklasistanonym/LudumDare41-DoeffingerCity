@@ -7,10 +7,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.gamestate.state.PlayState;
 import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.tower.FireTower;
 import com.mygdx.game.objects.tower.LaserTower;
 import com.mygdx.game.objects.tower.MgTower;
+import com.mygdx.game.objects.tower.Tower;
 
 public class TurmMenu {
 
@@ -69,7 +69,7 @@ public class TurmMenu {
 
 	public void selectTower(int i) {
 		boolean unselect = false;
-		
+
 		if (towerSelected[i])
 			unselect = true;
 
@@ -77,8 +77,8 @@ public class TurmMenu {
 			towerSelected[j] = false;
 
 		if (!unselect) {
-			if(canAfford(i))
-			towerSelected[i] = true;
+			if (canAfford(i))
+				towerSelected[i] = true;
 		} else {
 			world.destroyBody(buildingtower.body);
 			buildingtower = null;
@@ -107,11 +107,11 @@ public class TurmMenu {
 			sprites[i].setColor(1, 1, 1, 0);
 			if (towerUnlocked[i]) {
 				sprites[i].setColor(1, 1, 1, 0.5f);
-			if(canAfford(i))
-				sprites[i].setColor(1, 1, 1, 1f);
-			
-			if (towerSelected[i] && towerUnlocked[i]) 
-				sprites[i].setColor(0.25f, 1, 0.25f, 1);
+				if (canAfford(i))
+					sprites[i].setColor(1, 1, 1, 1f);
+
+				if (towerSelected[i] && towerUnlocked[i])
+					sprites[i].setColor(0.25f, 1, 0.25f, 1);
 			}
 		}
 	}

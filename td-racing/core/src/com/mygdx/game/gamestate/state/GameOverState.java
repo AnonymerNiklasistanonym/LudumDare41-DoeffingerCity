@@ -1,67 +1,73 @@
 package com.mygdx.game.gamestate.state;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.gamestate.GameStateMethods;
 import com.mygdx.game.menu.MenuButton;
 import com.mygdx.game.menu.MenuButtonBig;
+import com.mygdx.game.menu.MenuButtonSmall;
 
 public class GameOverState extends GameState {
 
 	private final MenuButton[] menuButtons;
 
 	private final Texture backgroundGameOver;
-	private final Texture backgroundLoading;
 
 	private final static int PLAY_AGAIN_ID = 0;
 	private final static int HIGHSCORE_ID = 1;
 	private final static int ABOUT_ID = 2;
 
-	private Vector3 touchPos;
+	private final Vector3 touchPos;
 
-	private boolean loading, changeToPlayState;
+	private String loadingText;
+
+	private Vector2 loadingTextPosition;
 
 	public GameOverState(GameStateManager gameStateManager) {
 		super(gameStateManager);
 
+		// set font scale to the correct size and disable to use integers for scaling
+		MainGame.fontUpperCaseBig.getData().setScale(0.5f);
+		MainGame.fontUpperCaseBig.setUseIntegerPositions(false);
+
+		// set camera to a scenery of 1280x720
+		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+
+		// load button textures
 		MenuButtonBig.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active.png"));
 		MenuButtonBig.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
+		MenuButtonSmall.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active_small.png"));
+		MenuButtonSmall.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active_small.png"));
 		backgroundGameOver = new Texture(Gdx.files.internal("background/background_game_over.png"));
-		backgroundLoading = new Texture(Gdx.files.internal("background/background_loading.png"));
 
 		touchPos = new Vector3();
-		loading = false;
-		changeToPlayState = false;
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		final MenuButton playAgainButton = new MenuButtonBig(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2,
-				MainGame.GAME_HEIGHT / 6 * 5, "RESTART LEVEL", true);
-		final MenuButton highScoreButton = new MenuButtonBig(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2,
-				MainGame.GAME_HEIGHT / 6 * 3, "HIGHSCORES", false);
-		final MenuButton aboutButton = new MenuButtonBig(ABOUT_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1,
-				"ABOUT", false);
-		if (Gdx.app.getType() != ApplicationType.WebGL) {
-			menuButtons = new MenuButton[] { playAgainButton, highScoreButton, aboutButton };
-		} else {
-			menuButtons = new MenuButton[] { playAgainButton, aboutButton };
-		}
+		// calculate text coordinates
+		this.loadingText = "GAME OVER";
+		this.loadingTextPosition = GameStateMethods.calculateCenteredTextPositon(MainGame.fontUpperCaseBig, loadingText,
+				MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT * 4 / 3);
 
-		System.out.println("Menu state entered");
+		menuButtons = new MenuButton[] {
+				new MenuButtonBig(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 3, "RESTART LEVEL",
+						true),
+				new MenuButtonSmall(HIGHSCORE_ID, MainGame.GAME_WIDTH / 4, MainGame.GAME_HEIGHT / 6 * 1, "HIGHSCORES"),
+				new MenuButtonSmall(ABOUT_ID, MainGame.GAME_WIDTH - MainGame.GAME_WIDTH / 4,
+						MainGame.GAME_HEIGHT / 6 * 1, "ABOUT") };
 	}
 
 	@Override
 	public void handleInput() {
-
-		touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(touchPos);
+		GameStateMethods.toggleFullScreen(Keys.F11);
+		touchPos.set(GameStateMethods.getMousePosition(camera));
 
 		// determine on which button the mouse cursor is and select this button
 		boolean oneIsSelected = false;
@@ -76,29 +82,13 @@ public class GameOverState extends GameState {
 
 		// If a button is touched do something or Space or Enter is pressed execute the
 		// action for the selected button
-		if (Gdx.input.justTouched()) {
-			for (final MenuButton menuButton : menuButtons) {
-				if (menuButton.isActive() && menuButton.contains(touchPos)) {
-					switch (menuButton.getId()) {
-					case PLAY_AGAIN_ID:
-						loading = true;
-						break;
-					case HIGHSCORE_ID:
-						gameStateManager.setGameState(new HighscoreState(gameStateManager));
-						break;
-					case ABOUT_ID:
-						gameStateManager.setGameState(new CreditState(gameStateManager));
-						break;
-					}
-				}
-			}
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE)) {
+		if (Gdx.input.justTouched()
+				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
 			for (final MenuButton menuButton : menuButtons) {
 				if (menuButton.isActive()) {
 					switch (menuButton.getId()) {
 					case PLAY_AGAIN_ID:
-						loading = true;
+						gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
 						break;
 					case HIGHSCORE_ID:
 						gameStateManager.setGameState(new HighscoreState(gameStateManager));
@@ -114,48 +104,32 @@ public class GameOverState extends GameState {
 		// if escape or back is pressed quit
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			Gdx.app.exit();
-		if (Gdx.input.isKeyJustPressed(Keys.F11)) {
-			if (Gdx.graphics.isFullscreen())
-				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
-			else
-				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-		}
 	}
 
 	@Override
-	public void update(float number) {
-		if (changeToPlayState)
-			gameStateManager.setGameState(new PlayState(gameStateManager, MainGame.level));
+	public void update(final float deltaTime) {
+		// Do nothing
 	}
 
 	@Override
 	public void render(final SpriteBatch spriteBatch) {
 		spriteBatch.setProjectionMatrix(camera.combined);
 		spriteBatch.begin();
-		if (loading) {
-			spriteBatch.draw(backgroundLoading, 0, 0);
-			final GlyphLayout test = new GlyphLayout(MainGame.fontBig, "LOADING");
-			MainGame.fontBig.draw(spriteBatch, "LOADING", MainGame.GAME_WIDTH / 2 - test.width / 2,
-					MainGame.GAME_HEIGHT / 2 + test.height / 2);
-			changeToPlayState = true;
-		} else {
-			spriteBatch.draw(backgroundGameOver, 0, 0);
-			for (final MenuButton menuButton : menuButtons)
-				menuButton.draw(spriteBatch);
-			MainGame.font.draw(spriteBatch, "GAME OVER", MainGame.GAME_WIDTH / 2, MainGame.GAME_WIDTH / 6 * 5);
 
-		}
+		spriteBatch.draw(backgroundGameOver, 0, 0);
+		for (final MenuButton menuButton : menuButtons)
+			menuButton.draw(spriteBatch);
+		MainGame.fontUpperCaseBig.draw(spriteBatch, loadingText, loadingTextPosition.x, loadingTextPosition.y);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void dispose() {
 		backgroundGameOver.dispose();
-		backgroundLoading.dispose();
 		MenuButtonBig.textureActive.dispose();
 		MenuButtonBig.textureNotActive.dispose();
-
-		System.out.println("Menu state disposed");
+		MenuButtonSmall.textureActive.dispose();
+		MenuButtonSmall.textureNotActive.dispose();
 	}
 
 }

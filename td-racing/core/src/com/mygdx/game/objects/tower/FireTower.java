@@ -4,13 +4,13 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.gamestate.state.PlayState;
 import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.Tower;
 
 public class FireTower extends Tower {
 
@@ -19,7 +19,7 @@ public class FireTower extends Tower {
 	public static Texture towerFiring;
 	public static Texture tflame;
 	public static Sound soundShoot;
-	
+
 	private final Sprite sflame;
 	private static final int range = 7;
 	public static int costTower = 300;
@@ -45,24 +45,15 @@ public class FireTower extends Tower {
 	}
 
 	@Override
-	public void drawLine(final SpriteBatch spriteBatch) {
-
-	}
-
-	@Override
 	public void drawProjectile(final SpriteBatch spriteBatch) {
-
-		for (Flame flame : flames) {
-
+		for (final Flame flame : flames)
 			flame.draw(spriteBatch);
-		}
 	}
 
 	@Override
 	public void updateProjectiles(float delta) {
-		for (Flame flame : flames) {
+		for (final Flame flame : flames)
 			flame.update(delta);
-		}
 	}
 
 	@Override
@@ -98,6 +89,10 @@ public class FireTower extends Tower {
 
 	public Array<Flame> getFlames() {
 		return flames;
+	}
+
+	@Override
+	public void drawProjectileShape(ShapeRenderer shapeRenderer) {
 	}
 
 }
