@@ -73,7 +73,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public static boolean soundon = false;
 	private boolean debugWay;
 
-	private final TowerMenu towerMenu;
+	private TowerMenu towerMenu;
 
 	public static Thread thread;
 
@@ -258,6 +258,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		world.setContactListener(collis);
 		car = new Car(world, smaincar, 440, 220);
 		debugRender = new Box2DDebugRenderer();
+		towerMenu = new TowerMenu(world, scoreBoard);
 		switch (i) {
 		case 1:
 			finishline = new FinishLine(world, sfinishline, 380, 220);

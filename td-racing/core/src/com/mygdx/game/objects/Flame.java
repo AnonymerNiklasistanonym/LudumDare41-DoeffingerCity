@@ -21,13 +21,13 @@ public class Flame implements Disposable {
 	private float lifetime;
 	private boolean killme;
 
-	public Flame(final float xPosition, final float yPosition, final Sprite sprite, final World world,
+	public Flame(float xPosition, float yPosition, final Sprite sprite, final World world,
 			final float damage) {
-
+		System.out.println("Bodies in world before adding flame: " + world.getBodyCount());
 		// add flame as dynamic body to the box2D world
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(xPosition * PlayState.PIXEL_TO_METER, yPosition * PlayState.PIXEL_TO_METER);
+		bodydef.position.set(xPosition, yPosition);
 		this.body = world.createBody(bodydef);
 
 		// add a fixture to the body (to recognize collisions)
@@ -49,6 +49,7 @@ public class Flame implements Disposable {
 		this.spriteScale = 0.1f;
 		this.lifetime = 0.5f;
 		this.killme = false;
+		System.out.println("Bodies in world after adding flame: " + world.getBodyCount());
 	}
 
 	public void update(final float deltaTime) {
@@ -58,11 +59,12 @@ public class Flame implements Disposable {
 		lifetime -= deltaTime;
 		if (lifetime < 0)
 			this.killme = true;
+		
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		sprite.setSize(spriteScale * originalsize, spriteScale * originalsize);
-		sprite.setOriginCenter();
+		 sprite.setSize(spriteScale * originalsize, spriteScale * originalsize);
+		 sprite.setOriginCenter();
 		sprite.setPosition(getX(), getY());
 		sprite.draw(spriteBatch);
 	}

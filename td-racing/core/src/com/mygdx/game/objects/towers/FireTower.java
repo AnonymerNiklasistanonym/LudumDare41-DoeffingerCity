@@ -39,7 +39,7 @@ public class FireTower extends Tower {
 		this.sflame.setSize(this.sflame.getWidth() * PlayState.PIXEL_TO_METER,
 				this.sflame.getHeight() * PlayState.PIXEL_TO_METER);
 		this.maxHealth = -1;
-		this.speed = 0.04f;
+		this.speed = 0.08f;
 		this.firingSpriteTime = 0.2f;
 		this.power = 0.15f;
 		this.turnspeed = 700;
@@ -65,14 +65,13 @@ public class FireTower extends Tower {
 	@Override
 	public void shoot(final Enemy enemy) {
 		if (isTargetInRange(enemy)) {
-			final Vector2 aim = new Vector2(2000, 0);
+			final Vector2 aim = new Vector2(1000, 0);
 			aim.rotate(getDegrees());
 			aim.rotate90(1);
 
 			this.timesincelastshot = 0;
 
-			final Flame flame = new Flame(body.getPosition().x * PlayState.METER_TO_PIXEL,
-					body.getPosition().y * PlayState.METER_TO_PIXEL, sflame, world, power);
+			final Flame flame = new Flame(body.getPosition().x, body.getPosition().y, sflame, this.world, power);
 			flame.getBody().applyForceToCenter(aim, true);
 			flames.add(flame);
 		} else
