@@ -51,6 +51,7 @@ public abstract class Tower implements Disposable {
 	boolean isSoundPlaying = false;
 	protected int cost = 10;
 	private boolean buildingModeBlocked;
+	private boolean toremove;
 	protected Color color;
 
 	public int getCost() {
@@ -159,6 +160,7 @@ public abstract class Tower implements Disposable {
 			final Texture spriteUpperBody, final Texture spriteFiring, final Array<Enemy> enemies, final World world,
 			final int range, final Sound soundShoot) {
 		this.soundShoot = soundShoot;
+		this.toremove=false;
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
 		this.healthBar = false;
@@ -407,6 +409,14 @@ public abstract class Tower implements Disposable {
 		this.spriteFiring.getTexture().dispose();
 		this.spriteFiring.getTexture().dispose();
 		this.soundShoot.dispose();
+	}
+
+	public boolean isToremove() {
+		return toremove;
+	}
+
+	public void setToremove(boolean toremove) {
+		this.toremove = toremove;
 	}
 
 }

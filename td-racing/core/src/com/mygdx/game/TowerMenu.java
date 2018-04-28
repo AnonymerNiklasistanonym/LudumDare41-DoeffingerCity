@@ -91,7 +91,7 @@ public class TowerMenu implements Disposable {
 		} else {
 			if (buildingtower != null && buildingtower.body != null)
 				System.out.println("Test 3");
-				//world.destroyBody(buildingtower.body);
+				world.destroyBody(buildingtower.body);
 			if (buildingtower != null)
 				buildingtower = null;
 		}
@@ -143,25 +143,22 @@ public class TowerMenu implements Disposable {
 
 	public boolean canAfford(int i) {
 		int price = 0;
-//		switch (i) {
-//		case 0:
-//			price = MgTower.COST;
-//			break;
-//		case 1:
-//			price = LaserTower.COST;
-//			break;
-//		case 2:
-//			price = FireTower.COST;
-//			break;
-//
-//		default:
-//			break;
-//		}
-		Tower bt=getTower(i);
-		price=bt.getCost();
-		// world.destroyBody(bt.body);
-		System.out.println("Test");
-
+		switch (i) {
+		case 0:
+			price = MgTower.COST;
+			break;
+		case 1:
+			price = LaserTower.COST;
+			break;
+		case 2:
+			price = FireTower.COST;
+			break;
+		case 3:
+			price = SniperTower.COST;
+			break;
+		default:
+			break;
+		}
 		if (scoreboard.getMoney() >= price)
 			return true;
 		else
