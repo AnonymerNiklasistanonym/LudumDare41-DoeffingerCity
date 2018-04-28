@@ -34,9 +34,8 @@ public class PreferencesManager {
 	private static final String HIGHSCORE_NAME = "HIGHSCORE_NAME";
 	private static final String HIGHSCORE_SCORE = "HIGHSCORE_SCORE";
 	private static final String PREFERENCES_NAME = "My Preferences";
-	
-	private static final String LAST_NAME = "LAST_NAME";
 
+	private static final String LAST_NAME = "LAST_NAME";
 
 	private final Preferences prefs;
 
@@ -47,12 +46,12 @@ public class PreferencesManager {
 			this.prefs = null;
 		}
 	}
-	
+
 	public void saveName(final String name) {
 		prefs.putString(LAST_NAME, name);
 		prefs.flush();
 	}
-	
+
 	public char[] getName() {
 		final String lastName = prefs.getString(LAST_NAME);
 		return lastName.toCharArray();

@@ -69,24 +69,22 @@ public abstract class Enemy implements Disposable {
 		this.score = MathUtils.random(100);
 		this.activated = false;
 		this.time = time;
-		
-		this.color = new Color(MathUtils.random(0f, 1f),MathUtils.random(0f, 1f),MathUtils.random(0f, 1f),0.7f);
+
+		this.color = new Color(MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), 0.7f);
 
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
-		boolean enemyCreated = false;
-		while (!enemyCreated) {
-			synchronized (w) {
-				if (!worldIsLocked) {
-					this.body = w.createBody(bodydef);
-					this.body.setActive(false);
-					enemyCreated = true;
-				}
-			}
+
+		while (w.isLocked()) {
 		}
+		this.body = w.createBody(bodydef);
+		while (w.isLocked()) {
+		}
+		this.body.setActive(false);
+
 		final CircleShape enemyCircle = new CircleShape();
 		enemyCircle.setRadius(spriteAlive.getHeight() * 0.35f);
 

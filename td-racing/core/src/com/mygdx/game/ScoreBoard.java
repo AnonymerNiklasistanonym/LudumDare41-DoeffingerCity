@@ -1,13 +1,7 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.state.PlayState;
-import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.enemies.EnemyBicycle;
-import com.mygdx.game.objects.enemies.EnemyFat;
-import com.mygdx.game.objects.enemies.EnemySmall;
 
 public class ScoreBoard {
 
@@ -36,11 +30,11 @@ public class ScoreBoard {
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		
+
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
-		
-		if (this.debug) {		
-			MainGame.fontOutline.setColor(1,0,0,1f);
+
+		if (this.debug) {
+			MainGame.fontOutline.setColor(1, 0, 0, 1f);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Small Enemy: F", 0.2f, 32);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Fat Enemy: G", 0.2f, 31);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Bycicle Enemy: H", 0.2f, 30);
@@ -50,18 +44,28 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Debug Collision: C", 0.2f, 26);
 			MainGame.fontOutline.draw(spriteBatch, "Debug Way: V", 0.2f, 25);
 			MainGame.fontOutline.draw(spriteBatch, "Debug Distance: B", 0.2f, 24);
-			
-			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies: 9", 0.2f, 22);
-			MainGame.font.setColor(1,1,1,0.5f);
+
+			MainGame.fontOutline.draw(spriteBatch, "Go to the next level: 5", 0.2f, 22);
+			MainGame.fontOutline.draw(spriteBatch, "Go to the next wave: 6", 0.2f, 21);
+			MainGame.fontOutline.draw(spriteBatch, "Get Money: 7", 0.2f, 20);
+			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 19);
+			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies: 9", 0.2f, 18);
+
+			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: Right arrow", 0.2f, 16);
+			MainGame.fontOutline.draw(spriteBatch, "Reset world speed (=1): Left arrow", 0.2f, 15);
+
+			MainGame.fontOutline.draw(spriteBatch, "Unlock all towers: T", 0.2f, 13);
+
+			MainGame.font.setColor(1, 1, 1, 0.5f);
 		}
-		
+
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
 		MainGame.font.draw(spriteBatch, "PAUSE: P", 58, 33);
 
 		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 0.2f, 35);
 		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 0.2f, 34);
-		
+
 		MainGame.font.draw(spriteBatch, "Level: " + this.level, 0.2f, 2);
 		MainGame.font.draw(spriteBatch, "Wave: " + this.waveNumber, 0.2f, 1);
 
@@ -72,7 +76,7 @@ public class ScoreBoard {
 
 	public void reduceLife(float damage) {
 		this.healthPoints -= damage;
-		if (this.healthPoints < 0)
+		if (this.healthPoints <= 0)
 			playState.playerIsDeadCallback();
 	}
 
@@ -137,8 +141,16 @@ public class ScoreBoard {
 		this.waveNumber = waveNumber;
 	}
 
-	public void setLevel(int i) {
+	public void setLevel(final int i) {
 		this.level = i;
+	}
+
+	public float getHelath() {
+		return this.healthPoints;
+	}
+
+	public int getLevel() {
+		return this.level;
 	}
 
 }

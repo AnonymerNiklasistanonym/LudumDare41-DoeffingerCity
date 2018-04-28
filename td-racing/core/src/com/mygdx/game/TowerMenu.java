@@ -14,7 +14,7 @@ import com.mygdx.game.objects.towers.FireTower;
 import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
 
-public class TowerMenu implements Disposable{
+public class TowerMenu implements Disposable {
 
 	public static Texture cannonButton;
 	public static Texture laserButton;
@@ -173,6 +173,11 @@ public class TowerMenu implements Disposable{
 	public void dispose() {
 		for (final Sprite sprite : sprites)
 			sprite.getTexture().dispose();
+	}
+
+	public void lockTower(int i) {
+		towerUnlocked[i] = false;
+		updateAlpha();
 	}
 
 }

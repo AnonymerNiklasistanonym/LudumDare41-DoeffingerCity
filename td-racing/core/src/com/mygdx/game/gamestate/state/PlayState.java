@@ -127,6 +127,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 	private boolean pause = false;
+	private int speedFactor;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
 
@@ -240,6 +241,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			backgroundMusic.play();
 
 		shapeRenderer = new ShapeRenderer();
+
+		speedFactor = 1;
 	}
 
 	public void loadLevel(int i) {
@@ -423,8 +426,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			debugWay = !debugWay;
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debugEntfernung = !debugEntfernung;
-		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
-			scoreBoard.addMoney(1000);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
 			for (final Enemy e : enemies)
 				e.takeDamage(e.getHealth());
@@ -432,6 +433,39 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			this.currentwave = totalwaves;
 			System.out.println("currentwave: " + currentwave);
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
+			scoreBoard.reduceLife(scoreBoard.getHelath());
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_7))
+			scoreBoard.addMoney(1000);
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
+			scoreBoard.setLevel(scoreBoard.getLevel());
+			loadLevel(scoreBoard.getLevel());
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
+			// TODO next wave
+		}
+
+		if (Gdx.input.isKeyJustPressed(Keys.T)) {
+			// TODO toggle unlock all towers
+			this.unlockAllTowers = !this.unlockAllTowers;
+			if (this.unlockAllTowers) {
+				for (int i = 0; i < 3; i++)
+					towerMenu.unlockTower(i);
+			} else {
+				for (int i = 0; i < 3; i++)
+					towerMenu.lockTower(i);
+				for (int i = 0; i < scoreBoard.getLevel(); i++)
+					towerMenu.unlockTower(i);
+			}
+		}
+
+		if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
+			this.speedFactor = 1;
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
+			this.speedFactor += 1;
+		}
+
 	}
 
 	private void buildTowerIfAllowed() {
@@ -520,8 +554,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		for (int i = 0; i < enemies.size; i++) {
 			enemies.get(i).update(deltaTime);
-			if (enemies.size > 0
-					&& (!enemies.get(i).isActivated() && enemies.get(i).getTime() < scoreBoard.getTime()))
+			if (enemies.size > 0 && (!enemies.get(i).isActivated() && enemies.get(i).getTime() < scoreBoard.getTime()))
 				enemies.get(i).activateEnemy();
 		}
 
@@ -619,11 +652,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
 				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
 					if (test[i][j].getNoUse()) {
-						MainGame.font.setColor(0,0,1,0.5f);
+						MainGame.font.setColor(0, 0, 1, 0.5f);
 						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
 								j * PlayState.PIXEL_TO_METER);
 					} else {
-						MainGame.font.setColor(1,0,0,0.5f);
+						MainGame.font.setColor(1, 0, 0, 0.5f);
 						MainGame.font.draw(spriteBatch, "I", i * PlayState.PIXEL_TO_METER,
 								j * PlayState.PIXEL_TO_METER);
 					}
@@ -637,43 +670,42 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
 				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
 					if (test[i][j].getH() <= 0) // black
-						MainGame.font.setColor(0,0,0,0.75f);
+						MainGame.font.setColor(0, 0, 0, 0.75f);
 					else if (test[i][j].getH() <= 10) // blue
-						MainGame.font.setColor(0,0,1f,0.75f);
+						MainGame.font.setColor(0, 0, 1f, 0.75f);
 					else if (test[i][j].getH() <= 20) // teal
-						MainGame.font.setColor(0,1,0.5f,0.75f);
+						MainGame.font.setColor(0, 1, 0.5f, 0.75f);
 					else if (test[i][j].getH() <= 30) // green
-						MainGame.font.setColor(0.25f,1,0,0.75f);
+						MainGame.font.setColor(0.25f, 1, 0, 0.75f);
 					else if (test[i][j].getH() <= 40) // yellow
-						MainGame.font.setColor(1,0.8f,0,0.75f);
+						MainGame.font.setColor(1, 0.8f, 0, 0.75f);
 					else if (test[i][j].getH() <= 50) // orange
-						MainGame.font.setColor(1,0.5f,0,0.75f);
+						MainGame.font.setColor(1, 0.5f, 0, 0.75f);
 					else if (test[i][j].getH() <= 70) // dark red
-						MainGame.font.setColor(1,0.25f,0.1f,0.75f);
+						MainGame.font.setColor(1, 0.25f, 0.1f, 0.75f);
 					else if (test[i][j].getH() <= 100) // pink
-						MainGame.font.setColor(1,0,0.5f,0.57f);
+						MainGame.font.setColor(1, 0, 0.5f, 0.57f);
 					else if (test[i][j].getH() <= 200) // purple
-						MainGame.font.setColor(0.6f,0.1f,1,0.75f);
+						MainGame.font.setColor(0.6f, 0.1f, 1, 0.75f);
 					else
-						MainGame.font.setColor(1,0,0,0.75f);
-					
-					System.out.println(test[i][j].getH());
+						MainGame.font.setColor(1, 0, 0, 0.75f);
 
+					System.out.println(test[i][j].getH());
 
 					MainGame.font.draw(spriteBatch, test[i][j].getH() + "", i * PlayState.PIXEL_TO_METER,
 							j * PlayState.PIXEL_TO_METER);
+				}
 			}
-		}
 		}
 
 		if (debugWay) {
 			MainGame.font.getData().setScale(0.06f);
 			for (final Enemy e : enemies) {
 				if (e.isActivated() && !e.isTot()) {
-				MainGame.font.setColor(e.getColor());
-				for (Node node : e.getWeg())
-					MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
-							node.getY() * PlayState.PIXEL_TO_METER);
+					MainGame.font.setColor(e.getColor());
+					for (Node node : e.getWeg())
+						MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
+								node.getY() * PlayState.PIXEL_TO_METER);
 				}
 			}
 		}
@@ -697,19 +729,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	}
 
-	public void updatePhysics(float deltaTime) {
+	public void updatePhysics(final float deltaTime) {
 		if (pause)
 			return;
 
 		float frameTime = Math.min(deltaTime, 0.25f);
 		physicsaccumulator += frameTime;
 		while (physicsaccumulator >= TIME_STEP) {
-			Enemy.worldIsLocked = true;
-			world.step(TIME_STEP, 6, 2);
-			Enemy.worldIsLocked = false;
+			world.step(TIME_STEP * this.speedFactor, 6, 2);
 			physicsaccumulator -= TIME_STEP;
 		}
-		Array<Enemy> toremove = new Array<Enemy>();
+		final Array<Enemy> toremove = new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
 			if (enemy.isJustDied()) {
 				enemy.setJustDied(false);

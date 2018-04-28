@@ -3,11 +3,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
-import com.mygdx.game.gamestate.state.HighscoreNameState;
 import com.mygdx.game.gamestate.state.MenuState;
 
 public class MainGame extends ApplicationAdapter {
@@ -64,8 +62,6 @@ public class MainGame extends ApplicationAdapter {
 		waveFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_wave.fnt"));
 		waveFont.setUseIntegerPositions(false);
 
-		
-		
 		smallFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_small.fnt"));
 		highscoreFont = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_highscore.fnt"));
 		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));

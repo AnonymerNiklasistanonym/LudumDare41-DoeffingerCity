@@ -14,7 +14,7 @@ import com.mygdx.game.gamestate.GameStateMethods;
 import com.mygdx.game.menu.HighscoreCharacterButton;
 
 public class HighscoreNameState extends GameState {
-	
+
 	private static final String STATE_NAME = "Highscore > Name";
 
 	private final HighscoreCharacterButton[] highscoreCharacterButtons;
@@ -23,12 +23,12 @@ public class HighscoreNameState extends GameState {
 	private final String highscoreText, scoreText;
 	private final Vector2 highscoreTextPosition, scoreTextPosition;
 	private final int score;
-	
+
 	private int currentIndex = 0;
 
 	public HighscoreNameState(GameStateManager gameStateManager, final int score) {
 		super(gameStateManager, STATE_NAME);
-		
+
 		this.score = score;
 
 		shapeRenderer = new ShapeRenderer();
@@ -53,11 +53,11 @@ public class HighscoreNameState extends GameState {
 		this.scoreText = "" + score;
 		this.scoreTextPosition = GameStateMethods.calculateCenteredTextPositon(MainGame.fontUpperCaseBig, scoreText,
 				MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT / 3);
-		
+
 		final char[] name = preferencesManager.getName();
 		if (name != null && name.length == highscoreCharacterButtons.length) {
-		for (int i = 0; i < highscoreCharacterButtons.length; i++)
-			highscoreCharacterButtons[i].setNewCharacter(name[i]);
+			for (int i = 0; i < highscoreCharacterButtons.length; i++)
+				highscoreCharacterButtons[i].setNewCharacter(name[i]);
 		}
 
 	}

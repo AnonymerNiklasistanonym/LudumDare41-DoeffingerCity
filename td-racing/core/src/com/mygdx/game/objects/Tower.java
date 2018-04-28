@@ -189,6 +189,8 @@ public abstract class Tower implements Disposable {
 					towerWasAddedToTheWorld = true;
 					final BodyDef bodydef = new BodyDef();
 					bodydef.type = BodyDef.BodyType.KinematicBody;
+					while (world.isLocked()) {
+					}
 					body = world.createBody(bodydef);
 					final PolygonShape towerBaseBox = new PolygonShape();
 					towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
