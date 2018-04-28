@@ -140,9 +140,7 @@ public abstract class Enemy implements Disposable {
 
 	public void takeDamage(float amount) {
 		this.health -= amount;
-		this.wasHitTime = 1f;
-		this.hitRandomX = MathUtils.random(-this.spriteAlive.getWidth() / 4, this.spriteAlive.getWidth() / 4);
-		this.hitRandomY = MathUtils.random(-this.spriteAlive.getHeight() / 4, this.spriteAlive.getHeight() / 4);
+		this.wasHitTime = 0.15f;
 	}
 
 	public void findWay() {
@@ -351,6 +349,8 @@ public abstract class Enemy implements Disposable {
 
 		if (this.wasHitTime > 0) {
 			this.wasHitTime -= deltaTime;
+			this.hitRandomX = MathUtils.random(-this.spriteAlive.getWidth() / 4, this.spriteAlive.getWidth() / 4);
+			this.hitRandomY = MathUtils.random(-this.spriteAlive.getHeight() / 4, this.spriteAlive.getHeight() / 4);
 			this.spriteDamadge.setPosition(
 					getX() + this.spriteAlive.getWidth() / 2 - this.spriteDamadge.getWidth() / 2 + hitRandomX,
 					getY() + this.spriteAlive.getHeight() / 2 - this.spriteDamadge.getHeight() / 2 + hitRandomY);
