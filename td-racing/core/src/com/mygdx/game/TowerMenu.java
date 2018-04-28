@@ -13,16 +13,19 @@ import com.mygdx.game.objects.Tower;
 import com.mygdx.game.objects.towers.FireTower;
 import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
+import com.mygdx.game.objects.towers.SniperTower;
 
 public class TowerMenu implements Disposable {
 
 	public static Texture cannonButton;
 	public static Texture laserButton;
 	public static Texture flameButton;
+	public static Texture sniperButton;
 
 	float startx = 30;
 	float starty = 0;
-
+	
+	Vector3 mousepos;
 	Tower buildingtower;
 
 	ScoreBoard scoreboard;
@@ -35,9 +38,10 @@ public class TowerMenu implements Disposable {
 	private boolean[] towerSelected;
 
 	public TowerMenu(final World world, final ScoreBoard scoreboard) {
+		this.mousepos=new Vector3(0,0,0);
 		this.world = world;
 		this.scoreboard = scoreboard;
-		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton) };
+		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton), new Sprite(sniperButton) };
 		this.towerSelected = new boolean[sprites.length];
 		this.towerUnlocked = new boolean[sprites.length];
 
@@ -70,7 +74,8 @@ public class TowerMenu implements Disposable {
 
 	public void selectTower(int i, final Vector3 mousePos, final Array<Enemy> enemies) {
 		boolean unselect = false;
-
+		this.mousepos=mousePos;
+		this.enemies=enemies;
 		if (!towerUnlocked[i])
 			unselect = true;
 
@@ -91,21 +96,30 @@ public class TowerMenu implements Disposable {
 		}
 
 		if (towerSelected[i] && towerUnlocked[i]) {
-			switch (i) {
-			case 0:
-				buildingtower = new MgTower(mousePos.x, mousePos.y, enemies, world);
-				break;
-			case 1:
-				buildingtower = new LaserTower(mousePos.x, mousePos.y, enemies, world);
-				break;
-			case 2:
-				buildingtower = new FireTower(mousePos.x, mousePos.y, enemies, world);
-				break;
-			}
+			buildingtower=getTower(i);
 			buildingtower.activateRange(true);
 		}
 
 		updateAlpha();
+	}
+	
+	
+	public Tower getTower(int i) {
+		switch (i) {
+		case 0:
+			return new MgTower(mousepos.x, mousepos.y, enemies, world);
+			
+		case 1:
+			return new LaserTower(mousepos.x, mousepos.y, enemies, world);
+			
+		case 2:
+			return new FireTower(mousepos.x, mousepos.y, enemies, world);
+		case 3:
+			return new SniperTower(mousepos.x, mousepos.y, enemies, world);
+			
+		}
+		System.out.println("ERROR: not found correct Tower at getTower");
+		return null;
 	}
 
 	public void updateAlpha() {
@@ -128,20 +142,23 @@ public class TowerMenu implements Disposable {
 
 	public boolean canAfford(int i) {
 		int price = 0;
-		switch (i) {
-		case 0:
-			price = MgTower.COST;
-			break;
-		case 1:
-			price = LaserTower.COST;
-			break;
-		case 2:
-			price = FireTower.COST;
-			break;
-
-		default:
-			break;
-		}
+//		switch (i) {
+//		case 0:
+//			price = MgTower.COST;
+//			break;
+//		case 1:
+//			price = LaserTower.COST;
+//			break;
+//		case 2:
+//			price = FireTower.COST;
+//			break;
+//
+//		default:
+//			break;
+//		}
+		Tower bt=getTower(i);
+		price=bt.getCost();
+		world.destroyBody(bt.body);
 
 		if (scoreboard.getMoney() >= price)
 			return true;

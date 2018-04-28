@@ -45,6 +45,7 @@ import com.mygdx.game.objects.enemies.EnemySmall;
 import com.mygdx.game.objects.towers.FireTower;
 import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
+import com.mygdx.game.objects.towers.SniperTower;
 
 public class PlayState extends GameState implements CollisionCallbackInterface {
 
@@ -152,6 +153,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
 		TowerMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
+		TowerMenu.sniperButton = new Texture(Gdx.files.internal("buttons/sniperbutton.png"));
 
 		victory = createScaledSprite("fullscreens/victorycard.png");
 
@@ -160,6 +162,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
 		MgTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		
+		SniperTower.groundTower = new Texture(Gdx.files.internal("tower/tower_sniper_bottom.png"));
+		SniperTower.upperTower = new Texture(Gdx.files.internal("tower/tower_sniper_upper.png"));
+		SniperTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_sniper_firing.png"));
+		SniperTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
@@ -306,6 +313,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			towerMenu.unlockTower(0);
 			towerMenu.unlockTower(1);
 			towerMenu.unlockTower(2);
+			towerMenu.unlockTower(3);
 		}
 		currentEnemyWaves = new Array<EnemyWaveEntry>();
 		scoreBoard.reset(0);
@@ -387,6 +395,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			towerMenu.selectTower(1, mousePos, enemies);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_3))
 			towerMenu.selectTower(2, mousePos, enemies);
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_4))
+			towerMenu.selectTower(3, mousePos, enemies);
 		if (Gdx.input.justTouched() && this.buildingtower != null)
 			buildTowerIfAllowed();
 
@@ -450,10 +460,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			// TODO toggle unlock all towers
 			this.unlockAllTowers = !this.unlockAllTowers;
 			if (this.unlockAllTowers) {
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 4; i++)
 					towerMenu.unlockTower(i);
 			} else {
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 4; i++)
 					towerMenu.lockTower(i);
 				for (int i = 0; i < scoreBoard.getLevel(); i++)
 					towerMenu.unlockTower(i);
