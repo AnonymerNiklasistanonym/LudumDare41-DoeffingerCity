@@ -21,8 +21,9 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Enemy implements Disposable {
 
-	private final Sprite spriteAlive;
-	private final Sprite spriteDead;
+	protected final Sprite spriteAlive;
+	protected final Sprite spriteDead;
+	protected final Sprite spriteDamage;
 
 	private final float time;
 
@@ -32,7 +33,7 @@ public abstract class Enemy implements Disposable {
 	protected float speed = 80;
 	protected float damage;
 
-	private Body body;
+	protected Body body;
 	private MainMap map;
 	private LinkedList<Node> weg;
 	private boolean justDied = false;
@@ -40,7 +41,6 @@ public abstract class Enemy implements Disposable {
 	private boolean tot = false;
 	private float distancetonode = 50f;
 	private boolean activated;
-	private final Sprite spriteDamage;
 	private float wasHitTime;
 	private float hitRandomX;
 	private float hitRandomY;
@@ -74,6 +74,12 @@ public abstract class Enemy implements Disposable {
 
 		this.color = new Color(MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), 0.7f);
 
+		createBody(x, y, w);
+		this.map = map;
+		this.findWay();
+	}
+
+	protected void createBody(float x, float y, World w) {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
@@ -99,8 +105,6 @@ public abstract class Enemy implements Disposable {
 
 		this.body.createFixture(fdef);
 		this.body.setUserData(this);
-		this.map = map;
-		this.findWay();
 	}
 
 	public float getTime() {
