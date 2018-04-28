@@ -14,8 +14,13 @@ public class EnemyFat extends Enemy {
 	public EnemyFat(final float xPos, final float yPos, final World world, final MainMap map, final float time) {
 		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map, time);
 		this.damage = 20;
-		this.setHealth(100);
+		this.health = 100;
 		this.money = 3;
 		this.speed = 0.8f;
+	}
+
+	@Override
+	public void dispose() {
+		super.disposeMedia();
 	}
 }

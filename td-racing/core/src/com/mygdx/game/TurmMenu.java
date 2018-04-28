@@ -3,14 +3,15 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.gamestate.state.PlayState;
 import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.tower.FireTower;
-import com.mygdx.game.objects.tower.LaserTower;
-import com.mygdx.game.objects.tower.MgTower;
-import com.mygdx.game.objects.tower.Tower;
+import com.mygdx.game.objects.Tower;
+import com.mygdx.game.objects.towers.FireTower;
+import com.mygdx.game.objects.towers.LaserTower;
+import com.mygdx.game.objects.towers.MgTower;
 
 public class TurmMenu {
 
@@ -32,9 +33,8 @@ public class TurmMenu {
 	Array<Enemy> enemies;
 	private boolean[] towerSelected;
 
-	public TurmMenu(World world, Array<Enemy> enemies, ScoreBoard scoreboard) {
+	public TurmMenu(World world, ScoreBoard scoreboard) {
 		this.world = world;
-		this.enemies = enemies;
 		this.scoreboard = scoreboard;
 		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton) };
 		this.towerSelected = new boolean[sprites.length];
@@ -67,8 +67,11 @@ public class TurmMenu {
 		updateAlpha();
 	}
 
-	public void selectTower(int i) {
+	public void selectTower(int i, final Vector3 mousePos, final Array<Enemy> enemies) {
 		boolean unselect = false;
+
+		if (!towerUnlocked[i])
+			unselect = true;
 
 		if (towerSelected[i])
 			unselect = true;
@@ -80,20 +83,22 @@ public class TurmMenu {
 			if (canAfford(i))
 				towerSelected[i] = true;
 		} else {
-			world.destroyBody(buildingtower.body);
-			buildingtower = null;
+			if (buildingtower != null && buildingtower.body != null)
+				world.destroyBody(buildingtower.body);
+			if (buildingtower != null)
+				buildingtower = null;
 		}
 
 		if (towerSelected[i] && towerUnlocked[i]) {
 			switch (i) {
 			case 0:
-				buildingtower = new MgTower(10, 10, enemies, world);
+				buildingtower = new MgTower(mousePos.x, mousePos.y, enemies, world);
 				break;
 			case 1:
-				buildingtower = new LaserTower(10, 10, enemies, world);
+				buildingtower = new LaserTower(mousePos.x, mousePos.y, enemies, world);
 				break;
 			case 2:
-				buildingtower = new FireTower(10, 10, enemies, world);
+				buildingtower = new FireTower(mousePos.x, mousePos.y, enemies, world);
 				break;
 			}
 			buildingtower.activateRange(true);
@@ -124,13 +129,13 @@ public class TurmMenu {
 		int price = 0;
 		switch (i) {
 		case 0:
-			price = MgTower.costTower;
+			price = MgTower.COST;
 			break;
 		case 1:
-			price = LaserTower.costTower;
+			price = LaserTower.COST;
 			break;
 		case 2:
-			price = FireTower.costTower;
+			price = FireTower.COST;
 			break;
 
 		default:
@@ -151,11 +156,6 @@ public class TurmMenu {
 		}
 		buildingtower = null;
 		updateAlpha();
-	}
-
-	public void updateMenu(World w, Array<Enemy> enemies) {
-		this.world = w;
-		this.enemies = enemies;
 	}
 
 	public boolean contains(final float xPos, final float yPos) {

@@ -13,15 +13,15 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
 import com.mygdx.game.gamestate.state.PlayState;
 
-public abstract class Enemy extends BodyDef {
+public abstract class Enemy implements Disposable {
 
 	private final Sprite spriteAlive;
-	private final Sprite spriteDead;
-	private final Sprite spriteDamadge;
+	private final Texture textureDead;
 
 	private final float time;
 
@@ -33,13 +33,16 @@ public abstract class Enemy extends BodyDef {
 
 	private Body body;
 	private MainMap map;
-	private boolean washit = false;
 	private LinkedList<Node> weg;
 	private boolean justDied = false;
 	private boolean delete;
 	private boolean tot = false;
 	private float distancetonode = 50f;
 	private boolean activated;
+	private final Sprite spriteDamadge;
+	private float wasHitTime;
+	private float hitRandomX;
+	private float hitRandomY;
 
 	public static boolean worldIsLocked;
 
@@ -50,20 +53,16 @@ public abstract class Enemy extends BodyDef {
 				spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
 		spriteSprite.setOriginCenter();
 
-		final Sprite deadspriteSprite = new Sprite(deadsprite);
-		deadspriteSprite.setSize(deadspriteSprite.getWidth() * PlayState.PIXEL_TO_METER,
-				deadspriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
-		deadspriteSprite.setOriginCenter();
-
 		final Sprite damageSprite = new Sprite(damagesprite);
-		damageSprite.setSize(damageSprite.getWidth() * PlayState.PIXEL_TO_METER * 0.5f,
-				damageSprite.getHeight() * PlayState.PIXEL_TO_METER * 0.5f);
+		damageSprite.setSize(damagesprite.getWidth() * PlayState.PIXEL_TO_METER,
+				damagesprite.getHeight() * PlayState.PIXEL_TO_METER);
 		damageSprite.setOriginCenter();
+
+		this.textureDead = deadsprite;
 
 		this.speed = 80;
 		this.health = 10;
 		this.spriteAlive = spriteSprite;
-		this.spriteDead = deadspriteSprite;
 		this.spriteDamadge = damageSprite;
 		this.score = MathUtils.random(100);
 		this.activated = false;
@@ -130,18 +129,20 @@ public abstract class Enemy extends BodyDef {
 		// set dead
 		this.setTot(true);
 		// set position of dead sprite to the current one
-		this.spriteDead.setPosition(spriteAlive.getX(), spriteAlive.getY());
-		this.spriteDead.setRotation(MathUtils.radDeg * this.body.getAngle());
+		this.spriteAlive.setTexture(textureDead);
+		this.spriteAlive.setRotation(MathUtils.radDeg * this.body.getAngle());
+
 		// ???
+		this.wasHitTime = 0;
 		speed = 0;
 		setJustDied(true);
 	}
 
 	public void takeDamage(float amount) {
 		this.health -= amount;
-		this.washit = true;
-		this.spriteDamadge.setPosition(getX() + this.spriteAlive.getWidth() / 2 + MathUtils.random(-0.2f, 0.2f),
-				getY() + this.spriteAlive.getHeight() / 2 + MathUtils.random(-0.2f, 0.2f));
+		this.wasHitTime = 1f;
+		this.hitRandomX = MathUtils.random(-this.spriteAlive.getWidth() / 4, this.spriteAlive.getWidth() / 4);
+		this.hitRandomY = MathUtils.random(-this.spriteAlive.getHeight() / 4, this.spriteAlive.getHeight() / 4);
 	}
 
 	public void findWay() {
@@ -229,7 +230,10 @@ public abstract class Enemy extends BodyDef {
 			if (openList.indexOf(aktuellerNode) < 0)
 				System.out.println("aktueller Node ist 0");
 			// if(openList.indexOf(aktuellerNode) > 0)
-			openList.remove(openList.indexOf(aktuellerNode));
+			if (openList.indexOf(aktuellerNode) != -1)
+				openList.remove(openList.indexOf(aktuellerNode));
+			else
+				System.out.println("What the hell just happened???");
 
 			closedList.add(aktuellerNode);
 
@@ -341,14 +345,21 @@ public abstract class Enemy extends BodyDef {
 		this.body.setLinearVelocity(newSpeed);
 	}
 
-	public void update(float delta) {
+	public void update(final float deltaTime) {
 		if (this.isTot() || !this.activated)
 			return;
 
-		if (getHealth() < 0)
+		if (this.wasHitTime > 0) {
+			this.wasHitTime -= deltaTime;
+			this.spriteDamadge.setPosition(
+					getX() + this.spriteAlive.getWidth() / 2 - this.spriteDamadge.getWidth() / 2 + hitRandomX,
+					getY() + this.spriteAlive.getHeight() / 2 - this.spriteDamadge.getHeight() / 2 + hitRandomY);
+		}
+
+		if (getHealth() <= 0)
 			this.die();
 
-		if (weg.size() > 0) {
+		if (weg.size() >= 0) {
 			final float angle = (float) ((Math.atan2(weg.getLast().getX() * PlayState.PIXEL_TO_METER - getBodyX(),
 					-(weg.getLast().getY() * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
@@ -375,16 +386,10 @@ public abstract class Enemy extends BodyDef {
 		spriteAlive.setRotation(MathUtils.radDeg * this.body.getAngle());
 	}
 
-	public void draw(SpriteBatch spriteBatch) {
-		if (this.isTot())
-			spriteDead.draw(spriteBatch);
-		else {
-			spriteAlive.draw(spriteBatch);
-			if (washit) {
-				spriteDamadge.draw(spriteBatch);
-				washit = false;
-			}
-		}
+	public void draw(final SpriteBatch spriteBatch) {
+		spriteAlive.draw(spriteBatch);
+		if (!this.isTot() && this.wasHitTime > 0)
+			spriteDamadge.draw(spriteBatch);
 	}
 
 	public float getScore() {
@@ -433,5 +438,11 @@ public abstract class Enemy extends BodyDef {
 
 	public boolean isActivated() {
 		return this.activated;
+	}
+
+	public void disposeMedia() {
+		spriteAlive.getTexture().dispose();
+		textureDead.dispose();
+		spriteDamadge.getTexture().dispose();
 	}
 }

@@ -15,4 +15,8 @@ public class MenuButtonSmall extends MenuButton {
 		super(id, xPosition, yPosition, content, textureActive, textureNotActive, 0.8f);
 	}
 
+	@Override
+	public void dispose() {
+		super.disposeMedia();
+	}
 }

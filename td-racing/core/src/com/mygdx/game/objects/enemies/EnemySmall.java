@@ -19,4 +19,9 @@ public class EnemySmall extends Enemy {
 		this.money = 1;
 	}
 
+	@Override
+	public void dispose() {
+		super.disposeMedia();
+	}
+
 }

@@ -1,9 +1,10 @@
 package com.mygdx.game;
 
+import com.mygdx.game.objects.Car;
 import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.FinishLine;
-import com.mygdx.game.objects.tower.Flame;
+import com.mygdx.game.objects.Flame;
 
 public interface CollisionCallbackInterface {
 

@@ -14,8 +14,13 @@ public class EnemyBicycle extends Enemy {
 	public EnemyBicycle(final float xPos, final float yPos, final World world, final MainMap map, final float time) {
 		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map, time);
 		this.damage = 2;
-		this.setHealth(10);
+		this.health = 10;
 		this.money = 2;
 		this.speed = 5f;
+	}
+
+	@Override
+	public void dispose() {
+		super.disposeMedia();
 	}
 }

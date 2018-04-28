@@ -1,11 +1,9 @@
 package com.mygdx.game.objects;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -24,8 +22,7 @@ public abstract class Checkpoint extends BodyDef {
 		this.position.set(xPosition, yPosition);
 		this.body = world.createBody(this);
 		this.sprite = new Sprite();
-		this.sprite.setSize(CHECKPOINT_WIDTH * PlayState.PIXEL_TO_METER,
-				CHECKPOINT_WIDTH * PlayState.PIXEL_TO_METER);
+		this.sprite.setSize(CHECKPOINT_WIDTH * PlayState.PIXEL_TO_METER, CHECKPOINT_WIDTH * PlayState.PIXEL_TO_METER);
 		this.sprite.setPosition(xPosition, yPosition);
 
 		final PolygonShape circleShape = new PolygonShape();

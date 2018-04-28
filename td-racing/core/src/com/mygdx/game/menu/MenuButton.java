@@ -5,10 +5,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.gamestate.GameStateMethods;
 
-public abstract class MenuButton {
+public abstract class MenuButton implements Disposable {
 
 	private final Texture textureActive;
 	private final Texture textureNotActive;
@@ -65,6 +66,12 @@ public abstract class MenuButton {
 
 	public int getId() {
 		return this.id;
+	}
+
+	public void disposeMedia() {
+		this.button.getTexture().dispose();
+		this.textureActive.dispose();
+		this.textureNotActive.dispose();
 	}
 
 }

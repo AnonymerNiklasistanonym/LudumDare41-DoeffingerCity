@@ -111,6 +111,8 @@ public class MenuState extends GameState {
 
 	@Override
 	public void dispose() {
+		for (final MenuButton menuButton : menuButtons)
+			menuButton.dispose();
 		backgroundStars.dispose();
 		title.dispose();
 		MenuButtonBig.textureActive.dispose();

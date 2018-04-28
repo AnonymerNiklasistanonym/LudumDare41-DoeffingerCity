@@ -1,6 +1,5 @@
 package com.mygdx.game.objects.checkpoints;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.objects.Checkpoint;
 

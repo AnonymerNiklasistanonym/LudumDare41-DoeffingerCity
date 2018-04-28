@@ -1,6 +1,7 @@
-package com.mygdx.game.objects.tower;
+package com.mygdx.game.objects;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -15,10 +16,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.gamestate.state.PlayState;
-import com.mygdx.game.objects.Enemy;
 
-public abstract class Tower {
+public abstract class Tower implements Disposable {
 
 	private boolean rangeActivated = false;
 	protected float turnspeed;
@@ -50,6 +51,7 @@ public abstract class Tower {
 	boolean isSoundPlaying = false;
 	protected int cost = 10;
 	private boolean buildingModeBlocked;
+	protected Color color;
 
 	public int getCost() {
 		return this.cost;
@@ -57,7 +59,15 @@ public abstract class Tower {
 
 	public void drawRange(final ShapeRenderer shapeRenderer) {
 		if (this.rangeActivated) {
-			shapeRenderer.setColor(1, 0, 0, 0.3f);
+			shapeRenderer.setColor(this.color);
+			shapeRenderer.circle(this.spriteBody.getX() + this.spriteBody.getWidth() / 2,
+					this.spriteBody.getY() + this.spriteBody.getHeight() / 2, this.range);
+		}
+	}
+
+	public void drawRange(final ShapeRenderer shapeRenderer, final Color color) {
+		if (this.rangeActivated) {
+			shapeRenderer.setColor(color);
 			shapeRenderer.circle(this.spriteBody.getX() + this.spriteBody.getWidth() / 2,
 					this.spriteBody.getY() + this.spriteBody.getHeight() / 2, this.range);
 		}
@@ -146,8 +156,8 @@ public abstract class Tower {
 	}
 
 	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody,
-			final Texture spriteUpperBody, final Texture spriteFiring, Array<Enemy> enemies, World w, int range,
-			Sound soundShoot) {
+			final Texture spriteUpperBody, final Texture spriteFiring, final Array<Enemy> enemies, final World world,
+			final int range, final Sound soundShoot) {
 		this.soundShoot = soundShoot;
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
@@ -155,6 +165,7 @@ public abstract class Tower {
 		this.damage = 0;
 		this.range = range;
 		this.buildingModeBlocked = false;
+		this.color = new Color(1, 0, 0, 0.3f);
 
 		this.spriteBody = new Sprite(spriteBody);
 		this.spriteUpperBody = new Sprite(spriteUpperBody);
@@ -171,17 +182,26 @@ public abstract class Tower {
 		// center = new Vector2(xPosition + middleOfSpriteBody, yPosition +
 		// middleOfSpriteBody);
 
-		BodyDef bodydef = new BodyDef();
-		bodydef.type = BodyDef.BodyType.KinematicBody;
-		body = w.createBody(bodydef);
-		PolygonShape towerBaseBox = new PolygonShape();
-		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
-				spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
-		FixtureDef fdef = new FixtureDef();
-		fdef.shape = towerBaseBox;
-		fdef.isSensor = true;
-		body.createFixture(fdef);
-		body.setUserData(this);
+		boolean towerWasAddedToTheWorld = false;
+		while (!towerWasAddedToTheWorld) {
+			synchronized (world) {
+				if (!world.isLocked()) {
+					towerWasAddedToTheWorld = true;
+					final BodyDef bodydef = new BodyDef();
+					bodydef.type = BodyDef.BodyType.KinematicBody;
+					body = world.createBody(bodydef);
+					final PolygonShape towerBaseBox = new PolygonShape();
+					towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
+							spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
+					final FixtureDef fdef = new FixtureDef();
+					fdef.shape = towerBaseBox;
+					fdef.isSensor = true;
+					body.createFixture(fdef);
+					body.setUserData(this);
+				}
+
+			}
+		}
 
 		this.spriteBody.setOriginCenter();
 		this.spriteUpperBody.setOriginCenter();
@@ -281,11 +301,6 @@ public abstract class Tower {
 	public void destroyAnimation() {
 		// TODO
 		System.out.println("Destroyed");
-	}
-
-	public void dispose() {
-		spriteBody.getTexture().dispose();
-		spriteUpperBody.getTexture().dispose();
 	}
 
 	public void activateHealthBar(boolean activate) {
@@ -392,6 +407,13 @@ public abstract class Tower {
 	public boolean contains(float xPos, float yPos) {
 		return (xPos >= this.spriteBody.getX() && xPos <= this.spriteBody.getX() + this.spriteBody.getWidth())
 				&& (yPos >= this.spriteBody.getY() && yPos <= this.spriteBody.getY() + this.spriteBody.getHeight());
+	}
+
+	public void disposeMedia() {
+		this.spriteBody.getTexture().dispose();
+		this.spriteFiring.getTexture().dispose();
+		this.spriteFiring.getTexture().dispose();
+		this.soundShoot.dispose();
 	}
 
 }
