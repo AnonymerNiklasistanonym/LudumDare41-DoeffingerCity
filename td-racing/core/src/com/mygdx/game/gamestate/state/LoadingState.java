@@ -16,10 +16,12 @@ public class LoadingState extends GameState {
 	private final Vector2 loadingTextPosition;
 	private final int level;
 
+	private static final String STATE_NAME = "Loading";
+
 	private boolean changeToGame;
 
 	public LoadingState(final GameStateManager gameStateManager, final int level) {
-		super(gameStateManager);
+		super(gameStateManager, STATE_NAME);
 
 		// set font scale to the correct size and disable to use integers for scaling
 		MainGame.fontUpperCaseBig.getData().setScale(0.5f);

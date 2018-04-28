@@ -2,6 +2,7 @@ package com.mygdx.game.objects;
 
 import java.util.LinkedList;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -43,6 +44,7 @@ public abstract class Enemy implements Disposable {
 	private float wasHitTime;
 	private float hitRandomX;
 	private float hitRandomY;
+	private Color color;
 
 	public static boolean worldIsLocked;
 
@@ -67,6 +69,8 @@ public abstract class Enemy implements Disposable {
 		this.score = MathUtils.random(100);
 		this.activated = false;
 		this.time = time;
+		
+		this.color = new Color(MathUtils.random(0f, 1f),MathUtils.random(0f, 1f),MathUtils.random(0f, 1f),0.7f);
 
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
@@ -227,8 +231,10 @@ public abstract class Enemy implements Disposable {
 				System.out.println("aktueller Node ist null");
 				return tempweg;
 			}
-			if (openList.indexOf(aktuellerNode) < 0)
+			if (openList.indexOf(aktuellerNode) < 0) {
 				System.out.println("aktueller Node ist 0");
+				return tempweg;
+			}
 			// if(openList.indexOf(aktuellerNode) > 0)
 			if (openList.indexOf(aktuellerNode) != -1)
 				openList.remove(openList.indexOf(aktuellerNode));
@@ -237,7 +243,8 @@ public abstract class Enemy implements Disposable {
 
 			closedList.add(aktuellerNode);
 
-			for (Node node : aktuellerNode.getNachbarn()) {
+			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
+				final Node node = aktuellerNode.getNachbarn().get(i);
 				if (closedList.indexOf(node) == -1) {
 					node.setG(aktuellerNode.getG() + 1);
 					node.setParent(aktuellerNode);
@@ -359,7 +366,7 @@ public abstract class Enemy implements Disposable {
 		if (getHealth() <= 0)
 			this.die();
 
-		if (weg.size() >= 0) {
+		if (weg.size() > 0) {
 			final float angle = (float) ((Math.atan2(weg.getLast().getX() * PlayState.PIXEL_TO_METER - getBodyX(),
 					-(weg.getLast().getY() * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
@@ -444,5 +451,9 @@ public abstract class Enemy implements Disposable {
 		spriteAlive.getTexture().dispose();
 		textureDead.dispose();
 		spriteDamadge.getTexture().dispose();
+	}
+
+	public Color getColor() {
+		return this.color;
 	}
 }

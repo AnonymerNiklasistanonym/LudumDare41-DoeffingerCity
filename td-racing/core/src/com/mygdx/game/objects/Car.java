@@ -140,8 +140,9 @@ public class Car implements Disposable {
 		return ort;
 	}
 
-	public void hitEnemy(final Enemy e) {
+	public float hitEnemy(final Enemy e) {
 		e.takeDamage(Math.abs(getForwardVelocity().x * 4));
+		return e.health;
 	}
 
 	@Override

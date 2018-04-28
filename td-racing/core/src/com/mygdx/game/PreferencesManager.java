@@ -19,6 +19,10 @@ public class PreferencesManager {
 
 		public final String name;
 
+		public String toString() {
+			return score + " by " + name;
+		}
+
 		HighscoreEntry(final int score, final String name) {
 			this.score = score;
 			this.name = name;
@@ -30,6 +34,9 @@ public class PreferencesManager {
 	private static final String HIGHSCORE_NAME = "HIGHSCORE_NAME";
 	private static final String HIGHSCORE_SCORE = "HIGHSCORE_SCORE";
 	private static final String PREFERENCES_NAME = "My Preferences";
+	
+	private static final String LAST_NAME = "LAST_NAME";
+
 
 	private final Preferences prefs;
 
@@ -40,6 +47,16 @@ public class PreferencesManager {
 			this.prefs = null;
 		}
 	}
+	
+	public void saveName(final String name) {
+		prefs.putString(LAST_NAME, name);
+		prefs.flush();
+	}
+	
+	public char[] getName() {
+		final String lastName = prefs.getString(LAST_NAME);
+		return lastName.toCharArray();
+	}
 
 	public void checkHighscore() {
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
@@ -49,6 +66,16 @@ public class PreferencesManager {
 					prefs.putString(HIGHSCORE_NAME + i, "NOBODY");
 				if (entries[i].getScore() < 0)
 					prefs.putInteger(HIGHSCORE_SCORE + i, 0);
+			}
+			prefs.flush();
+		}
+	}
+
+	public void clearHighscore() {
+		if (Gdx.app.getType() != ApplicationType.WebGL) {
+			for (int i = 0; i < 10; i++) {
+				prefs.putString(HIGHSCORE_NAME + i, "NOBODY");
+				prefs.putInteger(HIGHSCORE_SCORE + i, 0);
 			}
 			prefs.flush();
 		}
@@ -67,9 +94,11 @@ public class PreferencesManager {
 	public HighscoreEntry[] retrieveHighscore() {
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
 			final HighscoreEntry[] entries = new HighscoreEntry[10];
-			for (int i = 0; i < entries.length; i++)
+			for (int i = 0; i < entries.length; i++) {
 				entries[i] = new HighscoreEntry(prefs.getInteger(HIGHSCORE_SCORE + i),
 						prefs.getString(HIGHSCORE_NAME + i));
+				System.out.println(entries[i].toString());
+			}
 			return entries;
 		} else {
 			return null;
@@ -105,6 +134,7 @@ public class PreferencesManager {
 	}
 
 	public void saveHighscore(String name, int score) {
+		saveName(name);
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
 			final HighscoreEntry[] entries = retrieveHighscore();
 			for (int i = 0; i < entries.length; i++) {
@@ -120,6 +150,14 @@ public class PreferencesManager {
 				}
 			}
 		}
+	}
+
+	public boolean scoreIsInTop10(final int score) {
+		for (final HighscoreEntry entry : retrieveHighscore()) {
+			if (entry.getScore() < score)
+				return true;
+		}
+		return false;
 	}
 
 }

@@ -24,6 +24,8 @@ public class GameOverState extends GameState {
 	private final static int HIGHSCORE_ID = 1;
 	private final static int ABOUT_ID = 2;
 
+	private static final String STATE_NAME = "Game Over";
+
 	private final Vector3 touchPos;
 
 	private String loadingText;
@@ -31,7 +33,7 @@ public class GameOverState extends GameState {
 	private Vector2 loadingTextPosition;
 
 	public GameOverState(GameStateManager gameStateManager) {
-		super(gameStateManager);
+		super(gameStateManager, STATE_NAME);
 
 		// set font scale to the correct size and disable to use integers for scaling
 		MainGame.fontUpperCaseBig.getData().setScale(0.5f);
@@ -91,7 +93,7 @@ public class GameOverState extends GameState {
 						gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
 						break;
 					case HIGHSCORE_ID:
-						gameStateManager.setGameState(new HighscoreState(gameStateManager));
+						gameStateManager.setGameState(new HighscoreListState(gameStateManager));
 						break;
 					case ABOUT_ID:
 						gameStateManager.setGameState(new CreditState(gameStateManager));

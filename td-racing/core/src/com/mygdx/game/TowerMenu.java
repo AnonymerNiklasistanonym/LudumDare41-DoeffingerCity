@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.gamestate.state.PlayState;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.Tower;
@@ -13,7 +14,7 @@ import com.mygdx.game.objects.towers.FireTower;
 import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
 
-public class TurmMenu {
+public class TowerMenu implements Disposable{
 
 	public static Texture cannonButton;
 	public static Texture laserButton;
@@ -33,7 +34,7 @@ public class TurmMenu {
 	Array<Enemy> enemies;
 	private boolean[] towerSelected;
 
-	public TurmMenu(World world, ScoreBoard scoreboard) {
+	public TowerMenu(final World world, final ScoreBoard scoreboard) {
 		this.world = world;
 		this.scoreboard = scoreboard;
 		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton) };
@@ -166,6 +167,12 @@ public class TurmMenu {
 		}
 		return (xPos >= startx && xPos <= startx + towerMenuWidth)
 				&& (yPos >= starty && yPos <= starty + ((sprites.length > 0) ? sprites[0].getHeight() : 0));
+	}
+
+	@Override
+	public void dispose() {
+		for (final Sprite sprite : sprites)
+			sprite.getTexture().dispose();
 	}
 
 }

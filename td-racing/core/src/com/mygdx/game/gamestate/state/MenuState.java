@@ -24,10 +24,12 @@ public class MenuState extends GameState {
 	private final static int HIGHSCORES_ID = 1;
 	private final static int ABOUT_ID = 2;
 
+	private static final String STATE_NAME = "Menu";
+
 	private final Vector3 touchPos;
 
 	public MenuState(GameStateManager gameStateManager) {
-		super(gameStateManager);
+		super(gameStateManager, STATE_NAME);
 
 		MenuButtonBig.textureActive = new Texture(Gdx.files.internal("buttons/button_menu_active.png"));
 		MenuButtonBig.textureNotActive = new Texture(Gdx.files.internal("buttons/button_menu_not_active.png"));
@@ -76,7 +78,7 @@ public class MenuState extends GameState {
 						gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
 						break;
 					case HIGHSCORES_ID:
-						gameStateManager.setGameState(new HighscoreState(gameStateManager));
+						gameStateManager.setGameState(new HighscoreListState(gameStateManager));
 						break;
 					case ABOUT_ID:
 						gameStateManager.setGameState(new CreditState(gameStateManager));

@@ -11,14 +11,14 @@ import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.menu.HighscoreButton;
 
-public class HighscoreState extends GameState {
+public class HighscoreListState extends GameState {
 
 	private HighscoreButton[] highscoreButtons;
 
-	public HighscoreState(GameStateManager gameStateManager) {
-		super(gameStateManager);
+	private static final String STATE_NAME = "Highscore > List";
 
-		System.out.println("Highscore state entered");
+	public HighscoreListState(GameStateManager gameStateManager) {
+		super(gameStateManager, STATE_NAME);
 
 		HighscoreButton.texture = new Texture(Gdx.files.internal("buttons/button_highscore.png"));
 

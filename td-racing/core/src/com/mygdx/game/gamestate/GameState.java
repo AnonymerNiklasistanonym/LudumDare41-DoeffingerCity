@@ -23,7 +23,8 @@ public abstract class GameState {
 	 * 
 	 * @param gameStateManager
 	 */
-	protected GameState(final GameStateManager gameStateManager) {
+	protected GameState(final GameStateManager gameStateManager, final String stateName) {
+		System.out.println(">> New state: " + stateName);
 		this.gameStateManager = gameStateManager;
 		this.camera = new OrthographicCamera();
 	}

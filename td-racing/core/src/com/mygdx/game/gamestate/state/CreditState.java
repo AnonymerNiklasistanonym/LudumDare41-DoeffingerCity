@@ -14,8 +14,10 @@ public class CreditState extends GameState {
 	private final String[] textContent;
 	private final Vector2[] textContentPosition;
 
+	private static final String STATE_NAME = "Credits";
+
 	public CreditState(final GameStateManager gameStateManager) {
-		super(gameStateManager);
+		super(gameStateManager, STATE_NAME);
 
 		// set font scale to the correct size and disable to use integers for scaling
 		MainGame.fontUpperCaseBig.getData().setScale(0.5f);
