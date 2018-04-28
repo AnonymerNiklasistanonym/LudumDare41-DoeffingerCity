@@ -90,7 +90,8 @@ public class TowerMenu implements Disposable {
 				towerSelected[i] = true;
 		} else {
 			if (buildingtower != null && buildingtower.body != null)
-				world.destroyBody(buildingtower.body);
+				System.out.println("Test 3");
+				//world.destroyBody(buildingtower.body);
 			if (buildingtower != null)
 				buildingtower = null;
 		}
@@ -158,7 +159,8 @@ public class TowerMenu implements Disposable {
 //		}
 		Tower bt=getTower(i);
 		price=bt.getCost();
-		world.destroyBody(bt.body);
+		// world.destroyBody(bt.body);
+		System.out.println("Test");
 
 		if (scoreboard.getMoney() >= price)
 			return true;
@@ -170,7 +172,10 @@ public class TowerMenu implements Disposable {
 		for (int i = 0; i < towerSelected.length; i++)
 			towerSelected[i] = false;
 		if (buildingtower != null) {
-			world.destroyBody(buildingtower.body);
+			System.out.println("Test2");
+			//world.destroyBody(buildingtower.body);
+			
+
 		}
 		buildingtower = null;
 		updateAlpha();

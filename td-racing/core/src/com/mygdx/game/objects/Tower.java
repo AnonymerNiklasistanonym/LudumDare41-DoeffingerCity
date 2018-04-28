@@ -182,29 +182,20 @@ public abstract class Tower implements Disposable {
 		// center = new Vector2(xPosition + middleOfSpriteBody, yPosition +
 		// middleOfSpriteBody);
 
-		boolean towerWasAddedToTheWorld = false;
-		while (!towerWasAddedToTheWorld) {
-			synchronized (world) {
-				if (!world.isLocked()) {
-					towerWasAddedToTheWorld = true;
-					final BodyDef bodydef = new BodyDef();
-					bodydef.type = BodyDef.BodyType.KinematicBody;
-					while (world.isLocked()) {
-					}
-					body = world.createBody(bodydef);
-					final PolygonShape towerBaseBox = new PolygonShape();
-					towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
-							spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
-					final FixtureDef fdef = new FixtureDef();
-					fdef.shape = towerBaseBox;
-					fdef.isSensor = true;
-					body.createFixture(fdef);
-					body.setUserData(this);
-				}
-
-			}
-		}
-
+		while(world.isLocked()) {}
+		final BodyDef bodydef = new BodyDef();
+		bodydef.type = BodyDef.BodyType.KinematicBody;
+		bodydef.position.set(xPosition, yPosition);
+		while (world.isLocked()) {}
+		body = world.createBody(bodydef);
+		final PolygonShape towerBaseBox = new PolygonShape();
+		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
+				spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
+		final FixtureDef fdef = new FixtureDef();
+		fdef.shape = towerBaseBox;
+		fdef.isSensor = true;
+		body.createFixture(fdef);
+		body.setUserData(this);
 		this.spriteBody.setOriginCenter();
 		this.spriteUpperBody.setOriginCenter();
 		this.spriteFiring.setOriginCenter();
