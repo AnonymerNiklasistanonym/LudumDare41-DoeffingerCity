@@ -134,7 +134,7 @@ public abstract class Enemy implements Disposable {
 		this.setTot(true);
 		// set position of dead sprite to the current one
 		spriteDead.setPosition(spriteAlive.getX(), spriteAlive.getY());
-		spriteDead.setRotation(MathUtils.radDeg * this.body.getAngle());
+		spriteDead.setRotation(MathUtils.random(360));
 		// ???
 		this.wasHitTime = 0;
 		speed = 0;
