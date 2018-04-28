@@ -66,7 +66,7 @@ public abstract class Enemy implements Disposable {
 		this.health = 10;
 		this.spriteAlive = spriteSprite;
 		this.spriteDamadge = damageSprite;
-		this.score = MathUtils.random(100);
+		this.score = 1000000;
 		this.activated = false;
 		this.time = time;
 
