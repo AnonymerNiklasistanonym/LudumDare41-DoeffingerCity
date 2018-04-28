@@ -34,7 +34,7 @@ public class ScoreBoard {
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 
 		if (this.debug) {
-			MainGame.fontOutline.setColor(1, 0, 0, 1f);
+			MainGame.fontOutline.setColor(1, 0, 0, 1);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Small Enemy: F", 0.2f, 32);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Fat Enemy: G", 0.2f, 31);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Bycicle Enemy: H", 0.2f, 30);
@@ -56,7 +56,7 @@ public class ScoreBoard {
 
 			MainGame.fontOutline.draw(spriteBatch, "Unlock all towers: T", 0.2f, 13);
 
-			MainGame.font.setColor(1, 1, 1, 0.5f);
+			MainGame.font.setColor(1, 1, 1, 1);
 		}
 
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
