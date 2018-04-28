@@ -22,7 +22,7 @@ import com.mygdx.game.gamestate.state.PlayState;
 public abstract class Enemy implements Disposable {
 
 	private final Sprite spriteAlive;
-	private final Texture textureDead;
+	private final Sprite spriteDead;
 
 	private final float time;
 
@@ -40,7 +40,7 @@ public abstract class Enemy implements Disposable {
 	private boolean tot = false;
 	private float distancetonode = 50f;
 	private boolean activated;
-	private final Sprite spriteDamadge;
+	private final Sprite spriteDamage;
 	private float wasHitTime;
 	private float hitRandomX;
 	private float hitRandomY;
@@ -60,12 +60,14 @@ public abstract class Enemy implements Disposable {
 				damagesprite.getHeight() * PlayState.PIXEL_TO_METER);
 		damageSprite.setOriginCenter();
 
-		this.textureDead = deadsprite;
-
+		this.spriteDead = new Sprite(deadsprite);
+		spriteDead.setSize(spriteDead.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteDead.getHeight() * PlayState.PIXEL_TO_METER);
+		spriteDead.setOriginCenter();
 		this.speed = 80;
 		this.health = 10;
 		this.spriteAlive = spriteSprite;
-		this.spriteDamadge = damageSprite;
+		this.spriteDamage = damageSprite;
 		this.score = 1000000;
 		this.activated = false;
 		this.time = time;
@@ -131,9 +133,8 @@ public abstract class Enemy implements Disposable {
 		// set dead
 		this.setTot(true);
 		// set position of dead sprite to the current one
-		this.spriteAlive.setTexture(textureDead);
-		this.spriteAlive.setRotation(MathUtils.radDeg * this.body.getAngle());
-
+		spriteDead.setPosition(spriteAlive.getX(), spriteAlive.getY());
+		spriteDead.setRotation(MathUtils.radDeg * this.body.getAngle());
 		// ???
 		this.wasHitTime = 0;
 		speed = 0;
@@ -356,9 +357,9 @@ public abstract class Enemy implements Disposable {
 			this.wasHitTime -= deltaTime;
 			this.hitRandomX = MathUtils.random(-this.spriteAlive.getWidth() / 4, this.spriteAlive.getWidth() / 4);
 			this.hitRandomY = MathUtils.random(-this.spriteAlive.getHeight() / 4, this.spriteAlive.getHeight() / 4);
-			this.spriteDamadge.setPosition(
-					getX() + this.spriteAlive.getWidth() / 2 - this.spriteDamadge.getWidth() / 2 + hitRandomX,
-					getY() + this.spriteAlive.getHeight() / 2 - this.spriteDamadge.getHeight() / 2 + hitRandomY);
+			this.spriteDamage.setPosition(
+					getX() + this.spriteAlive.getWidth() / 2 - this.spriteDamage.getWidth() / 2 + hitRandomX,
+					getY() + this.spriteAlive.getHeight() / 2 - this.spriteDamage.getHeight() / 2 + hitRandomY);
 		}
 
 		if (getHealth() <= 0)
@@ -392,9 +393,12 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		spriteAlive.draw(spriteBatch);
+		if (this.isTot())
+			spriteDead.draw(spriteBatch);
+		else
+			spriteAlive.draw(spriteBatch);
 		if (!this.isTot() && this.wasHitTime > 0)
-			spriteDamadge.draw(spriteBatch);
+			spriteDamage.draw(spriteBatch);
 	}
 
 	public float getScore() {
@@ -447,8 +451,8 @@ public abstract class Enemy implements Disposable {
 
 	public void disposeMedia() {
 		spriteAlive.getTexture().dispose();
-		textureDead.dispose();
-		spriteDamadge.getTexture().dispose();
+		spriteDead.getTexture().dispose();
+		spriteDamage.getTexture().dispose();
 	}
 
 	public Color getColor() {
