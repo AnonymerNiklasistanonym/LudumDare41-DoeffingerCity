@@ -90,10 +90,8 @@ public class TowerMenu implements Disposable {
 			if (canAfford(i))
 				towerSelected[i] = true;
 		} else {
-			if (buildingtower != null && buildingtower.body != null) {
-				System.out.println("Test 3");
+			if (buildingtower != null && buildingtower.body != null)
 				world.destroyBody(buildingtower.body);
-			}
 			if (buildingtower != null)
 				buildingtower = null;
 		}

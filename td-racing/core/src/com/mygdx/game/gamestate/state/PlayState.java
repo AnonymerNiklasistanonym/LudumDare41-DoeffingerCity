@@ -577,10 +577,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		this.map.draw(spriteBatch);
 		// draw finish line
 		this.finishline.draw(spriteBatch);
-		// draw checkpoints
-		if (debugBox2D)
-			for (final Checkpoint checkpoint : checkpoints)
-				checkpoint.draw(spriteBatch);
 
 		spriteBatch.end();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -1036,7 +1032,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			if (!e.isTot())
 				return false;
 		}
-		System.out.println("All enemies are dead");
 		return true;
 	}
 

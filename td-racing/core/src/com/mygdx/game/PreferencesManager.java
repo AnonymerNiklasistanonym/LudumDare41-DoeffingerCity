@@ -96,7 +96,6 @@ public class PreferencesManager {
 			for (int i = 0; i < entries.length; i++) {
 				entries[i] = new HighscoreEntry(prefs.getInteger(HIGHSCORE_SCORE + i),
 						prefs.getString(HIGHSCORE_NAME + i));
-				System.out.println(entries[i].toString());
 			}
 			return entries;
 		} else {
