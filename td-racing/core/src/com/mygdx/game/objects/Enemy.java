@@ -86,11 +86,7 @@ public abstract class Enemy implements Disposable {
 		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
 
-		while (w.isLocked()) {
-		}
 		this.body = w.createBody(bodydef);
-		while (w.isLocked()) {
-		}
 		this.body.setActive(false);
 
 		final CircleShape enemyCircle = new CircleShape();

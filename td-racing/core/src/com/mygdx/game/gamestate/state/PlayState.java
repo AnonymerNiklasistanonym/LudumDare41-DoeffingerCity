@@ -237,6 +237,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		System.out.println("Load Level #" + levelNumber);
 		// set/save level number
 		scoreBoard.setLevel(levelNumber);
+		
+		if (levelNumber > this.level.length) {
+			GameVictory();
+			return;
+		}
 
 		// decrement level number because everything needs to be inconsistent
 		levelNumber = levelNumber - 1;
@@ -322,6 +327,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	@Override
 	protected void handleInput() {
 		GameStateMethods.toggleFullScreen(Keys.F11);
+		
+		if (wongame && (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.justTouched()))
+			playerIsDeadCallback();
 
 		if (Gdx.input.isKeyJustPressed(Keys.F3)) {
 			for (final Enemy e : enemies)
@@ -393,14 +401,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
-			if (!pause) {
-				pause = true;
-				for (final Enemy e : enemies) {
-					if (!e.isActivated())
-						e.activateEnemy();
-					e.takeDamage(e.getHealth());
-				}
-				pause = false;
+			for (final Enemy e : enemies) {
+				if (!e.isActivated())
+					e.activateEnemy();
+				e.takeDamage(e.getHealth());
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
@@ -414,9 +418,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0)) {
 			tutorialstate++;
 			System.out.println("Cheated tutorial to " + tutorialstate);
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
-			// TODO next wave | Kill current enemies and load new wave
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.T)) {

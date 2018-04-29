@@ -46,7 +46,7 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Debug Distance: B", 0.2f, 24);
 
 			MainGame.fontOutline.draw(spriteBatch, "Go to the next level: 5", 0.2f, 22);
-			MainGame.fontOutline.draw(spriteBatch, "Go to the next wave: 6", 0.2f, 21);
+			MainGame.fontOutline.draw(spriteBatch, "Go to the next wave: 9", 0.2f, 21);
 			MainGame.fontOutline.draw(spriteBatch, "Get Money: 7", 0.2f, 20);
 			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 19);
 			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies: 9", 0.2f, 18);
