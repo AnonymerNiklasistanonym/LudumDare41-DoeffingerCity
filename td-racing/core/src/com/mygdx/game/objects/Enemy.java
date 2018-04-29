@@ -325,7 +325,8 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		sprite.draw(spriteBatch);
+		if (activated)
+			sprite.draw(spriteBatch);
 		if (!this.isTot() && this.wasHitTime > 0)
 			spriteDamage.draw(spriteBatch);
 	}

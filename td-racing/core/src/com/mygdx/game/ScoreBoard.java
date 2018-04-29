@@ -38,18 +38,18 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Small Enemy: F", 0.2f, 32);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Fat Enemy: G", 0.2f, 31);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Bycicle Enemy: H", 0.2f, 30);
-			MainGame.fontOutline.draw(spriteBatch, "Spawn Lincoln Enemy: I", 0.2f, 29);
+			MainGame.fontOutline.draw(spriteBatch, "Spawn Spider Enemy: J", 0.2f, 29);
+			MainGame.fontOutline.draw(spriteBatch, "Spawn Lincoln Enemy: K", 0.2f, 28);
 
-			MainGame.fontOutline.draw(spriteBatch, "Debug Box2D: X", 0.2f, 27);
-			MainGame.fontOutline.draw(spriteBatch, "Debug Collision: C", 0.2f, 26);
-			MainGame.fontOutline.draw(spriteBatch, "Debug Way: V", 0.2f, 25);
-			MainGame.fontOutline.draw(spriteBatch, "Debug Distance: B", 0.2f, 24);
+			MainGame.fontOutline.draw(spriteBatch, "Debug Box2D: X", 0.2f, 26);
+			MainGame.fontOutline.draw(spriteBatch, "Debug Collision: C", 0.2f, 25);
+			MainGame.fontOutline.draw(spriteBatch, "Debug Way: V", 0.2f, 24);
+			MainGame.fontOutline.draw(spriteBatch, "Debug Distance: B", 0.2f, 23);
 
-			MainGame.fontOutline.draw(spriteBatch, "Go to the next level: 5", 0.2f, 22);
-			MainGame.fontOutline.draw(spriteBatch, "Go to the next wave: 9", 0.2f, 21);
-			MainGame.fontOutline.draw(spriteBatch, "Get Money: 7", 0.2f, 20);
-			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 19);
-			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies: 9", 0.2f, 18);
+			MainGame.fontOutline.draw(spriteBatch, "Go to the next level: 5", 0.2f, 21);
+			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies/Next wave: 9", 0.2f, 20);
+			MainGame.fontOutline.draw(spriteBatch, "Get Money: 7", 0.2f, 19);
+			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 18);
 			MainGame.fontOutline.draw(spriteBatch, "Advance Tutorial: 0", 0.2f, 17);
 
 			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: Right arrow", 0.2f, 15);

@@ -401,8 +401,10 @@ public class PlayState extends GameState
 			enemies.add(new EnemyFat(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.H))
 			enemies.add(new EnemyBicycle(new Vector2(220, 20), world, map, 0));
-		if (Gdx.input.isKeyJustPressed(Keys.I))
+		if (Gdx.input.isKeyJustPressed(Keys.J))
 			enemies.add(new EnemyLincoln(new Vector2(220, 20), world, map, 0));
+		if (Gdx.input.isKeyJustPressed(Keys.K))
+			enemies.add(new EnemySpider(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.X))
 			debugBox2D = !debugBox2D;
 		if (Gdx.input.isKeyJustPressed(Keys.C))
