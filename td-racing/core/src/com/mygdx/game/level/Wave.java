@@ -37,75 +37,32 @@ public class Wave {
 
 		final Array<Enemy> allEnemies = new Array<Enemy>();
 
-		final Thread[][] threads = new Thread[zombieWaves.size][4];
-
-		for (int i = 0; i < zombieWaves.size; i++) {
-
-			final int wave = i;
-
-			threads[wave][0] = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					int counter = 0;
-					for (int j = 0; j < zombieWaves.get(wave).getBycicleZombieNumber(); j++) {
-						allEnemies.add(new EnemyBicycle(entryPosition.x, entryPosition.y, world, map,
-								currentTime + zombieWaves.get(wave).getEntryTime()
-										+ counter++ * zombieWaves.get(wave).getBycicleTimeDelta()));
-					}
-				}
-			});
-
-			threads[wave][1] = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					int counter = 0;
-					for (int j = 0; j < zombieWaves.get(wave).getFatZombieNumber(); j++) {
-						allEnemies.add(new EnemyFat(entryPosition.x, entryPosition.y, world, map,
-								currentTime + zombieWaves.get(wave).getEntryTime()
-										+ counter++ * zombieWaves.get(wave).getFatTimeDelta()));
-					}
-				}
-			});
-			threads[wave][2] = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					int counter = 0;
-					for (int j = 0; j < zombieWaves.get(wave).getSmallZombieNumber(); j++) {
-						allEnemies.add(new EnemySmall(entryPosition.x, entryPosition.y, world, map,
-								currentTime + zombieWaves.get(wave).getEntryTime()
-										+ counter++ * zombieWaves.get(wave).getSmallTimeDelta()));
-					}
-				}
-			});
-			threads[wave][3] = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					int counter = 0;
-
-					for (int j = 0; j < zombieWaves.get(wave).getLincolnZombieNumber(); j++) {
-						allEnemies.add(new EnemyLincoln(entryPosition.x, entryPosition.y, world, map,
-								currentTime + zombieWaves.get(wave).getEntryTime()
-										+ counter++ * zombieWaves.get(wave).getLincolnTimeDelta()));
-					}
-				}
-			});
-
-		}
-		for (int i = 0; i < threads.length; i++) {
-			for (int j = 0; j < threads[i].length; j++) {
-				threads[i][j].start();
+		for (int wave = 0; wave < zombieWaves.size; wave++) {
+			int counter = 0;
+			for (int j = 0; j < zombieWaves.get(wave).getBycicleZombieNumber(); j++) {
+				allEnemies.add(new EnemyBicycle(entryPosition.x, entryPosition.y, world, map,
+						currentTime + zombieWaves.get(wave).getEntryTime()
+								+ counter++ * zombieWaves.get(wave).getBycicleTimeDelta()));
 			}
-		}
-		try {
-			for (int i = 0; i < threads.length; i++) {
-				for (int j = 0; j < threads[i].length; j++) {
-					threads[i][j].join();
-				}
+
+			for (int j = 0; j < zombieWaves.get(wave).getFatZombieNumber(); j++) {
+				allEnemies.add(new EnemyFat(entryPosition.x, entryPosition.y, world, map, currentTime
+						+ zombieWaves.get(wave).getEntryTime() + counter++ * zombieWaves.get(wave).getFatTimeDelta()));
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+
+			for (int j = 0; j < zombieWaves.get(wave).getSmallZombieNumber(); j++) {
+				allEnemies.add(new EnemySmall(entryPosition.x, entryPosition.y, world, map,
+						currentTime + zombieWaves.get(wave).getEntryTime()
+								+ counter++ * zombieWaves.get(wave).getSmallTimeDelta()));
+			}
+
+			for (int j = 0; j < zombieWaves.get(wave).getLincolnZombieNumber(); j++) {
+				allEnemies.add(new EnemyLincoln(entryPosition.x, entryPosition.y, world, map,
+						currentTime + zombieWaves.get(wave).getEntryTime()
+								+ counter++ * zombieWaves.get(wave).getLincolnTimeDelta()));
+			}
+
 		}
 
-		return allEnemies;
-	}
-}
+	return allEnemies;
+}}
