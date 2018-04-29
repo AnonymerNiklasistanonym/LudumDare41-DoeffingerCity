@@ -1,5 +1,7 @@
 package com.mygdx.game.gamestate.state;
 
+import javax.sql.rowset.spi.TransactionalWriter;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.CollisionCallbackInterface;
@@ -58,6 +61,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Car car;
 	private FinishLine finishline;
 
+	private float tutorialtimer = 0;
+
 	private final Array<Enemy> enemies;
 	private final Array<Tower> towers;
 	private final PreferencesManager preferencesManager;
@@ -97,12 +102,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	boolean infiniteenemies = false;
 	boolean deploy = false;
 	boolean unlockAllTowers = false;
+	int tutorialstate = 0;
 
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
 
-	private float timeforwavetext = 3f;
-	private String wavetext = "";
+	private float timeforwavetext;
+	private String wavetext;
 	private boolean threadActive = false;
 
 	private final ShapeRenderer shapeRenderer;
@@ -128,11 +134,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean pause = false;
 	private int speedFactor;
 	private final Level[] level;
+	private Vector3 mousePos;
+	private Vector2 trailerpos;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
 		super(gameStateManager, STATE_NAME);
 
 		this.level = LevelHandler.loadLevels();
+
 		fpscounter = new FPSCounter();
 		MainGame.font70.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this, !deploy);
@@ -140,6 +149,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		preferencesManager = new PreferencesManager();
 		preferencesManager.checkHighscore();
+
+		trailerpos = new Vector2(0, 0);
 
 		// import textures
 		smaincar = createScaledSprite("cars/car_standard.png");
@@ -263,6 +274,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				this.level[levelNumber].getFinishLinePosition().y);
 		this.map = new MainMap(this.level[levelNumber].getMapName(), this.world, this.finishline.getBody());
 		this.map.setSpawn(this.level[levelNumber].getSpawnPoint());
+		trailerpos.set(map.zielpos.x, map.zielpos.y);
 		this.pitStop.setPosition(this.level[levelNumber].getPitStopPosition().x * PIXEL_TO_METER,
 				this.level[levelNumber].getPitStopPosition().y * PIXEL_TO_METER);
 		for (int j = 0; j < this.level[levelNumber].getCheckPoints().length; j++)
@@ -405,6 +417,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			scoreBoard.setLevel(scoreBoard.getLevel() + 1);
 			loadLevel(scoreBoard.getLevel());
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_0)) {
+
+			tutorialstate++;
+			System.out.println("Cheated tutorial to " + tutorialstate);
+		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
 			// TODO next wave
 		}
@@ -426,6 +443,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.R)) {
 			scoreBoard.addScore(1000);
+		}
+
+		if (Gdx.input.isKeyJustPressed(Keys.F8)) {
+			scoreBoard.toggleDebugDraw();
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
@@ -467,7 +488,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			this.buildingtower.setBlockBuildingMode(b);
 	}
 
-	private Vector3 mousePos;
+
 
 	@Override
 	protected void update(float deltaTime) {
@@ -567,11 +588,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (debugBox2D)
 			for (final Checkpoint checkpoint : checkpoints)
 				checkpoint.draw(spriteBatch);
-		// draw tower range
+
 		spriteBatch.end();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.begin(ShapeType.Filled);
+
+		// drawTowerRange
 		for (final Tower tower : towers)
 			tower.drawRange(shapeRenderer);
 		if (buildingtower != null)
@@ -603,24 +626,44 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// draw pitstop
 		pitStop.draw(spriteBatch);
 
-		if (debugCollision) {
-			final Node[][] test = this.map.getNodesList();
-			MainGame.font.getData().setScale(0.05f);
-			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
-				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
-					if (test[i][j].getNoUse()) {
-						MainGame.font.setColor(0, 0, 1, 0.5f);
-						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
-								j * PlayState.PIXEL_TO_METER);
-					} else {
-						MainGame.font.setColor(1, 0, 0, 0.5f);
-						MainGame.font.draw(spriteBatch, "I", i * PlayState.PIXEL_TO_METER,
-								j * PlayState.PIXEL_TO_METER);
-					}
+		renderDebugCollision(spriteBatch);
+		renderDebugEntfernung(spriteBatch);
+		renderDebugWay(spriteBatch);
+
+		towerMenu.draw(spriteBatch);
+		scoreBoard.draw(spriteBatch);
+
+		if (deploy == false) {
+			String sfps = "FPS: " + fpscounter.getFrames();
+			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
+		}
+
+		// if (timeforwavetext > 0)
+		// MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
+		// TODO: Wave Text
+		renderTutorial(spriteBatch);
+		spriteBatch.end();
+
+		if (debugBox2D)
+			debugRender.render(world, camera.combined);
+
+	}
+
+	private void renderDebugWay(SpriteBatch spriteBatch) {
+		if (debugWay) {
+			MainGame.font.getData().setScale(0.06f);
+			for (final Enemy e : enemies) {
+				if (e.isActivated() && !e.isTot()) {
+					MainGame.font.setColor(e.getColor());
+					for (Node node : e.getWeg())
+						MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
+								node.getY() * PlayState.PIXEL_TO_METER);
 				}
 			}
 		}
+	}
 
+	private void renderDebugEntfernung(SpriteBatch spriteBatch) {
 		if (debugEntfernung) {
 			final Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.02f);
@@ -654,36 +697,127 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				}
 			}
 		}
+	}
 
-		if (debugWay) {
-			MainGame.font.getData().setScale(0.06f);
-			for (final Enemy e : enemies) {
-				if (e.isActivated() && !e.isTot()) {
-					MainGame.font.setColor(e.getColor());
-					for (Node node : e.getWeg())
-						MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
-								node.getY() * PlayState.PIXEL_TO_METER);
+	private void renderDebugCollision(SpriteBatch spriteBatch) {
+		if (debugCollision) {
+			final Node[][] test = this.map.getNodesList();
+			MainGame.font.getData().setScale(0.05f);
+			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
+				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
+					if (test[i][j].getNoUse()) {
+						MainGame.font.setColor(0, 0, 1, 0.5f);
+						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
+								j * PlayState.PIXEL_TO_METER);
+					} else {
+						MainGame.font.setColor(1, 0, 0, 0.5f);
+						MainGame.font.draw(spriteBatch, "I", i * PlayState.PIXEL_TO_METER,
+								j * PlayState.PIXEL_TO_METER);
+					}
 				}
 			}
 		}
+	}
 
-		towerMenu.draw(spriteBatch);
+	private void renderTutorial(SpriteBatch spriteBatch) {
+		// Draws the Tutorial
+		// -1: Tutorial disabled/finished
+		// 0: Learn how to drive the car
+		// 1: Finish laps to earn money
+		// 2: Keep finishing laps until enough money for towers
+		// 3: Select a tower
+		// 4: Build a tower
+		// 5: Learn what to protect
 
-		scoreBoard.draw(spriteBatch);
+		// First check appropriate stage
+		switch (tutorialstate) {
+		case -1:
 
-		if (deploy == false) {
-			String sfps = "FPS: " + fpscounter.getFrames();
-			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
+			break;
+		case 0:
+			if (checkPointsCleared() > 1) {
+				tutorialstate++;
+				System.out.println("Tutorial advanced to Stage " + tutorialstate);
+			}
+			break;
+		case 1:
+			// Checked in lineFinished();
+			break;
+		case 2:
+			if (scoreBoard.getMoney() > 100) {
+				tutorialstate++;
+				System.out.println("Tutorial advanced to Stage " + tutorialstate);
+			}
+
+			break;
+		case 3:
+			if (buildingtower != null) {
+				tutorialstate++;
+				System.out.println("Tutorial advanced to Stage " + tutorialstate);
+			}
+			break;
+		case 4:
+			if (towers.size > 0) {
+				tutorialstate++;
+				tutorialtimer = 60f;
+				System.out.println("Tutorial advanced to Stage " + tutorialstate);
+			}
+			break;
+		case 5:
+			if (tutorialtimer > 0) {
+				tutorialtimer = tutorialtimer - Gdx.graphics.getDeltaTime();
+			} else {
+				tutorialstate++;
+				System.out.println("Tutorial advanced to Stage " + tutorialstate);
+			}
+			break;
+		case 6:
+			tutorialstate = -1;
+			break;
+
+		default:
+			break;
 		}
 
-		if (timeforwavetext > 0)
-			MainGame.font70.draw(spriteBatch, wavetext, 20, 25);
+		// Then write the text
+		switch (tutorialstate) {
+		case -1:
+			break;
+		case 0:
+			MainGame.fontOutline.draw(spriteBatch, "USE -WASD- TO DRIVE YOUR CAR", car.getX() - 6, car.getY() - 1);
+			break;
+		case 1:
+			MainGame.fontOutline.draw(spriteBatch, "FINISH LAPS TO EARN MONEY!", finishline.getX() - 6,
+					finishline.getY() + 4.7f);
+			break;
+		case 2:
+			MainGame.fontOutline.draw(spriteBatch, "GO FAST TO EARN BONUS CASH!", finishline.getX() - 6,
+					finishline.getY() + 4.7f);
+			break;
+		case 3:
+			MainGame.fontOutline.draw(spriteBatch, "PRESS 1 OR 2 TO SELECT TOWER", towerMenu.startx - 6.5f,
+					towerMenu.starty + 5);
+			break;
+		case 4:
+			MainGame.fontOutline.draw(spriteBatch, "LEFT CLICK TO BUILD", mousePos.x - 5.5f, mousePos.y - 1);
+			break;
+		case 5:
+			MainGame.fontOutline.draw(spriteBatch, "PROTECT YOUR TRAILER FROM THE ZOMBIES!", trailerpos.x - 10.5f,
+					trailerpos.y - 2);
+			break;
+		default:
+			break;
+		}
 
-		spriteBatch.end();
+	}
 
-		if (debugBox2D)
-			debugRender.render(world, camera.combined);
-
+	public int checkPointsCleared() {
+		int i = 0;
+		for (Checkpoint c : checkpoints) {
+			if (c.isActivated())
+				i++;
+		}
+		return i;
 	}
 
 	public void updatePhysics(final float deltaTime) {
@@ -799,10 +933,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			// add fast bonus and money per lap to the purse
 			final int fastBonus = (moneyPerLap - (int) scoreBoard.getCurrentTime() * 2);
 			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
+			if (soundon)
+				money.play();
+			if (tutorialstate == 1) {
+				tutorialstate++;
+				System.out.println("Tutorial advanced to Stage " + tutorialstate);
+			}
 		}
 		// play cash sound if sound activated
-		if (soundon)
-			money.play();
+
 	}
 
 	@Override

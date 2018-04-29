@@ -304,10 +304,6 @@ public abstract class Tower implements Disposable {
 		healthBar = activate;
 	}
 
-	private void drawHealthBar() {
-		// TODO
-	}
-
 	public void takeDamage(float amount) {
 		damage += amount;
 		if (damage >= maxHealth) {

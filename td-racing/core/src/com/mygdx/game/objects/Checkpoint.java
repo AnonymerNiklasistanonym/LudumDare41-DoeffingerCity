@@ -37,14 +37,6 @@ public abstract class Checkpoint extends BodyDef {
 	public void draw(final SpriteBatch spriteBatch) {
 	}
 
-	private float getX() {
-		return this.body.getPosition().x - this.sprite.getWidth() / 2;
-	}
-
-	private float getY() {
-		return this.body.getPosition().y - this.sprite.getWidth() / 2;
-	}
-
 	public boolean isActivated() {
 		return activated;
 	}
