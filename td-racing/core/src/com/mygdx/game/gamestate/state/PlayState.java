@@ -46,6 +46,7 @@ import com.mygdx.game.objects.enemies.EnemyBicycle;
 import com.mygdx.game.objects.enemies.EnemyFat;
 import com.mygdx.game.objects.enemies.EnemyLincoln;
 import com.mygdx.game.objects.enemies.EnemySmall;
+import com.mygdx.game.objects.enemies.EnemySpider;
 import com.mygdx.game.objects.towers.FireTower;
 import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
@@ -55,7 +56,7 @@ public class PlayState extends GameState
 		implements CollisionCallbackInterface, ScoreBoardCallbackInterface, EnemyCallbackInterface {
 
 	public static boolean soundon = false;
-	private static ScoreBoard scoreBoard;
+	private ScoreBoard scoreBoard;
 
 	private CollisionListener collis;
 	private Sprite smaincar;
@@ -184,6 +185,10 @@ public class PlayState extends GameState
 		EnemyFat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
 		EnemyFat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
 		EnemyFat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
+		
+		EnemySpider.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_spider.png"));
+		EnemySpider.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_spider_dead.png"));
+		EnemySpider.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood_green.png"));
 
 		EnemyBicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
 		EnemyBicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
@@ -269,7 +274,7 @@ public class PlayState extends GameState
 			if (this.level[levelNumber].getTowersUnlocked()[i])
 				this.towerMenu.unlockTower(i);
 			else
-				this.towerMenu.lockTower(i);
+				this.towerMenu.unlockTower(i, false);
 		}
 		this.finishline = new FinishLine(this.world, sfinishline, this.level[levelNumber].getFinishLinePosition().x,
 				this.level[levelNumber].getFinishLinePosition().y);
@@ -391,13 +396,13 @@ public class PlayState extends GameState
 
 	private void debugInputs() {
 		if (Gdx.input.isKeyJustPressed(Keys.F))
-			enemies.add(new EnemySmall(220, 20, world, map, 0));
+			enemies.add(new EnemySmall(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.G))
-			enemies.add(new EnemyFat(220, 20, world, map, 0));
+			enemies.add(new EnemyFat(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.H))
-			enemies.add(new EnemyBicycle(220, 20, world, map, 0));
+			enemies.add(new EnemyBicycle(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.I))
-			enemies.add(new EnemyLincoln(220, 20, world, map, 0));
+			enemies.add(new EnemyLincoln(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.X))
 			debugBox2D = !debugBox2D;
 		if (Gdx.input.isKeyJustPressed(Keys.C))
@@ -437,7 +442,7 @@ public class PlayState extends GameState
 					if (this.level[scoreBoard.getLevel() - 1].getTowersUnlocked()[i])
 						this.towerMenu.unlockTower(i);
 					else
-						this.towerMenu.lockTower(i);
+						this.towerMenu.unlockTower(i, false);
 				}
 			}
 		}
@@ -536,21 +541,21 @@ public class PlayState extends GameState
 
 		if (infiniteenemies) {
 			if (MathUtils.random(1000) > 950) {
-				final Enemy e = new EnemySmall(220, 20, world, map, 0);
+				final Enemy e = new EnemySmall(new Vector2(220, 20), world, map, 0);
 				enemies.add(e);
 			}
 			if (MathUtils.random(1000) > 990) {
-				final Enemy e = new EnemyBicycle(220, 20, world, map, 0);
+				final Enemy e = new EnemyBicycle(new Vector2(220, 20), world, map, 0);
 				enemies.add(e);
 			}
 			if (MathUtils.random(1000) > 995) {
-				final Enemy e = new EnemyFat(220, 20, world, map, 0);
+				final Enemy e = new EnemyFat(new Vector2(220, 20), world, map, 0);
 				enemies.add(e);
 			}
 		}
 
 		timeforwavetext -= deltaTime;
-		towerMenu.updateAlpha();
+		towerMenu.update();
 		camera.update();
 
 		fpscounter.update(deltaTime);
@@ -641,8 +646,8 @@ public class PlayState extends GameState
 				if (e.isActivated() && !e.isTot()) {
 					MainGame.font.setColor(e.getColor());
 					for (Node node : e.getWeg())
-						MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
-								node.getY() * PlayState.PIXEL_TO_METER);
+						MainGame.font.draw(spriteBatch, "x", node.getPosition().x * PlayState.PIXEL_TO_METER,
+								node.getPosition().y * PlayState.PIXEL_TO_METER);
 				}
 			}
 		}
@@ -778,8 +783,8 @@ public class PlayState extends GameState
 					finishline.getY() + 4.7f);
 			break;
 		case 3:
-			MainGame.fontOutline.draw(spriteBatch, "PRESS 1 OR 2 TO SELECT TOWER", towerMenu.startx - 6.5f,
-					towerMenu.starty + 5);
+			MainGame.fontOutline.draw(spriteBatch, "PRESS 1 OR 2 TO SELECT TOWER", towerMenu.getStart().x - 6.5f,
+					towerMenu.getStart().y + 5);
 			break;
 		case 4:
 			MainGame.fontOutline.draw(spriteBatch, "LEFT CLICK TO BUILD", mousePos.x - 5.5f, mousePos.y - 1);

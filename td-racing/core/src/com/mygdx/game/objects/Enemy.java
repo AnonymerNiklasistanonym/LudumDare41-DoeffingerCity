@@ -53,7 +53,7 @@ public abstract class Enemy implements Disposable {
 	private float hitRandomY;
 	private Color color;
 
-	public Enemy(final float xPosition, final float yPosition, final World world, final Texture alive,
+	public Enemy(final Vector2 position, final World world, final Texture alive,
 			final Texture deadsprite, final Texture damagesprite, final MainMap map, final float time) {
 
 		textureDead = deadsprite;
@@ -85,7 +85,7 @@ public abstract class Enemy implements Disposable {
 		this.color = new Color(MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), 0.7f);
 
 		// create body for box2D
-		createBody(xPosition, yPosition, world);
+		createBody(position, world);
 
 		this.map = map;
 
@@ -102,10 +102,10 @@ public abstract class Enemy implements Disposable {
 		return fdef;
 	}
 
-	private void createBody(float x, float y, World w) {
+	private void createBody(final Vector2 position, World w) {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
+		bodydef.position.set(position.x * PlayState.PIXEL_TO_METER, position.y * PlayState.PIXEL_TO_METER);
 
 		this.body = w.createBody(bodydef);
 		this.body.setActive(false);
@@ -154,11 +154,11 @@ public abstract class Enemy implements Disposable {
 		final PolygonShape ps = (PolygonShape) map.getMapZielBody().getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
-		weg = getPath(this.getBodyX() * PlayState.METER_TO_PIXEL, this.getBodyY() * PlayState.METER_TO_PIXEL,
-				vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL);
+		weg = getPath(new Vector2(getBodyX() * PlayState.METER_TO_PIXEL, this.getBodyY() * PlayState.METER_TO_PIXEL),
+				new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL));
 	}
 
-	private LinkedList<Node> getPath(float startX, float startY, float zielX, float zielY) {
+	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
 		LinkedList<Node> openList = new LinkedList<Node>();
 		LinkedList<Node> closedList = new LinkedList<Node>();
 		Node[][] tempNodes2DList = map.getNodesList();
@@ -167,34 +167,34 @@ public abstract class Enemy implements Disposable {
 
 		boolean found = false;
 		// Welcher Node ist der naechste?
-		if (startX % 10 < 5)
-			startX = startX - startX % 10;
+		if (startPosition.x % 10 < 5)
+			startPosition.x = startPosition.x - startPosition.x % 10;
 		else
-			startX = startX + (10 - startX % 10);
-		if (startY % 10 < 5)
-			startY = startY - startY % 10;
+			startPosition.x = startPosition.x + (10 - startPosition.x % 10);
+		if (startPosition.y % 10 < 5)
+			startPosition.y = startPosition.y - startPosition.y % 10;
 		else
-			startY = startY + (10 - startY % 10);
+			startPosition.y = startPosition.y + (10 - startPosition.y % 10);
 
 		// Ende normalisiesrn?
-		if (zielX % 10 < 5)
-			zielX = zielX - zielX % 10;
+		if (targetPosition.x % 10 < 5)
+			targetPosition.x = targetPosition.x - targetPosition.x % 10;
 		else
-			zielX = zielX + (10 - zielX % 10);
-		if (zielY % 10 < 5)
-			zielY = zielY - zielY % 10;
+			targetPosition.x = targetPosition.x + (10 - targetPosition.x % 10);
+		if (targetPosition.y % 10 < 5)
+			targetPosition.y = targetPosition.y - targetPosition.y % 10;
 		else
-			zielY = zielY + (10 - zielY % 10);
+			targetPosition.y = targetPosition.y + (10 - targetPosition.y % 10);
 
 		// Welcher Nachbar ist der beste
 		float lowCost = 9999999;
 
-		if (tempNodes2DList[(int) startX][(int) startY].getNoUse())
+		if (tempNodes2DList[(int) startPosition.x][(int) startPosition.y].getNoUse())
 			System.out.println("Halt, Start Node ist ungueltig");
 
-		openList.add(tempNodes2DList[(int) startX][(int) startY]);
-		aktuellerNode = tempNodes2DList[(int) startX][(int) startY];
-		lowCost = aktuellerNode.getKosten();
+		openList.add(tempNodes2DList[(int) startPosition.x][(int) startPosition.y]);
+		aktuellerNode = tempNodes2DList[(int) startPosition.x][(int) startPosition.y];
+		lowCost = aktuellerNode.getCost();
 
 		while (!found) {
 
@@ -202,9 +202,9 @@ public abstract class Enemy implements Disposable {
 			lowCost = 999999999;
 
 			for (Node node : openList) {
-				if (lowCost > node.getKosten()) {
+				if (lowCost > node.getCost()) {
 					aktuellerNode = node;
-					lowCost = node.getKosten();
+					lowCost = node.getCost();
 
 				}
 			}
@@ -231,14 +231,14 @@ public abstract class Enemy implements Disposable {
 					node.setG(aktuellerNode.getG() + 1);
 					node.setParent(aktuellerNode);
 					if (openList.indexOf(node) == -1) {
-						node.setKosten(node.getKosten());
+						node.setCost(node.getCost());
 						openList.add(node);
 					}
 				}
 
 			}
 
-			if (aktuellerNode.getX() == zielX && aktuellerNode.getY() == zielY) {
+			if (aktuellerNode.getPosition().x == targetPosition.x && aktuellerNode.getPosition().y == targetPosition.y) {
 				found = true;
 				break;
 			}
@@ -251,8 +251,8 @@ public abstract class Enemy implements Disposable {
 
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			map.getNodesList()[(int) aktuellerNode.getX()][(int) aktuellerNode.getY()]
-					.setErschwernis(MathUtils.random(1f, 3f));
+			map.getNodesList()[(int) aktuellerNode.getPosition().x][(int) aktuellerNode.getPosition().y]
+					.setAdditionalDifficulty(MathUtils.random(1f, 3f));
 
 			// Hinzufuegen
 			tempweg.add(aktuellerNode);
@@ -299,8 +299,8 @@ public abstract class Enemy implements Disposable {
 			this.die();
 
 		if (weg.size() > 0) {
-			final float angle = (float) ((Math.atan2(weg.getLast().getX() * PlayState.PIXEL_TO_METER - getBodyX(),
-					-(weg.getLast().getY() * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+			final float angle = (float) ((Math.atan2(weg.getLast().getPosition().x * PlayState.PIXEL_TO_METER - getBodyX(),
+					-(weg.getLast().getPosition().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
 			final Vector2 velo = new Vector2(speed, 0);
 			velo.rotateRad(this.body.getAngle());
@@ -309,8 +309,8 @@ public abstract class Enemy implements Disposable {
 			// reduceToMaxSpeed(speed);
 			// killLateral(1f);
 
-			if (this.body.getPosition().dst(weg.getLast().getX() * PlayState.PIXEL_TO_METER,
-					weg.getLast().getY() * PlayState.PIXEL_TO_METER) < distancetonode)
+			if (this.body.getPosition().dst(weg.getLast().getPosition().x * PlayState.PIXEL_TO_METER,
+					weg.getLast().getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
 				weg.remove(weg.indexOf(weg.getLast()));
 			if (weg.size() > 0)
 				score = weg.getLast().getH();

@@ -38,7 +38,7 @@ public class LevelHandler {
 			}
 			// also add the current found ZombieWave to the current wave
 			walkingWave.addNewZombieWave(new ZombieWave(entry[1], (int) entry[2], entry[3], (int) entry[4], entry[5],
-					(int) entry[6], entry[7], (int) entry[8], entry[9]));
+					(int) entry[6], entry[7], (int) entry[8], entry[9], (int) entry[10], entry[11]));
 		}
 
 		// check if there is still a not empty walking wave and add it to the level

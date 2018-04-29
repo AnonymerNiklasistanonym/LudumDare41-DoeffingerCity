@@ -156,7 +156,7 @@ public abstract class Tower implements Disposable {
 		return this.isInBuildingMode;
 	}
 
-	protected Tower(final float xPosition, final float yPosition, final Texture spriteBody,
+	protected Tower(final Vector2 position, final Texture spriteBody,
 			final Texture spriteUpperBody, final Texture spriteFiring, final Array<Enemy> enemies, final World world,
 			final int range, final Sound soundShoot) {
 		this.soundShoot = soundShoot;
@@ -188,7 +188,7 @@ public abstract class Tower implements Disposable {
 		}
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.KinematicBody;
-		bodydef.position.set(xPosition, yPosition);
+		bodydef.position.set(position);
 		while (world.isLocked()) {
 		}
 		body = world.createBody(bodydef);
@@ -204,30 +204,28 @@ public abstract class Tower implements Disposable {
 		this.spriteUpperBody.setOriginCenter();
 		this.spriteFiring.setOriginCenter();
 
-		this.updateSprites(xPosition, yPosition);
+		this.updateSprites(position);
 
 	}
 
-	public void updateSprites(float xPosition, float yPosition) {
+	public void updateSprites(final Vector2 position) {
 
 		// set body
-		this.body.setTransform(new Vector2(xPosition, yPosition), this.body.getAngle());
-
-		xPosition -= spriteBody.getWidth() / 2;
-		yPosition -= spriteBody.getWidth() / 2;
+		this.body.setTransform(position, this.body.getAngle());
+		position.add(new Vector2(- spriteBody.getWidth() / 2, - spriteBody.getWidth() / 2));
 
 		// set body to new position
-		this.spriteBody.setPosition(xPosition, yPosition);
+		this.spriteBody.setPosition(position.x, position.y);
 		// set upper body to new position
-		this.spriteUpperBody.setPosition(xPosition + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2,
-				yPosition + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2);
+		this.spriteUpperBody.setPosition(position.x + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2,
+				position.y + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2);
 		// fire position to new position
-		this.spriteFiring.setPosition(xPosition + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2,
-				yPosition + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2);
+		this.spriteFiring.setPosition(position.x + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2,
+				position.y + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2);
 
 		// shot position to new position
-		this.shotposition = new Vector2(xPosition + spriteBody.getWidth() / 2, yPosition + spriteBody.getWidth() / 2);
-		this.center = new Vector2(xPosition + spriteBody.getWidth() / 2, yPosition + spriteBody.getWidth() / 2);
+		this.shotposition = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
+		this.center = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 	}
 
 	public void tryshoot(Enemy e) {
@@ -310,22 +308,21 @@ public abstract class Tower implements Disposable {
 		}
 	}
 
-	public void update(float delta, Vector3 mousepos) {
+	public void update(final float timeDelta, final Vector3 mousePos) {
 
-		if (this.isInBuildingMode) {
-			this.updateSprites(mousepos.x, mousepos.y);
-		}
+		if (this.isInBuildingMode)
+			this.updateSprites(new Vector2(mousePos.x, mousePos.y));
 
-		this.delta = delta;
+		this.delta = timeDelta;
 		if (isactive) {
-			timesincelastshot = timesincelastshot + delta;
+			timesincelastshot = timesincelastshot + timeDelta;
 			if (target == null) {
 				selectNewTarget();
 				soundShoot.stop();
 				isSoundPlaying = false;
 			} else
 				tryshoot(target);
-			updateProjectiles(delta);
+			updateProjectiles(timeDelta);
 		}
 
 	}

@@ -36,6 +36,8 @@ public class PreferencesManager {
 
 	private static final String LAST_NAME = "LAST_NAME";
 
+	private static final int NUMBER_HIGHSCORE_ENTRIES = 5;
+
 	private final Preferences prefs;
 
 	public PreferencesManager() {
@@ -43,13 +45,11 @@ public class PreferencesManager {
 	}
 
 	public void saveName(final String name) {
-		prefs.putString(LAST_NAME, name);
-		prefs.flush();
+		prefs.putString(LAST_NAME, name).flush();
 	}
 
 	public char[] getName() {
-		final String lastName = prefs.getString(LAST_NAME);
-		return lastName.toCharArray();
+		return prefs.getString(LAST_NAME).toCharArray();
 	}
 
 	public void checkHighscore() {
@@ -64,26 +64,21 @@ public class PreferencesManager {
 	}
 
 	public void clearHighscore() {
-		for (int i = 0; i < 5; i++) {
-			prefs.putString(HIGHSCORE_NAME + i, "NOBODY");
-			prefs.putInteger(HIGHSCORE_SCORE + i, 0);
-		}
+		for (int i = 0; i < NUMBER_HIGHSCORE_ENTRIES; i++)
+			prefs.putString(HIGHSCORE_NAME + i, "NOBODY").putInteger(HIGHSCORE_SCORE + i, 0);
 		prefs.flush();
 	}
 
 	public void saveHighscore(String[] names, int[] scores) {
-		for (int i = 0; i < 5; i++) {
-			prefs.putString(HIGHSCORE_NAME + i, names[i]);
-			prefs.putInteger(HIGHSCORE_SCORE + i, scores[i]);
-			prefs.flush();
-		}
+		for (int i = 0; i < NUMBER_HIGHSCORE_ENTRIES; i++)
+			prefs.putString(HIGHSCORE_NAME + i, names[i]).putInteger(HIGHSCORE_SCORE + i, scores[i]);
+		prefs.flush();
 	}
 
 	public HighscoreEntry[] retrieveHighscore() {
-		final HighscoreEntry[] entries = new HighscoreEntry[5];
-		for (int i = 0; i < entries.length; i++) {
+		final HighscoreEntry[] entries = new HighscoreEntry[NUMBER_HIGHSCORE_ENTRIES];
+		for (int i = 0; i < entries.length; i++)
 			entries[i] = new HighscoreEntry(prefs.getInteger(HIGHSCORE_SCORE + i), prefs.getString(HIGHSCORE_NAME + i));
-		}
 		return entries;
 	}
 

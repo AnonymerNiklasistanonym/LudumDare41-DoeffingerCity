@@ -6,6 +6,17 @@ import com.badlogic.gdx.files.FileHandle;
 public class CsvFileHandler {
 
 	/**
+	 * Get all Level CSV files
+	 * 
+	 * @return Array which contains all CSV level files
+	 */
+	public static FileHandle[] getAllLevelFiles() {
+		// return Gdx.files.internal("./bin/level").list();
+		return new FileHandle[] { Gdx.files.internal("level/level_01.csv"), Gdx.files.internal("level/level_02.csv"),
+				Gdx.files.internal("level/level_03.csv") };
+	}
+
+	/**
 	 * Read a CSV file and convert it to an Array of an Array of floats
 	 * 
 	 * @param file
@@ -48,17 +59,6 @@ public class CsvFileHandler {
 				information[i - 1][j - 1] = stringArray[j];
 		}
 		return information;
-	}
-
-	/**
-	 * Get all Level CSV files
-	 * 
-	 * @return Array which contains all CSV level files
-	 */
-	public static FileHandle[] getAllLevelFiles() {
-		// return Gdx.files.internal("./bin/level").list();
-		return new FileHandle[] { Gdx.files.internal("level/level_01.csv"), Gdx.files.internal("level/level_02.csv"),
-				Gdx.files.internal("level/level_03.csv") };
 	}
 
 }

@@ -3,9 +3,10 @@ package com.mygdx.game.menu;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MainGame;
 
-public class HighscoreButton {
+public class HighscoreButton implements Disposable {
 
 	public static Texture texture;
 
@@ -37,6 +38,11 @@ public class HighscoreButton {
 		MainGame.font70.draw(spriteBatch, "" + this.place, this.fontXNumber, this.fontYNumber);
 		MainGame.font70.draw(spriteBatch, this.name, this.fontXName, this.fontYName);
 		MainGame.font70.draw(spriteBatch, "" + this.score, this.fontXScore, this.fontYScore);
+	}
+
+	@Override
+	public void dispose() {
+		button.getTexture().dispose();
 	}
 
 }

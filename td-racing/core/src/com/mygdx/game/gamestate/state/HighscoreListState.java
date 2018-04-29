@@ -9,67 +9,85 @@ import com.mygdx.game.PreferencesManager;
 import com.mygdx.game.PreferencesManager.HighscoreEntry;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
+import com.mygdx.game.gamestate.GameStateMethods;
 import com.mygdx.game.menu.HighscoreButton;
 
 public class HighscoreListState extends GameState {
 
-	private HighscoreButton[] highscoreButtons;
-
 	private static final String STATE_NAME = "Highscore > List";
+
+	private final HighscoreButton[] highscoreButtons;
+	private final PreferencesManager preferencesManager;
 
 	public HighscoreListState(GameStateManager gameStateManager) {
 		super(gameStateManager, STATE_NAME);
 
+		// load static texture for high score entry
 		HighscoreButton.texture = new Texture(Gdx.files.internal("buttons/button_highscore.png"));
 
+		// set camera to 1280x720
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		final PreferencesManager preferencesManager = new PreferencesManager();
+		// create a preferences manager for loading/clearing high score entries
+		preferencesManager = new PreferencesManager();
 		preferencesManager.checkHighscore();
+		
+		// load and display high score entries
 		HighscoreEntry[] entries = preferencesManager.retrieveHighscore();
-
-		final HighscoreButton buttonOne = new HighscoreButton(1, entries[0].getScore(), entries[0].getName(),
-				MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 5);
-		final HighscoreButton buttonTwo = new HighscoreButton(2, entries[1].getScore(), entries[1].getName(),
-				MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 4);
-		final HighscoreButton buttonThree = new HighscoreButton(3, entries[2].getScore(), entries[2].getName(),
-				MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 3);
-		final HighscoreButton buttonFour = new HighscoreButton(4, entries[3].getScore(), entries[3].getName(),
-				MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2);
-		final HighscoreButton buttonFiveOne = new HighscoreButton(5, entries[4].getScore(), entries[4].getName(),
-				MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 1);
-		this.highscoreButtons = new HighscoreButton[] { buttonOne, buttonTwo, buttonThree, buttonFour, buttonFiveOne };
+		this.highscoreButtons = new HighscoreButton[] {
+				new HighscoreButton(1, entries[0].getScore(), entries[0].getName(), MainGame.GAME_WIDTH / 2,
+						MainGame.GAME_HEIGHT / 6 * 5),
+				new HighscoreButton(2, entries[1].getScore(), entries[1].getName(), MainGame.GAME_WIDTH / 2,
+						MainGame.GAME_HEIGHT / 6 * 4),
+				new HighscoreButton(3, entries[2].getScore(), entries[2].getName(), MainGame.GAME_WIDTH / 2,
+						MainGame.GAME_HEIGHT / 6 * 3),
+				new HighscoreButton(4, entries[3].getScore(), entries[3].getName(), MainGame.GAME_WIDTH / 2,
+						MainGame.GAME_HEIGHT / 6 * 2),
+				new HighscoreButton(5, entries[4].getScore(), entries[4].getName(), MainGame.GAME_WIDTH / 2,
+						MainGame.GAME_HEIGHT / 6 * 1) };
 	}
 
 	@Override
 	protected void handleInput() {
-		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey())) {
+		GameStateMethods.toggleFullScreen(Keys.F11);
+
+		// go back to the menu state
+		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
 			gameStateManager.setGameState(new MenuState(gameStateManager));
-		}
-		if (Gdx.input.isKeyJustPressed(Keys.F11)) {
-			if (Gdx.graphics.isFullscreen())
-				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
-			else
-				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+
+		// clear high score list
+		if (Gdx.input.isKeyJustPressed(Keys.C)) {
+			preferencesManager.clearHighscore();
+			gameStateManager.setGameState(new HighscoreListState(gameStateManager));
 		}
 	}
 
 	@Override
-	protected void update(float deltaTime) {
-		// TODO Do nothing right now
+	protected void update(final float deltaTime) {
+		// TODO Nothing to update
 	}
 
 	@Override
-	protected void render(SpriteBatch spriteBatch) {
+	protected void render(final SpriteBatch spriteBatch) {
 		spriteBatch.begin();
+		
+		// draw high score (entry) buttons
 		for (final HighscoreButton highscoreButton : highscoreButtons)
 			highscoreButton.draw(spriteBatch);
+		
+		// draw message to inform how the list can be cleared
+		MainGame.font.getData().setScale(1);
+		MainGame.font.setColor(1, 1, 1, 1);
+		MainGame.font.draw(spriteBatch, "Clear List: C", 10, 30);
+		
 		spriteBatch.end();
 	}
 
 	@Override
 	protected void dispose() {
-		System.out.println("Highscore state disposed");
+		HighscoreButton.texture.dispose();
+		for (final HighscoreButton highscoreButton : highscoreButtons)
+			highscoreButton.dispose();
 	}
 
 }

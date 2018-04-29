@@ -19,7 +19,7 @@ public class CollisionListener implements ContactListener {
 	}
 
 	@Override
-	public void beginContact(Contact contact) {
+	public void beginContact(final Contact contact) {
 		final Object a = contact.getFixtureA().getBody().getUserData();
 		final Object b = contact.getFixtureB().getBody().getUserData();
 
@@ -68,17 +68,17 @@ public class CollisionListener implements ContactListener {
 	}
 
 	@Override
-	public void endContact(Contact contact) {
+	public void endContact(final Contact contact) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
+	public void preSolve(final Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
+	public void postSolve(final Contact contact, final ContactImpulse impulse) {
 		// TODO Auto-generated method stub
 	}
 

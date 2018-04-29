@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.Enemy;
@@ -21,8 +22,8 @@ public class MgTower extends Tower {
 	public static final int RANGE = 11;
 	public static final int COST = 100;
 
-	public MgTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final World world) {
-		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
+	public MgTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
+		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
 		this.maxHealth = -1;
 		this.speed = 0.4f;
 		this.firingSpriteTime = 0.1f;

@@ -47,9 +47,9 @@ public class MainMap {
 	public void createSolidMap(final String mapName, final World world) {
 		// The following line would throw ExceptionInInitializerError
 
-		this.map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
-		this.map.setSize(this.map.getWidth() * PlayState.PIXEL_TO_METER,
-				this.map.getHeight() * PlayState.PIXEL_TO_METER);
+		map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
+		map.setSize(map.getWidth() * PlayState.PIXEL_TO_METER,
+				map.getHeight() * PlayState.PIXEL_TO_METER);
 
 		final BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "solid.json"));
 		final BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "ziel.json"));
@@ -125,10 +125,10 @@ public class MainMap {
 		for (final Node nodeMain : nodesList) {
 			// Find neighbor
 			for (final Node nodeNachbar : nodesList) {
-				if ((nodeMain.getX() + 10 == nodeNachbar.getX() && nodeMain.getY() == nodeNachbar.getY())
-						|| (nodeMain.getX() == nodeNachbar.getX() && nodeMain.getY() + 10 == nodeNachbar.getY())
-						|| (nodeMain.getX() - 10 == nodeNachbar.getX() && nodeMain.getY() == nodeNachbar.getY())
-						|| (nodeMain.getX() == nodeNachbar.getX() && nodeMain.getY() - 10 == nodeNachbar.getY()))
+				if ((nodeMain.getPosition().x + 10 == nodeNachbar.getPosition().x && nodeMain.getPosition().y == nodeNachbar.getPosition().y)
+						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x && nodeMain.getPosition().y + 10 == nodeNachbar.getPosition().y)
+						|| (nodeMain.getPosition().x - 10 == nodeNachbar.getPosition().x && nodeMain.getPosition().y == nodeNachbar.getPosition().y)
+						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x && nodeMain.getPosition().y - 10 == nodeNachbar.getPosition().y))
 					nodeMain.getNachbarn().add(nodeNachbar);
 			}
 		}
@@ -149,7 +149,7 @@ public class MainMap {
 		zielpos = new Vector2(zielX, zielY);
 
 		for (final Node node : nodesList) {
-			if (node.getX() == zielX * PlayState.METER_TO_PIXEL && node.getY() == zielY * PlayState.METER_TO_PIXEL) {
+			if (node.getPosition().x == zielX * PlayState.METER_TO_PIXEL && node.getPosition().y == zielY * PlayState.METER_TO_PIXEL) {
 				node.setH(1);
 				// set "target" node
 				werteSetzen(node);
@@ -165,7 +165,7 @@ public class MainMap {
 			for (int j = 0; j < (int) PlayState.RESOLUTION_HEIGHT; j = j + 10) {
 				isFound = false;
 				for (final Node node : nodesList) {
-					if (node.getX() == i && node.getY() == j) {
+					if (node.getPosition().x == i && node.getPosition().y == j) {
 						isFound = true;
 						nodes2DList[i][j] = node;
 						break;
@@ -197,7 +197,7 @@ public class MainMap {
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
-		this.map.draw(spriteBatch);
+		map.draw(spriteBatch);
 	}
 
 	public Vector2 getZielPos() {

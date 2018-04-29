@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.objects.Enemy;
@@ -21,8 +22,8 @@ public class SniperTower extends Tower {
 	public static final int RANGE = 40;
 	public static final int COST = 400;
 
-	public SniperTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final World world) {
-		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
+	public SniperTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
+		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
 		this.maxHealth = -1;
 		this.speed = 4f;
 		this.firingSpriteTime = 1f;

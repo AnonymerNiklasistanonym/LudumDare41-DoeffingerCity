@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -22,23 +23,17 @@ public class TowerMenu implements Disposable {
 	public static Texture flameButton;
 	public static Texture sniperButton;
 
-	public float startx = 30;
-	public float starty = 0;
-
-	Vector3 mousepos;
-	Tower buildingtower;
-
-	ScoreBoard scoreboard;
-
-	boolean[] towerUnlocked;
-	Sprite[] sprites;
-
-	World world;
-	Array<Enemy> enemies;
+	private static final Vector2 start = new Vector2(30, 0);
+	
+	private final Sprite[] sprites;
+	private final World world;
+	private final ScoreBoard scoreboard;
+	
+	private Tower buildingtower;
+	private boolean[] towerUnlocked;
 	private boolean[] towerSelected;
 
 	public TowerMenu(final World world, final ScoreBoard scoreboard) {
-		this.mousepos = new Vector3(0, 0, 0);
 		this.world = world;
 		this.scoreboard = scoreboard;
 		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton),
@@ -52,15 +47,12 @@ public class TowerMenu implements Disposable {
 		}
 
 		float versatz = sprites[0].getWidth();
-		float x = startx;
-		final float y = starty;
+		float x = start.x;
 
 		for (final Sprite sprite : sprites) {
-			sprite.setPosition(x, y);
+			sprite.setPosition(x, start.y);
 			x += versatz;
 		}
-
-		updateAlpha();
 	}
 
 	public void draw(final SpriteBatch batch) {
@@ -68,15 +60,8 @@ public class TowerMenu implements Disposable {
 			sprite.draw(batch);
 	}
 
-	public void unlockTower(int i) {
-		towerUnlocked[i] = true;
-		updateAlpha();
-	}
-
 	public void selectTower(int i, final Vector3 mousePos, final Array<Enemy> enemies) {
 		boolean unselect = false;
-		this.mousepos = mousePos;
-		this.enemies = enemies;
 		if (!towerUnlocked[i])
 			unselect = true;
 
@@ -97,39 +82,33 @@ public class TowerMenu implements Disposable {
 		}
 
 		if (towerSelected[i] && towerUnlocked[i]) {
-			buildingtower = getTower(i);
+			buildingtower = getTower(i, mousePos, enemies);
 			buildingtower.activateRange(true);
 		}
-
-		updateAlpha();
 	}
 
-	public Tower getTower(int i) {
-		switch (i) {
+	public Tower getTower(final int tower, final Vector3 mousePos, final Array<Enemy> enemies) {
+		switch (tower) {
 		case 0:
-			return new MgTower(mousepos.x, mousepos.y, enemies, world);
-
+			return new MgTower(new Vector2(mousePos.x, mousePos.y), enemies, world);
 		case 1:
-			return new LaserTower(mousepos.x, mousepos.y, enemies, world);
-
+			return new LaserTower(new Vector2(mousePos.x, mousePos.y), enemies, world);
 		case 2:
-			return new FireTower(mousepos.x, mousepos.y, enemies, world);
+			return new FireTower(new Vector2(mousePos.x, mousePos.y), enemies, world);
 		case 3:
-			return new SniperTower(mousepos.x, mousepos.y, enemies, world);
-
+			return new SniperTower(new Vector2(mousePos.x, mousePos.y), enemies, world);
 		}
 		System.out.println("ERROR: not found correct Tower at getTower");
 		return null;
 	}
 
-	public void updateAlpha() {
+	public void update() {
 		for (int i = 0; i < towerUnlocked.length; i++) {
 			sprites[i].setColor(1, 1, 1, 0);
 			if (towerUnlocked[i]) {
 				sprites[i].setColor(1, 1, 1, 0.5f);
 				if (canAfford(i))
 					sprites[i].setColor(1, 1, 1, 1f);
-
 				if (towerSelected[i] && towerUnlocked[i])
 					sprites[i].setColor(0.25f, 1, 0.25f, 1);
 			}
@@ -140,7 +119,7 @@ public class TowerMenu implements Disposable {
 		return buildingtower;
 	}
 
-	public boolean canAfford(int i) {
+	private boolean canAfford(int i) {
 		int price = 0;
 		switch (i) {
 		case 0:
@@ -155,35 +134,22 @@ public class TowerMenu implements Disposable {
 		case 3:
 			price = SniperTower.COST;
 			break;
-		default:
-			break;
 		}
-		if (scoreboard.getMoney() >= price)
-			return true;
-		else
-			return false;
+		return (scoreboard.getMoney() >= price);
 	}
 
 	public void unselectAll() {
 		for (int i = 0; i < towerSelected.length; i++)
 			towerSelected[i] = false;
-		if (buildingtower != null) {
-			System.out.println("Test2");
-			// world.destroyBody(buildingtower.body);
-
-		}
 		buildingtower = null;
-		updateAlpha();
 	}
 
 	public boolean contains(final float xPos, final float yPos) {
 		float towerMenuWidth = 0;
-		for (int i = 0; i < towerUnlocked.length; i++) {
-			if (towerUnlocked[i])
-				towerMenuWidth += sprites[i].getWidth();
-		}
-		return (xPos >= startx && xPos <= startx + towerMenuWidth)
-				&& (yPos >= starty && yPos <= starty + ((sprites.length > 0) ? sprites[0].getHeight() : 0));
+		for (int i = 0; i < towerUnlocked.length; i++)
+				towerMenuWidth += (towerUnlocked[i]) ? sprites[i].getWidth() : 0;
+		return (xPos >= start.x && xPos <= start.x + towerMenuWidth)
+				&& (yPos >= start.y && yPos <= start.y + ((sprites.length > 0) ? sprites[0].getHeight() : 0));
 	}
 
 	@Override
@@ -191,10 +157,17 @@ public class TowerMenu implements Disposable {
 		for (final Sprite sprite : sprites)
 			sprite.getTexture().dispose();
 	}
+	
+	public void unlockTower(final int i) {
+		unlockTower(i, true);
+	}
 
-	public void lockTower(int i) {
-		towerUnlocked[i] = false;
-		updateAlpha();
+	public void unlockTower(final int i, final boolean unLock) {
+		towerUnlocked[i] = unLock;
+	}
+
+	public Vector2 getStart() {
+		return start;
 	}
 
 }

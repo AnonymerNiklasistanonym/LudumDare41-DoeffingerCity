@@ -1,6 +1,7 @@
 package com.mygdx.game.objects.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -20,8 +21,8 @@ public class EnemyBicycle extends Enemy {
 	public static Texture deadTexture;
 	public static Texture normalTexture;
 
-	public EnemyBicycle(final float xPos, final float yPos, final World world, final MainMap map, final float time) {
-		super(xPos, yPos, world, normalTexture, deadTexture, damageTexture, map, time);
+	public EnemyBicycle(final Vector2 position, final World world, final MainMap map, final float time) {
+		super(position, world, normalTexture, deadTexture, damageTexture, map, time);
 		this.damage = DAMAGE;
 		this.health = HEALTH;
 		this.money = MONEY;

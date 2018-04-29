@@ -32,8 +32,8 @@ public class FireTower extends Tower {
 	private final World world;
 	private final Array<Flame> flames;
 
-	public FireTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final World world) {
-		super(xPosition, yPosition, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
+	public FireTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
+		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
 
 		this.sflame = new Sprite(tflame);
 		this.sflame.setSize(this.sflame.getWidth() * PlayState.PIXEL_TO_METER,
