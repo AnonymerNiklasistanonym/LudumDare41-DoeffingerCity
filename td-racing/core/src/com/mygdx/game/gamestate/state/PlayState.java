@@ -55,7 +55,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public static Thread thread;
 	private static ScoreBoard scoreBoard;
 
-	
 	private CollisionListener collis;
 	private Sprite smaincar;
 	private Sprite sfinishline;
@@ -78,7 +77,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean debugWay;
 
 	private TowerMenu towerMenu;
-
 
 	private MainMap map;
 
@@ -395,9 +393,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debugEntfernung = !debugEntfernung;
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
-			for (final Enemy e : enemies)
-				e.takeDamage(e.getHealth());
-			this.currentwave = this.level[scoreBoard.getLevel() - 1].getWaves().size;
+			if (!pause) {
+				pause = true;
+				for (final Enemy e : enemies) {
+					if (!e.isActivated())
+						e.activateEnemy();
+					e.takeDamage(e.getHealth());
+				}
+				pause = false;
+			}
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
 			scoreBoard.reduceLife(scoreBoard.getHelath());
