@@ -138,7 +138,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private boolean pause = false;
 	private int speedFactor;
 	private final Level[] level;
-
+	private Vector3 mousePos;
 	private Vector2 trailerpos;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
@@ -541,7 +541,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			this.buildingtower.setBlockBuildingMode(b);
 	}
 
-	private Vector3 mousePos;
+
 
 	@Override
 	protected void update(float deltaTime) {
