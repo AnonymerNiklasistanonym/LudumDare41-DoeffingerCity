@@ -58,11 +58,11 @@ public class Car implements Disposable {
 	}
 
 	public void steerLeft() {
-		this.body.applyTorque(this.steerpower * this.deltaTime * getSpeedFactor(), true);
+		this.body.applyTorque(this.steerpower * this.deltaTime * getTurnFactor(), true);
 	}
 
 	public void steerRight() {
-		this.body.applyTorque(this.steerpower * -1 * this.deltaTime * getSpeedFactor(), true);
+		this.body.applyTorque(this.steerpower * -1 * this.deltaTime * getTurnFactor(), true);
 	}
 
 	public float getNormalizedSpeed() {
@@ -71,13 +71,13 @@ public class Car implements Disposable {
 		return ns * mult;
 	}
 
-	public float getSpeedFactor() {
+	public float getTurnFactor() {
 		final float mult = (getForwardVelocity().x < 0) ? -1 : 1;
 		final float x = Math.abs(getNormalizedSpeed() * 2);
-		final float factor = (float) (1 - Math.exp(-3 * MathUtils.clamp(x, 0, 1)));
+		final float factor = (float) (1 - Math.exp(-3 * MathUtils.clamp(x, 0.05f, 1)));
 
 		if (factor < -1 || factor > 1)
-			System.out.println("Speedfactor ist falsch!");
+			System.out.println("Turnfactor ist falsch!");
 
 		return factor * mult;
 	}
