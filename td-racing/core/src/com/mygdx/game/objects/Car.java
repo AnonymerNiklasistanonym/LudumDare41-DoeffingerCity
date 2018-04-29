@@ -43,6 +43,10 @@ public class Car implements Disposable {
 
 		// turn the car at the beginning
 		this.body.setTransform(body.getPosition(), (float) Math.toRadians(180));
+		
+		System.out.println("Car is at " + xPostion + ", " + yPosition);
+		System.out.println("Car is at " + getX() + ", " + getY());
+
 	}
 
 	public void accelarate() {

@@ -3,7 +3,9 @@ package com.mygdx.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -26,6 +28,7 @@ public class MainMap {
 	public Node[][] nodes2DList;
 	Array<EnemyWaveEntry> enemyWave;
 	Vector2 spawn;
+	private Sprite map;
 
 	public MainMap(String mapName, World world, Body finishLine) {
 
@@ -62,6 +65,9 @@ public class MainMap {
 
 	public void createSolidMap(String mapName, World world) {
 		// The following line would throw ExceptionInInitializerError
+		
+		this.map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
+		this.map.setSize(this.map.getWidth() * PlayState.PIXEL_TO_METER, this.map.getHeight() * PlayState.PIXEL_TO_METER);
 
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "solid.json"));
 		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "ziel.json"));
@@ -204,6 +210,10 @@ public class MainMap {
 
 	public void setSpawn(final Vector2 spawn) {
 		this.spawn = spawn;
+	}
+
+	public void draw(SpriteBatch spriteBatch) {
+		this.map.draw(spriteBatch);
 	}
 
 }

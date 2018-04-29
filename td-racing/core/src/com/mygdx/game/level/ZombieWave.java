@@ -1,14 +1,14 @@
 package com.mygdx.game.level;
 
 public class ZombieWave {
-	private final float entryPoint;
+	private final float entryTime;
 	private final int smallZombieNumber, fatZombieNumber, bycicleZombieNumber, lincolnZombieNumber;
 	private final float smallTimeDelta, fatZombieDelta, bycicleTimeDelta, lincolnTimeDelta;
 
-	public ZombieWave(final float entryPoint, final int smallZombieNumber, final float smallTimeDelta,
+	public ZombieWave(final float entryTime, final int smallZombieNumber, final float smallTimeDelta,
 			final int fatZombieNumber, final float fatZombieDelta, final int bycicleZombieNumber,
 			final float bycicleTimeDelta, final int lincolnZombieNumber, final float lincolnTimeDelta) {
-		this.entryPoint = entryPoint;
+		this.entryTime = entryTime;
 		this.smallZombieNumber = smallZombieNumber;
 		this.smallTimeDelta = smallTimeDelta;
 		this.fatZombieNumber = fatZombieNumber;
@@ -19,8 +19,8 @@ public class ZombieWave {
 		this.lincolnTimeDelta = lincolnTimeDelta;
 	}
 
-	public float getEntryPoint() {
-		return entryPoint;
+	public float getEntryTime() {
+		return entryTime;
 	}
 
 	public int getSmallZombieNumber() {
@@ -43,7 +43,7 @@ public class ZombieWave {
 		return smallTimeDelta;
 	}
 
-	public float getFatZombieDelta() {
+	public float getFatTimeDelta() {
 		return fatZombieDelta;
 	}
 
@@ -57,10 +57,10 @@ public class ZombieWave {
 
 	public void check(final int i) {
 		System.out.println(">>>> ZombieWave #" + (i + 1));
-		System.out.println("Time after wave started: " + this.entryPoint + " Small Zombie #: " + this.smallZombieNumber
+		System.out.println("Time after wave started: " + this.entryTime + " Small Zombie #: " + this.smallZombieNumber
 				+ " Small time delta: " + this.smallTimeDelta + " Fat Zombie #: " + this.fatZombieNumber
 				+ " Fat time delta: " + this.fatZombieDelta + " Bicycle Zombie #: " + this.bycicleZombieNumber
-				+ "Bicycle time delta: " + this.bycicleTimeDelta + " Lincoln Zombie #: " + this.lincolnZombieNumber
+				+ " Bicycle time delta: " + this.bycicleTimeDelta + " Lincoln Zombie #: " + this.lincolnZombieNumber
 				+ " Lincoln time delta: " + this.lincolnTimeDelta);
 	}
 

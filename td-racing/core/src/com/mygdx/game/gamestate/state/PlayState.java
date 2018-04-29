@@ -54,10 +54,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private CollisionListener collis;
 	private Sprite smaincar;
 	private Sprite sfinishline;
-	private Sprite strack1;
-	private Sprite strack2;
-	private Sprite strack3;
-	private Sprite scurrenttrack;
 	private World world;
 	private Car car;
 	private FinishLine finishline;
@@ -135,11 +131,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public PlayState(GameStateManager gameStateManager, int level) {
 		super(gameStateManager, STATE_NAME);
-		
+
 		this.level = LevelHandler.loadLevels();
-		
 		fpscounter = new FPSCounter();
-		System.out.println("Play state entered");
 		MainGame.font70.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this, !deploy);
 		scoreBoard.reset(0);
@@ -148,21 +142,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		preferencesManager.checkHighscore();
 
 		// import textures
-		strack1 = createScaledSprite("maps/track1.png");
-		strack2 = createScaledSprite("maps/track2.png");
-		strack3 = createScaledSprite("maps/track3.png");
-		scurrenttrack = strack1;
 		smaincar = createScaledSprite("cars/car_standard.png");
 		sfinishline = createScaledSprite("maps/finishline.png");
+		victory = createScaledSprite("fullscreens/victorycard.png");
 
+		// set STATIC textures
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
 		TowerMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
 		TowerMenu.sniperButton = new Texture(Gdx.files.internal("buttons/sniperbutton.png"));
-
-		victory = createScaledSprite("fullscreens/victorycard.png");
-
-		// set STATIC textures
+		
 		MgTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
@@ -213,12 +202,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		enemies = new Array<Enemy>();
 		towers = new Array<Tower>();
 		collis = new CollisionListener(this);
-
-		world = new World(new Vector2(0, 0), true);
-		world.setContactListener(collis);
-		debugRender = new Box2DDebugRenderer();
-
-		finishline = new FinishLine(world, sfinishline, 380, 220);
+		checkpoints = new Checkpoint[4];
 
 		moneyPerLap = 50;
 
@@ -227,14 +211,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugWay = false;
 		debugEntfernung = false;
 
-		towerMenu = new TowerMenu(world, scoreBoard);
-
-		checkpoints = new Checkpoint[4];
-		float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
-		for (int i = 0; i < checkpoints.length; i++)
-			checkpoints[i] = new NormalCheckpoint(world, checkPointPosition[i][0] * PIXEL_TO_METER,
-					checkPointPosition[i][1] * PIXEL_TO_METER);
-
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
 
 		// pitStop.setPosition(100, 100);
@@ -242,8 +218,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// Sicherstellen dass bei deploy alle test sachen aus sind
 		if (deploy)
 			soundon = true;
-		else
-			MainGame.level = 1;
+		
 		loadLevel(MainGame.level);
 
 		backgroundMusic.setLooping(true);
@@ -257,70 +232,43 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		speedFactor = 1;
 	}
 
-	public void loadLevel(int i) {
-		System.out.println("Load Level " + i);
-		scoreBoard.setLevel(i);
-		for (final Enemy enemy : enemies)
-			enemy.dispose();
-		enemies.clear();
-		for (final Tower tower : towers)
-			tower.dispose();
-		towers.clear();
-		world = new World(new Vector2(), true);
-		world.setContactListener(collis);
-		car = new Car(world, smaincar, 440, 220);
-		debugRender = new Box2DDebugRenderer();
-		towerMenu = new TowerMenu(world, scoreBoard);
-		switch (i) {
-		case 1:
-			finishline = new FinishLine(world, sfinishline, 380, 220);
-			map = new MainMap("track1", world, finishline.getBody());
-			map.setSpawn(new Vector2(220, 20));
-			scurrenttrack = strack1;
-			pitStop.setPosition(165 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
-			float[][] checkPointPosition = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
-			for (int j = 0; j < checkpoints.length; j++)
-				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition[j][0] * PIXEL_TO_METER,
-						checkPointPosition[j][1] * PIXEL_TO_METER);
-			towerMenu.unlockTower(0);
-			break;
-		case 2:
-			finishline = new FinishLine(world, sfinishline, 360, 240);
-			map = new MainMap("track2", world, finishline.getBody());
-			map.setSpawn(new Vector2(230, 50));
-			scurrenttrack = strack2;
-			pitStop.setPosition(165 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
-			float[][] checkPointPosition1 = { { 300, 230 }, { 320, 600 }, { 850, 600 }, { 850, 230 } };
-			for (int j = 0; j < checkpoints.length; j++)
-				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
-						checkPointPosition1[j][1] * PIXEL_TO_METER);
-			towerMenu.unlockTower(1);
-			break;
-		case 3:
-			finishline = new FinishLine(world, sfinishline, 350, 150);
-			map = new MainMap("track3", world, finishline.getBody());
-			map.setSpawn(new Vector2(170, 100));
-			scurrenttrack = strack3;
-			pitStop.setPosition(100 * PIXEL_TO_METER, -5 * PIXEL_TO_METER);
+	public void loadLevel(int levelNumber) {
+		System.out.println("Load Level #" + levelNumber);
+		// set/save level number
+		scoreBoard.setLevel(levelNumber);
 
-			float[][] checkPointPosition11 = { { 300, 170 }, { 320, 570 }, { 850, 570 }, { 850, 170 } };
-			for (int j = 0; j < checkpoints.length; j++)
-				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
-						checkPointPosition11[j][1] * PIXEL_TO_METER);
-			towerMenu.unlockTower(2);
-			break;
-
-		default:
-			break;
-
+		// decrement level number because everything needs to be inconsistent
+		levelNumber = levelNumber - 1;
+		// clear all enemies and tower
+		this.enemies.clear();
+		this.towers.clear();
+		// create a new world and add contact listener to the new world
+		this.world = new World(new Vector2(), true);
+		this.world.setContactListener(this.collis);
+		// create a new debug renderer
+		this.debugRender = new Box2DDebugRenderer(); // needed?
+		// setup new car
+		this.car = new Car(this.world, this.smaincar, this.level[levelNumber].getCarPos().x,
+				this.level[levelNumber].getCarPos().y);
+		// create a new TowerMenu
+		this.towerMenu = new TowerMenu(this.world, scoreBoard);
+		// unlock/lock the right tower
+		for (int i = 0; i < this.level[levelNumber].getTowersUnlocked().length; i++) {
+			if (this.level[levelNumber].getTowersUnlocked()[i])
+				this.towerMenu.unlockTower(i);
+			else
+				this.towerMenu.lockTower(i);
 		}
-		if (unlockAllTowers) {
-			towerMenu.unlockTower(0);
-			towerMenu.unlockTower(1);
-			towerMenu.unlockTower(2);
-			towerMenu.unlockTower(3);
-		}
-		currentEnemyWaves = new Array<EnemyWaveEntry>();
+		this.finishline = new FinishLine(this.world, sfinishline, this.level[levelNumber].getFinishLinePosition().x,
+				this.level[levelNumber].getFinishLinePosition().y);
+		this.map = new MainMap(this.level[levelNumber].getMapName(), this.world, this.finishline.getBody());
+		this.map.setSpawn(this.level[levelNumber].getSpawnPoint());
+		this.pitStop.setPosition(this.level[levelNumber].getPitStopPosition().x * PIXEL_TO_METER,
+				this.level[levelNumber].getPitStopPosition().y * PIXEL_TO_METER);
+		for (int j = 0; j < this.level[levelNumber].getCheckPoints().length; j++)
+			this.checkpoints[j] = new NormalCheckpoint(this.world,
+					this.level[levelNumber].getCheckPoints()[j].x * PIXEL_TO_METER,
+					this.level[levelNumber].getCheckPoints()[j].y * PIXEL_TO_METER);
 		scoreBoard.reset(0);
 	}
 
@@ -454,7 +402,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_7))
 			scoreBoard.addMoney(1000);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
-			scoreBoard.setLevel(scoreBoard.getLevel());
+			scoreBoard.setLevel(scoreBoard.getLevel() + 1);
 			loadLevel(scoreBoard.getLevel());
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
@@ -468,14 +416,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				for (int i = 0; i < 4; i++)
 					towerMenu.unlockTower(i);
 			} else {
-				for (int i = 0; i < 4; i++)
-					towerMenu.lockTower(i);
-				for (int i = 0; i < scoreBoard.getLevel(); i++)
-					towerMenu.unlockTower(i);
+				for (int i = 0; i < this.level[scoreBoard.getLevel() - 1].getTowersUnlocked().length; i++) {
+					if (this.level[scoreBoard.getLevel() - 1].getTowersUnlocked()[i])
+						this.towerMenu.unlockTower(i);
+					else
+						this.towerMenu.lockTower(i);
+				}
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.R)) {
-			this.scoreBoard.addScore(1000);
+			scoreBoard.addScore(1000);
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
@@ -528,20 +478,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(mousePos);
-
-		switch (MainGame.level) {
-		case 1:
-			updateWaves1();
-			break;
-		case 2:
-			updateWaves2();
-			break;
-		case 3:
-			updateWaves3();
-			break;
-		default:
-			break;
-		}
+		
+		updateWaves();
 
 		car.update(deltaTime);
 
@@ -609,7 +547,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	}
 
 	@Override
-	public void render(SpriteBatch spriteBatch) {
+	public void render(final SpriteBatch spriteBatch) {
 
 		// set projection matrix
 		spriteBatch.setProjectionMatrix(camera.combined);
@@ -622,9 +560,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			return;
 		}
 		// draw track bg
-		scurrenttrack.draw(spriteBatch);
+		this.map.draw(spriteBatch);
 		// draw finish line
-		finishline.draw(spriteBatch);
+		this.finishline.draw(spriteBatch);
 		// draw checkpoints
 		if (debugBox2D)
 			for (final Checkpoint checkpoint : checkpoints)
@@ -645,7 +583,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		for (final Enemy e : enemies)
 			e.draw(spriteBatch);
 		// draw car
-		car.draw(spriteBatch);
+		this.car.draw(spriteBatch);
 		// draw tower
 		for (final Tower tower : towers)
 			tower.draw(spriteBatch);
@@ -886,106 +824,46 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		enemy.takeDamage(flame.getDamage());
 	}
 
-	public void updateWaves1() {
+	public void updateWaves() {
 
 		// if all enemies are active (this means no enemy is invisible) and dead
 		if (!threadActive && allEnemiesAreActive() && allEnemiesDead()) {
 			// and the current wave is the maximum wave
-			if (currentwave >= totalwaves) {
+			if (currentwave >= this.level[scoreBoard.getLevel() - 1].getWaves().size) {
 				// and all enemies are dead
 				LevelVictory();
 			} else {
 				// else load the next wave
 				currentwave++;
 				scoreBoard.setWaveNumber(currentwave);
-				System.out.println("Starte Wave " + currentwave);
+				System.out.println(
+						"Starte Wave " + currentwave + " of " + this.level[scoreBoard.getLevel() - 1].getWaves().size);
 
-				if (currentwave < totalwaves)
+				if (currentwave < this.level[scoreBoard.getLevel() - 1].getWaves().size)
 					wavetext = "WAVE " + currentwave;
 				else
 					wavetext = "FINAL WAVE";
+				timeforwavetext = 2f;
 
-				threadActive = true;
-				thread = new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-
-						switch (currentwave) {
-						case 1:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 50,
-									1f, 0, 0f, 0, 0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 20,
-									20, 1f, 0, 0f, 0, 0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 40,
-									30, 1f, 0, 3f, 0, 0.0f, world, map));
-							break;
-						case 2:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 30,
-									0.2f, 0, 0f, 0, 0f, world, map));
-							break;
-						case 3:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 40,
-									0.1f, 0, 0f, 0, 0f, world, map));
-							break;
-						case 4:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 60,
-									0.4f, 0, 0, 0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									60, 0.4f, 0, 0, 0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
-									70, 0.4f, 0, 0, 0, 0, world, map));
-							break;
-						case 5:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									45, 0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
-									50, 0, 0, world, map));
-							break;
-						case 6:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 45,
-									0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									50, 0, 0, world, map));
-
-							break;
-						case 7:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 50,
-									0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									55, 0, 0, world, map));
-
-							break;
-						case 8:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 55,
-									0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									60, 0, 0, world, map));
-							break;
-						case 9:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 60,
-									0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									70, 0, 0, world, map));
-							break;
-						case 10:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 80,
-									0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									90, 0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
-									100, 0, 0, world, map));
-							break;
-						}
-
-						threadActive = false;
-
-					}
-				});
-				thread.start();
+				// fixed runtime error by removing thread? ... What a great solution
+				enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
+						.createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
+				
+//				threadActive = true;
+//				thread = new Thread(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
+//								.createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
+//						threadActive = false;
+//					}
+//				});
+//				thread.start();
 			}
 		}
 	}
+	
 
 	private boolean allEnemiesAreActive() {
 		for (final Enemy enemy : enemies) {
@@ -995,208 +873,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		return true;
 	}
 
-	public void updateWaves2() {
-
-		// if all enemies are active (this means no enemy is invisible) and dead
-		if (!threadActive && allEnemiesAreActive() && allEnemiesDead()) {
-			// and the current wave is the maximum wave
-			if (currentwave >= totalwaves) {
-				// and all enemies are dead
-				LevelVictory();
-			} else {
-				// else load the next wave
-				currentwave++;
-				scoreBoard.setWaveNumber(currentwave);
-				System.out.println("Starte Wave " + currentwave);
-
-				if (currentwave < totalwaves)
-					wavetext = "WAVE " + currentwave;
-				else
-					wavetext = "FINAL WAVE";
-
-				timeforwavetext = 10;
-
-				threadActive = true;
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-
-						switch (currentwave) {
-						case 1:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 30,
-									1f, 3, 1f, 0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 50,
-									10, 0.5f, 4, 1f, 0, 0, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 65,
-									10, 0.2f, 5, 1f, 0, 0, world, map));
-							break;
-						case 2:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 10,
-									0.2f, 2, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									10, 0.2f, 2, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
-									10, 0.2f, 2, 1f, 0, 0.0f, world, map));
-
-							break;
-						case 3:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 50,
-									1f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 55,
-									0, 0.0f, 8, 1f, 0, 0.0f, world, map));
-							break;
-						case 4:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 10,
-									0.1f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
-									0, 0.0f, 2, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									50, 1f, 0, 1f, 0, 0.0f, world, map));
-							break;
-						case 5:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 10,
-									0.1f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
-									0, 0.0f, 4, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									50, 1f, 0, 1f, 0, 0.0f, world, map));
-							break;
-						case 6:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 150,
-									0, 0, world, map));
-							break;
-						case 7:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 0,
-									15, 0, world, map));
-							break;
-						case 8:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 100,
-									1f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 0,
-									0.0f, 10, 3f, 0, 0.0f, world, map));
-							break;
-						case 9:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									200, 0.5f, 0, 1f, 0, 0.0f, world, map));
-							break;
-						case 10:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime(), 20,
-									0.5f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
-									00, 0.5f, 20, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 40,
-									20, 0.5f, 0, 1f, 0, 0.0f, world, map));
-							break;
-						}
-
-					}
-				});
-			}
-		}
-	}
-
-	public void updateWaves3() {
-
-		// if all enemies are active (this means no enemy is invisible) and dead
-		if (!threadActive && allEnemiesAreActive() && allEnemiesDead()) {
-			// and the current wave is the maximum wave
-			if (currentwave >= totalwaves) {
-				// and all enemies are dead
-				GameVictory();
-			} else {
-				// else load the next wave
-				currentwave++;
-				scoreBoard.setWaveNumber(currentwave);
-				System.out.println("Starte Wave " + currentwave);
-
-				if (currentwave < totalwaves)
-					wavetext = "WAVE " + currentwave;
-				else
-					wavetext = "FINAL WAVE";
-
-				timeforwavetext = 10;
-
-				threadActive = true;
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-
-						switch (currentwave) {
-						case 1:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									00, 0f, 0, 1f, 5, 0.2f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 20,
-									00, 0f, 0, 1f, 10, 0.2f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 30,
-									00, 0f, 0, 1f, 10, 0.2f, world, map));
-							break;
-						case 2:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									10, 0.2f, 2, 1f, 5, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									10, 0.2f, 2, 1f, 10, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 25,
-									10, 0.2f, 2, 1f, 0, 0.0f, world, map));
-
-							break;
-						case 3:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									50, 1f, 0, 1f, 10, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 55,
-									0, 0.0f, 8, 1f, 10, 0.0f, world, map));
-							break;
-						case 4:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									10, 0.1f, 0, 1f, 10, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
-									0, 0.0f, 2, 1f, 10, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									50, 1f, 0, 1f, 0, 0.0f, world, map));
-							break;
-						case 5:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									10, 0.1f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 10,
-									0, 0.0f, 4, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									50, 1f, 0, 1f, 0, 20.0f, world, map));
-							break;
-						case 6:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									150, 0, 30, world, map));
-							break;
-						case 7:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									0, 15, 10, world, map));
-							break;
-						case 8:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									100, 1f, 0, 1f, 50, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									0, 0.0f, 10, 3f, 0, 0.0f, world, map));
-							break;
-						case 9:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									200, 0.5f, 0, 1f, 0, 0.0f, world, map));
-							break;
-						case 10:
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 15,
-									200, 0.1f, 0, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									0, 0.1f, 20, 1f, 0, 0.0f, world, map));
-							enemies.addAll(EnemyWaveEntry.createEnemyEntries2(map.getSpawn(), scoreBoard.getTime() + 5,
-									0, 0.1f, 0, 1f, 50, 0.0f, world, map));
-
-							break;
-						}
-
-					}
-				});
-			}
-		}
-	}
 
 	public void startNewLevel() {
 

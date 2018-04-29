@@ -29,21 +29,23 @@ public class CsvFileHandler {
 		}
 		return information;
 	}
-	
+
 	/**
-	 * Read a CSV file and convert it to an Array of Strings which contain the map name
+	 * Read a CSV file and convert it to an Array of Strings which contain the map
+	 * name
 	 * 
 	 * @param file
 	 *            (CSV level file)
 	 * @return All map names in an array
 	 */
-	public static String[] readMapCsvFile(final FileHandle file) {
+	public static String[][] readMapCsvFile(final FileHandle file) {
 		final String[] textLines = file.readString().split("\n");
-		final String[] information = new String[textLines.length - 1];
+		final String[][] information = new String[textLines.length - 1][textLines[0].trim().split(",").length - 1];
 		// skip the first line because it is not important
 		for (int i = 1; i < textLines.length; i++) {
 			final String[] stringArray = textLines[i].trim().split(",");
-			information[i - 1] = stringArray[1];
+			for (int j = 1; j < stringArray.length; j++)
+				information[i - 1][j - 1] = stringArray[j];
 		}
 		return information;
 	}
@@ -54,7 +56,8 @@ public class CsvFileHandler {
 	 * @return Array which contains all CSV level files
 	 */
 	public static FileHandle[] getAllLevelFiles() {
-		return Gdx.files.internal("./bin/level").list();
+		// return Gdx.files.internal("./bin/level").list();
+		return new FileHandle[] { Gdx.files.internal("level/level_01.csv"), Gdx.files.internal("level/level_02.csv"), Gdx.files.internal("level/level_03.csv") };
 	}
 
 }
