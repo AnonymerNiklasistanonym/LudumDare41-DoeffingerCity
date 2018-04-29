@@ -24,7 +24,7 @@ public class TowerMenu implements Disposable {
 
 	float startx = 30;
 	float starty = 0;
-	
+
 	Vector3 mousepos;
 	Tower buildingtower;
 
@@ -38,10 +38,11 @@ public class TowerMenu implements Disposable {
 	private boolean[] towerSelected;
 
 	public TowerMenu(final World world, final ScoreBoard scoreboard) {
-		this.mousepos=new Vector3(0,0,0);
+		this.mousepos = new Vector3(0, 0, 0);
 		this.world = world;
 		this.scoreboard = scoreboard;
-		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton), new Sprite(sniperButton) };
+		this.sprites = new Sprite[] { new Sprite(cannonButton), new Sprite(laserButton), new Sprite(flameButton),
+				new Sprite(sniperButton) };
 		this.towerSelected = new boolean[sprites.length];
 		this.towerUnlocked = new boolean[sprites.length];
 
@@ -74,8 +75,8 @@ public class TowerMenu implements Disposable {
 
 	public void selectTower(int i, final Vector3 mousePos, final Array<Enemy> enemies) {
 		boolean unselect = false;
-		this.mousepos=mousePos;
-		this.enemies=enemies;
+		this.mousepos = mousePos;
+		this.enemies = enemies;
 		if (!towerUnlocked[i])
 			unselect = true;
 
@@ -91,33 +92,32 @@ public class TowerMenu implements Disposable {
 		} else {
 			if (buildingtower != null && buildingtower.body != null)
 				System.out.println("Test 3");
-				world.destroyBody(buildingtower.body);
+			world.destroyBody(buildingtower.body);
 			if (buildingtower != null)
 				buildingtower = null;
 		}
 
 		if (towerSelected[i] && towerUnlocked[i]) {
-			buildingtower=getTower(i);
+			buildingtower = getTower(i);
 			buildingtower.activateRange(true);
 		}
 
 		updateAlpha();
 	}
-	
-	
+
 	public Tower getTower(int i) {
 		switch (i) {
 		case 0:
 			return new MgTower(mousepos.x, mousepos.y, enemies, world);
-			
+
 		case 1:
 			return new LaserTower(mousepos.x, mousepos.y, enemies, world);
-			
+
 		case 2:
 			return new FireTower(mousepos.x, mousepos.y, enemies, world);
 		case 3:
 			return new SniperTower(mousepos.x, mousepos.y, enemies, world);
-			
+
 		}
 		System.out.println("ERROR: not found correct Tower at getTower");
 		return null;
@@ -170,8 +170,7 @@ public class TowerMenu implements Disposable {
 			towerSelected[i] = false;
 		if (buildingtower != null) {
 			System.out.println("Test2");
-			//world.destroyBody(buildingtower.body);
-			
+			// world.destroyBody(buildingtower.body);
 
 		}
 		buildingtower = null;

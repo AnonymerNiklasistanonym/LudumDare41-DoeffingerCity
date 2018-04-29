@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.gamestate.state.PlayState;
 
 public class Flame implements Disposable {
 
@@ -21,8 +20,7 @@ public class Flame implements Disposable {
 	private float lifetime;
 	private boolean killme;
 
-	public Flame(float xPosition, float yPosition, final Sprite sprite, final World world,
-			final float damage) {
+	public Flame(float xPosition, float yPosition, final Sprite sprite, final World world, final float damage) {
 		System.out.println("Bodies in world before adding flame: " + world.getBodyCount());
 		// add flame as dynamic body to the box2D world
 		final BodyDef bodydef = new BodyDef();
@@ -59,12 +57,12 @@ public class Flame implements Disposable {
 		lifetime -= deltaTime;
 		if (lifetime < 0)
 			this.killme = true;
-		
+
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		 sprite.setSize(spriteScale * originalsize, spriteScale * originalsize);
-		 sprite.setOriginCenter();
+		sprite.setSize(spriteScale * originalsize, spriteScale * originalsize);
+		sprite.setOriginCenter();
 		sprite.setPosition(getX(), getY());
 		sprite.draw(spriteBatch);
 	}

@@ -2,7 +2,6 @@ package com.mygdx.game.objects.enemies;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -39,7 +38,6 @@ public class EnemyBicycle extends Enemy {
 		}
 		this.body.setActive(false);
 
-
 		final PolygonShape zBox = new PolygonShape();
 		zBox.setAsBox(spriteAlive.getWidth() * 0.4f, spriteAlive.getHeight() * 0.4f);
 		final FixtureDef fdef = new FixtureDef();
@@ -52,7 +50,7 @@ public class EnemyBicycle extends Enemy {
 		this.body.createFixture(fdef);
 		this.body.setUserData(this);
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.disposeMedia();

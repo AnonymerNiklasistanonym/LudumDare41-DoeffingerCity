@@ -72,7 +72,7 @@ public class PreferencesManager {
 
 	public void clearHighscore() {
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				prefs.putString(HIGHSCORE_NAME + i, "NOBODY");
 				prefs.putInteger(HIGHSCORE_SCORE + i, 0);
 			}
@@ -82,7 +82,7 @@ public class PreferencesManager {
 
 	public void saveHighscore(String[] names, int[] scores) {
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
-			for (int i = 0; 0 < 10; i++) {
+			for (int i = 0; i < 5; i++) {
 				prefs.putString(HIGHSCORE_NAME + i, names[i]);
 				prefs.putInteger(HIGHSCORE_SCORE + i, scores[i]);
 				prefs.flush();
@@ -92,7 +92,7 @@ public class PreferencesManager {
 
 	public HighscoreEntry[] retrieveHighscore() {
 		if (Gdx.app.getType() != ApplicationType.WebGL) {
-			final HighscoreEntry[] entries = new HighscoreEntry[10];
+			final HighscoreEntry[] entries = new HighscoreEntry[5];
 			for (int i = 0; i < entries.length; i++) {
 				entries[i] = new HighscoreEntry(prefs.getInteger(HIGHSCORE_SCORE + i),
 						prefs.getString(HIGHSCORE_NAME + i));
@@ -151,7 +151,7 @@ public class PreferencesManager {
 		}
 	}
 
-	public boolean scoreIsInTop10(final int score) {
+	public boolean scoreIsInTop5(final int score) {
 		for (final HighscoreEntry entry : retrieveHighscore()) {
 			if (entry.getScore() < score)
 				return true;

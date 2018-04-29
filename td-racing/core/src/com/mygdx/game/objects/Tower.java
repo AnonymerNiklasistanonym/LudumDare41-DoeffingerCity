@@ -160,7 +160,7 @@ public abstract class Tower implements Disposable {
 			final Texture spriteUpperBody, final Texture spriteFiring, final Array<Enemy> enemies, final World world,
 			final int range, final Sound soundShoot) {
 		this.soundShoot = soundShoot;
-		this.toremove=false;
+		this.toremove = false;
 		this.timesincelastshot = 10;
 		this.enemies = enemies;
 		this.healthBar = false;
@@ -184,11 +184,13 @@ public abstract class Tower implements Disposable {
 		// center = new Vector2(xPosition + middleOfSpriteBody, yPosition +
 		// middleOfSpriteBody);
 
-		while(world.isLocked()) {}
+		while (world.isLocked()) {
+		}
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.KinematicBody;
 		bodydef.position.set(xPosition, yPosition);
-		while (world.isLocked()) {}
+		while (world.isLocked()) {
+		}
 		body = world.createBody(bodydef);
 		final PolygonShape towerBaseBox = new PolygonShape();
 		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,

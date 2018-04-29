@@ -31,6 +31,8 @@ import com.mygdx.game.TowerMenu;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
+import com.mygdx.game.level.Level;
+import com.mygdx.game.level.LevelHandler;
 import com.mygdx.game.objects.Car;
 import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Enemy;
@@ -130,13 +132,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public Array<EnemyWaveEntry> currentEnemyWaves;
 	private boolean pause = false;
 	private int speedFactor;
+	private final Level[] level;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
-
 		super(gameStateManager, STATE_NAME);
+		
+		this.level = LevelHandler.loadLevels();
+		
 		fpscounter = new FPSCounter();
 		System.out.println("Play state entered");
-		MainGame.waveFont.getData().setScale(0.10f);
+		MainGame.font70.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this, !deploy);
 		scoreBoard.reset(0);
 
@@ -163,7 +168,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
 		MgTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-		
+
 		SniperTower.groundTower = new Texture(Gdx.files.internal("tower/tower_sniper_bottom.png"));
 		SniperTower.upperTower = new Texture(Gdx.files.internal("tower/tower_sniper_upper.png"));
 		SniperTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_sniper_firing.png"));
@@ -471,6 +476,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					towerMenu.unlockTower(i);
 			}
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+			this.scoreBoard.addScore(1000);
+		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
 			this.speedFactor = 1;
@@ -671,9 +679,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
 		}
 
-		if (timeforwavetext > 0)
-			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
-
+//		if (timeforwavetext > 0)
+//			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
+//TODO: Wave Text
 		drawTutorial(spriteBatch);
 		spriteBatch.end();
 
@@ -807,7 +815,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		case 3:
 			
 			break;
-
 		default:
 			break;
 		}
@@ -951,7 +958,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void playerIsDeadCallback() {
 		pause = true;
 		// if score can make it in the top 10 go to the name input else game over
-		if (preferencesManager.scoreIsInTop10(scoreBoard.getScore()))
+		if (preferencesManager.scoreIsInTop5(scoreBoard.getScore()))
 			gameStateManager.setGameState(new HighscoreNameState(gameStateManager, scoreBoard.getScore()));
 		else
 			gameStateManager.setGameState(new GameOverState(gameStateManager));
