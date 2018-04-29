@@ -667,9 +667,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// draw pitstop
 		pitStop.draw(spriteBatch);
 
-		debugCollisionRender(spriteBatch);
-		debugEntfernungRender(spriteBatch);
-		debugWayRender(spriteBatch);
+		renderDebugCollision(spriteBatch);
+		renderDebugEntfernung(spriteBatch);
+		renderDebugWay(spriteBatch);
 
 		towerMenu.draw(spriteBatch);
 		scoreBoard.draw(spriteBatch);
@@ -682,7 +682,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 //		if (timeforwavetext > 0)
 //			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
 //TODO: Wave Text
-		drawTutorial(spriteBatch);
+		renderTutorial(spriteBatch);
 		spriteBatch.end();
 
 		if (debugBox2D)
@@ -690,7 +690,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	}
 
-	private void debugWayRender(SpriteBatch spriteBatch) {
+	private void renderDebugWay(SpriteBatch spriteBatch) {
 		if (debugWay) {
 			MainGame.font.getData().setScale(0.06f);
 			for (final Enemy e : enemies) {
@@ -704,7 +704,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 	}
 
-	private void debugEntfernungRender(SpriteBatch spriteBatch) {
+	private void renderDebugEntfernung(SpriteBatch spriteBatch) {
 		if (debugEntfernung) {
 			final Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.02f);
@@ -740,7 +740,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 	}
 
-	private void debugCollisionRender(SpriteBatch spriteBatch) {
+	private void renderDebugCollision(SpriteBatch spriteBatch) {
 		if (debugCollision) {
 			final Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.05f);
@@ -760,7 +760,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 	}
 
-	private void drawTutorial(SpriteBatch spriteBatch) {
+	private void renderTutorial(SpriteBatch spriteBatch) {
 		//Draws the Tutorial
 		//-1: Tutorial disabled/finished
 		//0: Learn how to drive the car
