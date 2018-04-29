@@ -18,7 +18,7 @@ public class LaserTower extends Tower {
 	public static Sound soundShoot;
 
 	// static final properties
-	public static final int RANGE = 6;
+	public static final int RANGE = 7;
 	public static final int COST = 150;
 
 	public LaserTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final World world) {

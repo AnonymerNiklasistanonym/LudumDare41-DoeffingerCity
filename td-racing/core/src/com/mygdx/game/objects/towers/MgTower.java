@@ -18,7 +18,7 @@ public class MgTower extends Tower {
 	public static Sound soundShoot;
 
 	// static final properties
-	public static final int RANGE = 10;
+	public static final int RANGE = 11;
 	public static final int COST = 100;
 
 	public MgTower(final float xPosition, final float yPosition, final Array<Enemy> enemies, final World world) {
@@ -26,7 +26,7 @@ public class MgTower extends Tower {
 		this.maxHealth = -1;
 		this.speed = 0.4f;
 		this.firingSpriteTime = 0.1f;
-		this.power = 1.5f;
+		this.power = 1f;
 		this.turnspeed = 50;
 		this.cost = COST;
 		this.color = new Color(0.5f, 0.1f, 0.7f, 0.3f);

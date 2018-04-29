@@ -94,7 +94,7 @@ public abstract class Enemy implements Disposable {
 
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
-		fdef.density = 0.3f;
+		fdef.density = 0.6f;
 		// fdef.isSensor=true;
 
 		this.body.createFixture(fdef);
