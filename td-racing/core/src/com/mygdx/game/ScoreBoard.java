@@ -13,18 +13,18 @@ public class ScoreBoard {
 	private int lapNumber;
 	private int killCount;
 	private float healthPoints;
-	private final PlayState playState;
+	private final ScoreBoardCallbackInterface playState;
 	private final int COLUMN;
 	private int level;
 	private boolean debug;
 
-	public ScoreBoard(final PlayState playState, final boolean debug) {
+	public ScoreBoard(final ScoreBoardCallbackInterface playState, final boolean debug) {
 		this.playState = playState;
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 		MainGame.fontOutline.getData().setScale(PlayState.PIXEL_TO_METER);
 
 		COLUMN = 53;
-		this.healthPoints = 100;
+		healthPoints = 100;
 		this.debug = debug;
 		reset(0);
 	}
@@ -33,7 +33,7 @@ public class ScoreBoard {
 
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 
-		if (this.debug) {
+		if (debug) {
 			MainGame.fontOutline.setColor(1, 0, 0, 1);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Small Enemy: F", 0.2f, 32);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Fat Enemy: G", 0.2f, 31);
@@ -65,70 +65,70 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
 		MainGame.font.draw(spriteBatch, "PAUSE: P", 58, 33);
 
-		MainGame.font.draw(spriteBatch, "Score: " + (int) this.score, 0.2f, 35);
-		MainGame.font.draw(spriteBatch, "Kills: " + (int) this.killCount, 0.2f, 34);
+		MainGame.font.draw(spriteBatch, "Score: " + (int) score, 0.2f, 35);
+		MainGame.font.draw(spriteBatch, "Kills: " + (int) killCount, 0.2f, 34);
 
-		MainGame.font.draw(spriteBatch, "Level: " + this.level, 0.2f, 2);
-		MainGame.font.draw(spriteBatch, "Wave: " + this.waveNumber, 0.2f, 1);
+		MainGame.font.draw(spriteBatch, "Level: " + level, 0.2f, 2);
+		MainGame.font.draw(spriteBatch, "Wave: " + waveNumber, 0.2f, 1);
 
-		MainGame.font.draw(spriteBatch, "Life: " + (int) this.healthPoints, COLUMN, 3);
-		MainGame.font.draw(spriteBatch, "Money: " + (int) this.money + " $", COLUMN, 2);
-		MainGame.font.draw(spriteBatch, "Lap: " + (int) this.currentTime + " sec (#" + this.lapNumber + ")", COLUMN, 1);
+		MainGame.font.draw(spriteBatch, "Life: " + (int) healthPoints, COLUMN, 3);
+		MainGame.font.draw(spriteBatch, "Money: " + (int) money + " $", COLUMN, 2);
+		MainGame.font.draw(spriteBatch, "Lap: " + (int) currentTime + " sec (#" + lapNumber + ")", COLUMN, 1);
 	}
 
 	public void reduceLife(float damage) {
-		this.healthPoints -= damage;
-		if (this.healthPoints <= 0)
+		healthPoints -= damage;
+		if (healthPoints <= 0)
 			playState.playerIsDeadCallback();
 	}
 
 	public void update(final float deltaTime) {
-		this.wholeTime += deltaTime;
-		this.currentTime += deltaTime;
+		wholeTime += deltaTime;
+		currentTime += deltaTime;
 	}
 
 	public void killedEnemy(final float score, final float money) {
-		this.killCount++;
+		killCount++;
 		this.score += score;
 		this.money += money;
 	}
 
 	public void newLap(final int newMoney) {
-		this.lapNumber++;
-		this.currentTime = 0;
-		this.money += newMoney;
+		lapNumber++;
+		currentTime = 0;
+		money += newMoney;
 	}
 
 	public void newWave() {
-		this.waveNumber++;
+		waveNumber++;
 	}
 
 	public void reset(final int money) {
-		this.currentTime = 0f;
-		this.score = 0;
-		this.killCount = 0;
+		currentTime = 0f;
+		score = 0;
+		killCount = 0;
 		this.money = money;
-		this.wholeTime = 0;
-		this.currentTime = 0f;
-		this.lapNumber = 0;
-		this.waveNumber = 0;
-		this.healthPoints = 100;
+		wholeTime = 0;
+		currentTime = 0f;
+		lapNumber = 0;
+		waveNumber = 0;
+		healthPoints = 100;
 	}
 
 	public int getMoney() {
-		return (int) this.money;
+		return (int) money;
 	}
 
-	public void addMoney(final int cost) {
-		this.money += cost;
+	public void addMoney(final int money) {
+		this.money += money;
 	}
 
 	public float getTime() {
-		return this.wholeTime;
+		return wholeTime;
 	}
 
 	public int getScore() {
-		return (int) this.score;
+		return (int) score;
 	}
 
 	public float getCurrentTime() {
@@ -143,27 +143,27 @@ public class ScoreBoard {
 		this.waveNumber = waveNumber;
 	}
 
-	public void setLevel(final int i) {
-		this.level = i;
+	public void setLevel(final int level) {
+		this.level = level;
 	}
 
 	public float getHelath() {
-		return this.healthPoints;
+		return healthPoints;
 	}
 
 	public int getLevel() {
-		return this.level;
+		return level;
 	}
 
 	public void addScore(int i) {
-		this.score += i;
+		score += i;
 	}
 
 	public void toggleDebugDraw() {
-		if (this.debug)
-			this.debug = false;
+		if (debug)
+			debug = false;
 		else
-			this.debug = true;
+			debug = true;
 	}
 
 }

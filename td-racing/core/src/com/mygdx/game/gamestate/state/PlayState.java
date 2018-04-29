@@ -28,6 +28,7 @@ import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
 import com.mygdx.game.PreferencesManager;
 import com.mygdx.game.ScoreBoard;
+import com.mygdx.game.ScoreBoardCallbackInterface;
 import com.mygdx.game.TowerMenu;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
@@ -50,7 +51,7 @@ import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
 import com.mygdx.game.objects.towers.SniperTower;
 
-public class PlayState extends GameState implements CollisionCallbackInterface {
+public class PlayState extends GameState implements CollisionCallbackInterface, ScoreBoardCallbackInterface {
 
 	public static boolean soundon = false;
 	public static Thread thread;
@@ -214,6 +215,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		debugEntfernung = false;
 
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
+		
+		timeforwavetext = 0;
+		wavetext = "Loading Level";
 
 		// pitStop.setPosition(100, 100);
 
@@ -622,14 +626,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		towerMenu.draw(spriteBatch);
 		scoreBoard.draw(spriteBatch);
 
-		if (deploy == false) {
-			String sfps = "FPS: " + fpscounter.getFrames();
-			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
-		}
+		if (deploy == false)
+			MainGame.font.draw(spriteBatch, "FPS: " + fpscounter.getFrames(), 30, 35.5f);
 
-		// if (timeforwavetext > 0)
-		// MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
-		// TODO: Wave Text
+		if (timeforwavetext > 0)
+			MainGame.font70.draw(spriteBatch, wavetext, 20, 25);
+
 		renderTutorial(spriteBatch);
 		spriteBatch.end();
 
@@ -802,7 +804,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public int checkPointsCleared() {
 		int i = 0;
-		for (Checkpoint c : checkpoints) {
+		for (final Checkpoint c : checkpoints) {
 			if (c.isActivated())
 				i++;
 		}
@@ -813,13 +815,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (pause)
 			return;
 
-		float frameTime = Math.min(deltaTime, 0.25f);
-		physicsaccumulator += frameTime;
+		physicsaccumulator += Math.min(deltaTime, 0.25f);
 		while (physicsaccumulator >= TIME_STEP) {
 			world.step(TIME_STEP * this.speedFactor, 6, 2);
 			physicsaccumulator -= TIME_STEP;
 		}
-		final Array<Enemy> toremove = new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
 			if (enemy.isJustDied()) {
 				enemy.setJustDied(false);
@@ -827,14 +827,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 			}
 			if (enemy.isDelete()) {
-				toremove.add(enemy);
 				world.destroyBody(enemy.getBody());
+				enemies.removeValue(enemy, true);
 			}
 		}
-		for (final Enemy e : toremove) {
-			enemies.removeValue(e, true);
-		}
-
+		
 		for (final Tower t : towers) {
 			Array<Body> ab = new Array<Body>();
 			Array<Body> rb = new Array<Body>();
@@ -888,8 +885,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	@Override
 	public void collisionCarEnemy(final Car car, final Enemy enemy) {
-		// if the new health after the hit is smaller than one and sounds are on play
-		// sound
+		// if the new health after the hit is smaller than 0 play kill sound
 		if (car.hitEnemy(enemy) < 0 && soundon)
 			splatt.play(1, MathUtils.random(0.5f, 2f), 0);
 	}
@@ -938,21 +934,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		lapFinished();
 	}
 
-	public void playerIsDeadCallback() {
-		pause = true;
-		// if score can make it in the top 10 go to the name input else game over
-		if (preferencesManager.scoreIsInTop5(scoreBoard.getScore()))
-			gameStateManager.setGameState(new HighscoreNameState(gameStateManager, scoreBoard.getScore()));
-		else
-			gameStateManager.setGameState(new GameOverState(gameStateManager));
-	}
-
 	@Override
 	public void collisionFlameEnemy(final Enemy enemy, final Flame flame) {
 		enemy.takeDamage(flame.getDamage());
 	}
 
-	public void updateWaves() {
+	private void updateWaves() {
 
 		// if all enemies are active (this means no enemy is invisible) and dead
 		if (!threadActive && allEnemiesAreActive() && allEnemiesDead()) {
@@ -964,15 +951,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				// else load the next wave
 				currentwave++;
 				scoreBoard.setWaveNumber(currentwave);
-				
 
 				if (currentwave < this.level[scoreBoard.getLevel() - 1].getWaves().size)
 					wavetext = "WAVE " + currentwave;
 				else
 					wavetext = "FINAL WAVE";
 				timeforwavetext = 2f;
-
-				// fixed runtime error by removing thread? ... What a great solution
 				
 				long time=TimeUtils.millis();
 				enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
@@ -981,18 +965,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				
 				System.out.println(
 						"Starte Wave " + currentwave + " of " + this.level[scoreBoard.getLevel() - 1].getWaves().size+" Time to load: " +time+" ms" );
-				// threadActive = true;
-				// thread = new Thread(new Runnable() {
-				//
-				// @Override
-				// public void run() {
-				// enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave -
-				// 1)
-				// .createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
-				// threadActive = false;
-				// }
-				// });
-				// thread.start();
 			}
 		}
 	}
@@ -1005,11 +977,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		return true;
 	}
 
-	public void startNewLevel() {
-
-	}
-
-	public void LevelVictory() {
+	private void LevelVictory() {
 		System.out.println("Level finished " + MainGame.level);
 		wavetext = "LEVEL CLEAR!";
 		timeforwavetext = 2f;
@@ -1021,13 +989,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	}
 
-	public void GameVictory() {
+	private void GameVictory() {
 		wongame = true;
 		if (soundon)
 			victorysound.play();
 	}
 
-	public boolean allEnemiesDead() {
+	private boolean allEnemiesDead() {
 		for (final Enemy e : enemies) {
 			if (!e.isTot())
 				return false;
@@ -1037,5 +1005,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 	public static void enemyHitsYourHome(float damage) {
 		scoreBoard.reduceLife(damage);
+	}
+
+	@Override
+	public void playerIsDeadCallback() {
+		pause = true;
+		// if score can make it in the top 10 go to the name input else game over
+		if (preferencesManager.scoreIsInTop5(scoreBoard.getScore()))
+			gameStateManager.setGameState(new HighscoreNameState(gameStateManager, scoreBoard.getScore()));
+		else
+			gameStateManager.setGameState(new GameOverState(gameStateManager));
+
 	}
 }
