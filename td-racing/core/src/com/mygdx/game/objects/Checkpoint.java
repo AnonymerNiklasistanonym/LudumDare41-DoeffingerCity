@@ -34,9 +34,6 @@ public abstract class Checkpoint extends BodyDef {
 		this.body.setUserData(this);
 	}
 
-	public void draw(final SpriteBatch spriteBatch) {
-	}
-
 	public boolean isActivated() {
 		return activated;
 	}

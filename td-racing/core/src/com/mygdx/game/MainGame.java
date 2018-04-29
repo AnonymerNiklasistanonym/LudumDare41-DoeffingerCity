@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.state.MenuState;
-import com.mygdx.game.level.Level;
-import com.mygdx.game.level.LevelHandler;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -38,9 +36,6 @@ public class MainGame extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		final Level[] levels = LevelHandler.loadLevels();
-		for (int i = 0; i < levels.length; i++)
-			levels[i].check(i);
 		fontBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_big.fnt"));
 		fontBig.setUseIntegerPositions(false);
 		fontUpperCaseBig = new BitmapFont(Gdx.files.internal("fonts/font_cornerstone_upper_case_big.fnt"));

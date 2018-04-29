@@ -14,8 +14,8 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public class Car implements Disposable {
 
-	private Body body;
-	private Sprite sprite;
+	private final Body body;
+	private final Sprite sprite;
 	private final float maxspeed = 15;
 	private final float acceleration = 2000f;
 	private final float brakepower = 5000f;
@@ -43,10 +43,6 @@ public class Car implements Disposable {
 
 		// turn the car at the beginning
 		this.body.setTransform(body.getPosition(), (float) Math.toRadians(180));
-
-		System.out.println("Car is at " + xPostion + ", " + yPosition);
-		System.out.println("Car is at " + getX() + ", " + getY());
-
 	}
 
 	public void accelarate() {
