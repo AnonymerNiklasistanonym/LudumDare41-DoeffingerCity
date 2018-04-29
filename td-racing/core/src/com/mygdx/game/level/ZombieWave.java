@@ -18,11 +18,11 @@ public class ZombieWave {
 		this.lincolnZombieNumber = lincolnZombieNumber;
 		this.lincolnTimeDelta = lincolnTimeDelta;
 	}
-	
+
 	public float getEntryPoint() {
 		return entryPoint;
 	}
-	
+
 	public int getSmallZombieNumber() {
 		return smallZombieNumber;
 	}
@@ -54,5 +54,14 @@ public class ZombieWave {
 	public float getLincolnTimeDelta() {
 		return lincolnTimeDelta;
 	}
-	
+
+	public void check(final int i) {
+		System.out.println(">>>> ZombieWave #" + (i + 1));
+		System.out.println("Time after wave started: " + this.entryPoint + " Small Zombie #: " + this.smallZombieNumber
+				+ " Small time delta: " + this.smallTimeDelta + " Fat Zombie #: " + this.fatZombieNumber
+				+ " Fat time delta: " + this.fatZombieDelta + " Bicycle Zombie #: " + this.bycicleZombieNumber
+				+ "Bicycle time delta: " + this.bycicleTimeDelta + " Lincoln Zombie #: " + this.lincolnZombieNumber
+				+ " Lincoln time delta: " + this.lincolnTimeDelta);
+	}
+
 }

@@ -36,8 +36,7 @@ public class GameOverState extends GameState {
 		super(gameStateManager, STATE_NAME);
 
 		// set font scale to the correct size and disable to use integers for scaling
-		MainGame.fontUpperCaseBig.getData().setScale(0.5f);
-		MainGame.fontUpperCaseBig.setUseIntegerPositions(false);
+		MainGame.fontUpperCaseBig.getData().setScale(1);
 
 		// set camera to a scenery of 1280x720
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
@@ -56,7 +55,7 @@ public class GameOverState extends GameState {
 		// calculate text coordinates
 		this.loadingText = "GAME OVER";
 		this.loadingTextPosition = GameStateMethods.calculateCenteredTextPositon(MainGame.fontUpperCaseBig, loadingText,
-				MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT * 4 / 3);
+				MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT / 5 * 8);
 
 		menuButtons = new MenuButton[] {
 				new MenuButtonBig(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 3, "RESTART LEVEL",

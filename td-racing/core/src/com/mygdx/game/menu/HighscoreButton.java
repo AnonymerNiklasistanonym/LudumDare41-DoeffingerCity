@@ -25,17 +25,18 @@ public class HighscoreButton {
 		this.button.setPosition(xPosition - this.button.getWidth() / 2, yPosition - this.button.getHeight() / 2);
 		this.fontXNumber = xPosition - this.button.getWidth() / 2 + 20;
 		this.fontYNumber = yPosition + this.button.getHeight() / 5 * 2;
-		this.fontXName = xPosition - this.button.getWidth() / 3;
+		this.fontXName = xPosition - this.button.getWidth() / 9 * 3 - 10;
 		this.fontYName = yPosition + this.button.getHeight() / 5 * 2;
-		this.fontXScore = xPosition + this.button.getWidth() / 8;
+		this.fontXScore = xPosition;
 		this.fontYScore = yPosition + this.button.getHeight() / 5 * 2;
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
 		this.button.draw(spriteBatch);
-		MainGame.highscoreFont.draw(spriteBatch, "" + this.place, this.fontXNumber, this.fontYNumber);
-		MainGame.highscoreFont.draw(spriteBatch, this.name, this.fontXName, this.fontYName);
-		MainGame.highscoreFont.draw(spriteBatch, "" + this.score, this.fontXScore, this.fontYScore);
+		MainGame.font70.getData().setScale(1);
+		MainGame.font70.draw(spriteBatch, "" + this.place, this.fontXNumber, this.fontYNumber);
+		MainGame.font70.draw(spriteBatch, this.name, this.fontXName, this.fontYName);
+		MainGame.font70.draw(spriteBatch, "" + this.score, this.fontXScore, this.fontYScore);
 	}
 
 }
