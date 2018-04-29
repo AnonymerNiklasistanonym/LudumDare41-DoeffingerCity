@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
 import com.mygdx.game.EnemyWaveEntry;
@@ -967,8 +968,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				// else load the next wave
 				currentwave++;
 				scoreBoard.setWaveNumber(currentwave);
-				System.out.println(
-						"Starte Wave " + currentwave + " of " + this.level[scoreBoard.getLevel() - 1].getWaves().size);
+				
 
 				if (currentwave < this.level[scoreBoard.getLevel() - 1].getWaves().size)
 					wavetext = "WAVE " + currentwave;
@@ -977,9 +977,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				timeforwavetext = 2f;
 
 				// fixed runtime error by removing thread? ... What a great solution
+				
+				long time=TimeUtils.millis();
 				enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
 						.createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
-
+				time=TimeUtils.timeSinceMillis(time);
+				
+				System.out.println(
+						"Starte Wave " + currentwave + " of " + this.level[scoreBoard.getLevel() - 1].getWaves().size+" Time to load: " +time+" ms" );
 				// threadActive = true;
 				// thread = new Thread(new Runnable() {
 				//
