@@ -22,8 +22,8 @@ public class TowerMenu implements Disposable {
 	public static Texture flameButton;
 	public static Texture sniperButton;
 
-	float startx = 30;
-	float starty = 0;
+	public float startx = 30;
+	public float starty = 0;
 
 	Vector3 mousepos;
 	Tower buildingtower;

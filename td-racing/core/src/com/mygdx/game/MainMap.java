@@ -26,6 +26,7 @@ public class MainMap {
 	public Node[][] nodes2DList;
 	Array<EnemyWaveEntry> enemyWave;
 	Vector2 spawn;
+	public Vector2 zielpos;
 
 	public MainMap(String mapName, World world, Body finishLine) {
 
@@ -157,6 +158,8 @@ public class MainMap {
 			zielY = vector.y - vector.y % 10;
 		if (vector.y % 10 >= 5)
 			zielY = vector.y + (10 - vector.y % 10);
+
+		zielpos = new Vector2(zielX, zielY);
 
 		for (final Node node : nodesList) {
 			if (node.getX() == zielX * PlayState.METER_TO_PIXEL && node.getY() == zielY * PlayState.METER_TO_PIXEL) {
