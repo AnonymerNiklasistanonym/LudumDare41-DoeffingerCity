@@ -64,5 +64,6 @@ public class Wave {
 
 		}
 
-	return allEnemies;
-}}
+		return allEnemies;
+	}
+}

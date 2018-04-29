@@ -14,20 +14,22 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public class Car implements Disposable {
 
+	private static final float SPEED_MAX = 15;
+	private static final float ACCELERATION_FORWARD = 2000f;
+	private static final float BRAKE_POWER = 5000f;
+	private static final float ACCELERATION_BACK = 1000f;
+	private static final float STEER_POWER = 1500;
+
 	private final Body body;
 	private final Sprite sprite;
-	private final float maxspeed = 15;
-	private final float acceleration = 2000f;
-	private final float brakepower = 5000f;
-	private final float backacc = 1000f;
-	private final float steerpower = 1500;
-	private float deltaTime = 0;
+
+	private float deltaTime;
 
 	public Car(final World world, final Sprite sprite, final float xPostion, final float yPosition) {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(xPostion * PlayState.PIXEL_TO_METER, yPosition * PlayState.PIXEL_TO_METER);
-		this.body = world.createBody(bodydef);
+		body = world.createBody(bodydef);
 		final PolygonShape carBox = new PolygonShape();
 		carBox.setAsBox(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		final FixtureDef fdef = new FixtureDef();
@@ -36,42 +38,44 @@ public class Car implements Disposable {
 		fdef.friction = 1f;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
-		this.body.createFixture(fdef);
-		this.body.setUserData(this);
-		this.body.setAngularDamping(2);
+		body.createFixture(fdef);
+		body.setUserData(this);
+		body.setAngularDamping(2);
 		this.sprite = sprite;
+		deltaTime = 0;
 
 		// turn the car at the beginning
-		this.body.setTransform(body.getPosition(), (float) Math.toRadians(180));
+		body.setTransform(body.getPosition(), (float) Math.toRadians(180));
 	}
 
 	public void accelarate() {
-		final Vector2 acc = new Vector2(acceleration * deltaTime, 0);
+		final Vector2 acc = new Vector2(ACCELERATION_FORWARD * deltaTime, 0);
 		acc.rotateRad(body.getAngle());
 		body.applyForceToCenter(acc, true);
 	}
 
 	public void brake() {
-		final Vector2 acc = new Vector2(((getForwardVelocity().x >= 0) ? brakepower : backacc) * -1 * deltaTime, 0);
+		final Vector2 acc = new Vector2(
+				((getForwardVelocity().x >= 0) ? BRAKE_POWER : ACCELERATION_BACK) * -1 * deltaTime, 0);
 		acc.rotateRad(body.getAngle());
 		body.applyForceToCenter(acc, true);
 	}
 
 	public void steerLeft() {
-		this.body.applyTorque(this.steerpower * this.deltaTime * getTurnFactor(), true);
+		body.applyTorque(STEER_POWER * deltaTime * getTurnFactor(), true);
 	}
 
 	public void steerRight() {
-		this.body.applyTorque(this.steerpower * -1 * this.deltaTime * getTurnFactor(), true);
+		body.applyTorque(STEER_POWER * -1 * deltaTime * getTurnFactor(), true);
 	}
 
-	public float getNormalizedSpeed() {
+	private float getNormalizedSpeed() {
 		final float mult = (getForwardVelocity().x < 0) ? -1 : 1;
-		final float ns = getForwardVelocity().x / maxspeed;
+		final float ns = getForwardVelocity().x / SPEED_MAX;
 		return ns * mult;
 	}
 
-	public float getTurnFactor() {
+	private float getTurnFactor() {
 		final float mult = (getForwardVelocity().x < 0) ? -1 : 1;
 		final float x = Math.abs(getNormalizedSpeed() * 2);
 		final float factor = (float) (1 - Math.exp(-3 * MathUtils.clamp(x, 0.05f, 1)));
@@ -84,13 +88,13 @@ public class Car implements Disposable {
 
 	public void update(final float deltaTime) {
 		this.deltaTime = deltaTime;
-		reduceToMaxSpeed(this.maxspeed);
+		reduceToMaxSpeed(SPEED_MAX);
 		killLateral(0.95f);
 		sprite.setPosition(getX(), getY());
 		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 	}
 
-	public void reduceToMaxSpeed(float maxspeed) {
+	private void reduceToMaxSpeed(float maxspeed) {
 		float speed = getForwardVelocity().x;
 		if (speed < maxspeed * -1)
 			speed = maxspeed * -1;
@@ -102,12 +106,12 @@ public class Car implements Disposable {
 		body.setLinearVelocity(newSpeed);
 	}
 
-	public void killLateral(float drift) {
+	private void killLateral(float drift) {
 		float lat = getVelocityVector().dot(getOrthogonal());
 		body.applyLinearImpulse(getOrthogonal().scl(drift).scl(lat).scl(-1), body.getPosition(), true);
 	}
 
-	public Vector2 getForwardVelocity() {
+	private Vector2 getForwardVelocity() {
 		final Vector2 velo = getVelocityVector();
 		velo.rotateRad(body.getAngle() * -1);
 		return velo;
@@ -126,16 +130,16 @@ public class Car implements Disposable {
 	}
 
 	public Vector2 getForward() {
-		return new Vector2(this.body.getAngle(), 0);
+		return new Vector2(body.getAngle(), 0);
 	}
 
-	public Vector2 getVelocityVector() {
+	private Vector2 getVelocityVector() {
 		return body.getLinearVelocity();
 	}
 
-	public Vector2 getOrthogonal() {
+	private Vector2 getOrthogonal() {
 		final Vector2 ort = new Vector2(1, 0);
-		ort.rotateRad(this.body.getAngle());
+		ort.rotateRad(body.getAngle());
 		ort.rotate90(1);
 		return ort;
 	}
@@ -147,7 +151,7 @@ public class Car implements Disposable {
 
 	@Override
 	public void dispose() {
-		this.sprite.getTexture().dispose();
+		sprite.getTexture().dispose();
 	}
 
 }

@@ -21,83 +21,96 @@ import com.mygdx.game.gamestate.state.PlayState;
 
 public abstract class Enemy implements Disposable {
 
-	protected final Sprite spriteAlive;
-	protected final Sprite spriteDead;
-	protected final Sprite spriteDamage;
+	public static EnemyCallbackInterface callbackInterface;
 
+	private static final float DAMAGE = 2;
+	private static final float HEALTH = 10;
+	private static final float MONEY = 1;
+	private static final float SPEED = 80;
+	private static final float SCORE = 10;
+
+	private final Sprite sprite;
+	private final Sprite spriteDamage;
+	private final Texture textureDead;
 	private final float time;
 
-	protected float health = 0;
-	protected float money = 1;
-	protected float score = 10;
-	protected float speed = 80;
+	protected float health;
+	protected float money;
+	protected float score;
+	protected float speed;
 	protected float damage;
 
-	protected Body body;
+	private Body body;
 	private MainMap map;
 	private LinkedList<Node> weg;
 	private boolean justDied = false;
 	private boolean delete;
 	private boolean tot = false;
-	private float distancetonode = 50f;
+	private final float distancetonode;
 	private boolean activated;
 	private float wasHitTime;
 	private float hitRandomX;
 	private float hitRandomY;
 	private Color color;
 
-	public static boolean worldIsLocked;
+	public Enemy(final float xPosition, final float yPosition, final World world, final Texture alive,
+			final Texture deadsprite, final Texture damagesprite, final MainMap map, final float time) {
 
-	public Enemy(float x, float y, World w, Texture sprite, Texture deadsprite, Texture damagesprite, MainMap map,
-			final float time) {
-		final Sprite spriteSprite = new Sprite(sprite);
-		spriteSprite.setSize(spriteSprite.getWidth() * PlayState.PIXEL_TO_METER,
-				spriteSprite.getHeight() * PlayState.PIXEL_TO_METER);
-		spriteSprite.setOriginCenter();
+		textureDead = deadsprite;
 
-		final Sprite damageSprite = new Sprite(damagesprite);
-		damageSprite.setSize(damagesprite.getWidth() * PlayState.PIXEL_TO_METER,
-				damagesprite.getHeight() * PlayState.PIXEL_TO_METER);
-		damageSprite.setOriginCenter();
+		sprite = new Sprite(alive);
+		sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER, sprite.getHeight() * PlayState.PIXEL_TO_METER);
+		sprite.setOriginCenter();
 
-		this.spriteDead = new Sprite(deadsprite);
-		spriteDead.setSize(spriteDead.getWidth() * PlayState.PIXEL_TO_METER,
-				spriteDead.getHeight() * PlayState.PIXEL_TO_METER);
-		spriteDead.setOriginCenter();
-		this.speed = 80;
-		this.health = 10;
-		this.spriteAlive = spriteSprite;
-		this.spriteDamage = damageSprite;
-		this.score = 1000000;
-		this.activated = false;
+		spriteDamage = new Sprite(damagesprite);
+		spriteDamage.setSize(spriteDamage.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteDamage.getHeight() * PlayState.PIXEL_TO_METER);
+		spriteDamage.setOriginCenter();
+
+		health = HEALTH;
+		money = MONEY;
+		score = SCORE;
+		speed = SPEED;
+		damage = DAMAGE;
+
+		// deactivate enemies on creation
+		activated = false;
+
+		// give them a time when the should spawn
 		this.time = time;
 
+		System.out.println("Enemy time: " + time);
+
+		// create a random color for every enemy
 		this.color = new Color(MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), 0.7f);
 
-		createBody(x, y, w);
+		// create body for box2D
+		createBody(xPosition, yPosition, world);
+
 		this.map = map;
-		this.findWay();
+
+		distancetonode = sprite.getWidth() * 4;
+		findWay();
 	}
 
-	protected void createBody(float x, float y, World w) {
+	protected FixtureDef createFixture() {
+		final CircleShape enemyCircle = new CircleShape();
+		enemyCircle.setRadius(sprite.getHeight() * 0.35f);
+		final FixtureDef fdef = new FixtureDef();
+		fdef.shape = enemyCircle;
+		fdef.density = 0.6f;
+		return fdef;
+	}
+
+	private void createBody(float x, float y, World w) {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		// bodydef.position.set(MathUtils.random(1280)*PlayState.PIXEL_TO_METER,
-		// MathUtils.random(720)*PlayState.PIXEL_TO_METER);
 		bodydef.position.set(x * PlayState.PIXEL_TO_METER, y * PlayState.PIXEL_TO_METER);
 
 		this.body = w.createBody(bodydef);
 		this.body.setActive(false);
 
-		final CircleShape enemyCircle = new CircleShape();
-		enemyCircle.setRadius(spriteAlive.getHeight() * 0.35f);
-
-		final FixtureDef fdef = new FixtureDef();
-		fdef.shape = enemyCircle;
-		fdef.density = 0.6f;
-		// fdef.isSensor=true;
-
-		this.body.createFixture(fdef);
+		this.body.createFixture(createFixture());
 		this.body.setUserData(this);
 	}
 
@@ -110,15 +123,6 @@ public abstract class Enemy implements Disposable {
 		this.body.setActive(true);
 	}
 
-	public void startMove() {
-		this.body.applyForceToCenter(
-				new Vector2(MathUtils.random(speed * -1, speed), MathUtils.random(speed * -1, speed)), true);
-	}
-
-	public void endMove() {
-		this.body.applyForceToCenter(new Vector2(speed * -1, 0), true);
-	}
-
 	public void steerLeft() {
 		this.body.applyTorque(45, true);
 	}
@@ -127,12 +131,12 @@ public abstract class Enemy implements Disposable {
 		this.body.applyTorque(45 * -1, true);
 	}
 
-	public void die() {
+	private void die() {
 		// set dead
 		this.setTot(true);
 		// set position of dead sprite to the current one
-		spriteDead.setPosition(spriteAlive.getX(), spriteAlive.getY());
-		spriteDead.setRotation(MathUtils.random(360));
+		sprite.setTexture(textureDead);
+		sprite.setRotation(MathUtils.random(360));
 		// ???
 		this.wasHitTime = 0;
 		speed = 0;
@@ -144,21 +148,20 @@ public abstract class Enemy implements Disposable {
 		this.wasHitTime = 0.15f;
 	}
 
-	public void findWay() {
+	private void findWay() {
 		// Wo bin ich wo will ich hin
 		// Aus Map auslesen wo das Ziel ist
-		final PolygonShape ps = (PolygonShape) map.mapZiel.getFixtureList().first().getShape();
+		final PolygonShape ps = (PolygonShape) map.getMapZielBody().getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
 		weg = getPath(this.getBodyX() * PlayState.METER_TO_PIXEL, this.getBodyY() * PlayState.METER_TO_PIXEL,
 				vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL);
 	}
 
-	
 	private LinkedList<Node> getPath(float startX, float startY, float zielX, float zielY) {
 		LinkedList<Node> openList = new LinkedList<Node>();
 		LinkedList<Node> closedList = new LinkedList<Node>();
-		Node[][] tempNodes2DList = map.nodes2DList;
+		Node[][] tempNodes2DList = map.getNodesList();
 		LinkedList<Node> tempweg = new LinkedList<Node>();
 		Node aktuellerNode;
 
@@ -187,30 +190,24 @@ public abstract class Enemy implements Disposable {
 		float lowCost = 9999999;
 
 		if (tempNodes2DList[(int) startX][(int) startY].getNoUse())
-			System.out.println("Halt, Start Node ist ungültig");
-
-
+			System.out.println("Halt, Start Node ist ungueltig");
 
 		openList.add(tempNodes2DList[(int) startX][(int) startY]);
 		aktuellerNode = tempNodes2DList[(int) startX][(int) startY];
-		lowCost=aktuellerNode.getKosten();
+		lowCost = aktuellerNode.getKosten();
 
 		while (!found) {
 
-	
-
 			// NEU *********************************************
 			lowCost = 999999999;
-			
+
 			for (Node node : openList) {
 				if (lowCost > node.getKosten()) {
 					aktuellerNode = node;
 					lowCost = node.getKosten();
-	
+
 				}
 			}
-
-	
 
 			if (openList.indexOf(aktuellerNode) < 0) {
 				System.out.println("aktueller Node ist 0");
@@ -223,10 +220,10 @@ public abstract class Enemy implements Disposable {
 				System.out.println("What the hell just happened???");
 
 			closedList.add(aktuellerNode);
-			
+
 			// Das geht an dieser Stelle irgendwie nicht?
-//			tempweg.add(aktuellerNode);
-//			aktuellerNode.setErschwernis(MathUtils.random(1f, 3f));
+			// tempweg.add(aktuellerNode);
+			// aktuellerNode.setErschwernis(MathUtils.random(1f, 3f));
 
 			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
 				final Node node = aktuellerNode.getNachbarn().get(i);
@@ -242,7 +239,7 @@ public abstract class Enemy implements Disposable {
 			}
 
 			if (aktuellerNode.getX() == zielX && aktuellerNode.getY() == zielY) {
-				found=true;
+				found = true;
 				break;
 			}
 
@@ -251,10 +248,10 @@ public abstract class Enemy implements Disposable {
 		}
 
 		while (aktuellerNode != null) {
-		
+
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
-			map.nodes2DList[(int) aktuellerNode.getX()][(int) aktuellerNode.getY()]
+			map.getNodesList()[(int) aktuellerNode.getX()][(int) aktuellerNode.getY()]
 					.setErschwernis(MathUtils.random(1f, 3f));
 
 			// Hinzufuegen
@@ -264,20 +261,17 @@ public abstract class Enemy implements Disposable {
 
 		return tempweg;
 	}
-	
-	
-	
 
 	public LinkedList<Node> getWeg() {
 		return weg;
 	}
 
 	public float getX() {
-		return this.body.getPosition().x - spriteAlive.getWidth() / 2;
+		return this.body.getPosition().x - sprite.getWidth() / 2;
 	}
 
 	public float getY() {
-		return this.body.getPosition().y - spriteAlive.getHeight() / 2;
+		return this.body.getPosition().y - sprite.getHeight() / 2;
 	}
 
 	public float getBodyX() {
@@ -288,54 +282,17 @@ public abstract class Enemy implements Disposable {
 		return this.body.getPosition().y;
 	}
 
-	public void killLateral(final float drift) {
-		final float lat = getVelocityVector().dot(getOrthogonal());
-		final Vector2 vlat = getOrthogonal();
-		vlat.scl(drift);
-		vlat.scl(lat);
-		// vlat.scl(body.getFixtureList().first().getDensity());
-		// vlat=vlat.scl(-1);
-		this.body.applyLinearImpulse(vlat, this.body.getPosition(), true);
-	}
-
-	public Vector2 getForwardVelocity() {
-		return getVelocityVector().rotateRad(this.body.getAngle() * -1);
-	}
-
-	public Vector2 getVelocityVector() {
-		return this.body.getLinearVelocity();
-	}
-
-	public Vector2 getOrthogonal() {
-		final Vector2 ort = new Vector2(1, 0);
-		ort.rotateRad(this.body.getAngle());
-		ort.rotate90(1);
-		return ort;
-	}
-
-	public void reduceToMaxSpeed(final float maxspeed) {
-		float speed = getForwardVelocity().x;
-		if (speed < maxspeed * -1)
-			speed = maxspeed * -1;
-		if (speed > maxspeed)
-			speed = maxspeed;
-
-		final Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
-		newSpeed.rotateRad(this.body.getAngle());
-		this.body.setLinearVelocity(newSpeed);
-	}
-
 	public void update(final float deltaTime) {
 		if (this.isTot() || !this.activated)
 			return;
 
 		if (this.wasHitTime > 0) {
 			this.wasHitTime -= deltaTime;
-			this.hitRandomX = MathUtils.random(-this.spriteAlive.getWidth() / 4, this.spriteAlive.getWidth() / 4);
-			this.hitRandomY = MathUtils.random(-this.spriteAlive.getHeight() / 4, this.spriteAlive.getHeight() / 4);
+			this.hitRandomX = MathUtils.random(-this.sprite.getWidth() / 4, this.sprite.getWidth() / 4);
+			this.hitRandomY = MathUtils.random(-this.sprite.getHeight() / 4, this.sprite.getHeight() / 4);
 			this.spriteDamage.setPosition(
-					getX() + this.spriteAlive.getWidth() / 2 - this.spriteDamage.getWidth() / 2 + hitRandomX,
-					getY() + this.spriteAlive.getHeight() / 2 - this.spriteDamage.getHeight() / 2 + hitRandomY);
+					getX() + this.sprite.getWidth() / 2 - this.spriteDamage.getWidth() / 2 + hitRandomX,
+					getY() + this.sprite.getHeight() / 2 - this.spriteDamage.getHeight() / 2 + hitRandomY);
 		}
 
 		if (getHealth() <= 0)
@@ -351,7 +308,6 @@ public abstract class Enemy implements Disposable {
 			// body.applyForceToCenter(velo,true);
 			// reduceToMaxSpeed(speed);
 			// killLateral(1f);
-			distancetonode = spriteAlive.getWidth() * 4;
 
 			if (this.body.getPosition().dst(weg.getLast().getX() * PlayState.PIXEL_TO_METER,
 					weg.getLast().getY() * PlayState.PIXEL_TO_METER) < distancetonode)
@@ -359,20 +315,17 @@ public abstract class Enemy implements Disposable {
 			if (weg.size() > 0)
 				score = weg.getLast().getH();
 		} else {
-			PlayState.enemyHitsYourHome(damage);
+			callbackInterface.enemyHitsHomeCallback(this);
 			this.setDelete(true);
 			this.setTot(true);
 		}
 
-		spriteAlive.setPosition(getX(), getY());
-		spriteAlive.setRotation(MathUtils.radDeg * this.body.getAngle());
+		sprite.setPosition(getX(), getY());
+		sprite.setRotation(MathUtils.radDeg * this.body.getAngle());
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
-		if (this.isTot())
-			spriteDead.draw(spriteBatch);
-		else
-			spriteAlive.draw(spriteBatch);
+		sprite.draw(spriteBatch);
 		if (!this.isTot() && this.wasHitTime > 0)
 			spriteDamage.draw(spriteBatch);
 	}
@@ -391,6 +344,10 @@ public abstract class Enemy implements Disposable {
 
 	public float getHealth() {
 		return health;
+	}
+
+	public float getDamadge() {
+		return damage;
 	}
 
 	public void setHealth(float health) {
@@ -426,8 +383,7 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void disposeMedia() {
-		spriteAlive.getTexture().dispose();
-		spriteDead.getTexture().dispose();
+		sprite.getTexture().dispose();
 		spriteDamage.getTexture().dispose();
 	}
 

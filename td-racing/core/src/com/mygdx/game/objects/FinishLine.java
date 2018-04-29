@@ -19,7 +19,7 @@ public class FinishLine {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.StaticBody;
 		bodydef.position.set(xPos * PlayState.PIXEL_TO_METER, yPos * PlayState.PIXEL_TO_METER);
-		this.body = world.createBody(bodydef);
+		body = world.createBody(bodydef);
 		final PolygonShape carBox = new PolygonShape();
 		carBox.setAsBox(sprite.getWidth() * 0.5f, sprite.getHeight() * 0.5f);
 		final FixtureDef fdef = new FixtureDef();
@@ -27,20 +27,20 @@ public class FinishLine {
 		fdef.density = 1f;
 		fdef.friction = 1f;
 		fdef.isSensor = true;
-		this.body.createFixture(fdef);
-		this.body.setUserData(this);
-		this.body.setAngularDamping(2);
+		body.createFixture(fdef);
+		body.setUserData(this);
+		body.setAngularDamping(2);
 		this.sprite = sprite;
 		sprite.setPosition(getX(), getY());
-		sprite.setRotation(this.body.getAngle() * MathUtils.radDeg);
+		sprite.setRotation(body.getAngle() * MathUtils.radDeg);
 	}
 
 	public float getX() {
-		return this.body.getPosition().x - sprite.getWidth() / 2;
+		return body.getPosition().x - sprite.getWidth() / 2;
 	}
 
 	public float getY() {
-		return this.body.getPosition().y - sprite.getHeight() / 2;
+		return body.getPosition().y - sprite.getHeight() / 2;
 	}
 
 	public void draw(SpriteBatch spriteBatch) {

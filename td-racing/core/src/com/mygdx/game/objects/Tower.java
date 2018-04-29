@@ -264,7 +264,6 @@ public abstract class Tower implements Disposable {
 			target = null;
 			if (isSoundPlaying) {
 				soundShoot.stop();
-				;
 				isSoundPlaying = false;
 			}
 		}

@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
-import com.mygdx.game.EnemyWaveEntry;
 import com.mygdx.game.FPSCounter;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
@@ -38,6 +37,7 @@ import com.mygdx.game.level.LevelHandler;
 import com.mygdx.game.objects.Car;
 import com.mygdx.game.objects.Checkpoint;
 import com.mygdx.game.objects.Enemy;
+import com.mygdx.game.objects.EnemyCallbackInterface;
 import com.mygdx.game.objects.FinishLine;
 import com.mygdx.game.objects.Flame;
 import com.mygdx.game.objects.Tower;
@@ -51,10 +51,10 @@ import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
 import com.mygdx.game.objects.towers.SniperTower;
 
-public class PlayState extends GameState implements CollisionCallbackInterface, ScoreBoardCallbackInterface {
+public class PlayState extends GameState
+		implements CollisionCallbackInterface, ScoreBoardCallbackInterface, EnemyCallbackInterface {
 
 	public static boolean soundon = false;
-	public static Thread thread;
 	private static ScoreBoard scoreBoard;
 
 	private CollisionListener collis;
@@ -122,7 +122,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public final static short PLAYER_BOX = 0x1; // 0001
 	public final static short ENEMY_BOX = 0x1 << 1; // 0010 or 0x2 in hex
 
-	public Array<EnemyWaveEntry> currentEnemyWaves;
 	private boolean pause = false;
 	private int speedFactor;
 	private final Level[] level;
@@ -143,6 +142,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		preferencesManager.checkHighscore();
 
 		trailerpos = new Vector2(0, 0);
+
+		Enemy.callbackInterface = this;
 
 		// import textures
 		smaincar = createScaledSprite("cars/car_standard.png");
@@ -215,7 +216,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		debugEntfernung = false;
 
 		pitStop = createScaledSprite("pit_stop/pit_stop_01.png");
-		
+
 		timeforwavetext = 0;
 		wavetext = "Loading Level";
 
@@ -238,11 +239,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		speedFactor = 1;
 	}
 
-	public void loadLevel(int levelNumber) {
+	private void loadLevel(int levelNumber) {
 		System.out.println("Load Level #" + levelNumber);
 		// set/save level number
 		scoreBoard.setLevel(levelNumber);
-		
+
 		if (levelNumber > this.level.length) {
 			GameVictory();
 			return;
@@ -274,7 +275,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				this.level[levelNumber].getFinishLinePosition().y);
 		this.map = new MainMap(this.level[levelNumber].getMapName(), this.world, this.finishline.getBody());
 		this.map.setSpawn(this.level[levelNumber].getSpawnPoint());
-		trailerpos.set(map.zielpos.x, map.zielpos.y);
+		trailerpos.set(map.getZielPos().x, map.getZielPos().y);
 		this.pitStop.setPosition(this.level[levelNumber].getPitStopPosition().x * PIXEL_TO_METER,
 				this.level[levelNumber].getPitStopPosition().y * PIXEL_TO_METER);
 		for (int j = 0; j < this.level[levelNumber].getCheckPoints().length; j++)
@@ -284,14 +285,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		scoreBoard.reset(0);
 	}
 
-	public static Sprite createScaledSprite(String location) {
+	private static Sprite createScaledSprite(String location) {
 		final Sprite s = new Sprite(new Texture(Gdx.files.internal(location)));
 		s.setSize(s.getWidth() * PIXEL_TO_METER, s.getHeight() * PIXEL_TO_METER);
 		s.setOriginCenter();
 		return s;
 	}
 
-	public void startBuilding(Tower t) {
+	private void startBuilding(Tower t) {
 		System.out.println("Start building");
 		buildingtower = t;
 		buildingtower.setBuildingMode(true);
@@ -299,7 +300,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			tower.activateRange(true);
 	}
 
-	public boolean buildingPositionIsAllowed(final Tower tower) {
+	private boolean buildingPositionIsAllowed(final Tower tower) {
 		final float[][] cornerPoints = tower.getCornerPoints();
 		boolean isAllowed = true;
 		for (int i = 0; i < cornerPoints.length; i++) {
@@ -318,11 +319,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		return isAllowed;
 	}
 
-	public boolean buildingMoneyIsEnough(final Tower tower) {
+	private boolean buildingMoneyIsEnough(final Tower tower) {
 		return tower.getCost() <= scoreBoard.getMoney();
 	}
 
-	public void stopBuilding() {
+	private void stopBuilding() {
 		System.out.println("Stop building");
 		towerMenu.unselectAll();
 		for (final Tower tower : towers)
@@ -332,7 +333,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	protected void handleInput() {
 		GameStateMethods.toggleFullScreen(Keys.F11);
-		
+
 		if (wongame && (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.justTouched()))
 			playerIsDeadCallback();
 
@@ -388,7 +389,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	}
 
-	public void debugInputs() {
+	private void debugInputs() {
 		if (Gdx.input.isKeyJustPressed(Keys.F))
 			enemies.add(new EnemySmall(220, 20, world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.G))
@@ -482,7 +483,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 	}
 
-	public void blockBuildingTower(final boolean b) {
+	private void blockBuildingTower(final boolean b) {
 		if (this.buildingtower != null)
 			this.buildingtower.setBlockBuildingMode(b);
 	}
@@ -546,13 +547,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				final Enemy e = new EnemyFat(220, 20, world, map, 0);
 				enemies.add(e);
 			}
-
-			// for (final EnemyWaveEntry entry : currentEnemyWaves) {
-			// if (entry.getTimeInSeconds() < scoreBoard.getTime()) {
-			// enemies.addAll(EnemyWaveEntry.createEnemy(entry, world, map));
-			// currentEnemyWaves.removeValue(entry, true);
-			// }
-			// }
 		}
 
 		timeforwavetext -= deltaTime;
@@ -681,8 +675,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					else
 						MainGame.font.setColor(1, 0, 0, 0.75f);
 
-				
-
 					MainGame.font.draw(spriteBatch, test[i][j].getH() + "", i * PlayState.PIXEL_TO_METER,
 							j * PlayState.PIXEL_TO_METER);
 				}
@@ -802,7 +794,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	}
 
-	public int checkPointsCleared() {
+	private int checkPointsCleared() {
 		int i = 0;
 		for (final Checkpoint c : checkpoints) {
 			if (c.isActivated())
@@ -811,7 +803,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		return i;
 	}
 
-	public void updatePhysics(final float deltaTime) {
+	private void updatePhysics(final float deltaTime) {
 		if (pause)
 			return;
 
@@ -831,7 +823,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				enemies.removeValue(enemy, true);
 			}
 		}
-		
+
 		for (final Tower t : towers) {
 			Array<Body> ab = new Array<Body>();
 			Array<Body> rb = new Array<Body>();
@@ -907,7 +899,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		return true;
 	}
 
-	public void lapFinished() {
+	private void lapFinished() {
 		// get if all checkpoints are checked
 		final boolean allCheckpointsChecked = allCheckPointsChecked();
 		// disable all checkpoints
@@ -957,14 +949,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				else
 					wavetext = "FINAL WAVE";
 				timeforwavetext = 2f;
-				
-				long time=TimeUtils.millis();
+				System.out.println("Scoreboard time: " + scoreBoard.getTime());
+
+				long time = TimeUtils.millis();
 				enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
-						.createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
-				time=TimeUtils.timeSinceMillis(time);
-				
-				System.out.println(
-						"Starte Wave " + currentwave + " of " + this.level[scoreBoard.getLevel() - 1].getWaves().size+" Time to load: " +time+" ms" );
+						.createEnemies(map.getSpawn(), world, map, scoreBoard.getTime()));
+				time = TimeUtils.timeSinceMillis(time);
+
+				System.out.println("Starte Wave " + currentwave + " of "
+						+ this.level[scoreBoard.getLevel() - 1].getWaves().size + " Time to load: " + time + " ms");
 			}
 		}
 	}
@@ -1003,10 +996,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		return true;
 	}
 
-	public static void enemyHitsYourHome(float damage) {
-		scoreBoard.reduceLife(damage);
-	}
-
 	@Override
 	public void playerIsDeadCallback() {
 		pause = true;
@@ -1016,5 +1005,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		else
 			gameStateManager.setGameState(new GameOverState(gameStateManager));
 
+	}
+
+	@Override
+	public void enemyHitsHomeCallback(final Enemy enemy) {
+		scoreBoard.reduceLife(enemy.getDamadge());
 	}
 }
