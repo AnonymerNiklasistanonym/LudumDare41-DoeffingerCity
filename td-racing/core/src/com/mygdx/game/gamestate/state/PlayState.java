@@ -99,6 +99,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	boolean infiniteenemies = false;
 	boolean deploy = false;
 	boolean unlockAllTowers = false;
+	int tutorialstate=0;
 
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
@@ -278,6 +279,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition[j][0] * PIXEL_TO_METER,
 						checkPointPosition[j][1] * PIXEL_TO_METER);
 			towerMenu.unlockTower(0);
+			towerMenu.unlockTower(1);
 			break;
 		case 2:
 			finishline = new FinishLine(world, sfinishline, 360, 240);
@@ -289,7 +291,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition1[j][0] * PIXEL_TO_METER,
 						checkPointPosition1[j][1] * PIXEL_TO_METER);
-			towerMenu.unlockTower(1);
+			towerMenu.unlockTower(2);
 			break;
 		case 3:
 			finishline = new FinishLine(world, sfinishline, 350, 150);
@@ -302,7 +304,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			for (int j = 0; j < checkpoints.length; j++)
 				checkpoints[j] = new NormalCheckpoint(world, checkPointPosition11[j][0] * PIXEL_TO_METER,
 						checkPointPosition11[j][1] * PIXEL_TO_METER);
-			towerMenu.unlockTower(2);
+			towerMenu.unlockTower(3);
 			break;
 
 		default:
@@ -657,24 +659,44 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// draw pitstop
 		pitStop.draw(spriteBatch);
 
-		if (debugCollision) {
-			final Node[][] test = this.map.getNodesList();
-			MainGame.font.getData().setScale(0.05f);
-			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
-				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
-					if (test[i][j].getNoUse()) {
-						MainGame.font.setColor(0, 0, 1, 0.5f);
-						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
-								j * PlayState.PIXEL_TO_METER);
-					} else {
-						MainGame.font.setColor(1, 0, 0, 0.5f);
-						MainGame.font.draw(spriteBatch, "I", i * PlayState.PIXEL_TO_METER,
-								j * PlayState.PIXEL_TO_METER);
-					}
+		debugCollisionRender(spriteBatch);
+		debugEntfernungRender(spriteBatch);
+		debugWayRender(spriteBatch);
+
+		towerMenu.draw(spriteBatch);
+		scoreBoard.draw(spriteBatch);
+
+		if (deploy == false) {
+			String sfps = "FPS: " + fpscounter.getFrames();
+			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
+		}
+
+		if (timeforwavetext > 0)
+			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
+
+		drawTutorial(spriteBatch);
+		spriteBatch.end();
+
+		if (debugBox2D)
+			debugRender.render(world, camera.combined);
+
+	}
+
+	private void debugWayRender(SpriteBatch spriteBatch) {
+		if (debugWay) {
+			MainGame.font.getData().setScale(0.06f);
+			for (final Enemy e : enemies) {
+				if (e.isActivated() && !e.isTot()) {
+					MainGame.font.setColor(e.getColor());
+					for (Node node : e.getWeg())
+						MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
+								node.getY() * PlayState.PIXEL_TO_METER);
 				}
 			}
 		}
+	}
 
+	private void debugEntfernungRender(SpriteBatch spriteBatch) {
 		if (debugEntfernung) {
 			final Node[][] test = this.map.getNodesList();
 			MainGame.font.getData().setScale(0.02f);
@@ -708,36 +730,98 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				}
 			}
 		}
+	}
 
-		if (debugWay) {
-			MainGame.font.getData().setScale(0.06f);
-			for (final Enemy e : enemies) {
-				if (e.isActivated() && !e.isTot()) {
-					MainGame.font.setColor(e.getColor());
-					for (Node node : e.getWeg())
-						MainGame.font.draw(spriteBatch, "x", node.getX() * PlayState.PIXEL_TO_METER,
-								node.getY() * PlayState.PIXEL_TO_METER);
+	private void debugCollisionRender(SpriteBatch spriteBatch) {
+		if (debugCollision) {
+			final Node[][] test = this.map.getNodesList();
+			MainGame.font.getData().setScale(0.05f);
+			for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
+				for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
+					if (test[i][j].getNoUse()) {
+						MainGame.font.setColor(0, 0, 1, 0.5f);
+						MainGame.font.draw(spriteBatch, "O", i * PlayState.PIXEL_TO_METER,
+								j * PlayState.PIXEL_TO_METER);
+					} else {
+						MainGame.font.setColor(1, 0, 0, 0.5f);
+						MainGame.font.draw(spriteBatch, "I", i * PlayState.PIXEL_TO_METER,
+								j * PlayState.PIXEL_TO_METER);
+					}
 				}
 			}
 		}
+	}
 
-		towerMenu.draw(spriteBatch);
+	private void drawTutorial(SpriteBatch spriteBatch) {
+		//Draws the Tutorial
+		//-1: Tutorial disabled/finished
+		//0: Learn how to drive the car
+		//1: Finish laps to earn money
+		//2: Keep finishing laps until enough money for towers
+		//3: Select a tower
+		//4: Build a tower
+		//5: Learn what to protect
+		
+		
+		
+		//First check appropriate stage
+		switch (tutorialstate) {
+		case -1:
 
-		scoreBoard.draw(spriteBatch);
+			break;
+		case 0:
+			if(checkPointsCleared()>1) {
+				tutorialstate=2;
+				System.out.println("Tutorial advanced to Stage "+tutorialstate);
+				}
+			break;
+		case 1:
+			
+			break;
+		case 2:
+			
+			break;
+		case 3:
+			
+			break;
 
-		if (deploy == false) {
-			String sfps = "FPS: " + fpscounter.getFrames();
-			MainGame.font.draw(spriteBatch, sfps, 30, 35.5f);
+		default:
+			break;
 		}
+		
+		
+		//Then write the text
+		switch (tutorialstate) {
+		case -1:
 
-		if (timeforwavetext > 0)
-			MainGame.waveFont.draw(spriteBatch, wavetext, 20, 25);
+			break;
+		case 0:
+			MainGame.font.draw(spriteBatch, "Use WASD to drive your car", car.getX()-6, car.getY()-1);
+			break;
+		case 1:
+			MainGame.font.draw(spriteBatch, "Finish laps to earn money!", finishline.getX(), finishline.getY());
+			break;
+		case 2:
+			
+			break;
+		case 3:
+			
+			break;
 
-		spriteBatch.end();
-
-		if (debugBox2D)
-			debugRender.render(world, camera.combined);
-
+		default:
+			break;
+		}
+		
+	}
+	
+	
+	public int checkPointsCleared() {
+		int i=0;
+		for (Checkpoint c : checkpoints) {
+			if(c.isActivated())
+				i++;
+		}
+		return i;
 	}
 
 	public void updatePhysics(final float deltaTime) {
