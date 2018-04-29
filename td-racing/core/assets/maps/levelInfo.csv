@@ -1,4 +1,4 @@
 Level,Map name,Car start position x,Car start position y,Enemy spawn position x,Enemy spawn position y,Finish line position x,Finish line position y,Pit stop position x,Pit stop position y,Checkpoint 1 position x,Checkpoint 1 position y,Checkpoint 2 position x,Checkpoint 2 position y,Checkpoint 3 position x,Checkpoint 3 position y,Checkpoint 4 position x,Checkpoint 4 position y ,Tower 1 unlocked,Tower 2 unlocked,Tower 3 unlocked ,Tower 4 unlocked 
-1,track1,440,220,220,20,380,220,165,-5,300,230,320,600,850,600,850,230,TRUE,FALSE,FALSE,FALSE
-2,track2,440,220,230,50,360,240,165,-5,300,230,320,600,850,600,850,230,TRUE,TRUE,FALSE,FALSE
+1,track1,440,220,220,20,380,220,165,-5,300,230,320,600,850,600,850,230,TRUE,TRUE,FALSE,FALSE
+2,track2,440,220,230,50,360,240,165,-5,300,230,320,600,850,600,850,230,TRUE,TRUE,TRUE,FALSE
 3,track3,440,220,170,100,350,150,100,-5,300,170,320,570,850,570,850,170,TRUE,TRUE,TRUE,TRUE
