@@ -683,7 +683,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 					else
 						MainGame.font.setColor(1, 0, 0, 0.75f);
 
-					System.out.println(test[i][j].getH());
+				
 
 					MainGame.font.draw(spriteBatch, test[i][j].getH() + "", i * PlayState.PIXEL_TO_METER,
 							j * PlayState.PIXEL_TO_METER);
