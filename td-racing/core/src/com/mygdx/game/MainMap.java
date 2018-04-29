@@ -66,9 +66,10 @@ public class MainMap {
 
 	public void createSolidMap(String mapName, World world) {
 		// The following line would throw ExceptionInInitializerError
-		
+
 		this.map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
-		this.map.setSize(this.map.getWidth() * PlayState.PIXEL_TO_METER, this.map.getHeight() * PlayState.PIXEL_TO_METER);
+		this.map.setSize(this.map.getWidth() * PlayState.PIXEL_TO_METER,
+				this.map.getHeight() * PlayState.PIXEL_TO_METER);
 
 		BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "solid.json"));
 		BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "ziel.json"));

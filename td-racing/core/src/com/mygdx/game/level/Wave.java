@@ -32,7 +32,8 @@ public class Wave {
 		return this.zombieWaves;
 	}
 
-	public Array<Enemy> createEnemies(final Vector2 entryPosition, final World world, final MainMap map, final float currentTime) {
+	public Array<Enemy> createEnemies(final Vector2 entryPosition, final World world, final MainMap map,
+			final float currentTime) {
 
 		final Array<Enemy> allEnemies = new Array<Enemy>();
 
@@ -41,23 +42,23 @@ public class Wave {
 			int counter = 0;
 
 			for (int j = 0; j < this.zombieWaves.get(i).getBycicleZombieNumber(); j++) {
-				allEnemies.add(
-						new EnemyBicycle(entryPosition.x, entryPosition.y, world, map, currentTime + this.zombieWaves.get(i).getEntryTime()
+				allEnemies.add(new EnemyBicycle(entryPosition.x, entryPosition.y, world, map,
+						currentTime + this.zombieWaves.get(i).getEntryTime()
 								+ counter++ * this.zombieWaves.get(i).getBycicleTimeDelta()));
 			}
 			for (int j = 0; j < this.zombieWaves.get(i).getFatZombieNumber(); j++) {
-				allEnemies.add(
-						new EnemyFat(entryPosition.x, entryPosition.y, world, map, currentTime + this.zombieWaves.get(i).getEntryTime()
+				allEnemies.add(new EnemyFat(entryPosition.x, entryPosition.y, world, map,
+						currentTime + this.zombieWaves.get(i).getEntryTime()
 								+ counter++ * this.zombieWaves.get(i).getFatTimeDelta()));
 			}
 			for (int j = 0; j < this.zombieWaves.get(i).getSmallZombieNumber(); j++) {
-				allEnemies.add(
-						new EnemySmall(entryPosition.x, entryPosition.y, world, map, currentTime + this.zombieWaves.get(i).getEntryTime()
+				allEnemies.add(new EnemySmall(entryPosition.x, entryPosition.y, world, map,
+						currentTime + this.zombieWaves.get(i).getEntryTime()
 								+ counter++ * this.zombieWaves.get(i).getSmallTimeDelta()));
 			}
 			for (int j = 0; j < this.zombieWaves.get(i).getLincolnZombieNumber(); j++) {
-				allEnemies.add(
-						new EnemyLincoln(entryPosition.x, entryPosition.y, world, map, currentTime + this.zombieWaves.get(i).getEntryTime()
+				allEnemies.add(new EnemyLincoln(entryPosition.x, entryPosition.y, world, map,
+						currentTime + this.zombieWaves.get(i).getEntryTime()
 								+ counter++ * this.zombieWaves.get(i).getLincolnTimeDelta()));
 			}
 

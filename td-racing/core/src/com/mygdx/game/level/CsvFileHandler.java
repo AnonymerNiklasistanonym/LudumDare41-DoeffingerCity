@@ -57,7 +57,8 @@ public class CsvFileHandler {
 	 */
 	public static FileHandle[] getAllLevelFiles() {
 		// return Gdx.files.internal("./bin/level").list();
-		return new FileHandle[] { Gdx.files.internal("level/level_01.csv"), Gdx.files.internal("level/level_02.csv"), Gdx.files.internal("level/level_03.csv") };
+		return new FileHandle[] { Gdx.files.internal("level/level_01.csv"), Gdx.files.internal("level/level_02.csv"),
+				Gdx.files.internal("level/level_03.csv") };
 	}
 
 }

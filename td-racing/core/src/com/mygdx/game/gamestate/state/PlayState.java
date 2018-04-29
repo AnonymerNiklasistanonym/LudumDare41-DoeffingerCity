@@ -1,7 +1,5 @@
 package com.mygdx.game.gamestate.state;
 
-import javax.sql.rowset.spi.TransactionalWriter;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
@@ -18,7 +16,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.CollisionCallbackInterface;
@@ -54,6 +51,11 @@ import com.mygdx.game.objects.towers.SniperTower;
 
 public class PlayState extends GameState implements CollisionCallbackInterface {
 
+	public static boolean soundon = false;
+	public static Thread thread;
+	private static ScoreBoard scoreBoard;
+
+	
 	private CollisionListener collis;
 	private Sprite smaincar;
 	private Sprite sfinishline;
@@ -61,48 +63,38 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	private Car car;
 	private FinishLine finishline;
 
-	private float tutorialtimer = 0;
-
 	private final Array<Enemy> enemies;
 	private final Array<Tower> towers;
 	private final PreferencesManager preferencesManager;
 	private final Sprite pitStop;
 	private final int moneyPerLap;
 
+	private float tutorialtimer = 0;
 	private boolean debugBox2D;
 	private boolean debugCollision;
 	private boolean debugEntfernung;
 	private boolean carsoundPlaying = false;
 
-	public static boolean soundon = false;
 	private boolean debugWay;
 
 	private TowerMenu towerMenu;
 
-	public static Thread thread;
 
 	private MainMap map;
 
-	private static ScoreBoard scoreBoard;
 	private Tower buildingtower;
 
 	private final Music backgroundMusic;
 	private final Sound splatt, money, carsound, victorysound;
 
-	/**
-	 * Time since last physic Steps
-	 */
-
-	Sprite victory;
-
-	FPSCounter fpscounter;
-	int currentwave = 0;
-	final int totalwaves = 10;
-	boolean wongame = false;
-	boolean infiniteenemies = false;
-	boolean deploy = false;
-	boolean unlockAllTowers = false;
-	int tutorialstate = 0;
+	private Sprite victory;
+	private FPSCounter fpscounter;
+	private int currentwave = 0;
+	private boolean wongame = false;
+	private boolean infiniteenemies = false;
+	private boolean deploy = false;
+	private boolean unlockAllTowers = false;
+	private int tutorialstate = 0;
 
 	private float physicsaccumulator = 0f;
 	private Box2DDebugRenderer debugRender;
@@ -162,7 +154,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
 		TowerMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
 		TowerMenu.sniperButton = new Texture(Gdx.files.internal("buttons/sniperbutton.png"));
-		
+
 		MgTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
@@ -229,7 +221,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		// Sicherstellen dass bei deploy alle test sachen aus sind
 		if (deploy)
 			soundon = true;
-		
+
 		loadLevel(MainGame.level);
 
 		backgroundMusic.setLooping(true);
@@ -405,9 +397,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
 			for (final Enemy e : enemies)
 				e.takeDamage(e.getHealth());
-			System.out.println("currentwave: " + currentwave);
-			this.currentwave = totalwaves;
-			System.out.println("currentwave: " + currentwave);
+			this.currentwave = this.level[scoreBoard.getLevel() - 1].getWaves().size;
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
 			scoreBoard.reduceLife(scoreBoard.getHelath());
@@ -418,12 +408,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			loadLevel(scoreBoard.getLevel());
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0)) {
-
 			tutorialstate++;
 			System.out.println("Cheated tutorial to " + tutorialstate);
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_6)) {
-			// TODO next wave
+			// TODO next wave | Kill current enemies and load new wave
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.T)) {
@@ -488,8 +477,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 			this.buildingtower.setBlockBuildingMode(b);
 	}
 
-
-
 	@Override
 	protected void update(float deltaTime) {
 		if (pause)
@@ -499,7 +486,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 
 		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 		camera.unproject(mousePos);
-		
+
 		updateWaves();
 
 		car.update(deltaTime);
@@ -987,22 +974,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 				// fixed runtime error by removing thread? ... What a great solution
 				enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
 						.createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
-				
-//				threadActive = true;
-//				thread = new Thread(new Runnable() {
-//
-//					@Override
-//					public void run() {
-//						enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave - 1)
-//								.createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
-//						threadActive = false;
-//					}
-//				});
-//				thread.start();
+
+				// threadActive = true;
+				// thread = new Thread(new Runnable() {
+				//
+				// @Override
+				// public void run() {
+				// enemies.addAll(level[scoreBoard.getLevel() - 1].getWaves().get(currentwave -
+				// 1)
+				// .createEnemies(map.getSpawn(), world, map, scoreBoard.getCurrentTime()));
+				// threadActive = false;
+				// }
+				// });
+				// thread.start();
 			}
 		}
 	}
-	
 
 	private boolean allEnemiesAreActive() {
 		for (final Enemy enemy : enemies) {
@@ -1011,7 +998,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 		}
 		return true;
 	}
-
 
 	public void startNewLevel() {
 
