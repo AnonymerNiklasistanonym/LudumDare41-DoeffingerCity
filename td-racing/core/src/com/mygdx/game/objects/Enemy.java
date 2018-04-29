@@ -94,10 +94,8 @@ public abstract class Enemy implements Disposable {
 
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
-		fdef.density = 1f;
+		fdef.density = 0.3f;
 		// fdef.isSensor=true;
-		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
-		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 
 		this.body.createFixture(fdef);
 		this.body.setUserData(this);
@@ -156,6 +154,7 @@ public abstract class Enemy implements Disposable {
 				vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL);
 	}
 
+	
 	private LinkedList<Node> getPath(float startX, float startY, float zielX, float zielY) {
 		LinkedList<Node> openList = new LinkedList<Node>();
 		LinkedList<Node> closedList = new LinkedList<Node>();
@@ -186,59 +185,48 @@ public abstract class Enemy implements Disposable {
 
 		// Welcher Nachbar ist der beste
 		float lowCost = 9999999;
-		if (tempNodes2DList[(int) startX][(int) startY].getNoUse())
-			System.out.println("Halt");
 
-		// if (tempNodes2DList[(int) startX][(int) startY].nachbarn != null) {
-		// for (Node node : tempNodes2DList[(int) startX][(int) startY].nachbarn) {
-		// if (!node.noUse)
-		// if (lowCost > node.getKosten()) {
-		// node.g = 1;
-		// openList.add(node);
-		// lowCost = node.getKosten();
-		// }
-		// }
-		// } else {
-		// // Irgendwo im Nirgendwo... Raus da
-		// LinkedList<Node> blub = new LinkedList<Node>();
-		// blub.add(tempNodes2DList[(int) startX][(int) startY]);
-		// return blub;
-		// }
+		if (tempNodes2DList[(int) startX][(int) startY].getNoUse())
+			System.out.println("Halt, Start Node ist ungültig");
+
+
 
 		openList.add(tempNodes2DList[(int) startX][(int) startY]);
 		aktuellerNode = tempNodes2DList[(int) startX][(int) startY];
-		int zaehler = 10000;
+		lowCost=aktuellerNode.getKosten();
+
 		while (!found) {
 
-			zaehler--;
-			if (zaehler < 0) {
-				// Bisherige Liste zurueckgeben
-
-				break;
-			}
+	
 
 			// NEU *********************************************
 			lowCost = 999999999;
+			
 			for (Node node : openList) {
-				if (lowCost > node.getKosten())
+				if (lowCost > node.getKosten()) {
 					aktuellerNode = node;
-				lowCost = node.getKosten();
+					lowCost = node.getKosten();
+	
+				}
 			}
-			if (aktuellerNode == null) {
-				System.out.println("aktueller Node ist null");
-				return tempweg;
-			}
+
+	
+
 			if (openList.indexOf(aktuellerNode) < 0) {
 				System.out.println("aktueller Node ist 0");
 				return tempweg;
 			}
-			// if(openList.indexOf(aktuellerNode) > 0)
+
 			if (openList.indexOf(aktuellerNode) != -1)
 				openList.remove(openList.indexOf(aktuellerNode));
 			else
 				System.out.println("What the hell just happened???");
 
 			closedList.add(aktuellerNode);
+			
+			// Das geht an dieser Stelle irgendwie nicht?
+//			tempweg.add(aktuellerNode);
+//			aktuellerNode.setErschwernis(MathUtils.random(1f, 3f));
 
 			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
 				final Node node = aktuellerNode.getNachbarn().get(i);
@@ -248,37 +236,22 @@ public abstract class Enemy implements Disposable {
 					if (openList.indexOf(node) == -1) {
 						node.setKosten(node.getKosten());
 						openList.add(node);
-					} else {
-						// if(node.kosten > node.getKosten())
-						// {
-						// openList.remove(openList.indexOf(node));
-						// openList.add(node);
-						// }
 					}
-				} else {
-					// if (closedList.indexOf(node) > 1 && node.getKosten() > (aktuellerNode.g + 1)
-					// * node.h) {
-					// closedList.remove(closedList.indexOf(node));
-					// openList.add(node);
-					// }
 				}
 
 			}
 
 			if (aktuellerNode.getX() == zielX && aktuellerNode.getY() == zielY) {
-				// System.out.println("Gefunden");
+				found=true;
 				break;
 			}
 
 			// NEU ENDE ***************************************
 
 		}
-		zaehler = 1000;
+
 		while (aktuellerNode != null) {
-			zaehler--;
-			if (zaehler < 0) {
-				break;
-			}
+		
 			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
 
 			map.nodes2DList[(int) aktuellerNode.getX()][(int) aktuellerNode.getY()]
@@ -291,6 +264,9 @@ public abstract class Enemy implements Disposable {
 
 		return tempweg;
 	}
+	
+	
+	
 
 	public LinkedList<Node> getWeg() {
 		return weg;
