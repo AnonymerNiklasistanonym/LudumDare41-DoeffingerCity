@@ -875,7 +875,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface {
 	public void playerIsDeadCallback() {
 		pause = true;
 		// if score can make it in the top 10 go to the name input else game over
-		if (preferencesManager.scoreIsInTop10(scoreBoard.getScore()))
+		if (preferencesManager.scoreIsInTop5(scoreBoard.getScore()))
 			gameStateManager.setGameState(new HighscoreNameState(gameStateManager, scoreBoard.getScore()));
 		else
 			gameStateManager.setGameState(new GameOverState(gameStateManager));

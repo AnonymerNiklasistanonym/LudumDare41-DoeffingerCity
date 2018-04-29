@@ -12,6 +12,16 @@ public class LevelHandler {
 		// fill the empty array with the CSV file information
 		for (int i = 0; i < level.length; i++)
 			level[i] = readLevel(files[i]);
+		// load the which map for which level information
+		final String[] mapsForLevel = MapHandler.getMaps();
+		
+		if (level.length != mapsForLevel.length) {
+			System.out.println("Error, level length and maps length is different");
+			return level;
+		}
+		// fill the empty array with the CSV file information
+		for (int i = 0; i < mapsForLevel.length; i++)
+			level[i].setMapName(mapsForLevel[i]);
 		return level;
 	}
 
@@ -24,7 +34,7 @@ public class LevelHandler {
 		Wave walkingWave = new Wave();
 
 		// iterate through each line of the CSV file and collect information
-		for (final float[] entry : CsvFileHandler.readFloatCsvFile(csvFile)) {
+		for (final float[] entry : CsvFileHandler.readEnemyCsvFile(csvFile)) {
 			// if a new wave number was found add the current wave to level
 			if (walkingWaveNumber != (int) entry[0]) {
 				System.out.println("walkingWaveNumber: " + walkingWaveNumber + ", entry[0]: " + (int) entry[0]);
