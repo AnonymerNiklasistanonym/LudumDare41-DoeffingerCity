@@ -89,7 +89,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private Tower buildingtower;
 
 	private final Music backgroundMusic;
-	private final Sound splatt, money, carsound, victorysound;
+	private final Sound splatt, soundmoney, carsound, victorysound;
 
 	private Sprite victory;
 	private int currentwave = 0;
@@ -201,7 +201,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
-		money = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
+		soundmoney = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
 		carsound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound2.wav"));
 		victorysound = Gdx.audio.newSound(Gdx.files.internal("sounds/LevelUp3.wav"));
 
@@ -892,7 +892,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		TowerMenu.flameButton.dispose();
 		backgroundMusic.dispose();
 		splatt.dispose();
-		money.dispose();
+		soundmoney.dispose();
 		carsound.dispose();
 		victorysound.dispose();
 		shapeRenderer.dispose();
@@ -931,16 +931,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// when all checkpoints were checked
 		if (allCheckpointsChecked) {
 			// add fast bonus and money per lap to the purse
+			int lapmoney=moneyPerLap-towers.size;
 			final int fastBonus =(int) (level[scoreBoard.getLevel()-1].getTimebonus() - scoreBoard.getCurrentTime() * 2);
-			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
+			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : moneyPerLap);
+			// play cash sound if sound activated
 			if (soundon)
-				money.play();
+				soundmoney.play();
 			if (tutorialstate == 1) {
 				tutorialstate++;
 				System.out.println("Tutorial advanced to Stage " + tutorialstate);
 			}
 		}
-		// play cash sound if sound activated
+		
 
 	}
 
