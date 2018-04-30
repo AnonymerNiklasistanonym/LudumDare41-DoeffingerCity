@@ -534,6 +534,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					carsoundPlaying = false;
 				}
 			}
+		} else {
+			carsoundPlaying = false;
+			carsound.stop();
 		}
 
 		if (buildingtower == null) {
