@@ -79,8 +79,6 @@ public abstract class Enemy implements Disposable {
 		// give them a time when the should spawn
 		this.time = time;
 
-		System.out.println("Enemy time: " + time);
-
 		// create a random color for every enemy
 		this.color = new Color(MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), MathUtils.random(0f, 1f), 0.7f);
 
@@ -98,7 +96,7 @@ public abstract class Enemy implements Disposable {
 		enemyCircle.setRadius(sprite.getHeight() * 0.35f);
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
-		fdef.density = 0.6f;
+		fdef.density = 0.9f;
 		return fdef;
 	}
 
@@ -151,11 +149,15 @@ public abstract class Enemy implements Disposable {
 	private void findWay() {
 		// Wo bin ich wo will ich hin
 		// Aus Map auslesen wo das Ziel ist
-		final PolygonShape ps = (PolygonShape) map.getMapZielBody().getFixtureList().first().getShape();
-		final Vector2 vector = new Vector2();
-		ps.getVertex(0, vector);
-		weg = getPath(new Vector2(getBodyX() * PlayState.METER_TO_PIXEL, this.getBodyY() * PlayState.METER_TO_PIXEL),
-				new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL));
+		// final PolygonShape ps = (PolygonShape)
+		// map.getMapZielBody().getFixtureList().first().getShape();
+		// final Vector2 vector = new Vector2();
+		// ps.getVertex(0, vector);
+		// weg = getPath(new Vector2(getBodyX() * PlayState.METER_TO_PIXEL,
+		// this.getBodyY() * PlayState.METER_TO_PIXEL),
+		// new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y *
+		// PlayState.METER_TO_PIXEL));
+		weg = map.getRandomPath();
 	}
 
 	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
@@ -164,6 +166,9 @@ public abstract class Enemy implements Disposable {
 		Node[][] tempNodes2DList = map.getNodesList();
 		LinkedList<Node> tempweg = new LinkedList<Node>();
 		Node aktuellerNode;
+
+		System.out.println("ENEMY: Suche Pfad zwischen: " + startPosition.x + "/" + startPosition.y + " und "
+				+ targetPosition.x + "/" + targetPosition.y);
 
 		boolean found = false;
 		// Welcher Node ist der naechste?
@@ -191,6 +196,9 @@ public abstract class Enemy implements Disposable {
 
 		if (tempNodes2DList[(int) startPosition.x][(int) startPosition.y].getNoUse())
 			System.out.println("Halt, Start Node ist ungueltig");
+
+		if (tempNodes2DList[(int) targetPosition.x][(int) targetPosition.y].getNoUse())
+			System.out.println("Halt, End Node ist ungueltig");
 
 		openList.add(tempNodes2DList[(int) startPosition.x][(int) startPosition.y]);
 		aktuellerNode = tempNodes2DList[(int) startPosition.x][(int) startPosition.y];

@@ -290,7 +290,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 		this.finishline = new FinishLine(this.world, sfinishline, this.level[levelNumber].getFinishLinePosition().x,
 				this.level[levelNumber].getFinishLinePosition().y);
-		this.map = new MainMap(this.level[levelNumber].getMapName(), this.world, this.finishline.getBody());
+		this.map = new MainMap(this.level[levelNumber], this.world, this.finishline.getBody());
 		this.map.setSpawn(this.level[levelNumber].getSpawnPoint());
 		trailerpos.set(map.getZielPos().x, map.getZielPos().y);
 		this.pitStop.setPosition(this.level[levelNumber].getPitStopPosition().x * PIXEL_TO_METER,

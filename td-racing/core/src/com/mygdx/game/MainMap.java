@@ -1,11 +1,13 @@
 package com.mygdx.game;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,7 +16,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.level.Level;
 
 public class MainMap {
 
@@ -28,12 +32,26 @@ public class MainMap {
 	private Vector2 spawn;
 	private Sprite map;
 	private Vector2 zielpos;
+	private Array<LinkedList<Node>> paths;
 
-	public MainMap(final String mapName, final World world, final Body finishLine) {
+	public MainMap(final Level levelinfo, final World world, final Body finishLine) {
 		nodesList = new ArrayList<Node>();
-		createSolidMap(mapName, world);
+		createSolidMap(levelinfo.getMapName(), world);
 		this.finishLine = finishLine;
 		createAStarArray();
+		paths = new Array<LinkedList<Node>>();
+		
+		
+		
+		//Erstelle i vorgefertigte Wege:
+		final PolygonShape ps = (PolygonShape) getMapZielBody().getFixtureList().first().getShape();
+		final Vector2 vector = new Vector2();
+		ps.getVertex(0, vector);
+		
+		for (int i = 0; i < 200; i++) {
+			
+			paths.add(getPath(new Vector2(levelinfo.getSpawnPoint().x, levelinfo.getSpawnPoint().y),
+				new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL)));		}
 	}
 
 	public Body getMapZielBody() {
@@ -44,7 +62,7 @@ public class MainMap {
 		return nodes2DList;
 	}
 
-	public void createSolidMap(final String mapName, final World world) {
+	public void createSolidMap(String mapName, final World world) {
 		// The following line would throw ExceptionInInitializerError
 
 		map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
@@ -208,4 +226,126 @@ public class MainMap {
 		return zielpos;
 	}
 
+	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
+		LinkedList<Node> openList = new LinkedList<Node>();
+		LinkedList<Node> closedList = new LinkedList<Node>();
+		Node[][] tempNodes2DList = getNodesList();
+		LinkedList<Node> tempweg = new LinkedList<Node>();
+		Node aktuellerNode;
+
+//		startPosition.x=startPosition.x*PlayState.METER_TO_PIXEL;
+//		startPosition.y=startPosition.y*PlayState.METER_TO_PIXEL;
+//		
+//		targetPosition.x=targetPosition.x*PlayState.METER_TO_PIXEL;
+//		targetPosition.y=targetPosition.y*PlayState.METER_TO_PIXEL;
+		boolean found = false;
+		// Welcher Node ist der naechste?
+		if (startPosition.x % 10 < 5)
+			startPosition.x = startPosition.x - startPosition.x % 10;
+		else
+			startPosition.x = startPosition.x + (10 - startPosition.x % 10);
+		if (startPosition.y % 10 < 5)
+			startPosition.y = startPosition.y - startPosition.y % 10;
+		else
+			startPosition.y = startPosition.y + (10 - startPosition.y % 10);
+
+		// Ende normalisiesrn?
+		if (targetPosition.x % 10 < 5)
+			targetPosition.x = targetPosition.x - targetPosition.x % 10;
+		else
+			targetPosition.x = targetPosition.x + (10 - targetPosition.x % 10);
+		if (targetPosition.y % 10 < 5)
+			targetPosition.y = targetPosition.y - targetPosition.y % 10;
+		else
+			targetPosition.y = targetPosition.y + (10 - targetPosition.y % 10);
+
+		
+	
+		// Welcher Nachbar ist der beste
+		float lowCost = 9999999;
+
+		if (tempNodes2DList[(int) startPosition.x][(int) startPosition.y].getNoUse()) 
+			System.out.println("Halt, Start Node ist ungueltig");
+			
+		if (tempNodes2DList[(int) targetPosition.x][(int) targetPosition.y].getNoUse()) 
+			System.out.println("Halt, End Node ist ungueltig");
+
+		openList.add(tempNodes2DList[(int) startPosition.x][(int) startPosition.y]);
+		aktuellerNode = tempNodes2DList[(int) startPosition.x][(int) startPosition.y];
+		lowCost = aktuellerNode.getCost();
+
+		while (!found) {
+
+			// NEU *********************************************
+			lowCost = 999999999;
+
+			for (Node node : openList) {
+				if (lowCost > node.getCost()) {
+					aktuellerNode = node;
+					lowCost = node.getCost();
+
+				}
+			}
+
+			if (openList.indexOf(aktuellerNode) < 0) {
+				System.out.println("aktuellerNode ist auf openList nicht zu finden (MainMap)");
+				System.out.println("openList size: "+openList.size());
+				System.out.println("aktuellerNode size: "+aktuellerNode.getPosition().x+"/"+aktuellerNode.getPosition().y);
+				System.out.println("tempweg size: "+openList.size());
+				return tempweg;
+			}
+
+			if (openList.indexOf(aktuellerNode) != -1)
+				openList.remove(openList.indexOf(aktuellerNode));
+			else
+				System.out.println("What the hell just happened???");
+
+			closedList.add(aktuellerNode);
+
+			// Das geht an dieser Stelle irgendwie nicht?
+			// tempweg.add(aktuellerNode);
+			// aktuellerNode.setErschwernis(MathUtils.random(1f, 3f));
+
+			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
+				final Node node = aktuellerNode.getNachbarn().get(i);
+				if (closedList.indexOf(node) == -1) {
+					node.setG(aktuellerNode.getG() + 1);
+					node.setParent(aktuellerNode);
+					if (openList.indexOf(node) == -1) {
+						node.setCost(node.getCost());
+						openList.add(node);
+					}
+				}
+
+			}
+
+			if (aktuellerNode.getPosition().x == targetPosition.x
+					&& aktuellerNode.getPosition().y == targetPosition.y) {
+				found = true;
+				break;
+			}
+
+			// NEU ENDE ***************************************
+
+		}
+
+		while (aktuellerNode != null) {
+
+			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
+
+			getNodesList()[(int) aktuellerNode.getPosition().x][(int) aktuellerNode.getPosition().y]
+					.setAdditionalDifficulty(MathUtils.random(1f, 3f));
+
+			// Hinzufuegen
+			tempweg.add(aktuellerNode);
+			aktuellerNode = aktuellerNode.getParent();
+		}
+	
+		return tempweg;
+	}
+
+	public LinkedList<Node> getRandomPath() {
+
+		return paths.random();
+	}
 }
