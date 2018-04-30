@@ -2,17 +2,25 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.controller.ControllerHelperMenu;
+import com.mygdx.game.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
 
-public class CreditState extends GameState {
+public class CreditState extends GameState implements ControllerMenuCallbackInterface {
 
 	private final String[] textContent;
 	private final Vector2[] textContentPosition;
+	
+	private final ControllerHelperMenu controllerHelperMenu;
+	private float controllerTimeHelper;
 
 	private static final String STATE_NAME = "Credits";
 
@@ -33,6 +41,11 @@ public class CreditState extends GameState {
 		// calculate the text positions so that every line is centered
 		textContentPosition = GameStateMethods.calculateCenteredMultiLineTextPositons(MainGame.fontUpperCaseBig,
 				textContent, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+		
+		// add controller listener
+		controllerHelperMenu = new ControllerHelperMenu(this);
+		Controllers.addListener(controllerHelperMenu);
+		controllerTimeHelper = 0;
 	}
 
 	@Override
@@ -41,12 +54,12 @@ public class CreditState extends GameState {
 
 		// on touch or escape or back go back to the menu
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
-			gameStateManager.setGameState(new MenuState(gameStateManager));
+			goBack();
 	}
 
 	@Override
 	protected void update(final float deltaTime) {
-		// Nothing to update
+		controllerTimeHelper += deltaTime;
 	}
 
 	@Override
@@ -64,7 +77,38 @@ public class CreditState extends GameState {
 
 	@Override
 	protected void dispose() {
-		// Nothing to dispose
+		Controllers.removeListener(controllerHelperMenu);
+	}
+	
+	private void goBack() {
+		gameStateManager.setGameState(new MenuState(gameStateManager));
+	}
+
+	@Override
+	public void backCallback() {
+		goBack();
+	}
+
+	@Override
+	public void selectCallback(final int buttonId) {
+		if (controllerTimeHelper <= 0.2)
+			return;
+		// go back to the menu
+		if (buttonId == ControllerWiki.BUTTON_A || buttonId == ControllerWiki.BUTTON_B)
+			goBack();
+		// toggle full screen
+		if (buttonId == ControllerWiki.BUTTON_START)
+			GameStateMethods.toggleFullScreen();
+	}
+
+	@Override
+	public void dPadCallback(final PovDirection direction) {
+		// Nothing to do
+	}
+
+	@Override
+	public void stickMoved(final boolean xAxis, final float value) {
+		// Nothing to do
 	}
 
 }

@@ -15,7 +15,7 @@ public interface ControllerMenuCallbackInterface {
 	 * @param buttonId
 	 *            (ControllerWiki.BUTTON...)
 	 */
-	void selectCallback(int buttonId);
+	void selectCallback(final int buttonId);
 	
 	/**
 	 * DPad button was pressed
@@ -23,6 +23,8 @@ public interface ControllerMenuCallbackInterface {
 	 * @param buttonId
 	 *            (ControllerWiki.BUTTON...)
 	 */
-	void dPadCallback(PovDirection direction);
+	void dPadCallback(final PovDirection direction);
+
+	void stickMoved(final boolean xAxis, final float value);
 
 }

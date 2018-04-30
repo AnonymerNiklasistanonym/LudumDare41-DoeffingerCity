@@ -345,6 +345,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		for (final Tower tower : towers)
 			tower.activateRange(false);
 	}
+	
+	private void goBack() {
+		gameStateManager.setGameState(new MenuState(gameStateManager));
+	}
 
 	@Override
 	protected void handleInput() {
@@ -352,13 +356,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		if (wongame && (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.justTouched()))
 			playerIsDeadCallback();
-
 		if (Gdx.input.isKeyJustPressed(Keys.F3)) {
 			for (final Enemy e : enemies)
 				e.activateEnemy();
 		}
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
-			gameStateManager.setGameState(new MenuState(gameStateManager));
+			goBack();
 		if (Gdx.input.isKeyPressed(Keys.W))
 			car.accelarate();
 		if (Gdx.input.isKeyPressed(Keys.S))
@@ -1060,5 +1063,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			car.accelarate();
 		else
 			car.brake();
+	}
+	
+	@Override
+	public void backCallback() {
+		goBack();
+	}
+	
+	@Override
+	public void fullScreenCallback() {
+		GameStateMethods.toggleFullScreen();
 	}
 }

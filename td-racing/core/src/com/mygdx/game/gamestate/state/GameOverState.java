@@ -2,11 +2,17 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.controller.ControllerHelperMenu;
+import com.mygdx.game.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
@@ -14,7 +20,7 @@ import com.mygdx.game.menu.MenuButton;
 import com.mygdx.game.menu.MenuButtonBig;
 import com.mygdx.game.menu.MenuButtonSmall;
 
-public class GameOverState extends GameState {
+public class GameOverState extends GameState implements ControllerMenuCallbackInterface {
 
 	private final MenuButton[] menuButtons;
 
@@ -31,6 +37,11 @@ public class GameOverState extends GameState {
 	private String loadingText;
 
 	private Vector2 loadingTextPosition;
+	
+	private boolean blockStickInput = false;
+	private float stickTimeHelper;
+	private float controllerTimeHelper;
+	private final ControllerListener controllerHelperMenu;
 
 	public GameOverState(GameStateManager gameStateManager) {
 		super(gameStateManager, STATE_NAME);
@@ -63,6 +74,13 @@ public class GameOverState extends GameState {
 				new MenuButtonSmall(HIGHSCORE_ID, MainGame.GAME_WIDTH / 4, MainGame.GAME_HEIGHT / 6 * 1, "HIGHSCORES"),
 				new MenuButtonSmall(ABOUT_ID, MainGame.GAME_WIDTH - MainGame.GAME_WIDTH / 4,
 						MainGame.GAME_HEIGHT / 6 * 1, "ABOUT") };
+		
+		// controller setup
+		controllerHelperMenu = new ControllerHelperMenu(this);
+		Controllers.addListener(controllerHelperMenu);
+		blockStickInput = false;
+		stickTimeHelper = 0;
+		controllerTimeHelper = 0;
 	}
 
 	@Override
@@ -109,7 +127,8 @@ public class GameOverState extends GameState {
 
 	@Override
 	public void update(final float deltaTime) {
-		// Do nothing
+		controllerTimeHelper += deltaTime;
+		stickTimeHelper += deltaTime;
 	}
 
 	@Override
@@ -126,11 +145,82 @@ public class GameOverState extends GameState {
 
 	@Override
 	public void dispose() {
+		Controllers.removeListener(controllerHelperMenu);
 		backgroundGameOver.dispose();
 		MenuButtonBig.textureActive.dispose();
 		MenuButtonBig.textureNotActive.dispose();
 		MenuButtonSmall.textureActive.dispose();
 		MenuButtonSmall.textureNotActive.dispose();
+	}
+	
+	private void openSelectedMenuButton() {
+		for (final MenuButton menuButton : menuButtons) {
+			if (menuButton.isActive()) {
+				switch (menuButton.getId()) {
+				case PLAY_AGAIN_ID:
+					gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
+					break;
+				case HIGHSCORE_ID:
+					gameStateManager.setGameState(new HighscoreListState(gameStateManager));
+					break;
+				case ABOUT_ID:
+					gameStateManager.setGameState(new CreditState(gameStateManager));
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void backCallback() {
+		// exit application
+		Gdx.app.exit();
+	}
+
+	@Override
+	public void selectCallback(int buttonId) {
+		if (controllerTimeHelper < 0.2)
+			return;
+		// open selected button
+		if (buttonId == ControllerWiki.BUTTON_A)
+			openSelectedMenuButton();
+		if (buttonId == ControllerWiki.BUTTON_START)
+			GameStateMethods.toggleFullScreen();
+	}
+	
+	private void selectNextButton(boolean below) {
+		for (int i = 0; i < menuButtons.length; i++) {
+			if (menuButtons[i].isActive()) {
+				menuButtons[i].setActive(false);
+				if (below)
+					menuButtons[(i + 1) % menuButtons.length].setActive(true);
+				else
+					menuButtons[(i - 1 + menuButtons.length) % menuButtons.length].setActive(true);
+				return;
+			}
+		}
+	}
+
+	@Override
+	public void dPadCallback(PovDirection direction) {
+		// select next button
+		if (direction == ControllerWiki.BUTTON_DPAD_DOWN || direction == ControllerWiki.BUTTON_DPAD_RIGHT)
+			selectNextButton(true);
+		if (direction == ControllerWiki.BUTTON_DPAD_UP || direction == ControllerWiki.BUTTON_DPAD_LEFT)
+			selectNextButton(false);
+		
+	}
+	
+	@Override
+	public void stickMoved(final boolean xAxis, final float value) {
+		// select next button
+		if (blockStickInput && stickTimeHelper >= 0.3)
+			blockStickInput = false;
+		if (!blockStickInput && (value > 0.3 || value < -0.3)) {
+			selectNextButton(value > 0.3);
+			stickTimeHelper = 0;
+			blockStickInput = true;
+		}
 	}
 
 }

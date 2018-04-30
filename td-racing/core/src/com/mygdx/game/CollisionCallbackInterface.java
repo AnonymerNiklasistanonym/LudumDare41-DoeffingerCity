@@ -8,12 +8,12 @@ import com.mygdx.game.objects.Flame;
 
 public interface CollisionCallbackInterface {
 
-	public void collisionCarEnemy(final Car car, final Enemy enemy);
+	void collisionCarEnemy(final Car car, final Enemy enemy);
 
-	public void collisionCarCheckpoint(final Car car, final Checkpoint checkpoint);
+	void collisionCarCheckpoint(final Car car, final Checkpoint checkpoint);
 
-	public void collisionCarFinishLine(final Car car, final FinishLine finishLine);
+	void collisionCarFinishLine(final Car car, final FinishLine finishLine);
 
-	public void collisionFlameEnemy(final Enemy enemy, final Flame flame);
+	void collisionFlameEnemy(final Enemy enemy, final Flame flame);
 
 }

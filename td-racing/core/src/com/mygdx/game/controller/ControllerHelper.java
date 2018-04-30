@@ -23,30 +23,6 @@ public class ControllerHelper implements ControllerListener {
 
 	}
 
-	public boolean isButtonPressedX() {
-		return buttonPressedX;
-	}
-
-	public boolean isButtonPressedY() {
-		return buttonPressedY;
-	}
-
-	public boolean isButtonPressedA() {
-		return buttonPressedA;
-	}
-
-	public boolean isButtonPressedB() {
-		return buttonPressedB;
-	}
-
-	public boolean isButtonPressedBack() {
-		return buttonPressedBack;
-	}
-
-	public boolean isButtonPressedStart() {
-		return buttonPressedStart;
-	}
-
 	public void buttonPressed(int buttonId) {
 		buttonManager(buttonId, true);
 	}
@@ -85,9 +61,13 @@ public class ControllerHelper implements ControllerListener {
 			buttonPressedY = pressed;
 			break;
 		case ControllerWiki.BUTTON_START:
+			if (!buttonPressedStart && pressed)
+				controllerCallbackInterface.fullScreenCallback();
 			buttonPressedStart = pressed;
 			break;
 		case ControllerWiki.BUTTON_BACK:
+			if (!buttonPressedBack && pressed)
+				controllerCallbackInterface.backCallback();
 			buttonPressedBack = pressed;
 			break;
 		default:

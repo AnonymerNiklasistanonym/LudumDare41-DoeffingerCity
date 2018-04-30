@@ -2,22 +2,31 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.PreferencesManager;
 import com.mygdx.game.PreferencesManager.HighscoreEntry;
+import com.mygdx.game.controller.ControllerHelperMenu;
+import com.mygdx.game.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
 import com.mygdx.game.menu.HighscoreButton;
 
-public class HighscoreListState extends GameState {
+public class HighscoreListState extends GameState implements ControllerMenuCallbackInterface {
 
 	private static final String STATE_NAME = "Highscore > List";
 
 	private final HighscoreButton[] highscoreButtons;
 	private final PreferencesManager preferencesManager;
+
+	private float controllerTimeHelper;
+	private final ControllerListener controllerHelperMenu;
 
 	public HighscoreListState(GameStateManager gameStateManager) {
 		super(gameStateManager, STATE_NAME);
@@ -45,6 +54,11 @@ public class HighscoreListState extends GameState {
 						MainGame.GAME_HEIGHT / 6 * 2),
 				new HighscoreButton(5, entries[4].getScore(), entries[4].getName(), MainGame.GAME_WIDTH / 2,
 						MainGame.GAME_HEIGHT / 6 * 1) };
+
+		// controller setup
+		controllerHelperMenu = new ControllerHelperMenu(this);
+		Controllers.addListener(controllerHelperMenu);
+		controllerTimeHelper = 0;
 	}
 
 	@Override
@@ -53,7 +67,7 @@ public class HighscoreListState extends GameState {
 
 		// go back to the menu state
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
-			gameStateManager.setGameState(new MenuState(gameStateManager));
+			goBack();
 
 		// clear high score list
 		if (Gdx.input.isKeyJustPressed(Keys.C)) {
@@ -61,10 +75,14 @@ public class HighscoreListState extends GameState {
 			gameStateManager.setGameState(new HighscoreListState(gameStateManager));
 		}
 	}
+	
+	private void goBack() {
+		gameStateManager.setGameState(new MenuState(gameStateManager));
+	}
 
 	@Override
 	protected void update(final float deltaTime) {
-		// TODO Nothing to update
+		controllerTimeHelper += deltaTime;
 	}
 
 	@Override
@@ -85,9 +103,35 @@ public class HighscoreListState extends GameState {
 
 	@Override
 	protected void dispose() {
+		Controllers.removeListener(controllerHelperMenu);
 		HighscoreButton.texture.dispose();
 		for (final HighscoreButton highscoreButton : highscoreButtons)
 			highscoreButton.dispose();
+	}
+
+	@Override
+	public void backCallback() {
+		goBack();
+	}
+
+	@Override
+	public void selectCallback(int buttonId) {
+		if (controllerTimeHelper < 0.2)
+			return;
+		if (buttonId == ControllerWiki.BUTTON_A)
+			goBack();
+		if (buttonId == ControllerWiki.BUTTON_START)
+			GameStateMethods.toggleFullScreen();
+	}
+
+	@Override
+	public void dPadCallback(PovDirection direction) {
+		// Nothing to do
+	}
+	
+	@Override
+	public void stickMoved(final boolean xAxis, final float value) {
+		// Nothing to do
 	}
 
 }

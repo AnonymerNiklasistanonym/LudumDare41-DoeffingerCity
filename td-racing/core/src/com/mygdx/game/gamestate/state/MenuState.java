@@ -2,7 +2,6 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,12 +28,16 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 	private final ControllerHelperMenu controllerHelperMenu;
 
 	private final static int START_ID = 0;
-	private final static int HIGHSCORES_ID = 1;
+	private final static int HIGHSCORE_ID = 1;
 	private final static int ABOUT_ID = 2;
 
 	private static final String STATE_NAME = "Menu";
 
 	private final Vector3 touchPos;
+	
+	private boolean blockStickInput = false;
+	private float stickTimeHelper;
+	private float controllerTimeHelper;
 
 	public MenuState(GameStateManager gameStateManager) {
 		super(gameStateManager, STATE_NAME);
@@ -50,15 +53,16 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 
-		controllerHelperMenu = Controllers.getControllers().size == 0 ? null : new ControllerHelperMenu(this);
-		if (controllerHelperMenu != null)
-			Controllers.addListener(controllerHelperMenu);
-
 		menuButtons = new MenuButton[] {
 				new MenuButtonBig(START_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2.8f, "START", true),
 				new MenuButtonSmall(ABOUT_ID, MainGame.GAME_WIDTH / 4, MainGame.GAME_HEIGHT / 6 * 1, "ABOUT"),
-				new MenuButtonSmall(HIGHSCORES_ID, MainGame.GAME_WIDTH / 2 + MainGame.GAME_WIDTH / 4,
+				new MenuButtonSmall(HIGHSCORE_ID, MainGame.GAME_WIDTH / 2 + MainGame.GAME_WIDTH / 4,
 						MainGame.GAME_HEIGHT / 6 * 1, "HIGHSCORES") };
+
+		controllerHelperMenu = new ControllerHelperMenu(this);
+		Controllers.addListener(controllerHelperMenu);
+		blockStickInput = false;
+		stickTimeHelper = 0;
 	}
 
 	@Override
@@ -85,6 +89,12 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
 			openSelectedMenuButton();
 		}
+		
+		// Go with the arrow keys through all visible buttons
+		if (Gdx.input.isKeyJustPressed(Keys.DOWN) || Gdx.input.isKeyJustPressed(Keys.RIGHT))
+			selectNextButton(true);
+		if (Gdx.input.isKeyJustPressed(Keys.UP) || Gdx.input.isKeyJustPressed(Keys.LEFT))
+			selectNextButton(false);
 
 		// if escape or back is pressed quit
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
@@ -93,7 +103,8 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 
 	@Override
 	public void update(final float deltaTime) {
-		// Nothing to update
+		stickTimeHelper += deltaTime;
+		controllerTimeHelper += deltaTime;
 	}
 
 	@Override
@@ -111,6 +122,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 
 	@Override
 	public void dispose() {
+		Controllers.removeListener(controllerHelperMenu);
 		for (final MenuButton menuButton : menuButtons)
 			menuButton.dispose();
 		backgroundStars.dispose();
@@ -128,7 +140,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 				case START_ID:
 					gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
 					break;
-				case HIGHSCORES_ID:
+				case HIGHSCORE_ID:
 					gameStateManager.setGameState(new HighscoreListState(gameStateManager));
 					break;
 				case ABOUT_ID:
@@ -147,6 +159,8 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 
 	@Override
 	public void selectCallback(int buttonId) {
+		if (controllerTimeHelper < 0.2)
+			return;
 		// open selected button
 		if (buttonId == ControllerWiki.BUTTON_A)
 			openSelectedMenuButton();
@@ -158,15 +172,6 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 		for (int i = 0; i < menuButtons.length; i++) {
 			if (menuButtons[i].isActive()) {
 				menuButtons[i].setActive(false);
-				
-				System.out.println("Currently selected: " + i);
-				if (below) {
-					System.out.println("Select +1 index: " + (i + 1));
-					System.out.println("Modulo menuButtons.length (" + menuButtons.length + "): " + ((i + 1) % menuButtons.length));
-				} else {
-					System.out.println("Select -1 index: " + (i - 1));
-					System.out.println("Modulo menuButtons.length (" + menuButtons.length + "): " + ((i - 1 + menuButtons.length) % menuButtons.length));
-				}
 				if (below)
 					menuButtons[(i + 1) % menuButtons.length].setActive(true);
 				else
@@ -184,6 +189,18 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 		if (direction == ControllerWiki.BUTTON_DPAD_UP || direction == ControllerWiki.BUTTON_DPAD_LEFT)
 			selectNextButton(false);
 		
+	}
+	
+	@Override
+	public void stickMoved(final boolean xAxis, final float value) {
+		// select next button
+		if (blockStickInput && stickTimeHelper >= 0.3)
+			blockStickInput = false;
+		if (!blockStickInput && (value > 0.3 || value < -0.3)) {
+			selectNextButton(value > 0.3);
+			stickTimeHelper = 0;
+			blockStickInput = true;
+		}
 	}
 
 }
