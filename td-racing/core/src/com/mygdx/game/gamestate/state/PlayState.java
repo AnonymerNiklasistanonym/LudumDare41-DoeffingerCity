@@ -962,7 +962,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			final int fastBonus =(int) (level[scoreBoard.getLevel()-1].getTimebonus() - scoreBoard.getCurrentTime() * 2);
 			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : moneyPerLap);
 			// play cash sound if sound activated
-			if (soundon)
+			if (soundOn)
 				soundmoney.play();
 			if (tutorialstate == 1) {
 				tutorialstate++;
