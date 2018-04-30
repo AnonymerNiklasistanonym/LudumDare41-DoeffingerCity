@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.CollisionCallbackInterface;
 import com.mygdx.game.CollisionListener;
-import com.mygdx.game.FPSCounter;
 import com.mygdx.game.MainGame;
 import com.mygdx.game.MainMap;
 import com.mygdx.game.Node;
@@ -93,7 +92,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final Sound splatt, money, carsound, victorysound;
 
 	private Sprite victory;
-	private FPSCounter fpscounter;
 	private int currentwave = 0;
 	private boolean wongame = false;
 	private boolean infiniteenemies = false;
@@ -138,7 +136,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		this.level = LevelHandler.loadLevels();
 
-		fpscounter = new FPSCounter();
 		MainGame.font70.getData().setScale(0.10f);
 		scoreBoard = new ScoreBoard(this, !deploy);
 		scoreBoard.reset(0);
@@ -578,8 +575,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		towerMenu.update();
 		camera.update();
 
-		fpscounter.update(deltaTime);
-
 		if (controllerHelper != null)
 			controllerHelper.update();
 
@@ -649,7 +644,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		scoreBoard.draw(spriteBatch);
 
 		if (deploy == false)
-			MainGame.font.draw(spriteBatch, "FPS: " + fpscounter.getFrames(), 30, 35.5f);
+			MainGame.font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 30, 35.5f);
 
 		if (timeforwavetext > 0)
 			MainGame.font70.draw(spriteBatch, wavetext, 20, 25);
