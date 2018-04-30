@@ -345,7 +345,10 @@ public class MainMap {
 	}
 
 	public LinkedList<Node> getRandomPath() {
-
-		return paths.random();
+		LinkedList<Node> rdm=paths.random();
+		LinkedList<Node> cpy=new LinkedList<Node>();
+		cpy.addAll(rdm);
+		
+		return cpy;
 	}
 }

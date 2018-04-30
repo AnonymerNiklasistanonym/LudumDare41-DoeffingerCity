@@ -158,6 +158,8 @@ public abstract class Enemy implements Disposable {
 		// new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y *
 		// PlayState.METER_TO_PIXEL));
 		weg = map.getRandomPath();
+		if(weg.size()<1)
+			System.out.println("Ich hab keinen gültigen Weg bekommen :(");
 	}
 
 	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
