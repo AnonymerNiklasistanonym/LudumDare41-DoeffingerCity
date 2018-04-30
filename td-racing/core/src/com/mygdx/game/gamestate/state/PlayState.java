@@ -1038,7 +1038,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	@Override
 	public void enemyHitsHomeCallback(final Enemy enemy) {
-		scoreBoard.reduceLife(enemy.getDamadge());
+		scoreBoard.reduceLife(1);
 	}
 
 	@Override
