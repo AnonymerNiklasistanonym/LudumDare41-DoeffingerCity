@@ -153,6 +153,8 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 
 	@Override
 	public void backCallback() {
+		if (controllerTimeHelper < 0.2)
+			return;
 		// exit application
 		Gdx.app.exit();
 	}

@@ -864,6 +864,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	@Override
 	protected void dispose() {
+		Controllers.removeListener(controllerHelper);
 		// dispose loaded enemies, towers and other objects
 		for (final Enemy enemy : enemies)
 			enemy.dispose();
