@@ -7,16 +7,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ControllerHelperMenu implements ControllerListener {
 
-	private boolean buttonPressedX, buttonPressedY, buttonPressedA, buttonPressedB, buttonPressedBack, buttonPressedStart;
 	private final ControllerMenuCallbackInterface controllerMenuCallbackInterface;
 
 	public ControllerHelperMenu(ControllerMenuCallbackInterface controllerMenuCallbackInterface) {
-		buttonPressedX = false;
-		buttonPressedY = false;
-		buttonPressedA = false;
-		buttonPressedB = false;
-		buttonPressedBack = false;
-		buttonPressedStart = false;
 		this.controllerMenuCallbackInterface = controllerMenuCallbackInterface;
 	}
 
@@ -80,34 +73,28 @@ public class ControllerHelperMenu implements ControllerListener {
 	private void buttonPressed(int buttonId, boolean pressed) {
 		switch (buttonId) {
 		case ControllerWiki.BUTTON_A:
-			if (!buttonPressedA)
+			if (pressed)
 				controllerMenuCallbackInterface.selectCallback(buttonId);
-			buttonPressedA = pressed;
 			break;
 		case ControllerWiki.BUTTON_B:
-			if (!buttonPressedB)
+			if (pressed)
 				controllerMenuCallbackInterface.backCallback();
-			buttonPressedB = pressed;
 			break;
 		case ControllerWiki.BUTTON_X:
-			if (!buttonPressedX)
+			if (pressed)
 				controllerMenuCallbackInterface.selectCallback(buttonId);
-			buttonPressedX = pressed;
 			break;
 		case ControllerWiki.BUTTON_Y:
-			if (!buttonPressedY)
+			if (pressed)
 				controllerMenuCallbackInterface.selectCallback(buttonId);
-			buttonPressedY = pressed;
 			break;
 		case ControllerWiki.BUTTON_BACK:
-			if (!buttonPressedBack)
+			if (pressed)
 				controllerMenuCallbackInterface.backCallback();
-			buttonPressedBack = pressed;
 			break;
 		case ControllerWiki.BUTTON_START:
-			if (!buttonPressedStart)
+			if (pressed)
 				controllerMenuCallbackInterface.selectCallback(buttonId);
-			buttonPressedStart = pressed;
 			break;
 		default:
 			// not important

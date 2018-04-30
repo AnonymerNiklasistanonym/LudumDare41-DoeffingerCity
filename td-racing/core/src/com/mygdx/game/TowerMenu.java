@@ -62,7 +62,7 @@ public class TowerMenu implements Disposable {
 			sprite.draw(batch);
 	}
 
-	public void selectTower(int i, final Vector3 mousePos, final Array<Enemy> enemies) {
+	public boolean selectTower(int i, final Vector3 mousePos, final Array<Enemy> enemies) {
 		boolean unselect = false;
 		if (!towerUnlocked[i])
 			unselect = true;
@@ -81,12 +81,15 @@ public class TowerMenu implements Disposable {
 				world.destroyBody(buildingtower.body);
 			if (buildingtower != null)
 				buildingtower = null;
+			return false;
 		}
 
 		if (towerSelected[i] && towerUnlocked[i]) {
 			buildingtower = getTower(i, mousePos, enemies);
 			buildingtower.activateRange(true);
+			return true;
 		}
+		return false;
 	}
 
 	public Tower getTower(final int tower, final Vector3 mousePos, final Array<Enemy> enemies) {

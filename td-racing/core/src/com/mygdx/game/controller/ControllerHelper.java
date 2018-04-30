@@ -8,10 +8,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ControllerHelper implements ControllerListener {
 
-	private boolean buttonPressedX, buttonPressedY, buttonPressedA, buttonPressedB, buttonPressedBack,
-			buttonPressedStart;
 	private float rightLeftTrigger;
-	private Vector2 leftPad, rightPad;
+	private Vector2 leftPad;
+	Vector3 rightPad;
 
 	private final ControllerCallbackInterface controllerCallbackInterface;
 
@@ -19,7 +18,7 @@ public class ControllerHelper implements ControllerListener {
 		this.controllerCallbackInterface = controllerCallbackInterface;
 
 		leftPad = new Vector2();
-		rightPad = new Vector2();
+		rightPad = new Vector3();
 
 	}
 
@@ -43,32 +42,34 @@ public class ControllerHelper implements ControllerListener {
 			controllerCallbackInterface.steerCar(true);
 		if (leftPad.x > 0.2f)
 			controllerCallbackInterface.steerCar(false);
+		
+		// control the mouse cursor
+		controllerCallbackInterface.controllerMouseChanged(rightPad);
 	}
 
 	private void buttonManager(int buttonId, boolean pressed) {
 		switch (buttonId) {
 		case ControllerWiki.BUTTON_A:
-			buttonPressedA = pressed;
+			controllerCallbackInterface.buildTower();
 			break;
 		case ControllerWiki.BUTTON_B:
-			buttonPressedB = pressed;
-			controllerCallbackInterface.startBuildingMode(buttonPressedB);
+			controllerCallbackInterface.startBuildingMode(-1);
 			break;
-		case ControllerWiki.BUTTON_X:
-			buttonPressedX = pressed;
+		case ControllerWiki.BUTTON_RB:
+			if (pressed)
+				controllerCallbackInterface.toggleSound();
 			break;
-		case ControllerWiki.BUTTON_Y:
-			buttonPressedY = pressed;
+		case ControllerWiki.BUTTON_LB:
+			if (pressed)
+				controllerCallbackInterface.togglePause();
 			break;
 		case ControllerWiki.BUTTON_START:
-			if (!buttonPressedStart && pressed)
+			if (pressed)
 				controllerCallbackInterface.fullScreenCallback();
-			buttonPressedStart = pressed;
 			break;
 		case ControllerWiki.BUTTON_BACK:
-			if (!buttonPressedBack && pressed)
+			if (pressed)
 				controllerCallbackInterface.backCallback();
-			buttonPressedBack = pressed;
 			break;
 		default:
 			// not important
@@ -87,10 +88,16 @@ public class ControllerHelper implements ControllerListener {
 			leftPad = new Vector2(leftPad != null ? leftPad.x : 0, value);
 			break;
 		case ControllerWiki.AXIS_RIGHT_X:
-			rightPad = new Vector2(value, rightPad != null ? rightPad.y : 0);
+			if (value < 0.15 && value > -0.15)
+				rightPad = new Vector3(0, rightPad != null ? rightPad.y : 0, 0);
+			else
+				rightPad = new Vector3(value, rightPad != null ? rightPad.y : 0, 0);
 			break;
 		case ControllerWiki.AXIS_RIGHT_Y:
-			rightPad = new Vector2(rightPad != null ? rightPad.y : 0, value);
+			if (value < 0.15 && value > -0.15)
+				rightPad = new Vector3(rightPad != null ? rightPad.y : 0, 0, 0);
+			else
+				rightPad = new Vector3(rightPad != null ? rightPad.y : 0, - value, 0);
 			break;
 		default:
 			// not important
@@ -127,7 +134,14 @@ public class ControllerHelper implements ControllerListener {
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		// TODO Auto-generated method stub
+		if (value == ControllerWiki.BUTTON_DPAD_LEFT)
+			controllerCallbackInterface.startBuildingMode(0);
+		if (value == ControllerWiki.BUTTON_DPAD_UP)
+			controllerCallbackInterface.startBuildingMode(1);
+		if (value == ControllerWiki.BUTTON_DPAD_RIGHT)
+			controllerCallbackInterface.startBuildingMode(2);
+		if (value == ControllerWiki.BUTTON_DPAD_DOWN)
+			controllerCallbackInterface.startBuildingMode(3);
 		return false;
 	}
 

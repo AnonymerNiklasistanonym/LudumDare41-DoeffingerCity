@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,7 +58,7 @@ import com.mygdx.game.objects.towers.SniperTower;
 public class PlayState extends GameState implements CollisionCallbackInterface, ControllerCallbackInterface,
 		ScoreBoardCallbackInterface, EnemyCallbackInterface {
 
-	public static boolean soundon = false;
+	public static boolean soundOn = false;
 	private ScoreBoard scoreBoard;
 
 	private CollisionListener collis;
@@ -130,6 +131,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final Level[] level;
 	private Vector3 mousePos;
 	private Vector2 trailerpos;
+	private Vector3 padPos;
+	private boolean padActivated;
 
 	public PlayState(GameStateManager gameStateManager, int level) {
 		super(gameStateManager, STATE_NAME);
@@ -230,27 +233,28 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// Sicherstellen dass bei deploy alle test sachen aus sind
 		if (deploy)
-			soundon = true;
+			soundOn = true;
 
 		loadLevel(MainGame.level);
 
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.6f);
 
-		if (soundon)
+		if (soundOn)
 			backgroundMusic.play();
 
 		shapeRenderer = new ShapeRenderer();
 
 		speedFactor = 1;
 
-		if (Controllers.getControllers().size == 0) {
-			controllerHelper = null;
-			System.out.println("No controller found!");
-		} else {
-			controllerHelper = new ControllerHelper(this);
-			Controllers.addListener(controllerHelper);
-		}
+		// controller setup
+		controllerHelper = new ControllerHelper(this);
+		Controllers.addListener(controllerHelper);
+		
+		padActivated = false;
+		
+		mousePos = new Vector3();
+		padPos = new Vector3( MainGame.GAME_WIDTH * PIXEL_TO_METER / 2,  MainGame.GAME_HEIGHT * PIXEL_TO_METER, 0);
 	}
 
 	private void loadLevel(int levelNumber) {
@@ -369,10 +373,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (Gdx.input.isKeyPressed(Keys.D))
 			car.steerRight();
 		if (Gdx.input.isKeyJustPressed(Keys.U)) {
-			soundon = !soundon;
-			if (soundon == false && backgroundMusic.isPlaying())
+			soundOn = !soundOn;
+			if (soundOn == false && backgroundMusic.isPlaying())
 				backgroundMusic.pause();
-			if (soundon == true)
+			if (soundOn == true)
 				backgroundMusic.play();
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
@@ -387,15 +391,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			buildTowerIfAllowed();
 
 		// pause the game if P is pressed
-		if (Gdx.input.isKeyJustPressed(Keys.P)) {
-			this.pause = !this.pause;
-			if (pause) {
-				wavetext = "PAUSE";
-				timeforwavetext = 2f;
-			} else {
-				timeforwavetext = 0f;
-			}
-		}
+		if (Gdx.input.isKeyJustPressed(Keys.P))
+			togglePauseOg();
 
 		// mark a tower red if the build position is not correct
 		if (buildingtower != null)
@@ -404,6 +401,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (deploy == false)
 			debugInputs();
 
+	}
+	
+	private void togglePauseOg() {
+		pause = !pause;
+		if (pause) {
+			wavetext = "PAUSE";
+			timeforwavetext = 2f;
+		} else {
+			timeforwavetext = 0f;
+		}
 	}
 
 	private void debugInputs() {
@@ -433,7 +440,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
-			scoreBoard.reduceLife(scoreBoard.getHelath());
+			scoreBoard.reduceLife(scoreBoard.getHealth());
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_7))
 			scoreBoard.addMoney(1000);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
@@ -521,7 +528,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		car.update(deltaTime);
 
-		if (soundon) {
+		if (soundOn) {
+			backgroundMusic.play();
 			if (car.getForward().x != 0 && !carsoundPlaying) {
 				carsound.loop();
 				carsoundPlaying = true;
@@ -532,6 +540,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				}
 			}
 		} else {
+			backgroundMusic.pause();
 			carsoundPlaying = false;
 			carsound.stop();
 		}
@@ -541,7 +550,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			if (buildingtower != null)
 				startBuilding(buildingtower);
 		} else {
-			buildingtower.update(deltaTime, mousePos);
+			buildingtower.update(deltaTime, padActivated ? padPos : mousePos);
 			buildingtower = towerMenu.getCurrentTower();
 			if (buildingtower == null)
 				stopBuilding();
@@ -614,6 +623,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// draw enemies
 		for (final Enemy e : enemies)
 			e.draw(spriteBatch);
+		spriteBatch.end();
+		shapeRenderer.begin(ShapeType.Filled);
+		for (final Enemy e : enemies)
+			e.drawHealthBar(shapeRenderer);
+		shapeRenderer.end();
+		spriteBatch.begin();
 		// draw car
 		this.car.draw(spriteBatch);
 		// draw tower
@@ -650,10 +665,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		renderTutorial(spriteBatch);
 		spriteBatch.end();
-
+		
+		// render health bar
+		shapeRenderer.begin(ShapeType.Filled);
+		drawPlayerHealthBar(shapeRenderer);
+		shapeRenderer.end();
+		
 		if (debugBox2D)
 			debugRender.render(world, camera.combined);
 
+	}
+	
+	private void drawPlayerHealthBar(final ShapeRenderer shapeRenderer) {
+		shapeRenderer.setColor(new Color(1, 0, 0, 1));
+		shapeRenderer.rect(map.getHealthBarPos().x * PIXEL_TO_METER, map.getHealthBarPos().y * PIXEL_TO_METER, 200 * PlayState.PIXEL_TO_METER, 6 * PlayState.PIXEL_TO_METER);
+		shapeRenderer.setColor(new Color(0, 1, 0, 1));
+		shapeRenderer.rect(map.getHealthBarPos().x * PIXEL_TO_METER, map.getHealthBarPos().y * PIXEL_TO_METER, 200 * PlayState.PIXEL_TO_METER * (scoreBoard.getHealth() / scoreBoard.getMaxHealth()), 6 * PlayState.PIXEL_TO_METER);
 	}
 
 	private void renderDebugWay(SpriteBatch spriteBatch) {
@@ -901,7 +928,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void collisionCarEnemy(final Car car, final Enemy enemy) {
 		// if the new health after the hit is smaller than 0 play kill sound
-		if (car.hitEnemy(enemy) < 0 && soundon)
+		if (car.hitEnemy(enemy) < 0 && soundOn)
 			splatt.play(1, MathUtils.random(0.5f, 2f), 0);
 	}
 
@@ -1002,14 +1029,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		currentwave = 0;
 		MainGame.level++;
 		loadLevel(MainGame.level);
-		if (soundon)
+		if (soundOn)
 			victorysound.play();
 
 	}
 
 	private void GameVictory() {
 		wongame = true;
-		if (soundon)
+		if (soundOn)
 			victorysound.play();
 	}
 
@@ -1046,16 +1073,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	@Override
-	public void startBuildingMode(boolean start) {
-		if (buildingtower == null) {
-			buildingtower = towerMenu.getCurrentTower();
-			if (buildingtower != null)
-				startBuilding(buildingtower);
+	public void startBuildingMode(final int towerId) {
+		if (towerId == -1) {
+			padActivated = false;
+			stopBuilding();
 		} else {
-			buildingtower = towerMenu.getCurrentTower();
-			if (buildingtower == null)
-				stopBuilding();
+			padActivated = towerMenu.selectTower(towerId, padPos, enemies);
 		}
+			
 	}
 
 	@Override
@@ -1074,5 +1099,35 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void fullScreenCallback() {
 		GameStateMethods.toggleFullScreen();
+	}
+	
+	@Override
+	public void toggleSound() {
+		soundOn = !soundOn;
+	}
+	
+	@Override
+	public void togglePause() {
+		togglePauseOg();
+	}
+
+	@Override
+	public void controllerMouseChanged(final Vector3 rightPad) {
+		if (!padActivated)
+			return;
+
+		if (((padPos.x + rightPad.x >= 0) && (padPos.x + rightPad.x <= MainGame.GAME_WIDTH * PIXEL_TO_METER))
+				&& ((padPos.y + rightPad.y >= 0) && (padPos.y + rightPad.y <= MainGame.GAME_HEIGHT * PIXEL_TO_METER))) {
+			padPos.mulAdd(rightPad, 1);
+		}
+
+		if (buildingtower != null)
+			buildingtower.update(0, padPos);
+	}
+
+	@Override
+	public void buildTower() {
+		if (buildingtower != null)
+				buildTowerIfAllowed();		
 	}
 }

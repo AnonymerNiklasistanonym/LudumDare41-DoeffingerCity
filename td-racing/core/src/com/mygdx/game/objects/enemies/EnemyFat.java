@@ -13,6 +13,7 @@ public class EnemyFat extends Enemy {
 	private static final float MONEY = 4;
 	private static final float SPEED = 0.8f;
 	private static final float SCORE = 40;
+	private static final boolean HEALTH_BAR = true;
 
 	public static Texture damageTexture;
 	public static Texture deadTexture;
@@ -20,11 +21,13 @@ public class EnemyFat extends Enemy {
 
 	public EnemyFat(final Vector2 position, final World world, final MainMap map, final float time) {
 		super(position, world, normalTexture, deadTexture, damageTexture, map, time);
-		this.damage = DAMAGE;
-		this.health = HEALTH;
-		this.money = MONEY;
-		this.speed = SPEED;
-		this.score = SCORE;
+		damage = DAMAGE;
+		health = HEALTH;
+		maxHealth = HEALTH;
+		money = MONEY;
+		speed = SPEED;
+		score = SCORE;
+		healthBar = HEALTH_BAR;
 	}
 
 	@Override

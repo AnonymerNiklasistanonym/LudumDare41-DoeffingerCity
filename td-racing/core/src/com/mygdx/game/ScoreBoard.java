@@ -13,6 +13,7 @@ public class ScoreBoard {
 	private int lapNumber;
 	private int killCount;
 	private float healthPoints;
+	private float maxHealthPoints;
 	private final ScoreBoardCallbackInterface playState;
 	private final int COLUMN;
 	private int level;
@@ -25,6 +26,7 @@ public class ScoreBoard {
 
 		COLUMN = 53;
 		healthPoints = 100;
+		maxHealthPoints = healthPoints;
 		this.debug = debug;
 		reset(0);
 	}
@@ -147,8 +149,12 @@ public class ScoreBoard {
 		this.level = level;
 	}
 
-	public float getHelath() {
+	public float getHealth() {
 		return healthPoints;
+	}
+	
+	public float getMaxHealth() {
+		return maxHealthPoints;
 	}
 
 	public int getLevel() {

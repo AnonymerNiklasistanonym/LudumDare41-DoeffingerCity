@@ -27,6 +27,7 @@ public class MapHandler {
 					Boolean.parseBoolean(mapInformation[i][18]), Boolean.parseBoolean(mapInformation[i][19]),
 					Boolean.parseBoolean(mapInformation[i][20]));
 			level[i].setTimebonus(Float.parseFloat(mapInformation[i][21]));
+			level[i].setHealthBarPosition(new Vector2(Float.parseFloat(mapInformation[i][22]), Float.parseFloat(mapInformation[i][23])));
 		}
 		return level;
 	}

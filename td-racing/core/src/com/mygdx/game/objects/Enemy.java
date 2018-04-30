@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -29,12 +31,14 @@ public abstract class Enemy implements Disposable {
 	private static final float MONEY = 1;
 	private static final float SPEED = 80;
 	private static final float SCORE = 10;
+	private static final boolean HEALTH_BAR = true;
 
 	private final Sprite sprite;
 	private final Sprite spriteDamage;
 	private final Texture textureDead;
 	private final float time;
 
+	protected float maxHealth;
 	protected float health;
 	protected float money;
 	protected float score;
@@ -53,6 +57,7 @@ public abstract class Enemy implements Disposable {
 	private float hitRandomX;
 	private float hitRandomY;
 	private Color color;
+	protected boolean healthBar;
 
 	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
 			final Texture damagesprite, final MainMap map, final float time) {
@@ -69,10 +74,12 @@ public abstract class Enemy implements Disposable {
 		spriteDamage.setOriginCenter();
 
 		health = HEALTH;
+		maxHealth = HEALTH;
 		money = MONEY;
 		score = SCORE;
 		speed = SPEED;
 		damage = DAMAGE;
+		healthBar = HEALTH_BAR;
 
 		// deactivate enemies on creation
 		activated = false;
@@ -160,7 +167,7 @@ public abstract class Enemy implements Disposable {
 		// PlayState.METER_TO_PIXEL));
 		weg = map.getRandomPath();
 		if(weg.size<1)
-			System.out.println("Ich hab keinen gültigen Weg bekommen :(");
+			System.out.println("Ich hab keinen gueltigen Weg bekommen :(");
 	}
 
 	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
@@ -292,6 +299,15 @@ public abstract class Enemy implements Disposable {
 
 	public float getBodyY() {
 		return this.body.getPosition().y;
+	}
+	
+	public void drawHealthBar(final ShapeRenderer shapeRenderer) {
+		if (tot || !activated || !healthBar || health == maxHealth)
+			return;
+		shapeRenderer.setColor(new Color(1, 0, 0, 1));
+		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER, 3 * PlayState.PIXEL_TO_METER);
+		shapeRenderer.setColor(new Color(0, 1, 0, 1));
+		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER * (health / maxHealth), 3 * PlayState.PIXEL_TO_METER);
 	}
 
 	public void update(final float deltaTime) {
