@@ -142,6 +142,7 @@ public abstract class Enemy implements Disposable {
 		this.setTot(true);
 		// set position of dead sprite to the current one
 		sprite.setTexture(textureDead);
+		sprite.setSize(textureDead.getWidth() * PlayState.PIXEL_TO_METER, textureDead.getHeight() * PlayState.PIXEL_TO_METER);
 		sprite.setRotation(MathUtils.random(360));
 		// ???
 		this.wasHitTime = 0;
@@ -302,7 +303,7 @@ public abstract class Enemy implements Disposable {
 	}
 	
 	public void drawHealthBar(final ShapeRenderer shapeRenderer) {
-		if (tot || !activated || !healthBar || health == maxHealth)
+		if (tot || !activated || !healthBar || health == maxHealth || health <= 0)
 			return;
 		shapeRenderer.setColor(new Color(1, 0, 0, 1));
 		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER, 3 * PlayState.PIXEL_TO_METER);
