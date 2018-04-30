@@ -58,3 +58,17 @@ To export the program as ? `war` web app you need to this:
 - To edit the Java code and run/debug it [Eclipse Java Oxygen](https://www.eclipse.org/oxygen/) was used in combination with Java 6 (because of LibGdx the version number is this low)
 - To create the bounding maps for the box2D physics the [box2d-editor](https://code.google.com/archive/p/box2d-editor/downloads) was used
 - To create the Bitmap fonts the program [Hiero](https://libgdx.badlogicgames.com/tools.html) was used
+
+## Controls
+
+### XBox 360 Controller
+
+- Start: Toggle full screen
+- Back: Go back (on the highest level quit app)
+- DPad: Select one of the four towers
+- Right pad: Move selected tower
+- Left pad: Steer the car
+- Right trigger: Accelerate car
+- Left trigger: Brake/Drive backwards
+- Right upper button: Toggle sound
+- Left upper button: Toggle pause
