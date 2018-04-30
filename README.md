@@ -67,10 +67,10 @@ To export the program as ? `war` web app you need to this:
 | Car > Brake | `S` / `Down` | Left trigger |
 | Car > Steer left | `A` / `Left` | Left pad to the left |
 | Car > Steer right | `D` / `Right` | Left pad to the right |
-| Fullscreen toggle | `F11` | Start button |
-| Go back (in menu quit) | `Escape` | Back button |
-| Select tower | `1`,`2`,`3`,`4` | Dpad left, up, down, right |
+| Fullscreen toggle | `F11` | `Start` button |
+| Go back (in menu quit) | `Escape` | `Back` button |
+| Select tower | `1`,`2`,`3`,`4` | DPad left, up, down, right |
 | Move tower if selected | Move mouse | Right pad |
-| Build tower if selected | Left mouse click | A button |
+| Build tower if selected | Left mouse click | `A` button |
 | Toggle sounds | U | Right upper button (RB) |
-| Pause game | P | Left upper button (LB) |
+| Toggle pause | P | Left upper button (LB) |
