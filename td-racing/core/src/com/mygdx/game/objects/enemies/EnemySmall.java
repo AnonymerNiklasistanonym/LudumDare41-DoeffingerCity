@@ -9,7 +9,7 @@ import com.mygdx.game.objects.Enemy;
 public class EnemySmall extends Enemy {
 
 	private static final float DAMAGE = 1;
-	private static final float HEALTH = 10;
+	private static final float HEALTH = 12;
 	private static final float MONEY = 1;
 	private static final float SPEED = 2;
 	private static final float SCORE = 2;
