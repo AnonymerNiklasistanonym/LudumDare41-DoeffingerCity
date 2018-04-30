@@ -615,6 +615,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// draw enemies
 		for (final Enemy e : enemies)
 			e.draw(spriteBatch);
+		spriteBatch.end();
+		shapeRenderer.begin(ShapeType.Filled);
+		for (final Enemy e : enemies)
+			e.drawHealthBar(shapeRenderer);
+		shapeRenderer.end();
+		spriteBatch.begin();
 		// draw car
 		this.car.draw(spriteBatch);
 		// draw tower

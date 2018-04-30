@@ -20,11 +20,12 @@ public class EnemySpider extends Enemy {
 
 	public EnemySpider(final Vector2 position, final World world, final MainMap map, final float time) {
 		super(position, world, normalTexture, deadTexture, damageTexture, map, time);
-		this.damage = DAMAGE;
-		this.health = HEALTH;
-		this.money = MONEY;
-		this.speed = SPEED;
-		this.score = SCORE;
+		damage = DAMAGE;
+		health = HEALTH;
+		maxHealth = HEALTH;
+		money = MONEY;
+		speed = SPEED;
+		score = SCORE;
 	}
 
 	@Override
