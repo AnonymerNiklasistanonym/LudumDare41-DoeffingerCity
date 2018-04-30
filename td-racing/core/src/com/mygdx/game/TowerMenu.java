@@ -22,6 +22,8 @@ public class TowerMenu implements Disposable {
 	public static Texture laserButton;
 	public static Texture flameButton;
 	public static Texture sniperButton;
+	
+	private static final float SCALE_FACTOR = 1;
 
 	private static final Vector2 start = new Vector2(30, 0);
 
@@ -42,7 +44,7 @@ public class TowerMenu implements Disposable {
 		this.towerUnlocked = new boolean[sprites.length];
 
 		for (final Sprite sprite : sprites) {
-			sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER, sprite.getHeight() * PlayState.PIXEL_TO_METER);
+			sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER * SCALE_FACTOR, sprite.getHeight() * PlayState.PIXEL_TO_METER * SCALE_FACTOR);
 			sprite.setOriginCenter();
 		}
 
