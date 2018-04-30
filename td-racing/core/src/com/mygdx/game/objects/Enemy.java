@@ -46,7 +46,7 @@ public abstract class Enemy implements Disposable {
 	private boolean justDied = false;
 	private boolean delete;
 	private boolean tot = false;
-	private final float distancetonode;
+	private float distancetonode;
 	private boolean activated;
 	private float wasHitTime;
 	private float hitRandomX;
@@ -316,11 +316,14 @@ public abstract class Enemy implements Disposable {
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
 			final Vector2 velo = new Vector2(speed, 0);
 			velo.rotateRad(this.body.getAngle());
-			this.body.setLinearVelocity(velo);
-			// body.applyForceToCenter(velo,true);
-			// reduceToMaxSpeed(speed);
-			// killLateral(1f);
+			//this.body.setLinearVelocity(velo);
+			 body.applyForceToCenter(velo,true);
+			 reduceToMaxSpeed(speed);
+			 killLateral(0.1f);
 
+			 if(weg.size()==1)
+				 distancetonode=sprite.getWidth()*2;
+			 
 			if (this.body.getPosition().dst(weg.getLast().getPosition().x * PlayState.PIXEL_TO_METER,
 					weg.getLast().getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
 				weg.remove(weg.indexOf(weg.getLast()));
@@ -334,6 +337,41 @@ public abstract class Enemy implements Disposable {
 
 		sprite.setPosition(getX(), getY());
 		sprite.setRotation(MathUtils.radDeg * this.body.getAngle());
+	}
+	
+	private void killLateral(float drift) {
+		float lat = getVelocityVector().dot(getOrthogonal());
+		body.applyLinearImpulse(getOrthogonal().scl(drift).scl(lat).scl(-1), body.getPosition(), true);
+	}
+
+	
+	private Vector2 getVelocityVector() {
+		return body.getLinearVelocity();
+	}
+	
+	private Vector2 getOrthogonal() {
+		final Vector2 ort = new Vector2(1, 0);
+		ort.rotateRad(body.getAngle());
+		ort.rotate90(1);
+		return ort;
+	}
+	
+	private void reduceToMaxSpeed(float maxspeed) {
+		float speed = getForwardVelocity().x;
+		if (speed < maxspeed * -1)
+			speed = maxspeed * -1;
+		if (speed > maxspeed)
+			speed = maxspeed;
+
+		final Vector2 newSpeed = new Vector2(speed, getForwardVelocity().y);
+		newSpeed.rotateRad(body.getAngle());
+		body.setLinearVelocity(newSpeed);
+	}
+	
+	private Vector2 getForwardVelocity() {
+		final Vector2 velo = getVelocityVector();
+		velo.rotateRad(body.getAngle() * -1);
+		return velo;
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
