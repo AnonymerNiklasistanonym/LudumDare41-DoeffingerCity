@@ -16,6 +16,7 @@ public class EnemyBicycle extends Enemy {
 	private static final float MONEY = 2;
 	private static final float SPEED = 2;
 	private static final float SCORE = 20;
+	private static final boolean HEALTH_BAR = true;
 
 	public static Texture damageTexture;
 	public static Texture deadTexture;
@@ -29,6 +30,7 @@ public class EnemyBicycle extends Enemy {
 		money = MONEY;
 		speed = SPEED;
 		score = SCORE;
+		healthBar = HEALTH_BAR;
 	}
 
 	@Override

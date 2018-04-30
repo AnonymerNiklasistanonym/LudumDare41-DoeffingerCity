@@ -31,6 +31,7 @@ public abstract class Enemy implements Disposable {
 	private static final float MONEY = 1;
 	private static final float SPEED = 80;
 	private static final float SCORE = 10;
+	private static final boolean HEALTH_BAR = true;
 
 	private final Sprite sprite;
 	private final Sprite spriteDamage;
@@ -56,6 +57,7 @@ public abstract class Enemy implements Disposable {
 	private float hitRandomX;
 	private float hitRandomY;
 	private Color color;
+	protected boolean healthBar;
 
 	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
 			final Texture damagesprite, final MainMap map, final float time) {
@@ -77,6 +79,7 @@ public abstract class Enemy implements Disposable {
 		score = SCORE;
 		speed = SPEED;
 		damage = DAMAGE;
+		healthBar = HEALTH_BAR;
 
 		// deactivate enemies on creation
 		activated = false;
@@ -299,12 +302,12 @@ public abstract class Enemy implements Disposable {
 	}
 	
 	public void drawHealthBar(final ShapeRenderer shapeRenderer) {
-		if (!activated || tot)
+		if (tot || !activated || !healthBar || health == maxHealth)
 			return;
 		shapeRenderer.setColor(new Color(1, 0, 0, 1));
-		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, maxHealth * PlayState.PIXEL_TO_METER, 3 * PlayState.PIXEL_TO_METER);
+		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER, 3 * PlayState.PIXEL_TO_METER);
 		shapeRenderer.setColor(new Color(0, 1, 0, 1));
-		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, maxHealth * PlayState.PIXEL_TO_METER * (health / maxHealth), 3 * PlayState.PIXEL_TO_METER);
+		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER * (health / maxHealth), 3 * PlayState.PIXEL_TO_METER);
 	}
 
 	public void update(final float deltaTime) {

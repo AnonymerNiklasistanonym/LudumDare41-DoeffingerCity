@@ -33,6 +33,7 @@ public class MainMap {
 	private Sprite map;
 	private Vector2 zielpos;
 	private Array<Array<Node>> paths;
+	private final Vector2 healthBarPosition;
 
 	public MainMap(final Level levelinfo, final World world, final Body finishLine) {
 		nodesList = new ArrayList<Node>();
@@ -40,6 +41,7 @@ public class MainMap {
 		this.finishLine = finishLine;
 		createAStarArray();
 		paths = new Array<Array<Node>>();
+		healthBarPosition = levelinfo.getHealthBarPosition();
 		
 		
 		
@@ -349,5 +351,9 @@ public class MainMap {
 		Array<Node> cpy=new Array<Node>();
 		cpy.addAll(rdm);
 		return cpy;
+	}
+
+	public Vector2 getHealthBarPos() {
+		return healthBarPosition;
 	}
 }

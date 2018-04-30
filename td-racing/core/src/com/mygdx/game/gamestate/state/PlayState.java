@@ -433,7 +433,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
-			scoreBoard.reduceLife(scoreBoard.getHelath());
+			scoreBoard.reduceLife(scoreBoard.getHealth());
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_7))
 			scoreBoard.addMoney(1000);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_5)) {
@@ -657,10 +657,23 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		renderTutorial(spriteBatch);
 		spriteBatch.end();
-
+		
+		// render health bar
+		shapeRenderer.begin(ShapeType.Filled);
+		drawPlayerHealthBar(shapeRenderer);
+		shapeRenderer.end();
+		
 		if (debugBox2D)
 			debugRender.render(world, camera.combined);
 
+	}
+	
+	private void drawPlayerHealthBar(final ShapeRenderer shapeRenderer) {
+		System.out.println(map.getHealthBarPos().toString());
+		shapeRenderer.setColor(new Color(1, 0, 0, 1));
+		shapeRenderer.rect(map.getHealthBarPos().x * PIXEL_TO_METER, map.getHealthBarPos().y * PIXEL_TO_METER, 200 * PlayState.PIXEL_TO_METER, 6 * PlayState.PIXEL_TO_METER);
+		shapeRenderer.setColor(new Color(0, 1, 0, 1));
+		shapeRenderer.rect(map.getHealthBarPos().x * PIXEL_TO_METER, map.getHealthBarPos().y * PIXEL_TO_METER, 200 * PlayState.PIXEL_TO_METER * (scoreBoard.getHealth() / scoreBoard.getMaxHealth()), 6 * PlayState.PIXEL_TO_METER);
 	}
 
 	private void renderDebugWay(SpriteBatch spriteBatch) {

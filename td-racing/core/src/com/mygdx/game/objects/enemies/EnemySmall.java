@@ -13,6 +13,7 @@ public class EnemySmall extends Enemy {
 	private static final float MONEY = 1;
 	private static final float SPEED = 2;
 	private static final float SCORE = 2;
+	private static final boolean HEALTH_BAR = false;
 
 	public static Texture damageTexture;
 	public static Texture deadTexture;
@@ -26,6 +27,7 @@ public class EnemySmall extends Enemy {
 		money = MONEY;
 		speed = SPEED;
 		score = SCORE;
+		healthBar = HEALTH_BAR;
 	}
 
 	@Override

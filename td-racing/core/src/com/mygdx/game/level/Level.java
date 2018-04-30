@@ -15,6 +15,7 @@ public class Level {
 	private Vector2 spawnPoint;
 	private boolean[] towersUnlocked;
 	private float timebonus;
+	private Vector2 healthBarPosition;
 
 	public Level() {
 		waves = new Array<Wave>();
@@ -116,6 +117,14 @@ public class Level {
 
 	public void setTimebonus(float timebonus) {
 		this.timebonus = timebonus;
+	}
+	
+	public void setHealthBarPosition(final Vector2 healthBarPosition) {
+		this.healthBarPosition = healthBarPosition;
+	}
+
+	public Vector2 getHealthBarPosition() {
+		return healthBarPosition;
 	}
 	
 	
