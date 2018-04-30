@@ -167,9 +167,9 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	public void dPadCallback(PovDirection direction) {
 		// select character next button
 		if (direction == ControllerWiki.BUTTON_DPAD_RIGHT)
-			selectNextCharacterButton(false);
-		if (direction == ControllerWiki.BUTTON_DPAD_LEFT)
 			selectNextCharacterButton(true);
+		if (direction == ControllerWiki.BUTTON_DPAD_LEFT)
+			selectNextCharacterButton(false);
 		if (direction == ControllerWiki.BUTTON_DPAD_UP)
 			selectNextCharacter(true);
 		if (direction == ControllerWiki.BUTTON_DPAD_DOWN)

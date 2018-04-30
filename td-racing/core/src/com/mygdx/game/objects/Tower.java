@@ -249,7 +249,7 @@ public abstract class Tower implements Disposable {
 		if (isTargetInRange(e)) {
 
 			e.takeDamage(power);
-			if (PlayState.soundon)
+			if (PlayState.soundOn)
 				if (!isSoundPlaying) {
 					soundShoot.loop(0.5f);
 					isSoundPlaying = true;
