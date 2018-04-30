@@ -1,8 +1,5 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -22,7 +19,7 @@ import com.mygdx.game.level.Level;
 
 public class MainMap {
 
-	private final ArrayList<Node> nodesList;
+	private final Array<Node> nodesList;
 
 	private Body mapModel;
 	private Body mapZiel;
@@ -32,26 +29,45 @@ public class MainMap {
 	private Vector2 spawn;
 	private Sprite map;
 	private Vector2 zielpos;
-	private Array<LinkedList<Node>> paths;
+	private final Array<Array<Node>> paths;
 
 	public MainMap(final Level levelinfo, final World world, final Body finishLine) {
-		nodesList = new ArrayList<Node>();
+		nodesList = new Array<Node>();
 		createSolidMap(levelinfo.getMapName(), world);
 		this.finishLine = finishLine;
 		createAStarArray();
-		paths = new Array<LinkedList<Node>>();
-		
-		
-		
-		//Erstelle i vorgefertigte Wege:
+		tempNodes2DList = getNodesList();
+		paths = creatZombieWays(levelinfo.getSpawnPoint(), 200);
+	}
+	
+	private Array<Array<Node>> creatZombieWays(final Vector2 spawnPoint, final int numberOfWaysToCreate) {
+		final Array<Array<Node>> paths = new Array<Array<Node>>(numberOfWaysToCreate);
 		final PolygonShape ps = (PolygonShape) getMapZielBody().getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
-		ps.getVertex(0, vector);
+		ps.getVertex(0, vector);		
+		final Vector2 targetPosition = new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL);
 		
-		for (int i = 0; i < 200; i++) {
-			
-			paths.add(getPath(new Vector2(levelinfo.getSpawnPoint().x, levelinfo.getSpawnPoint().y),
-				new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL)));		}
+		spawnPoint.set(getNextNode(spawnPoint));
+		targetPosition.set(getNextNode(targetPosition));
+		
+		for (int i = 0; i < numberOfWaysToCreate; i++)
+			paths.add(getPath(spawnPoint,targetPosition));
+		return paths;
+	}
+	
+	private Vector2 getNextNode(final Vector2 startPosition) {
+
+		// Welcher Node ist der naechste?
+		if (startPosition.x % 10 < 5)
+			startPosition.x = startPosition.x - startPosition.x % 10;
+		else
+			startPosition.x = startPosition.x + (10 - startPosition.x % 10);
+		if (startPosition.y % 10 < 5)
+			startPosition.y = startPosition.y - startPosition.y % 10;
+		else
+			startPosition.y = startPosition.y + (10 - startPosition.y % 10);
+		
+		return startPosition;		
 	}
 
 	public Body getMapZielBody() {
@@ -139,19 +155,20 @@ public class MainMap {
 			}
 		}
 		// Write all neighbors into the nodes
-		for (final Node nodeMain : nodesList) {
-			// Find neighbor
-			for (final Node nodeNachbar : nodesList) {
-				if ((nodeMain.getPosition().x + 10 == nodeNachbar.getPosition().x
-						&& nodeMain.getPosition().y == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x
-								&& nodeMain.getPosition().y + 10 == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x - 10 == nodeNachbar.getPosition().x
-								&& nodeMain.getPosition().y == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x
-								&& nodeMain.getPosition().y - 10 == nodeNachbar.getPosition().y))
-					nodeMain.getNachbarn().add(nodeNachbar);
+		for (int i = 0; i < nodesList.size; i++) {
+			// find Neighbor
+			for (int j = 0; j < nodesList.size; j++) {
+				if ((nodesList.get(i).getPosition().x + 10 == nodesList.get(j).getPosition().x
+						&& nodesList.get(i).getPosition().y == nodesList.get(j).getPosition().y)
+						|| (nodesList.get(i).getPosition().x == nodesList.get(j).getPosition().x
+								&& nodesList.get(i).getPosition().y + 10 == nodesList.get(j).getPosition().y)
+						|| (nodesList.get(i).getPosition().x - 10 == nodesList.get(j).getPosition().x
+								&& nodesList.get(i).getPosition().y == nodesList.get(j).getPosition().y)
+						|| (nodesList.get(i).getPosition().x == nodesList.get(j).getPosition().x
+								&& nodesList.get(i).getPosition().y - 10 == nodesList.get(j).getPosition().y))
+					nodesList.get(i).getNachbarn().add(nodesList.get(j));
 			}
+			
 		}
 
 		// Write from the target the distance into every node
@@ -183,8 +200,8 @@ public class MainMap {
 
 		this.nodes2DList = new Node[(int) PlayState.RESOLUTION_WIDTH][(int) PlayState.RESOLUTION_HEIGHT];
 		// Write to 2D array
-		for (int i = 0; i < (int) PlayState.RESOLUTION_WIDTH; i = i + 10) {
-			for (int j = 0; j < (int) PlayState.RESOLUTION_HEIGHT; j = j + 10) {
+		for (int i = 0; i < nodes2DList.length; i = i + 10) {
+			for (int j = 0; j < nodes2DList[i].length; j = j + 10) {
 				isFound = false;
 				for (final Node node : nodesList) {
 					if (node.getPosition().x == i && node.getPosition().y == j) {
@@ -225,41 +242,23 @@ public class MainMap {
 	public Vector2 getZielPos() {
 		return zielpos;
 	}
+	
+	private final Array<Node> openList = new Array<Node>();
+	private final Array<Node> closedList = new Array<Node>();
+	private final Array<Node> tempweg = new Array<Node>();
+	private final Node[][] tempNodes2DList;
 
-	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
-		LinkedList<Node> openList = new LinkedList<Node>();
-		LinkedList<Node> closedList = new LinkedList<Node>();
-		Node[][] tempNodes2DList = getNodesList();
-		LinkedList<Node> tempweg = new LinkedList<Node>();
-		Node aktuellerNode;
+	private Node aktuellerNode;
 
-//		startPosition.x=startPosition.x*PlayState.METER_TO_PIXEL;
-//		startPosition.y=startPosition.y*PlayState.METER_TO_PIXEL;
-//		
-//		targetPosition.x=targetPosition.x*PlayState.METER_TO_PIXEL;
-//		targetPosition.y=targetPosition.y*PlayState.METER_TO_PIXEL;
+	private Array<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
+		openList.clear();
+		closedList.clear();
+		tempweg.clear();
+
+
+
 		boolean found = false;
-		// Welcher Node ist der naechste?
-		if (startPosition.x % 10 < 5)
-			startPosition.x = startPosition.x - startPosition.x % 10;
-		else
-			startPosition.x = startPosition.x + (10 - startPosition.x % 10);
-		if (startPosition.y % 10 < 5)
-			startPosition.y = startPosition.y - startPosition.y % 10;
-		else
-			startPosition.y = startPosition.y + (10 - startPosition.y % 10);
 
-		// Ende normalisiesrn?
-		if (targetPosition.x % 10 < 5)
-			targetPosition.x = targetPosition.x - targetPosition.x % 10;
-		else
-			targetPosition.x = targetPosition.x + (10 - targetPosition.x % 10);
-		if (targetPosition.y % 10 < 5)
-			targetPosition.y = targetPosition.y - targetPosition.y % 10;
-		else
-			targetPosition.y = targetPosition.y + (10 - targetPosition.y % 10);
-
-		
 	
 		// Welcher Nachbar ist der beste
 		float lowCost = 9999999;
@@ -287,16 +286,16 @@ public class MainMap {
 				}
 			}
 
-			if (openList.indexOf(aktuellerNode) < 0) {
+			if (openList.indexOf(aktuellerNode, true) < 0) {
 				System.out.println("aktuellerNode ist auf openList nicht zu finden (MainMap)");
-				System.out.println("openList size: "+openList.size());
+				System.out.println("openList size: "+openList.size);
 				System.out.println("aktuellerNode size: "+aktuellerNode.getPosition().x+"/"+aktuellerNode.getPosition().y);
-				System.out.println("tempweg size: "+openList.size());
+				System.out.println("tempweg size: "+openList.size);
 				return tempweg;
 			}
 
-			if (openList.indexOf(aktuellerNode) != -1)
-				openList.remove(openList.indexOf(aktuellerNode));
+			if (openList.indexOf(aktuellerNode, true) != -1)
+				openList.removeValue(aktuellerNode, true);
 			else
 				System.out.println("What the hell just happened???");
 
@@ -308,10 +307,10 @@ public class MainMap {
 
 			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
 				final Node node = aktuellerNode.getNachbarn().get(i);
-				if (closedList.indexOf(node) == -1) {
+				if (closedList.indexOf(node, true) == -1) {
 					node.setG(aktuellerNode.getG() + 1);
 					node.setParent(aktuellerNode);
-					if (openList.indexOf(node) == -1) {
+					if (openList.indexOf(node, true) == -1) {
 						node.setCost(node.getCost());
 						openList.add(node);
 					}
@@ -344,9 +343,9 @@ public class MainMap {
 		return tempweg;
 	}
 
-	public LinkedList<Node> getRandomPath() {
-		LinkedList<Node> rdm=paths.random();
-		LinkedList<Node> cpy=new LinkedList<Node>();
+	public Array<Node> getRandomPath() {
+		Array<Node> rdm=paths.random();
+		Array<Node> cpy=new Array<Node>();
 		cpy.addAll(rdm);
 		
 		return cpy;
