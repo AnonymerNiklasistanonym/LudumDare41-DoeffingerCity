@@ -318,7 +318,7 @@ public abstract class Enemy implements Disposable {
 			final Vector2 velo = new Vector2(speed, 0);
 			velo.rotateRad(this.body.getAngle());
 
-			//this.body.setLinearVelocity(velo);
+		
 			 body.applyForceToCenter(velo,true);
 			 reduceToMaxSpeed(speed);
 			 killLateral(0.1f);
@@ -330,15 +330,8 @@ public abstract class Enemy implements Disposable {
 						weg.get(weg.size -1).getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
 					weg.removeIndex(weg.size -1);
 
-//			this.body.setLinearVelocity(velo);
-//			// body.applyForceToCenter(velo,true);
-//			// reduceToMaxSpeed(speed);
-//			// killLateral(1f);
-//
-			if (this.body.getPosition().dst(weg.get(weg.size -1).getPosition().x * PlayState.PIXEL_TO_METER,
-					weg.get(weg.size -1).getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
-				weg.removeIndex(weg.size -1);
 
+if(weg.size>0)
 			score = weg.get(weg.size -1).getH();
 
 
