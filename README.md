@@ -61,14 +61,16 @@ To export the program as ? `war` web app you need to this:
 
 ## Controls
 
-### XBox 360 Controller
-
-- Start: Toggle full screen
-- Back: Go back (on the highest level quit app)
-- DPad: Select one of the four towers
-- Right pad: Move selected tower
-- Left pad: Steer the car
-- Right trigger: Accelerate car
-- Left trigger: Brake/Drive backwards
-- Right upper button: Toggle sound
-- Left upper button: Toggle pause
+| Action | Keyboard | XBox 360 Controller |
+| --- | --- | --- |
+| Car > Accelerate | `W` / `Up` | Right trigger |
+| Car > Brake | `S` / `Down` | Left trigger |
+| Car > Steer left | `A` / `Left` | Left pad to the left |
+| Car > Steer right | `D` / `Right` | Left pad to the right |
+| Fullscreen toggle | `F11` | Start button |
+| Go back (in menu quit) | `Escape` | Back button |
+| Select tower | `1`,`2`,`3`,`4` | Dpad left, up, down, right |
+| Move tower if selected | Move mouse | Right pad |
+| Build tower if selected | Left mouse click | A button |
+| Toggle sounds | U | Right upper button (RB) |
+| Pause game | P | Left upper button (LB) |
