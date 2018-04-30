@@ -73,6 +73,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final PreferencesManager preferencesManager;
 	private final Sprite pitStop;
 	private final int moneyPerLap;
+	
 
 	private float tutorialtimer = 0;
 	private boolean debugBox2D;
@@ -933,7 +934,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// when all checkpoints were checked
 		if (allCheckpointsChecked) {
 			// add fast bonus and money per lap to the purse
-			final int fastBonus = (moneyPerLap - (int) scoreBoard.getCurrentTime() * 2);
+			final int fastBonus =(int) (level[scoreBoard.getLevel()-1].getTimebonus() - scoreBoard.getCurrentTime() * 2);
 			scoreBoard.newLap((fastBonus > 0) ? moneyPerLap + fastBonus : moneyPerLap);
 			if (soundon)
 				money.play();

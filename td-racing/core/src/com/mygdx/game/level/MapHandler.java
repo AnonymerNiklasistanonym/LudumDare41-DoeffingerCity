@@ -26,6 +26,7 @@ public class MapHandler {
 			level[i].setTowerUnlocks(Boolean.parseBoolean(mapInformation[i][17]),
 					Boolean.parseBoolean(mapInformation[i][18]), Boolean.parseBoolean(mapInformation[i][19]),
 					Boolean.parseBoolean(mapInformation[i][20]));
+			level[i].setTimebonus(Float.parseFloat(mapInformation[i][21]));
 		}
 		return level;
 	}
