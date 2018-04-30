@@ -596,8 +596,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 		// draw track bg
 		this.map.draw(spriteBatch);
-		// draw finish line
-		this.finishline.draw(spriteBatch);
+
 
 		spriteBatch.end();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
