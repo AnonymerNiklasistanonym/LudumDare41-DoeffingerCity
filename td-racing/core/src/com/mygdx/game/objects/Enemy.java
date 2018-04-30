@@ -42,7 +42,8 @@ public abstract class Enemy implements Disposable {
 	protected float damage;
 
 	private Body body;
-	private final Array<Node> weg;
+	private MainMap map;
+	private Array<Node> weg;
 	private boolean justDied = false;
 	private boolean delete;
 	private boolean tot = false;
@@ -84,12 +85,11 @@ public abstract class Enemy implements Disposable {
 
 		// create body for box2D
 		createBody(position, world);
-		
+
+		this.map = map;
+
 		distancetonode = sprite.getWidth() * 4;
-		
-		weg = map.getRandomPath();
-		if(weg.size<1)
-			System.out.println("Ich hab keinen gültigen Weg bekommen :(");
+		findWay();
 	}
 
 	protected FixtureDef createFixture() {
@@ -142,9 +142,136 @@ public abstract class Enemy implements Disposable {
 		setJustDied(true);
 	}
 
-	public void takeDamage(final float amount) {
+	public void takeDamage(float amount) {
 		this.health -= amount;
 		this.wasHitTime = 0.15f;
+	}
+
+	private void findWay() {
+		// Wo bin ich wo will ich hin
+		// Aus Map auslesen wo das Ziel ist
+		// final PolygonShape ps = (PolygonShape)
+		// map.getMapZielBody().getFixtureList().first().getShape();
+		// final Vector2 vector = new Vector2();
+		// ps.getVertex(0, vector);
+		// weg = getPath(new Vector2(getBodyX() * PlayState.METER_TO_PIXEL,
+		// this.getBodyY() * PlayState.METER_TO_PIXEL),
+		// new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y *
+		// PlayState.METER_TO_PIXEL));
+		weg = map.getRandomPath();
+		if(weg.size<1)
+			System.out.println("Ich hab keinen gültigen Weg bekommen :(");
+	}
+
+	private LinkedList<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
+		LinkedList<Node> openList = new LinkedList<Node>();
+		LinkedList<Node> closedList = new LinkedList<Node>();
+		Node[][] tempNodes2DList = map.getNodesList();
+		LinkedList<Node> tempweg = new LinkedList<Node>();
+		Node aktuellerNode;
+
+		System.out.println("ENEMY: Suche Pfad zwischen: " + startPosition.x + "/" + startPosition.y + " und "
+				+ targetPosition.x + "/" + targetPosition.y);
+
+		boolean found = false;
+		// Welcher Node ist der naechste?
+		if (startPosition.x % 10 < 5)
+			startPosition.x = startPosition.x - startPosition.x % 10;
+		else
+			startPosition.x = startPosition.x + (10 - startPosition.x % 10);
+		if (startPosition.y % 10 < 5)
+			startPosition.y = startPosition.y - startPosition.y % 10;
+		else
+			startPosition.y = startPosition.y + (10 - startPosition.y % 10);
+
+		// Ende normalisiesrn?
+		if (targetPosition.x % 10 < 5)
+			targetPosition.x = targetPosition.x - targetPosition.x % 10;
+		else
+			targetPosition.x = targetPosition.x + (10 - targetPosition.x % 10);
+		if (targetPosition.y % 10 < 5)
+			targetPosition.y = targetPosition.y - targetPosition.y % 10;
+		else
+			targetPosition.y = targetPosition.y + (10 - targetPosition.y % 10);
+
+		// Welcher Nachbar ist der beste
+		float lowCost = 9999999;
+
+		if (tempNodes2DList[(int) startPosition.x][(int) startPosition.y].getNoUse())
+			System.out.println("Halt, Start Node ist ungueltig");
+
+		if (tempNodes2DList[(int) targetPosition.x][(int) targetPosition.y].getNoUse())
+			System.out.println("Halt, End Node ist ungueltig");
+
+		openList.add(tempNodes2DList[(int) startPosition.x][(int) startPosition.y]);
+		aktuellerNode = tempNodes2DList[(int) startPosition.x][(int) startPosition.y];
+		lowCost = aktuellerNode.getCost();
+
+		while (!found) {
+
+			// NEU *********************************************
+			lowCost = 999999999;
+
+			for (Node node : openList) {
+				if (lowCost > node.getCost()) {
+					aktuellerNode = node;
+					lowCost = node.getCost();
+
+				}
+			}
+
+			if (openList.indexOf(aktuellerNode) < 0) {
+				System.out.println("aktueller Node ist 0");
+				return tempweg;
+			}
+
+			if (openList.indexOf(aktuellerNode) != -1)
+				openList.remove(openList.indexOf(aktuellerNode));
+			else
+				System.out.println("What the hell just happened???");
+
+			closedList.add(aktuellerNode);
+
+			// Das geht an dieser Stelle irgendwie nicht?
+			// tempweg.add(aktuellerNode);
+			// aktuellerNode.setErschwernis(MathUtils.random(1f, 3f));
+
+			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
+				final Node node = aktuellerNode.getNachbarn().get(i);
+				if (closedList.indexOf(node) == -1) {
+					node.setG(aktuellerNode.getG() + 1);
+					node.setParent(aktuellerNode);
+					if (openList.indexOf(node) == -1) {
+						node.setCost(node.getCost());
+						openList.add(node);
+					}
+				}
+
+			}
+
+			if (aktuellerNode.getPosition().x == targetPosition.x
+					&& aktuellerNode.getPosition().y == targetPosition.y) {
+				found = true;
+				break;
+			}
+
+			// NEU ENDE ***************************************
+
+		}
+
+		while (aktuellerNode != null) {
+
+			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
+
+			map.getNodesList()[(int) aktuellerNode.getPosition().x][(int) aktuellerNode.getPosition().y]
+					.setAdditionalDifficulty(MathUtils.random(1f, 3f));
+
+			// Hinzufuegen
+			tempweg.add(aktuellerNode);
+			aktuellerNode = aktuellerNode.getParent();
+		}
+
+		return tempweg;
 	}
 
 	public Array<Node> getWeg() {
@@ -185,8 +312,8 @@ public abstract class Enemy implements Disposable {
 
 		if (weg.size > 0) {
 			final float angle = (float) ((Math.atan2(
-					weg.get(weg.size -1).getPosition().x * PlayState.PIXEL_TO_METER - getBodyX(),
-					-(weg.get(weg.size -1).getPosition().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
+					weg.get(weg.size - 1).getPosition().x * PlayState.PIXEL_TO_METER - getBodyX(),
+					-(weg.get(weg.size - 1).getPosition().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
 			final Vector2 velo = new Vector2(speed, 0);
 			velo.rotateRad(this.body.getAngle());
@@ -208,11 +335,12 @@ public abstract class Enemy implements Disposable {
 //			// reduceToMaxSpeed(speed);
 //			// killLateral(1f);
 //
-//			if (this.body.getPosition().dst(weg.get(weg.size -1).getPosition().x * PlayState.PIXEL_TO_METER,
-//					weg.get(weg.size -1).getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
-//				weg.removeIndex(weg.size -1);
-//
-//			score = weg.get(weg.size -1).getH();
+			if (this.body.getPosition().dst(weg.get(weg.size -1).getPosition().x * PlayState.PIXEL_TO_METER,
+					weg.get(weg.size -1).getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
+				weg.removeIndex(weg.size -1);
+
+			score = weg.get(weg.size -1).getH();
+
 
 		} else {
 			callbackInterface.enemyHitsHomeCallback(this);
