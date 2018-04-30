@@ -24,6 +24,13 @@ public class GameStateMethods {
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		}
 	}
+	
+	public static void toggleFullScreen() {
+			if (Gdx.graphics.isFullscreen())
+				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+			else
+				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+	}
 
 	public static Vector3 getMousePosition(final Camera camera) {
 		return camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));

@@ -1,11 +1,13 @@
 package com.mygdx.game.controller;
 
+import com.badlogic.gdx.controllers.PovDirection;
+
 public interface ControllerMenuCallbackInterface {
 
 	/**
 	 * B or Back button was pressed
 	 */
-	public void backCallback();
+	void backCallback();
 
 	/**
 	 * Another main button was pressed (A,X,Y)
@@ -13,6 +15,14 @@ public interface ControllerMenuCallbackInterface {
 	 * @param buttonId
 	 *            (ControllerWiki.BUTTON...)
 	 */
-	public void selectCallback(int buttonId);
+	void selectCallback(int buttonId);
+	
+	/**
+	 * DPad button was pressed
+	 * 
+	 * @param buttonId
+	 *            (ControllerWiki.BUTTON...)
+	 */
+	void dPadCallback(PovDirection direction);
 
 }

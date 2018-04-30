@@ -51,7 +51,7 @@ public class ControllerHelperMenu implements ControllerListener {
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		// TODO Auto-generated method stub
+		controllerMenuCallbackInterface.dPadCallback(value);
 		return false;
 	}
 

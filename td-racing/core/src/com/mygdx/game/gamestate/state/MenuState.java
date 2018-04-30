@@ -2,7 +2,9 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -148,6 +150,40 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 		// open selected button
 		if (buttonId == ControllerWiki.BUTTON_A)
 			openSelectedMenuButton();
+		if (buttonId == ControllerWiki.BUTTON_START)
+			GameStateMethods.toggleFullScreen();
+	}
+	
+	private void selectNextButton(boolean below) {
+		for (int i = 0; i < menuButtons.length; i++) {
+			if (menuButtons[i].isActive()) {
+				menuButtons[i].setActive(false);
+				
+				System.out.println("Currently selected: " + i);
+				if (below) {
+					System.out.println("Select +1 index: " + (i + 1));
+					System.out.println("Modulo menuButtons.length (" + menuButtons.length + "): " + ((i + 1) % menuButtons.length));
+				} else {
+					System.out.println("Select -1 index: " + (i - 1));
+					System.out.println("Modulo menuButtons.length (" + menuButtons.length + "): " + ((i - 1 + menuButtons.length) % menuButtons.length));
+				}
+				if (below)
+					menuButtons[(i + 1) % menuButtons.length].setActive(true);
+				else
+					menuButtons[(i - 1 + menuButtons.length) % menuButtons.length].setActive(true);
+				return;
+			}
+		}
+	}
+
+	@Override
+	public void dPadCallback(PovDirection direction) {
+		// select next button
+		if (direction == ControllerWiki.BUTTON_DPAD_DOWN || direction == ControllerWiki.BUTTON_DPAD_RIGHT)
+			selectNextButton(true);
+		if (direction == ControllerWiki.BUTTON_DPAD_UP || direction == ControllerWiki.BUTTON_DPAD_LEFT)
+			selectNextButton(false);
+		
 	}
 
 }
