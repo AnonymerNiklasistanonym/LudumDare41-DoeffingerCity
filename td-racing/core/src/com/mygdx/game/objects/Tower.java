@@ -156,9 +156,9 @@ public abstract class Tower implements Disposable {
 		return this.isInBuildingMode;
 	}
 
-	protected Tower(final Vector2 position, final Texture spriteBody,
-			final Texture spriteUpperBody, final Texture spriteFiring, final Array<Enemy> enemies, final World world,
-			final int range, final Sound soundShoot) {
+	protected Tower(final Vector2 position, final Texture spriteBody, final Texture spriteUpperBody,
+			final Texture spriteFiring, final Array<Enemy> enemies, final World world, final int range,
+			final Sound soundShoot) {
 		this.soundShoot = soundShoot;
 		this.toremove = false;
 		this.timesincelastshot = 10;
@@ -212,7 +212,7 @@ public abstract class Tower implements Disposable {
 
 		// set body
 		this.body.setTransform(position, this.body.getAngle());
-		position.add(new Vector2(- spriteBody.getWidth() / 2, - spriteBody.getWidth() / 2));
+		position.add(new Vector2(-spriteBody.getWidth() / 2, -spriteBody.getWidth() / 2));
 
 		// set body to new position
 		this.spriteBody.setPosition(position.x, position.y);

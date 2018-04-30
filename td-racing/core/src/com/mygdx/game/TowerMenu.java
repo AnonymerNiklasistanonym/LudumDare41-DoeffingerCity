@@ -24,11 +24,11 @@ public class TowerMenu implements Disposable {
 	public static Texture sniperButton;
 
 	private static final Vector2 start = new Vector2(30, 0);
-	
+
 	private final Sprite[] sprites;
 	private final World world;
 	private final ScoreBoard scoreboard;
-	
+
 	private Tower buildingtower;
 	private boolean[] towerUnlocked;
 	private boolean[] towerSelected;
@@ -147,7 +147,7 @@ public class TowerMenu implements Disposable {
 	public boolean contains(final float xPos, final float yPos) {
 		float towerMenuWidth = 0;
 		for (int i = 0; i < towerUnlocked.length; i++)
-				towerMenuWidth += (towerUnlocked[i]) ? sprites[i].getWidth() : 0;
+			towerMenuWidth += (towerUnlocked[i]) ? sprites[i].getWidth() : 0;
 		return (xPos >= start.x && xPos <= start.x + towerMenuWidth)
 				&& (yPos >= start.y && yPos <= start.y + ((sprites.length > 0) ? sprites[0].getHeight() : 0));
 	}
@@ -157,7 +157,7 @@ public class TowerMenu implements Disposable {
 		for (final Sprite sprite : sprites)
 			sprite.getTexture().dispose();
 	}
-	
+
 	public void unlockTower(final int i) {
 		unlockTower(i, true);
 	}

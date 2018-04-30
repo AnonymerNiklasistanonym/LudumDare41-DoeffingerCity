@@ -2,10 +2,14 @@ package com.mygdx.game.gamestate.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainGame;
+import com.mygdx.game.controller.ControllerHelperMenu;
+import com.mygdx.game.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
@@ -13,12 +17,14 @@ import com.mygdx.game.menu.MenuButton;
 import com.mygdx.game.menu.MenuButtonBig;
 import com.mygdx.game.menu.MenuButtonSmall;
 
-public class MenuState extends GameState {
+public class MenuState extends GameState implements ControllerMenuCallbackInterface {
 
 	private final MenuButton[] menuButtons;
 
 	private final Texture backgroundStars;
 	private final Texture title;
+
+	private final ControllerHelperMenu controllerHelperMenu;
 
 	private final static int START_ID = 0;
 	private final static int HIGHSCORES_ID = 1;
@@ -41,6 +47,10 @@ public class MenuState extends GameState {
 		touchPos = new Vector3();
 
 		camera.setToOrtho(false, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
+
+		controllerHelperMenu = Controllers.getControllers().size == 0 ? null : new ControllerHelperMenu(this);
+		if (controllerHelperMenu != null)
+			Controllers.addListener(controllerHelperMenu);
 
 		menuButtons = new MenuButton[] {
 				new MenuButtonBig(START_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 2.8f, "START", true),
@@ -71,21 +81,7 @@ public class MenuState extends GameState {
 		// action for the selected button
 		if (Gdx.input.justTouched()
 				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
-			for (final MenuButton menuButton : menuButtons) {
-				if (menuButton.isActive()) {
-					switch (menuButton.getId()) {
-					case START_ID:
-						gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
-						break;
-					case HIGHSCORES_ID:
-						gameStateManager.setGameState(new HighscoreListState(gameStateManager));
-						break;
-					case ABOUT_ID:
-						gameStateManager.setGameState(new CreditState(gameStateManager));
-						break;
-					}
-				}
-			}
+			openSelectedMenuButton();
 		}
 
 		// if escape or back is pressed quit
@@ -121,6 +117,37 @@ public class MenuState extends GameState {
 		MenuButtonBig.textureNotActive.dispose();
 		MenuButtonSmall.textureActive.dispose();
 		MenuButtonSmall.textureNotActive.dispose();
+	}
+
+	private void openSelectedMenuButton() {
+		for (final MenuButton menuButton : menuButtons) {
+			if (menuButton.isActive()) {
+				switch (menuButton.getId()) {
+				case START_ID:
+					gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
+					break;
+				case HIGHSCORES_ID:
+					gameStateManager.setGameState(new HighscoreListState(gameStateManager));
+					break;
+				case ABOUT_ID:
+					gameStateManager.setGameState(new CreditState(gameStateManager));
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void backCallback() {
+		// exit application
+		Gdx.app.exit();
+	}
+
+	@Override
+	public void selectCallback(int buttonId) {
+		// open selected button
+		if (buttonId == ControllerWiki.BUTTON_A)
+			openSelectedMenuButton();
 	}
 
 }

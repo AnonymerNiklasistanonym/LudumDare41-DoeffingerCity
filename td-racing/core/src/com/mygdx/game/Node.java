@@ -5,10 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Node {
-	
+
 	private final Vector2 position;
 	private final boolean noUse;
-	
+
 	/**
 	 * Cost from start to this node
 	 */
@@ -24,7 +24,7 @@ public class Node {
 	public Node(final float x, final float y) {
 		g = 1;
 		noUse = false;
-		position = new Vector2(x,y);
+		position = new Vector2(x, y);
 		additionalDifficulty = MathUtils.random(1f, 3f);
 		h = 99999;
 		nachbarn = new Array<Node>();

@@ -53,8 +53,8 @@ public abstract class Enemy implements Disposable {
 	private float hitRandomY;
 	private Color color;
 
-	public Enemy(final Vector2 position, final World world, final Texture alive,
-			final Texture deadsprite, final Texture damagesprite, final MainMap map, final float time) {
+	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
+			final Texture damagesprite, final MainMap map, final float time) {
 
 		textureDead = deadsprite;
 
@@ -238,7 +238,8 @@ public abstract class Enemy implements Disposable {
 
 			}
 
-			if (aktuellerNode.getPosition().x == targetPosition.x && aktuellerNode.getPosition().y == targetPosition.y) {
+			if (aktuellerNode.getPosition().x == targetPosition.x
+					&& aktuellerNode.getPosition().y == targetPosition.y) {
 				found = true;
 				break;
 			}
@@ -299,7 +300,8 @@ public abstract class Enemy implements Disposable {
 			this.die();
 
 		if (weg.size() > 0) {
-			final float angle = (float) ((Math.atan2(weg.getLast().getPosition().x * PlayState.PIXEL_TO_METER - getBodyX(),
+			final float angle = (float) ((Math.atan2(
+					weg.getLast().getPosition().x * PlayState.PIXEL_TO_METER - getBodyX(),
 					-(weg.getLast().getPosition().y * PlayState.PIXEL_TO_METER - getBodyY())) * 180.0d / Math.PI));
 			this.body.setTransform(this.body.getPosition(), (float) Math.toRadians(angle - 90));
 			final Vector2 velo = new Vector2(speed, 0);

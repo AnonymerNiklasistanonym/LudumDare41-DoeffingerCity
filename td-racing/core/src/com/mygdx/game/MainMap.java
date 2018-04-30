@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.gamestate.state.PlayState;
 
 public class MainMap {
-	
+
 	private final ArrayList<Node> nodesList;
 
 	private Body mapModel;
@@ -35,7 +35,7 @@ public class MainMap {
 		this.finishLine = finishLine;
 		createAStarArray();
 	}
-	
+
 	public Body getMapZielBody() {
 		return mapZiel;
 	}
@@ -48,8 +48,7 @@ public class MainMap {
 		// The following line would throw ExceptionInInitializerError
 
 		map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
-		map.setSize(map.getWidth() * PlayState.PIXEL_TO_METER,
-				map.getHeight() * PlayState.PIXEL_TO_METER);
+		map.setSize(map.getWidth() * PlayState.PIXEL_TO_METER, map.getHeight() * PlayState.PIXEL_TO_METER);
 
 		final BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "solid.json"));
 		final BodyEditorLoader loaderZiel = new BodyEditorLoader(Gdx.files.internal("maps/" + mapName + "ziel.json"));
@@ -125,10 +124,14 @@ public class MainMap {
 		for (final Node nodeMain : nodesList) {
 			// Find neighbor
 			for (final Node nodeNachbar : nodesList) {
-				if ((nodeMain.getPosition().x + 10 == nodeNachbar.getPosition().x && nodeMain.getPosition().y == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x && nodeMain.getPosition().y + 10 == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x - 10 == nodeNachbar.getPosition().x && nodeMain.getPosition().y == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x && nodeMain.getPosition().y - 10 == nodeNachbar.getPosition().y))
+				if ((nodeMain.getPosition().x + 10 == nodeNachbar.getPosition().x
+						&& nodeMain.getPosition().y == nodeNachbar.getPosition().y)
+						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x
+								&& nodeMain.getPosition().y + 10 == nodeNachbar.getPosition().y)
+						|| (nodeMain.getPosition().x - 10 == nodeNachbar.getPosition().x
+								&& nodeMain.getPosition().y == nodeNachbar.getPosition().y)
+						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x
+								&& nodeMain.getPosition().y - 10 == nodeNachbar.getPosition().y))
 					nodeMain.getNachbarn().add(nodeNachbar);
 			}
 		}
@@ -149,7 +152,8 @@ public class MainMap {
 		zielpos = new Vector2(zielX, zielY);
 
 		for (final Node node : nodesList) {
-			if (node.getPosition().x == zielX * PlayState.METER_TO_PIXEL && node.getPosition().y == zielY * PlayState.METER_TO_PIXEL) {
+			if (node.getPosition().x == zielX * PlayState.METER_TO_PIXEL
+					&& node.getPosition().y == zielY * PlayState.METER_TO_PIXEL) {
 				node.setH(1);
 				// set "target" node
 				werteSetzen(node);

@@ -36,13 +36,13 @@ public class Wave {
 
 		for (int wave = 0; wave < zombieWaves.size; wave++) {
 			int counter = 0;
-			
+
 			for (int j = 0; j < zombieWaves.get(wave).getSpiderZombieNumber(); j++) {
 				allEnemies.add(
 						new EnemySpider(entryPosition, world, map, currentTime + zombieWaves.get(wave).getEntryTime()
 								+ counter++ * zombieWaves.get(wave).getSpiderTimeDelta()));
 			}
-			
+
 			for (int j = 0; j < zombieWaves.get(wave).getBycicleZombieNumber(); j++) {
 				allEnemies.add(
 						new EnemyBicycle(entryPosition, world, map, currentTime + zombieWaves.get(wave).getEntryTime()

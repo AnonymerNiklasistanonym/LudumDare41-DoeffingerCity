@@ -31,7 +31,7 @@ public class HighscoreListState extends GameState {
 		// create a preferences manager for loading/clearing high score entries
 		preferencesManager = new PreferencesManager();
 		preferencesManager.checkHighscore();
-		
+
 		// load and display high score entries
 		HighscoreEntry[] entries = preferencesManager.retrieveHighscore();
 		this.highscoreButtons = new HighscoreButton[] {
@@ -70,16 +70,16 @@ public class HighscoreListState extends GameState {
 	@Override
 	protected void render(final SpriteBatch spriteBatch) {
 		spriteBatch.begin();
-		
+
 		// draw high score (entry) buttons
 		for (final HighscoreButton highscoreButton : highscoreButtons)
 			highscoreButton.draw(spriteBatch);
-		
+
 		// draw message to inform how the list can be cleared
 		MainGame.font.getData().setScale(1);
 		MainGame.font.setColor(1, 1, 1, 1);
 		MainGame.font.draw(spriteBatch, "Clear List: C", 10, 30);
-		
+
 		spriteBatch.end();
 	}
 

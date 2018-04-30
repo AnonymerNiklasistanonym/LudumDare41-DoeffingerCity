@@ -7,7 +7,7 @@ import com.mygdx.game.MainMap;
 import com.mygdx.game.objects.Enemy;
 
 public class EnemyFat extends Enemy {
-	
+
 	private static final float DAMAGE = 20;
 	private static final float HEALTH = 100;
 	private static final float MONEY = 4;

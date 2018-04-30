@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,6 +30,8 @@ import com.mygdx.game.PreferencesManager;
 import com.mygdx.game.ScoreBoard;
 import com.mygdx.game.ScoreBoardCallbackInterface;
 import com.mygdx.game.TowerMenu;
+import com.mygdx.game.controller.ControllerCallbackInterface;
+import com.mygdx.game.controller.ControllerHelper;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
@@ -52,8 +55,8 @@ import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
 import com.mygdx.game.objects.towers.SniperTower;
 
-public class PlayState extends GameState
-		implements CollisionCallbackInterface, ScoreBoardCallbackInterface, EnemyCallbackInterface {
+public class PlayState extends GameState implements CollisionCallbackInterface, ControllerCallbackInterface,
+		ScoreBoardCallbackInterface, EnemyCallbackInterface {
 
 	public static boolean soundon = false;
 	private ScoreBoard scoreBoard;
@@ -78,7 +81,7 @@ public class PlayState extends GameState
 	private boolean carsoundPlaying = false;
 
 	private boolean debugWay;
-
+	private final ControllerHelper controllerHelper;
 	private TowerMenu towerMenu;
 
 	private MainMap map;
@@ -185,7 +188,7 @@ public class PlayState extends GameState
 		EnemyFat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
 		EnemyFat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
 		EnemyFat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
-		
+
 		EnemySpider.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_spider.png"));
 		EnemySpider.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_spider_dead.png"));
 		EnemySpider.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood_green.png"));
@@ -242,6 +245,14 @@ public class PlayState extends GameState
 		shapeRenderer = new ShapeRenderer();
 
 		speedFactor = 1;
+
+		if (Controllers.getControllers().size == 0) {
+			controllerHelper = null;
+			System.out.println("No controller found!");
+		} else {
+			controllerHelper = new ControllerHelper(this);
+			Controllers.addListener(controllerHelper);
+		}
 	}
 
 	private void loadLevel(int levelNumber) {
@@ -561,6 +572,9 @@ public class PlayState extends GameState
 		camera.update();
 
 		fpscounter.update(deltaTime);
+
+		if (controllerHelper != null)
+			controllerHelper.update();
 
 		updatePhysics(deltaTime);
 	}
@@ -1017,5 +1031,34 @@ public class PlayState extends GameState
 	@Override
 	public void enemyHitsHomeCallback(final Enemy enemy) {
 		scoreBoard.reduceLife(enemy.getDamadge());
+	}
+
+	@Override
+	public void steerCar(boolean left) {
+		if (left)
+			car.steerLeft();
+		else
+			car.steerRight();
+	}
+
+	@Override
+	public void startBuildingMode(boolean start) {
+		if (buildingtower == null) {
+			buildingtower = towerMenu.getCurrentTower();
+			if (buildingtower != null)
+				startBuilding(buildingtower);
+		} else {
+			buildingtower = towerMenu.getCurrentTower();
+			if (buildingtower == null)
+				stopBuilding();
+		}
+	}
+
+	@Override
+	public void accelerateCar(boolean forwards) {
+		if (forwards)
+			car.accelarate();
+		else
+			car.brake();
 	}
 }

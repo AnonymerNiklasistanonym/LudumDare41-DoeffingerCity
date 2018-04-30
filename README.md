@@ -8,12 +8,10 @@ Racing-TowerDefense
 2. Open Eclipse
 3. Select `Import` > `Gradle` > `Existing Gradle Project` (then `Next` and `Next`)
 4. Then click `Browse` and select the project directory (`td-racing`) and click `Finish`
-
----
-
-If there are resource load errors you need to link the assets directory from `core` in the `desktop` project over the `Build path`
-
----
+5. When gradle is finished syncing click in the menu bar of eclipse `Run` > `Run Configurations` and choose `DesktopLauncher` (`com.mygdx.game.desktop.DesktopLauncher`)
+6. Then click the `Arguments` tab to get into it and click the button `Workspace` in the section `Working directory`
+7. Then browse until you find the `..-core/assets` directory and select it and then click `OK`
+8. Apply the changes and click `Run` to test if everything worked
 
 ## Run
 

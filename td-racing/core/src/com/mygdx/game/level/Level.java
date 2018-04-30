@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Level {
-	
+
 	private final Array<Wave> waves;
 
 	private Vector2 carPosition;

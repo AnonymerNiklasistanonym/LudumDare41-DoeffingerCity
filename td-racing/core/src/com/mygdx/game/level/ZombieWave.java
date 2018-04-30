@@ -1,13 +1,14 @@
 package com.mygdx.game.level;
 
 public class ZombieWave {
-	
+
 	private final float entryTime, smallTimeDelta, fatZombieDelta, bycicleTimeDelta, spiderTimeDelta, lincolnTimeDelta;
 	private final int smallZombieNumber, fatZombieNumber, bycicleZombieNumber, spiderZombieNumber, lincolnZombieNumber;
 
 	public ZombieWave(final float entryTime, final int smallZombieNumber, final float smallTimeDelta,
 			final int fatZombieNumber, final float fatZombieDelta, final int bycicleZombieNumber,
-			final float bycicleTimeDelta, final int spiderZombieNumber, final float spiderTimeDelta, final int lincolnZombieNumber, final float lincolnTimeDelta) {
+			final float bycicleTimeDelta, final int spiderZombieNumber, final float spiderTimeDelta,
+			final int lincolnZombieNumber, final float lincolnTimeDelta) {
 		this.entryTime = entryTime;
 		this.smallZombieNumber = smallZombieNumber;
 		this.smallTimeDelta = smallTimeDelta;
@@ -24,11 +25,11 @@ public class ZombieWave {
 	public void check(final int i) {
 		System.out.println(">>>> ZombieWave #" + (i + 1));
 		System.out.println("Time after wave started: " + entryTime + " Small Zombie #: " + smallZombieNumber
-				+ " Small time delta: " + smallTimeDelta + " Fat Zombie #: " + fatZombieNumber
-				+ " Fat time delta: " + fatZombieDelta + " Bicycle Zombie #: " + bycicleZombieNumber
-				+ " Bicycle time delta: " + bycicleTimeDelta + " Spider Zombie #: " + spiderZombieNumber
-				+ " Spider time delta: " + spiderTimeDelta + " Lincoln Zombie #: " + lincolnZombieNumber
-				+ " Lincoln time delta: " + lincolnTimeDelta);
+				+ " Small time delta: " + smallTimeDelta + " Fat Zombie #: " + fatZombieNumber + " Fat time delta: "
+				+ fatZombieDelta + " Bicycle Zombie #: " + bycicleZombieNumber + " Bicycle time delta: "
+				+ bycicleTimeDelta + " Spider Zombie #: " + spiderZombieNumber + " Spider time delta: "
+				+ spiderTimeDelta + " Lincoln Zombie #: " + lincolnZombieNumber + " Lincoln time delta: "
+				+ lincolnTimeDelta);
 	}
 
 	public float getBycicleTimeDelta() {
@@ -58,7 +59,7 @@ public class ZombieWave {
 	public int getLincolnZombieNumber() {
 		return lincolnZombieNumber;
 	}
-	
+
 	public float getSpiderTimeDelta() {
 		return spiderTimeDelta;
 	}
