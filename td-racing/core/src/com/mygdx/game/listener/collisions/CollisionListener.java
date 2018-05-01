@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.listener.collisions;
 
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -30,27 +30,27 @@ public class CollisionListener implements ContactListener {
 			if (a instanceof Enemy || b instanceof Enemy) {
 
 				if (a instanceof Enemy)
-					this.collisionCallbackInterface.collisionCarEnemy((Car) b, (Enemy) a);
+					this.collisionCallbackInterface.collisionCallbackCarEnemy((Car) b, (Enemy) a);
 				else
-					this.collisionCallbackInterface.collisionCarEnemy((Car) a, (Enemy) b);
+					this.collisionCallbackInterface.collisionCallbackCarEnemy((Car) a, (Enemy) b);
 			}
 
 			// and the other object is a Checkpoint
 			if (a instanceof Checkpoint || b instanceof Checkpoint) {
 
 				if (a instanceof Checkpoint)
-					this.collisionCallbackInterface.collisionCarCheckpoint((Car) b, (Checkpoint) a);
+					this.collisionCallbackInterface.collisionCallbackCarCheckpoint((Car) b, (Checkpoint) a);
 				else
-					this.collisionCallbackInterface.collisionCarCheckpoint((Car) a, (Checkpoint) b);
+					this.collisionCallbackInterface.collisionCallbackCarCheckpoint((Car) a, (Checkpoint) b);
 			}
 
 			// and the other object is a Checkpoint
 			if (a instanceof FinishLine || b instanceof FinishLine) {
 
 				if (a instanceof FinishLine)
-					this.collisionCallbackInterface.collisionCarFinishLine((Car) b, (FinishLine) a);
+					this.collisionCallbackInterface.collisionCallbackCarFinishLine((Car) b, (FinishLine) a);
 				else
-					this.collisionCallbackInterface.collisionCarFinishLine((Car) a, (FinishLine) b);
+					this.collisionCallbackInterface.collisionCallbackCarFinishLine((Car) a, (FinishLine) b);
 			}
 		}
 
@@ -60,9 +60,9 @@ public class CollisionListener implements ContactListener {
 			if (a instanceof Flame || b instanceof Flame) {
 
 				if (a instanceof Enemy)
-					this.collisionCallbackInterface.collisionFlameEnemy((Enemy) a, (Flame) b);
+					this.collisionCallbackInterface.collisionCallbackFlameEnemy((Enemy) a, (Flame) b);
 				else
-					this.collisionCallbackInterface.collisionFlameEnemy((Enemy) b, (Flame) a);
+					this.collisionCallbackInterface.collisionCallbackFlameEnemy((Enemy) b, (Flame) a);
 			}
 		}
 	}

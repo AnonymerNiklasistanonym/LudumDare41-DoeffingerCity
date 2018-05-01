@@ -1,7 +1,4 @@
-package com.mygdx.game;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
+package com.mygdx.game.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,43 +14,40 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.MainGame;
+import com.mygdx.game.gamestate.states.PlayState;
 import com.mygdx.game.level.Level;
+import com.mygdx.game.unsorted.BodyEditorLoader;
+import com.mygdx.game.unsorted.Node;
 
-public class MainMap {
+public class Map {
 
-	private final ArrayList<Node> nodesList;
-
-	private Body mapModel;
-	private Body mapZiel;
-	private Body finishLine;
-	private Body mapZombieWay;
-	private Node[][] nodes2DList;
-	private Vector2 spawn;
-	private Sprite map;
-	private Vector2 zielpos;
-	private Array<Array<Node>> paths;
+	private final Array<Node> nodesList;
 	private final Vector2 healthBarPosition;
 
-	public MainMap(final Level levelinfo, final World world, final Body finishLine) {
-		nodesList = new ArrayList<Node>();
-		createSolidMap(levelinfo.getMapName(), world);
+	private Body mapModel, mapZiel, finishLine, mapZombieWay;
+	private Vector2 spawnPosition, targetPosition;
+	private Node[][] nodes2DList;
+	private Sprite map;
+	private Array<Array<Node>> paths;
+
+	public Map(final Level currentLevel, final World world, final Body finishLine) {
+		nodesList = new Array<Node>();
+		createSolidMap(currentLevel.getMapName(), world);
 		this.finishLine = finishLine;
 		createAStarArray();
 		paths = new Array<Array<Node>>();
-		healthBarPosition = levelinfo.getHealthBarPosition();
-		
-		
-		
-		//Erstelle i vorgefertigte Wege:
+		healthBarPosition = currentLevel.getHealthBarPosition();
+
+		// Create x calculated ways
 		final PolygonShape ps = (PolygonShape) getMapZielBody().getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
-		
+
 		for (int i = 0; i < 200; i++) {
-			
-			paths.add(getPath(new Vector2(levelinfo.getSpawnPoint().x, levelinfo.getSpawnPoint().y),
-				new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL)));		}
+			paths.add(getPath(new Vector2(currentLevel.getSpawnPoint().x, currentLevel.getSpawnPoint().y),
+					new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL)));
+		}
 	}
 
 	public Body getMapZielBody() {
@@ -65,7 +59,6 @@ public class MainMap {
 	}
 
 	public void createSolidMap(String mapName, final World world) {
-		// The following line would throw ExceptionInInitializerError
 
 		map = new Sprite(new Texture(Gdx.files.internal("maps/" + mapName + ".png")));
 		map.setSize(map.getWidth() * PlayState.PIXEL_TO_METER, map.getHeight() * PlayState.PIXEL_TO_METER);
@@ -103,10 +96,10 @@ public class MainMap {
 		mapZombieWay = world.createBody(ziel);
 
 		// // 4. Create the body fixture automatically by using the loader.
-		loader.attachFixture(mapModel, "Map", solid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
-		loaderZiel.attachFixture(mapZiel, "Ziel", nonSolid, PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+		loader.attachFixture(mapModel, "Map", solid, MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER);
+		loaderZiel.attachFixture(mapZiel, "Ziel", nonSolid, MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER);
 		loaderZombieWay.attachFixture(mapZombieWay, "Zombieway", nonSolid,
-				PlayState.RESOLUTION_WIDTH * PlayState.PIXEL_TO_METER);
+				MainGame.GAME_WIDTH * PlayState.PIXEL_TO_METER);
 	}
 
 	public boolean isInBody(final float xPosition, final float yPosition) {
@@ -124,8 +117,8 @@ public class MainMap {
 		ps.getVertex(0, vector);
 
 		// Create nodes
-		for (int i = 0; i <= PlayState.RESOLUTION_WIDTH; i += 10) {
-			for (int j = 0; j <= PlayState.RESOLUTION_HEIGHT; j += 10) {
+		for (int i = 0; i <= MainGame.GAME_WIDTH; i += 10) {
+			for (int j = 0; j <= MainGame.GAME_HEIGHT; j += 10) {
 				// In enemy move area?
 				inEnemyMoveArea = true;
 				for (final Fixture f : mapZombieWay.getFixtureList()) {
@@ -141,18 +134,19 @@ public class MainMap {
 			}
 		}
 		// Write all neighbors into the nodes
-		for (final Node nodeMain : nodesList) {
-			// Find neighbor
-			for (final Node nodeNachbar : nodesList) {
-				if ((nodeMain.getPosition().x + 10 == nodeNachbar.getPosition().x
-						&& nodeMain.getPosition().y == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x
-								&& nodeMain.getPosition().y + 10 == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x - 10 == nodeNachbar.getPosition().x
-								&& nodeMain.getPosition().y == nodeNachbar.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNachbar.getPosition().x
-								&& nodeMain.getPosition().y - 10 == nodeNachbar.getPosition().y))
-					nodeMain.getNachbarn().add(nodeNachbar);
+		for (int i = 0; i < nodesList.size; i++) {
+			final Node nodeMain = nodesList.get(i);
+			for (int j = 0; j < nodesList.size; j++) {
+				final Node nodeNeighbor = nodesList.get(j);
+				if ((nodeMain.getPosition().x + 10 == nodeNeighbor.getPosition().x
+						&& nodeMain.getPosition().y == nodeNeighbor.getPosition().y)
+						|| (nodeMain.getPosition().x == nodeNeighbor.getPosition().x
+								&& nodeMain.getPosition().y + 10 == nodeNeighbor.getPosition().y)
+						|| (nodeMain.getPosition().x - 10 == nodeNeighbor.getPosition().x
+								&& nodeMain.getPosition().y == nodeNeighbor.getPosition().y)
+						|| (nodeMain.getPosition().x == nodeNeighbor.getPosition().x
+								&& nodeMain.getPosition().y - 10 == nodeNeighbor.getPosition().y))
+					nodeMain.getNachbarn().add(nodeNeighbor);
 			}
 		}
 
@@ -169,9 +163,10 @@ public class MainMap {
 		if (vector.y % 10 >= 5)
 			zielY = vector.y + (10 - vector.y % 10);
 
-		zielpos = new Vector2(zielX, zielY);
+		targetPosition = new Vector2(zielX, zielY);
 
-		for (final Node node : nodesList) {
+		for (int i = 0; i < nodesList.size; i++) {
+			final Node node = nodesList.get(i);
 			if (node.getPosition().x == zielX * PlayState.METER_TO_PIXEL
 					&& node.getPosition().y == zielY * PlayState.METER_TO_PIXEL) {
 				node.setH(1);
@@ -182,13 +177,13 @@ public class MainMap {
 		}
 
 		boolean isFound = false;
-
-		this.nodes2DList = new Node[(int) PlayState.RESOLUTION_WIDTH][(int) PlayState.RESOLUTION_HEIGHT];
+		nodes2DList = new Node[MainGame.GAME_WIDTH][MainGame.GAME_HEIGHT];
 		// Write to 2D array
-		for (int i = 0; i < (int) PlayState.RESOLUTION_WIDTH; i = i + 10) {
-			for (int j = 0; j < (int) PlayState.RESOLUTION_HEIGHT; j = j + 10) {
+		for (int i = 0; i < MainGame.GAME_WIDTH; i = i + 10) {
+			for (int j = 0; j < MainGame.GAME_HEIGHT; j = j + 10) {
 				isFound = false;
-				for (final Node node : nodesList) {
+				for (int k = 0; k < nodesList.size; k++) {
+					final Node node = nodesList.get(k);
 					if (node.getPosition().x == i && node.getPosition().y == j) {
 						isFound = true;
 						nodes2DList[i][j] = node;
@@ -212,20 +207,32 @@ public class MainMap {
 			}
 	}
 
-	public Vector2 getSpawn() {
-		return spawn;
+	public Vector2 getSpawnPosition() {
+		return spawnPosition;
 	}
 
-	public void setSpawn(final Vector2 spawn) {
-		this.spawn = spawn;
+	public void setSpawnPosition(final Vector2 spawn) {
+		this.spawnPosition = spawn;
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
 		map.draw(spriteBatch);
 	}
 
-	public Vector2 getZielPos() {
-		return zielpos;
+	public Vector2 getTargetPosition() {
+		return targetPosition;
+	}
+
+	private Vector2 normalizeVectorForGrid(final Vector2 vector) {
+		if (vector.x % 10 < 5)
+			vector.x = vector.x - vector.x % 10;
+		else
+			vector.x = vector.x + (10 - vector.x % 10);
+		if (vector.y % 10 < 5)
+			vector.y = vector.y - vector.y % 10;
+		else
+			vector.y = vector.y + (10 - vector.y % 10);
+		return vector;
 	}
 
 	private Array<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
@@ -235,78 +242,47 @@ public class MainMap {
 		Array<Node> tempweg = new Array<Node>();
 		Node aktuellerNode;
 
-//		startPosition.x=startPosition.x*PlayState.METER_TO_PIXEL;
-//		startPosition.y=startPosition.y*PlayState.METER_TO_PIXEL;
-//		
-//		targetPosition.x=targetPosition.x*PlayState.METER_TO_PIXEL;
-//		targetPosition.y=targetPosition.y*PlayState.METER_TO_PIXEL;
-		boolean found = false;
-		// Welcher Node ist der naechste?
-		if (startPosition.x % 10 < 5)
-			startPosition.x = startPosition.x - startPosition.x % 10;
-		else
-			startPosition.x = startPosition.x + (10 - startPosition.x % 10);
-		if (startPosition.y % 10 < 5)
-			startPosition.y = startPosition.y - startPosition.y % 10;
-		else
-			startPosition.y = startPosition.y + (10 - startPosition.y % 10);
+		// was the way found
+		boolean foundWay = false;
 
-		// Ende normalisiesrn?
-		if (targetPosition.x % 10 < 5)
-			targetPosition.x = targetPosition.x - targetPosition.x % 10;
-		else
-			targetPosition.x = targetPosition.x + (10 - targetPosition.x % 10);
-		if (targetPosition.y % 10 < 5)
-			targetPosition.y = targetPosition.y - targetPosition.y % 10;
-		else
-			targetPosition.y = targetPosition.y + (10 - targetPosition.y % 10);
+		// Which node is the next
+		startPosition.set(normalizeVectorForGrid(startPosition));
+		targetPosition.set(normalizeVectorForGrid(targetPosition));
 
-		
-	
-		// Welcher Nachbar ist der beste
-		float lowCost = 9999999;
-
-		if (tempNodes2DList[(int) startPosition.x][(int) startPosition.y].getNoUse()) 
+		// Which neighbor is the best
+		if (tempNodes2DList[(int) startPosition.x][(int) startPosition.y].getNoUse())
 			System.out.println("Halt, Start Node ist ungueltig");
-			
-		if (tempNodes2DList[(int) targetPosition.x][(int) targetPosition.y].getNoUse()) 
+
+		if (tempNodes2DList[(int) targetPosition.x][(int) targetPosition.y].getNoUse())
 			System.out.println("Halt, End Node ist ungueltig");
 
 		openList.add(tempNodes2DList[(int) startPosition.x][(int) startPosition.y]);
 		aktuellerNode = tempNodes2DList[(int) startPosition.x][(int) startPosition.y];
-		lowCost = aktuellerNode.getCost();
 
-		while (!found) {
+		float lowCost = aktuellerNode.getCost();
 
-			// NEU *********************************************
+		while (!foundWay) {
 			lowCost = 999999999;
 
-			for (Node node : openList) {
+			for (int i = 0; i < openList.size; i++) {
+				final Node node = openList.get(i);
 				if (lowCost > node.getCost()) {
 					aktuellerNode = node;
 					lowCost = node.getCost();
-
 				}
 			}
 
 			if (openList.indexOf(aktuellerNode, true) < 0) {
-				System.out.println("aktuellerNode ist auf openList nicht zu finden (MainMap)");
-				System.out.println("openList size: "+openList.size);
-				System.out.println("aktuellerNode size: "+aktuellerNode.getPosition().x+"/"+aktuellerNode.getPosition().y);
-				System.out.println("tempweg size: "+openList.size);
+				System.out.println("aktuellerNode ist auf openList nicht zu finden (MainMap)\n" + "openList size: "
+						+ openList.size + "\n" + "aktuellerNode size: " + aktuellerNode.getPosition().toString() + "\n"
+						+ "tempweg size: " + openList.size);
 				return tempweg;
 			}
 
 			if (openList.indexOf(aktuellerNode, true) != -1)
 				openList.removeIndex(openList.indexOf(aktuellerNode, true));
-			else
-				System.out.println("What the hell just happened???");
 
 			closedList.add(aktuellerNode);
-
-			// Das geht an dieser Stelle irgendwie nicht?
-			// tempweg.add(aktuellerNode);
-			// aktuellerNode.setErschwernis(MathUtils.random(1f, 3f));
 
 			for (int i = 0; i < aktuellerNode.getNachbarn().size; i++) {
 				final Node node = aktuellerNode.getNachbarn().get(i);
@@ -318,39 +294,29 @@ public class MainMap {
 						openList.add(node);
 					}
 				}
-
 			}
 
-			if (aktuellerNode.getPosition().x == targetPosition.x
-					&& aktuellerNode.getPosition().y == targetPosition.y) {
-				found = true;
+			if (aktuellerNode.getPosition().equals(targetPosition)) {
+				foundWay = true;
 				break;
 			}
-
-			// NEU ENDE ***************************************
-
 		}
 
 		while (aktuellerNode != null) {
-
-			// Fuer alle Wege die benutzt werden ein Erschwernis eintragen
-
+			// Add for every way that is used an additional difficulty
 			getNodesList()[(int) aktuellerNode.getPosition().x][(int) aktuellerNode.getPosition().y]
 					.setAdditionalDifficulty(MathUtils.random(1f, 3f));
-
-			// Hinzufuegen
+			// Add node to way
 			tempweg.add(aktuellerNode);
+			// do it until there is no "parent" any more
 			aktuellerNode = aktuellerNode.getParent();
 		}
-	
+
 		return tempweg;
 	}
 
 	public Array<Node> getRandomPath() {
-		Array<Node> rdm= paths.random();
-		Array<Node> cpy=new Array<Node>();
-		cpy.addAll(rdm);
-		return cpy;
+		return new Array<Node>(paths.random());
 	}
 
 	public Vector2 getHealthBarPos() {

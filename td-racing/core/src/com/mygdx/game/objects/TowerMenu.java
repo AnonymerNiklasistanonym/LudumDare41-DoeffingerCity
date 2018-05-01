@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,9 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.gamestate.state.PlayState;
-import com.mygdx.game.objects.Enemy;
-import com.mygdx.game.objects.Tower;
+import com.mygdx.game.gamestate.states.PlayState;
 import com.mygdx.game.objects.towers.FireTower;
 import com.mygdx.game.objects.towers.LaserTower;
 import com.mygdx.game.objects.towers.MgTower;
@@ -22,7 +20,7 @@ public class TowerMenu implements Disposable {
 	public static Texture laserButton;
 	public static Texture flameButton;
 	public static Texture sniperButton;
-	
+
 	private static final float SCALE_FACTOR = 1;
 
 	private static final Vector2 start = new Vector2(30, 0);
@@ -44,7 +42,8 @@ public class TowerMenu implements Disposable {
 		this.towerUnlocked = new boolean[sprites.length];
 
 		for (final Sprite sprite : sprites) {
-			sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER * SCALE_FACTOR, sprite.getHeight() * PlayState.PIXEL_TO_METER * SCALE_FACTOR);
+			sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER * SCALE_FACTOR,
+					sprite.getHeight() * PlayState.PIXEL_TO_METER * SCALE_FACTOR);
 			sprite.setOriginCenter();
 		}
 

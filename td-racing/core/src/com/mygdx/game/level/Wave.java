@@ -3,8 +3,8 @@ package com.mygdx.game.level;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.MainMap;
 import com.mygdx.game.objects.Enemy;
+import com.mygdx.game.objects.Map;
 import com.mygdx.game.objects.enemies.EnemyBicycle;
 import com.mygdx.game.objects.enemies.EnemyFat;
 import com.mygdx.game.objects.enemies.EnemyLincoln;
@@ -29,7 +29,7 @@ public class Wave {
 			zombieWaves.get(j).check(j);
 	}
 
-	public Array<Enemy> createEnemies(final Vector2 entryPosition, final World world, final MainMap map,
+	public Array<Enemy> createEnemies(final Vector2 entryPosition, final World world, final Map map,
 			final float currentTime) {
 
 		final Array<Enemy> allEnemies = new Array<Enemy>();

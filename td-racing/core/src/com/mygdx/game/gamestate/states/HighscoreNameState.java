@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestate.state;
+package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -10,14 +10,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MainGame;
-import com.mygdx.game.PreferencesManager;
-import com.mygdx.game.controller.ControllerHelperMenu;
-import com.mygdx.game.controller.ControllerMenuCallbackInterface;
-import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
-import com.mygdx.game.menu.HighscoreCharacterButton;
+import com.mygdx.game.gamestate.states.resources.HighscoreCharacterButton;
+import com.mygdx.game.listener.controller.ControllerHelperMenu;
+import com.mygdx.game.listener.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.listener.controller.ControllerWiki;
+import com.mygdx.game.unsorted.PreferencesManager;
 
 public class HighscoreNameState extends GameState implements ControllerMenuCallbackInterface {
 
@@ -37,10 +37,16 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	private float controllerTimeHelper;
 	private final ControllerListener controllerHelperMenu;
 
-	public HighscoreNameState(GameStateManager gameStateManager, final int score) {
+	private final boolean goToCreditStage;
+	private final int level;
+
+	public HighscoreNameState(GameStateManager gameStateManager, final int score, final int level, final boolean goToCreditStage) {
 		super(gameStateManager, STATE_NAME);
 
 		this.score = score;
+		this.level = level;
+
+		this.goToCreditStage = goToCreditStage;
 
 		shapeRenderer = new ShapeRenderer();
 		preferencesManager = new PreferencesManager();
@@ -81,7 +87,7 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 
 	@Override
 	protected void handleInput() {
-		GameStateMethods.toggleFullScreen(Keys.F11);
+		GameStateMethods.toggleFullScreen(true);
 
 		if (Gdx.input.isKeyJustPressed(Keys.LEFT))
 			selectNextCharacterButton(true);
@@ -97,6 +103,14 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 			saveHighscoreAndGoToList();
 
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
+			goBack();
+
+	}
+
+	private void goBack() {
+		if (goToCreditStage)
+			gameStateManager.setGameState(new CreditState(gameStateManager));
+		else
 			gameStateManager.setGameState(new MenuState(gameStateManager));
 	}
 
@@ -127,19 +141,21 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 		Controllers.removeListener(controllerHelperMenu);
 		shapeRenderer.dispose();
 	}
-	
+
 	private void saveHighscoreAndGoToList() {
 		String name = "";
 		for (final HighscoreCharacterButton highscoreCharacterButton : highscoreCharacterButtons)
 			name += highscoreCharacterButton.getCurrentCharacter();
 		preferencesManager.saveHighscore(name, this.score);
-		gameStateManager.setGameState(new HighscoreListState(gameStateManager));
+		if (goToCreditStage)
+			gameStateManager.setGameState(new CreditState(gameStateManager));
+		else
+			gameStateManager.setGameState(new GameOverState(gameStateManager, level));
 	}
 
 	@Override
 	public void backCallback() {
-		// exit application
-		Gdx.app.exit();
+		goBack();
 	}
 
 	@Override
@@ -157,7 +173,7 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 			currentIndex = (currentIndex + 1 == highscoreCharacterButtons.length) ? 0 : currentIndex + 1;
 		else
 			currentIndex = (currentIndex - 1 < 0) ? highscoreCharacterButtons.length - 1 : currentIndex - 1;
-		
+
 		for (final HighscoreCharacterButton highscoreCharacterButton : highscoreCharacterButtons)
 			highscoreCharacterButton.activate(false);
 		highscoreCharacterButtons[currentIndex].activate(true);
@@ -202,7 +218,7 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 			highscoreCharacterButtons[currentIndex]
 					.setNewCharacter((currentChar - 1 < 'A') ? 'Z' : (char) (currentChar - 1));
 		}
-		
+
 		for (final HighscoreCharacterButton highscoreCharacterButton : highscoreCharacterButtons)
 			highscoreCharacterButton.activate(false);
 		highscoreCharacterButtons[currentIndex].activate(true);

@@ -1,4 +1,4 @@
-package com.mygdx.game.menu;
+package com.mygdx.game.gamestate.states.resources;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

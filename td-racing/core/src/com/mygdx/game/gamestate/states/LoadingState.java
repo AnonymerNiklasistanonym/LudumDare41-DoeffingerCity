@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestate.state;
+package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

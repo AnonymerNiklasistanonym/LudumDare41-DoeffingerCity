@@ -1,7 +1,8 @@
-package com.mygdx.game;
+package com.mygdx.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.MainGame;
+import com.mygdx.game.gamestate.states.PlayState;
 
 public class ScoreBoard {
 
@@ -54,8 +55,8 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 18);
 			MainGame.fontOutline.draw(spriteBatch, "Advance Tutorial: 0", 0.2f, 17);
 
-			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: Right arrow", 0.2f, 15);
-			MainGame.fontOutline.draw(spriteBatch, "Reset world speed (=1): Left arrow", 0.2f, 14);
+			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: M", 0.2f, 15);
+			MainGame.fontOutline.draw(spriteBatch, "Reset world speed (=1): N", 0.2f, 14);
 
 			MainGame.fontOutline.draw(spriteBatch, "Unlock all towers: T", 0.2f, 12);
 			MainGame.fontOutline.draw(spriteBatch, "Add 1000 to score: R", 0.2f, 11);
@@ -152,7 +153,7 @@ public class ScoreBoard {
 	public float getHealth() {
 		return healthPoints;
 	}
-	
+
 	public float getMaxHealth() {
 		return maxHealthPoints;
 	}

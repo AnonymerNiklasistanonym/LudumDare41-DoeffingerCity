@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestate.state;
+package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -10,15 +10,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainGame;
-import com.mygdx.game.controller.ControllerHelperMenu;
-import com.mygdx.game.controller.ControllerMenuCallbackInterface;
-import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
-import com.mygdx.game.menu.MenuButton;
-import com.mygdx.game.menu.MenuButtonBig;
-import com.mygdx.game.menu.MenuButtonSmall;
+import com.mygdx.game.gamestate.states.resources.MenuButton;
+import com.mygdx.game.gamestate.states.resources.MenuButtonBig;
+import com.mygdx.game.gamestate.states.resources.MenuButtonSmall;
+import com.mygdx.game.listener.controller.ControllerHelperMenu;
+import com.mygdx.game.listener.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.listener.controller.ControllerWiki;
 
 public class GameOverState extends GameState implements ControllerMenuCallbackInterface {
 
@@ -27,8 +27,9 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 	private final Texture backgroundGameOver;
 
 	private final static int PLAY_AGAIN_ID = 0;
-	private final static int HIGHSCORE_ID = 1;
-	private final static int ABOUT_ID = 2;
+	private final static int PLAY_LEVEL_AGAIN_ID = 1;
+	private final static int HIGHSCORE_ID = 2;
+	private final static int ABOUT_ID = 3;
 
 	private static final String STATE_NAME = "Game Over";
 
@@ -37,14 +38,18 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 	private String loadingText;
 
 	private Vector2 loadingTextPosition;
-	
+
 	private boolean blockStickInput = false;
 	private float stickTimeHelper;
 	private float controllerTimeHelper;
 	private final ControllerListener controllerHelperMenu;
 
-	public GameOverState(GameStateManager gameStateManager) {
+	private final int level;
+
+	public GameOverState(final GameStateManager gameStateManager, final int level) {
 		super(gameStateManager, STATE_NAME);
+
+		this.level = level;
 
 		// set font scale to the correct size and disable to use integers for scaling
 		MainGame.fontUpperCaseBig.getData().setScale(1);
@@ -69,12 +74,14 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 				MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT / 5 * 8);
 
 		menuButtons = new MenuButton[] {
-				new MenuButtonBig(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 2, MainGame.GAME_HEIGHT / 6 * 3, "RESTART LEVEL",
+				new MenuButtonSmall(PLAY_AGAIN_ID, MainGame.GAME_WIDTH / 4, MainGame.GAME_HEIGHT / 6 * 3, "RESTART",
 						true),
+				new MenuButtonSmall(PLAY_LEVEL_AGAIN_ID, MainGame.GAME_WIDTH - MainGame.GAME_WIDTH / 4,
+						MainGame.GAME_HEIGHT / 6 * 3, "...LEVEL"),
 				new MenuButtonSmall(HIGHSCORE_ID, MainGame.GAME_WIDTH / 4, MainGame.GAME_HEIGHT / 6 * 1, "HIGHSCORES"),
 				new MenuButtonSmall(ABOUT_ID, MainGame.GAME_WIDTH - MainGame.GAME_WIDTH / 4,
 						MainGame.GAME_HEIGHT / 6 * 1, "ABOUT") };
-		
+
 		// controller setup
 		controllerHelperMenu = new ControllerHelperMenu(this);
 		Controllers.addListener(controllerHelperMenu);
@@ -85,7 +92,7 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 
 	@Override
 	public void handleInput() {
-		GameStateMethods.toggleFullScreen(Keys.F11);
+		GameStateMethods.toggleFullScreen(true);
 		touchPos.set(GameStateMethods.getMousePosition(camera));
 
 		// determine on which button the mouse cursor is and select this button
@@ -107,7 +114,10 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 				if (menuButton.isActive()) {
 					switch (menuButton.getId()) {
 					case PLAY_AGAIN_ID:
-						gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
+						gameStateManager.setGameState(new LoadingState(gameStateManager, 1));
+						break;
+					case PLAY_LEVEL_AGAIN_ID:
+						gameStateManager.setGameState(new LoadingState(gameStateManager, level));
 						break;
 					case HIGHSCORE_ID:
 						gameStateManager.setGameState(new HighscoreListState(gameStateManager));
@@ -152,7 +162,7 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 		MenuButtonSmall.textureActive.dispose();
 		MenuButtonSmall.textureNotActive.dispose();
 	}
-	
+
 	private void openSelectedMenuButton() {
 		for (final MenuButton menuButton : menuButtons) {
 			if (menuButton.isActive()) {
@@ -187,7 +197,7 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 		if (buttonId == ControllerWiki.BUTTON_START)
 			GameStateMethods.toggleFullScreen();
 	}
-	
+
 	private void selectNextButton(boolean below) {
 		for (int i = 0; i < menuButtons.length; i++) {
 			if (menuButtons[i].isActive()) {
@@ -208,9 +218,9 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 			selectNextButton(true);
 		if (direction == ControllerWiki.BUTTON_DPAD_UP || direction == ControllerWiki.BUTTON_DPAD_LEFT)
 			selectNextButton(false);
-		
+
 	}
-	
+
 	@Override
 	public void stickMoved(final boolean xAxis, final float value) {
 		// select next button

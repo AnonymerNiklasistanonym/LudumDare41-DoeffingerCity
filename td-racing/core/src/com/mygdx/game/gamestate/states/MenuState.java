@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestate.state;
+package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -8,15 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.MainGame;
-import com.mygdx.game.controller.ControllerHelperMenu;
-import com.mygdx.game.controller.ControllerMenuCallbackInterface;
-import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
-import com.mygdx.game.menu.MenuButton;
-import com.mygdx.game.menu.MenuButtonBig;
-import com.mygdx.game.menu.MenuButtonSmall;
+import com.mygdx.game.gamestate.states.resources.MenuButton;
+import com.mygdx.game.gamestate.states.resources.MenuButtonBig;
+import com.mygdx.game.gamestate.states.resources.MenuButtonSmall;
+import com.mygdx.game.listener.controller.ControllerHelperMenu;
+import com.mygdx.game.listener.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.listener.controller.ControllerWiki;
 
 public class MenuState extends GameState implements ControllerMenuCallbackInterface {
 
@@ -34,7 +34,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 	private static final String STATE_NAME = "Menu";
 
 	private final Vector3 touchPos;
-	
+
 	private boolean blockStickInput = false;
 	private float stickTimeHelper;
 	private float controllerTimeHelper;
@@ -67,7 +67,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 
 	@Override
 	public void handleInput() {
-		GameStateMethods.toggleFullScreen(Keys.F11);
+		GameStateMethods.toggleFullScreen(true);
 
 		// map touch position to the camera resolution
 		touchPos.set(GameStateMethods.getMousePosition(camera));
@@ -89,7 +89,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 				|| (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.isKeyJustPressed(Keys.SPACE))) {
 			openSelectedMenuButton();
 		}
-		
+
 		// Go with the arrow keys through all visible buttons
 		if (Gdx.input.isKeyJustPressed(Keys.DOWN) || Gdx.input.isKeyJustPressed(Keys.RIGHT))
 			selectNextButton(true);
@@ -138,7 +138,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 			if (menuButton.isActive()) {
 				switch (menuButton.getId()) {
 				case START_ID:
-					gameStateManager.setGameState(new LoadingState(gameStateManager, MainGame.level));
+					gameStateManager.setGameState(new LoadingState(gameStateManager, 1));
 					break;
 				case HIGHSCORE_ID:
 					gameStateManager.setGameState(new HighscoreListState(gameStateManager));
@@ -169,7 +169,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 		if (buttonId == ControllerWiki.BUTTON_START)
 			GameStateMethods.toggleFullScreen();
 	}
-	
+
 	private void selectNextButton(boolean below) {
 		for (int i = 0; i < menuButtons.length; i++) {
 			if (menuButtons[i].isActive()) {
@@ -190,9 +190,9 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 			selectNextButton(true);
 		if (direction == ControllerWiki.BUTTON_DPAD_UP || direction == ControllerWiki.BUTTON_DPAD_LEFT)
 			selectNextButton(false);
-		
+
 	}
-	
+
 	@Override
 	public void stickMoved(final boolean xAxis, final float value) {
 		// select next button

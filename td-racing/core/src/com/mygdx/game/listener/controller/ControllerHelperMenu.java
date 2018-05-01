@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package com.mygdx.game.listener.controller;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;

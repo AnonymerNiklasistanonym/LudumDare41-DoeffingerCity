@@ -118,7 +118,7 @@ public class Level {
 	public void setTimebonus(float timebonus) {
 		this.timebonus = timebonus;
 	}
-	
+
 	public void setHealthBarPosition(final Vector2 healthBarPosition) {
 		this.healthBarPosition = healthBarPosition;
 	}
@@ -126,7 +126,5 @@ public class Level {
 	public Vector2 getHealthBarPosition() {
 		return healthBarPosition;
 	}
-	
-	
 
 }

@@ -1,4 +1,4 @@
-package com.mygdx.game.controller;
+package com.mygdx.game.listener.controller;
 
 import com.badlogic.gdx.controllers.PovDirection;
 
@@ -16,7 +16,7 @@ public interface ControllerMenuCallbackInterface {
 	 *            (ControllerWiki.BUTTON...)
 	 */
 	void selectCallback(final int buttonId);
-	
+
 	/**
 	 * DPad button was pressed
 	 * 

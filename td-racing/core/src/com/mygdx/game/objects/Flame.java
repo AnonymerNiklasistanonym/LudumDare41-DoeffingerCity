@@ -2,6 +2,7 @@ package com.mygdx.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -20,12 +21,12 @@ public class Flame implements Disposable {
 	private float lifetime;
 	private boolean killme;
 
-	public Flame(float xPosition, float yPosition, final Sprite sprite, final World world, final float damage) {
+	public Flame(final Vector2 position, final Sprite sprite, final World world, final float damage) {
 		System.out.println("Bodies in world before adding flame: " + world.getBodyCount());
 		// add flame as dynamic body to the box2D world
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
-		bodydef.position.set(xPosition, yPosition);
+		bodydef.position.set(position);
 		this.body = world.createBody(bodydef);
 
 		// add a fixture to the body (to recognize collisions)

@@ -3,8 +3,8 @@ package com.mygdx.game.objects.enemies;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.MainMap;
 import com.mygdx.game.objects.Enemy;
+import com.mygdx.game.objects.Map;
 
 public class EnemyLincoln extends Enemy {
 
@@ -19,7 +19,7 @@ public class EnemyLincoln extends Enemy {
 	public static Texture deadTexture;
 	public static Texture normalTexture;
 
-	public EnemyLincoln(final Vector2 position, final World world, final MainMap map, final float time) {
+	public EnemyLincoln(final Vector2 position, final World world, final Map map, final float time) {
 		super(position, world, normalTexture, deadTexture, damageTexture, map, time);
 		damage = DAMAGE;
 		health = HEALTH;

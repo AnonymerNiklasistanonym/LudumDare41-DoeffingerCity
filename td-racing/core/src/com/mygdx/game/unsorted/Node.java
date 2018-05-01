@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.unsorted;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

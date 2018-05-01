@@ -17,46 +17,135 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.gamestate.states.PlayState;
 
 public abstract class Tower implements Disposable {
 
-	private boolean rangeActivated = false;
-	protected float turnspeed;
-	protected float maxHealth;
-	protected float damage;
-	protected float speed;
-	protected float power;
-	protected float range;
-	protected float firingSpriteTime = 0.3f;
-	protected float firingLineTime = 0.1f;
-	protected Vector2 center;
+	private static boolean soundOn;
+
 	protected Sprite amunition;
-	protected Animation<TextureRegion> destroyAnimation;
-	protected Sprite spriteBody;
-	protected Sprite spriteUpperBody;
-	protected Sprite spriteFiring;
-	protected float timesincelastshot;
-	boolean healthBar;
-	boolean justshot = false;
-	protected boolean permanentsound = false;
-	protected Sound soundShoot;
-	protected Enemy target = null;
-	Array<Enemy> enemies;
-	protected Vector2 shotposition;
-	float delta = 0;
 	public Body body;
+	private boolean buildingModeBlocked;
+	protected Vector2 center;
+	protected Color color;
+	protected int cost = 10;
+	protected float damage;
+	float delta = 0;
+	protected Animation<TextureRegion> destroyAnimation;
+	Array<Enemy> enemies;
+	protected float firingLineTime = 0.1f;
+	protected float firingSpriteTime = 0.3f;
+	boolean healthBar;
 	boolean isactive = false;
 	private boolean isInBuildingMode;
 	boolean isSoundPlaying = false;
-	protected int cost = 10;
-	private boolean buildingModeBlocked;
+	boolean justshot = false;
+	protected float maxHealth;
+	protected boolean permanentsound = false;
+	protected float power;
+	protected float range;
+	private boolean rangeActivated = false;
+	protected Vector2 shotposition;
+	protected Sound soundShoot;
+	protected float speed;
+	protected Sprite spriteBody;
+	protected Sprite spriteFiring;
+	protected Sprite spriteUpperBody;
+	protected Enemy target = null;
+	protected float timesincelastshot;
 	private boolean toremove;
-	protected Color color;
+	protected float turnspeed;
 
-	public int getCost() {
-		return this.cost;
+	protected Tower(final Vector2 position, final Texture spriteBody, final Texture spriteUpperBody,
+			final Texture spriteFiring, final Array<Enemy> enemies, final World world, final int range,
+			final Sound soundShoot) {
+		this.soundShoot = soundShoot;
+		this.enemies = enemies;
+		this.range = range;
+		this.spriteBody = new Sprite(spriteBody);
+		this.spriteUpperBody = new Sprite(spriteUpperBody);
+		this.spriteFiring = new Sprite(spriteFiring);
+		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteFiring.setSize(spriteFiring.getWidth() * PlayState.PIXEL_TO_METER,
+				spriteFiring.getHeight() * PlayState.PIXEL_TO_METER);
+		this.spriteBody.setOriginCenter();
+		this.spriteUpperBody.setOriginCenter();
+		this.spriteFiring.setOriginCenter();
+
+		timesincelastshot = 10;
+		healthBar = false;
+		toremove = false;
+		damage = 0;
+		buildingModeBlocked = false;
+		color = new Color(1, 0, 0, 0.3f);
+		rangeActivated = false;
+
+		// create box2D body and add it to the world
+		final BodyDef bodydef = new BodyDef();
+		bodydef.type = BodyDef.BodyType.KinematicBody;
+		bodydef.position.set(position);
+		body = world.createBody(bodydef);
+		final PolygonShape towerBaseBox = new PolygonShape();
+		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
+				spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
+		final FixtureDef fdef = new FixtureDef();
+		fdef.shape = towerBaseBox;
+		fdef.isSensor = true;
+		body.createFixture(fdef);
+		body.setUserData(this);
 	}
+
+	public void activate() {
+		isactive = true;
+	}
+
+	public void activateHealthBar(boolean activate) {
+		healthBar = activate;
+	}
+
+	public void activateRange(boolean b) {
+		this.rangeActivated = b;
+	}
+
+	public boolean buildingModeBlocked() {
+		return this.buildingModeBlocked;
+	}
+
+	public boolean contains(float xPos, float yPos) {
+		return (xPos >= this.spriteBody.getX() && xPos <= this.spriteBody.getX() + this.spriteBody.getWidth())
+				&& (yPos >= this.spriteBody.getY() && yPos <= this.spriteBody.getY() + this.spriteBody.getHeight());
+	}
+
+	public void destroyAnimation() {
+		// TODO
+		System.out.println("Destroyed");
+	}
+
+	public void disposeMedia() {
+		this.spriteBody.getTexture().dispose();
+		this.spriteFiring.getTexture().dispose();
+		this.spriteFiring.getTexture().dispose();
+		this.soundShoot.dispose();
+	}
+
+	public void draw(final SpriteBatch spriteBatch) {
+		spriteBody.draw(spriteBatch);
+	}
+
+	public void drawLine(final ShapeRenderer shapeRenderer) {
+		if (firingLineTime > timesincelastshot) {
+			drawProjectileShape(shapeRenderer);
+		}
+	}
+
+	public void drawProjectile(final SpriteBatch spriteBatch) {
+
+	}
+
+	public abstract void drawProjectileShape(final ShapeRenderer shapeRenderer);
 
 	public void drawRange(final ShapeRenderer shapeRenderer) {
 		if (this.rangeActivated) {
@@ -74,10 +163,6 @@ public abstract class Tower implements Disposable {
 		}
 	}
 
-	public void draw(final SpriteBatch spriteBatch) {
-		spriteBody.draw(spriteBatch);
-	}
-
 	public void drawUpperBuddy(final SpriteBatch spriteBatch) {
 		if (firingLineTime > timesincelastshot) {
 			drawProjectile(spriteBatch);
@@ -87,48 +172,19 @@ public abstract class Tower implements Disposable {
 		}
 	}
 
-	public void drawProjectile(final SpriteBatch spriteBatch) {
+	public float getAngleToEnemy(Enemy e) {
+		float angle = 0;
+		Vector2 epos = new Vector2(center.x, center.y);
+		Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
+
+		angle = center.angle(epos);
+		angle = (float) ((Math.atan2(epos.x - tpos.x, -(epos.y - tpos.y)) * 180.0d / Math.PI));
+		return angle;
 
 	}
 
-	public Array<Body> removeProjectiles() {
-		return null;
-	}
-
-	public void drawLine(final ShapeRenderer shapeRenderer) {
-		if (firingLineTime > timesincelastshot) {
-			drawProjectileShape(shapeRenderer);
-		}
-	}
-
-	public abstract void drawProjectileShape(final ShapeRenderer shapeRenderer);
-
-	public void setBuildingMode(final boolean buildingMode) {
-		this.isInBuildingMode = buildingMode;
-
-		if (this.isInBuildingMode) {
-			spriteBody.setColor(1, 1, 1, 0.5f);
-			spriteUpperBody.setColor(1, 1, 1, 0.5f);
-			spriteFiring.setColor(1, 1, 1, 0.5f);
-		} else {
-			spriteBody.setColor(1, 1, 1, 1);
-			spriteUpperBody.setColor(1, 1, 1, 1);
-			spriteFiring.setColor(1, 1, 1, 1);
-		}
-	}
-
-	public void setBlockBuildingMode(final boolean b) {
-		this.buildingModeBlocked = b;
-
-		if (this.buildingModeBlocked) {
-			spriteBody.setColor(1, 0, 0, 0.5f);
-			spriteUpperBody.setColor(1, 0, 0, 0.5f);
-			spriteFiring.setColor(1, 0, 0, 0.5f);
-		} else {
-			spriteBody.setColor(1, 1, 1, 1);
-			spriteUpperBody.setColor(1, 1, 1, 1);
-			spriteFiring.setColor(1, 1, 1, 1);
-		}
+	public Vector2 getCenter() {
+		return center;
 	}
 
 	public float[][] getCornerPoints() {
@@ -148,63 +204,184 @@ public abstract class Tower implements Disposable {
 		return cornerPoints;
 	}
 
-	public boolean buildingModeBlocked() {
-		return this.buildingModeBlocked;
+	public int getCost() {
+		return this.cost;
+	}
+
+	public float getDegrees() {
+		return this.spriteUpperBody.getRotation();
+	}
+
+	public float getRange() {
+		return range;
+	}
+
+	public Sprite getSpriteBody() {
+		return spriteBody;
+	}
+
+	public float getX() {
+		return spriteBody.getX();
+	}
+
+	public float getY() {
+		return spriteBody.getY();
 	}
 
 	public boolean isInBuildingMode() {
 		return this.isInBuildingMode;
 	}
 
-	protected Tower(final Vector2 position, final Texture spriteBody, final Texture spriteUpperBody,
-			final Texture spriteFiring, final Array<Enemy> enemies, final World world, final int range,
-			final Sound soundShoot) {
-		this.soundShoot = soundShoot;
-		this.toremove = false;
-		this.timesincelastshot = 10;
-		this.enemies = enemies;
-		this.healthBar = false;
-		this.damage = 0;
-		this.range = range;
-		this.buildingModeBlocked = false;
-		this.color = new Color(1, 0, 0, 0.3f);
+	protected boolean isTargetInRange(Enemy e) {
+		Vector2 epos = new Vector2(e.getBodyX(), e.getBodyY());
+		Vector2 tpos = new Vector2(center.x, center.y);
+		float dist = epos.dst(tpos);
+		boolean inrange = false;
+		if (dist < range)
+			inrange = true;
+		return inrange;
+	}
 
-		this.spriteBody = new Sprite(spriteBody);
-		this.spriteUpperBody = new Sprite(spriteUpperBody);
-		this.spriteFiring = new Sprite(spriteFiring);
-		this.spriteBody.setSize(spriteBody.getWidth() * PlayState.PIXEL_TO_METER,
-				spriteBody.getHeight() * PlayState.PIXEL_TO_METER);
-		this.spriteUpperBody.setSize(spriteUpperBody.getWidth() * PlayState.PIXEL_TO_METER,
-				spriteUpperBody.getHeight() * PlayState.PIXEL_TO_METER);
-		this.spriteFiring.setSize(spriteFiring.getWidth() * PlayState.PIXEL_TO_METER,
-				spriteFiring.getHeight() * PlayState.PIXEL_TO_METER);
+	public boolean isToremove() {
+		return toremove;
+	}
 
-		// shotposition = new Vector2(xPosition + middleOfSpriteBody, yPosition +
-		// middleOfSpriteBody);
-		// center = new Vector2(xPosition + middleOfSpriteBody, yPosition +
-		// middleOfSpriteBody);
+	public boolean rangeIsActivated() {
+		return this.rangeActivated;
+	}
 
-		while (world.isLocked()) {
+	public Array<Body> removeProjectiles() {
+		return null;
+	}
+
+	public void rotate(float degrees) {
+		spriteUpperBody.rotate(degrees);
+		spriteFiring.rotate(degrees);
+	}
+
+	private void selectNewTarget() {
+
+		Enemy best = null;
+		for (Enemy e : enemies) {
+			if (best == null)
+				if (e.isTot() == false)
+					if (isTargetInRange(e))
+						best = e;
+			if (best != null)
+				if (e.getScore() < best.getScore() && e.isTot() == false)
+					if (isTargetInRange(e))
+						best = e;
 		}
-		final BodyDef bodydef = new BodyDef();
-		bodydef.type = BodyDef.BodyType.KinematicBody;
-		bodydef.position.set(position);
-		while (world.isLocked()) {
-		}
-		body = world.createBody(bodydef);
-		final PolygonShape towerBaseBox = new PolygonShape();
-		towerBaseBox.setAsBox(spriteBody.getWidth() * 0.5f * PlayState.PIXEL_TO_METER,
-				spriteBody.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
-		final FixtureDef fdef = new FixtureDef();
-		fdef.shape = towerBaseBox;
-		fdef.isSensor = true;
-		body.createFixture(fdef);
-		body.setUserData(this);
-		this.spriteBody.setOriginCenter();
-		this.spriteUpperBody.setOriginCenter();
-		this.spriteFiring.setOriginCenter();
+		target = best;
+	}
 
-		this.updateSprites(position);
+	public void setBlockBuildingMode(final boolean b) {
+		this.buildingModeBlocked = b;
+
+		if (this.buildingModeBlocked) {
+			spriteBody.setColor(1, 0, 0, 0.5f);
+			spriteUpperBody.setColor(1, 0, 0, 0.5f);
+			spriteFiring.setColor(1, 0, 0, 0.5f);
+		} else {
+			spriteBody.setColor(1, 1, 1, 1);
+			spriteUpperBody.setColor(1, 1, 1, 1);
+			spriteFiring.setColor(1, 1, 1, 1);
+		}
+	}
+
+	public void setBuildingMode(final boolean buildingMode) {
+		this.isInBuildingMode = buildingMode;
+
+		if (this.isInBuildingMode) {
+			spriteBody.setColor(1, 1, 1, 0.5f);
+			spriteUpperBody.setColor(1, 1, 1, 0.5f);
+			spriteFiring.setColor(1, 1, 1, 0.5f);
+		} else {
+			spriteBody.setColor(1, 1, 1, 1);
+			spriteUpperBody.setColor(1, 1, 1, 1);
+			spriteFiring.setColor(1, 1, 1, 1);
+		}
+	}
+
+	public void setCenter(Vector2 center) {
+		this.center = center;
+	}
+
+	public void setDegrees(float degrees) {
+		this.spriteUpperBody.setRotation(degrees);
+		this.spriteFiring.setRotation(degrees);
+	}
+
+	public void setToremove(boolean toremove) {
+		this.toremove = toremove;
+	}
+
+	public void shoot(Enemy e) {
+		if (isTargetInRange(e)) {
+
+			e.takeDamage(power);
+			if (soundOn)
+				if (!isSoundPlaying) {
+					soundShoot.loop(0.5f);
+					isSoundPlaying = true;
+				}
+			timesincelastshot = 0;
+			shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
+			shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
+			// TODO: Versatz Dynamisch machen!
+		} else {
+			target = null;
+			if (isSoundPlaying) {
+				soundShoot.stop();
+				isSoundPlaying = false;
+			}
+		}
+	}
+
+	public void takeDamage(float amount) {
+		damage += amount;
+		if (damage >= maxHealth) {
+			this.destroyAnimation();
+		}
+	}
+
+	public void tryshoot(Enemy e) {
+		if (getAngleToEnemy(e) > getDegrees()) {
+			setDegrees(getDegrees() + turnspeed * delta);
+		} else {
+			setDegrees(getDegrees() - turnspeed * delta);
+		}
+		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < turnspeed * delta) {
+			setDegrees(getAngleToEnemy(e));
+			if (timesincelastshot > speed)
+				shoot(e);
+		}
+
+		if (e.isTot())
+			target = null;
+
+	}
+
+	public void update(final float timeDelta, final Vector3 mousePos) {
+
+		if (this.isInBuildingMode)
+			this.updateSprites(new Vector2(mousePos.x, mousePos.y));
+
+		this.delta = timeDelta;
+		if (isactive) {
+			timesincelastshot = timesincelastshot + timeDelta;
+			if (target == null) {
+				selectNewTarget();
+				soundShoot.stop();
+				isSoundPlaying = false;
+			} else
+				tryshoot(target);
+			updateProjectiles(timeDelta);
+		}
+
+	}
+
+	public void updateProjectiles(float delta) {
 
 	}
 
@@ -228,189 +405,13 @@ public abstract class Tower implements Disposable {
 		this.center = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 	}
 
-	public void tryshoot(Enemy e) {
-		if (getAngleToEnemy(e) > getDegrees()) {
-			setDegrees(getDegrees() + turnspeed * delta);
-		} else {
-			setDegrees(getDegrees() - turnspeed * delta);
-		}
-		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < turnspeed * delta) {
-			setDegrees(getAngleToEnemy(e));
-			if (timesincelastshot > speed)
-				shoot(e);
-		}
-
-		if (e.isTot())
-			target = null;
-
+	public static void setSoundOn(boolean soundOn) {
+		Tower.soundOn = soundOn;
 	}
 
-	public void shoot(Enemy e) {
-		if (isTargetInRange(e)) {
-
-			e.takeDamage(power);
-			if (PlayState.soundOn)
-				if (!isSoundPlaying) {
-					soundShoot.loop(0.5f);
-					isSoundPlaying = true;
-				}
-			timesincelastshot = 0;
-			shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
-			shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
-			// TODO: Versatz Dynamisch machen!
-		} else {
-			target = null;
-			if (isSoundPlaying) {
-				soundShoot.stop();
-				isSoundPlaying = false;
-			}
-		}
-	}
-
-	public float getAngleToEnemy(Enemy e) {
-		float angle = 0;
-		Vector2 epos = new Vector2(center.x, center.y);
-		Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
-
-		angle = center.angle(epos);
-		angle = (float) ((Math.atan2(epos.x - tpos.x, -(epos.y - tpos.y)) * 180.0d / Math.PI));
-		return angle;
-
-	}
-
-	public float getDegrees() {
-		return this.spriteUpperBody.getRotation();
-	}
-
-	public void setDegrees(float degrees) {
-		this.spriteUpperBody.setRotation(degrees);
-		this.spriteFiring.setRotation(degrees);
-	}
-
-	public void rotate(float degrees) {
-		spriteUpperBody.rotate(degrees);
-		spriteFiring.rotate(degrees);
-	}
-
-	public void destroyAnimation() {
-		// TODO
-		System.out.println("Destroyed");
-	}
-
-	public void activateHealthBar(boolean activate) {
-		healthBar = activate;
-	}
-
-	public void takeDamage(float amount) {
-		damage += amount;
-		if (damage >= maxHealth) {
-			this.destroyAnimation();
-		}
-	}
-
-	public void update(final float timeDelta, final Vector3 mousePos) {
-
-		if (this.isInBuildingMode)
-			this.updateSprites(new Vector2(mousePos.x, mousePos.y));
-
-		this.delta = timeDelta;
-		if (isactive) {
-			timesincelastshot = timesincelastshot + timeDelta;
-			if (target == null) {
-				selectNewTarget();
-				soundShoot.stop();
-				isSoundPlaying = false;
-			} else
-				tryshoot(target);
-			updateProjectiles(timeDelta);
-		}
-
-	}
-
-	private void selectNewTarget() {
-
-		Enemy best = null;
-		for (Enemy e : enemies) {
-			if (best == null)
-				if (e.isTot() == false)
-					if (isTargetInRange(e))
-						best = e;
-			if (best != null)
-				if (e.getScore() < best.getScore() && e.isTot() == false)
-					if (isTargetInRange(e))
-						best = e;
-		}
-		target = best;
-	}
-
-	protected boolean isTargetInRange(Enemy e) {
-		Vector2 epos = new Vector2(e.getBodyX(), e.getBodyY());
-		Vector2 tpos = new Vector2(center.x, center.y);
-		float dist = epos.dst(tpos);
-		boolean inrange = false;
-		if (dist < range)
-			inrange = true;
-		return inrange;
-	}
-
-	public float getX() {
-		return spriteBody.getX();
-	}
-
-	public float getY() {
-		return spriteBody.getY();
-	}
-
-	public float getRange() {
-		return range;
-	}
-
-	public Sprite getSpriteBody() {
-		return spriteBody;
-	}
-
-	public Vector2 getCenter() {
-		return center;
-	}
-
-	public void setCenter(Vector2 center) {
-		this.center = center;
-	}
-
-	public void activate() {
-		isactive = true;
-	}
-
-	public void activateRange(boolean b) {
-		this.rangeActivated = b;
-	}
-
-	public boolean rangeIsActivated() {
-		return this.rangeActivated;
-	}
-
-	public void updateProjectiles(float delta) {
-
-	}
-
-	public boolean contains(float xPos, float yPos) {
-		return (xPos >= this.spriteBody.getX() && xPos <= this.spriteBody.getX() + this.spriteBody.getWidth())
-				&& (yPos >= this.spriteBody.getY() && yPos <= this.spriteBody.getY() + this.spriteBody.getHeight());
-	}
-
-	public void disposeMedia() {
-		this.spriteBody.getTexture().dispose();
-		this.spriteFiring.getTexture().dispose();
-		this.spriteFiring.getTexture().dispose();
-		this.soundShoot.dispose();
-	}
-
-	public boolean isToremove() {
-		return toremove;
-	}
-
-	public void setToremove(boolean toremove) {
-		this.toremove = toremove;
+	public void updateSound() {
+		if (!soundOn)
+			soundShoot.stop();
 	}
 
 }

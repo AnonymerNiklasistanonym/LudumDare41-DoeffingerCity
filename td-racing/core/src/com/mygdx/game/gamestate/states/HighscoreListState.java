@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestate.state;
+package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -8,23 +8,23 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.MainGame;
-import com.mygdx.game.PreferencesManager;
-import com.mygdx.game.PreferencesManager.HighscoreEntry;
-import com.mygdx.game.controller.ControllerHelperMenu;
-import com.mygdx.game.controller.ControllerMenuCallbackInterface;
-import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
-import com.mygdx.game.menu.HighscoreButton;
+import com.mygdx.game.gamestate.states.resources.HighscoreButton;
+import com.mygdx.game.listener.controller.ControllerHelperMenu;
+import com.mygdx.game.listener.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.listener.controller.ControllerWiki;
+import com.mygdx.game.unsorted.PreferencesManager;
+import com.mygdx.game.unsorted.PreferencesManager.HighscoreEntry;
 
 public class HighscoreListState extends GameState implements ControllerMenuCallbackInterface {
 
 	private static final String STATE_NAME = "Highscore > List";
 
-	private final HighscoreButton[] highscoreButtons;
 	private final PreferencesManager preferencesManager;
 
+	private HighscoreButton[] highscoreButtons;
 	private float controllerTimeHelper;
 	private final ControllerListener controllerHelperMenu;
 
@@ -39,8 +39,16 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 
 		// create a preferences manager for loading/clearing high score entries
 		preferencesManager = new PreferencesManager();
-		preferencesManager.checkHighscore();
+		loadHighScoreList();
 
+		// controller setup
+		controllerHelperMenu = new ControllerHelperMenu(this);
+		Controllers.addListener(controllerHelperMenu);
+		controllerTimeHelper = 0;
+	}
+
+	private void loadHighScoreList() {
+		preferencesManager.checkHighscore();
 		// load and display high score entries
 		HighscoreEntry[] entries = preferencesManager.retrieveHighscore();
 		this.highscoreButtons = new HighscoreButton[] {
@@ -54,16 +62,11 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 						MainGame.GAME_HEIGHT / 6 * 2),
 				new HighscoreButton(5, entries[4].getScore(), entries[4].getName(), MainGame.GAME_WIDTH / 2,
 						MainGame.GAME_HEIGHT / 6 * 1) };
-
-		// controller setup
-		controllerHelperMenu = new ControllerHelperMenu(this);
-		Controllers.addListener(controllerHelperMenu);
-		controllerTimeHelper = 0;
 	}
 
 	@Override
 	protected void handleInput() {
-		GameStateMethods.toggleFullScreen(Keys.F11);
+		GameStateMethods.toggleFullScreen(true);
 
 		// go back to the menu state
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
@@ -72,10 +75,10 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 		// clear high score list
 		if (Gdx.input.isKeyJustPressed(Keys.C)) {
 			preferencesManager.clearHighscore();
-			gameStateManager.setGameState(new HighscoreListState(gameStateManager));
+			loadHighScoreList();
 		}
 	}
-	
+
 	private void goBack() {
 		gameStateManager.setGameState(new MenuState(gameStateManager));
 	}
@@ -128,7 +131,7 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 	public void dPadCallback(PovDirection direction) {
 		// Nothing to do
 	}
-	
+
 	@Override
 	public void stickMoved(final boolean xAxis, final float value) {
 		// Nothing to do

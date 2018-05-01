@@ -24,15 +24,14 @@ public class LaserTower extends Tower {
 
 	public LaserTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
 		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
-		this.maxHealth = -1;
-		this.speed = 0.0f;
-		this.firingSpriteTime = 0.1f;
-		this.power = 0.1f;
-		this.turnspeed = 500;
-		this.permanentsound = true;
-		this.cost = COST;
-		this.color = new Color(0, 0, 1, 0.3f);
-
+		color = new Color(0, 0, 1, 0.3f);
+		cost = COST;
+		firingSpriteTime = 0.1f;
+		maxHealth = -1;
+		permanentsound = true;
+		power = 0.1f;
+		speed = 0.0f;
+		turnspeed = 500;
 	}
 
 	@Override

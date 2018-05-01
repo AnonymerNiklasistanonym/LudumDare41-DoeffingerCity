@@ -13,24 +13,24 @@ import com.mygdx.game.objects.Tower;
 public class SniperTower extends Tower {
 
 	// static properties
-	public static Texture groundTower;
-	public static Texture upperTower;
-	public static Texture towerFiring;
 	public static Sound soundShoot;
+	public static Texture groundTower;
+	public static Texture towerFiring;
+	public static Texture upperTower;
 
 	// static final properties
-	public static final int RANGE = 40;
 	public static final int COST = 400;
+	public static final int RANGE = 40;
 
 	public SniperTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
 		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
-		this.maxHealth = -1;
-		this.speed = 4f;
-		this.firingSpriteTime = 1f;
-		this.power = 15f;
-		this.turnspeed = 30;
-		this.cost = COST;
-		this.color = new Color(0.5f, 0.1f, 0.7f, 0.3f);
+		color = new Color(0.5f, 0.1f, 0.7f, 0.3f);
+		cost = COST;
+		firingSpriteTime = 1f;
+		maxHealth = -1;
+		power = 15f;
+		speed = 4f;
+		turnspeed = 30;
 	}
 
 	@Override

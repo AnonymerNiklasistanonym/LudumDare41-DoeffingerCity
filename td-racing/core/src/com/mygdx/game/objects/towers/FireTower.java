@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.gamestate.states.PlayState;
 import com.mygdx.game.objects.Enemy;
 import com.mygdx.game.objects.Flame;
 import com.mygdx.game.objects.Tower;
@@ -18,36 +18,36 @@ import com.mygdx.game.objects.Tower;
 public class FireTower extends Tower {
 
 	// static properties
-	public static Texture groundTower;
-	public static Texture upperTower;
-	public static Texture towerFiring;
-	public static Texture tflame;
 	public static Sound soundShoot;
+	public static Texture groundTower;
+	public static Texture tflame;
+	public static Texture towerFiring;
+	public static Texture upperTower;
 
 	// static final properties
 	private static final int RANGE = 7;
 	public static final int COST = 300;
 
+	private final Array<Flame> flames;
 	private final Sprite sflame;
 	private final World world;
-	private final Array<Flame> flames;
 
 	public FireTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
 		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
 
-		this.sflame = new Sprite(tflame);
-		this.sflame.setSize(this.sflame.getWidth() * PlayState.PIXEL_TO_METER,
-				this.sflame.getHeight() * PlayState.PIXEL_TO_METER);
-		this.maxHealth = -1;
-		this.speed = 0.08f;
-		this.firingSpriteTime = 0.2f;
-		this.power = 0.15f;
-		this.turnspeed = 700;
-		this.permanentsound = true;
-		this.cost = COST;
 		this.world = world;
-		this.flames = new Array<Flame>();
-		this.color = new Color(1, 0, 0, 0.3f);
+
+		color = new Color(1, 0, 0, 0.3f);
+		cost = COST;
+		firingSpriteTime = 0.2f;
+		flames = new Array<Flame>();
+		maxHealth = -1;
+		permanentsound = true;
+		power = 0.15f;
+		sflame = new Sprite(tflame);
+		sflame.setSize(sflame.getWidth() * PlayState.PIXEL_TO_METER, sflame.getHeight() * PlayState.PIXEL_TO_METER);
+		speed = 0.08f;
+		turnspeed = 700;
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class FireTower extends Tower {
 
 			this.timesincelastshot = 0;
 
-			final Flame flame = new Flame(body.getPosition().x, body.getPosition().y, sflame, this.world, power);
+			final Flame flame = new Flame(body.getPosition(), sflame, world, power);
 			flame.getBody().applyForceToCenter(aim, true);
 			flames.add(flame);
 		} else
@@ -98,8 +98,8 @@ public class FireTower extends Tower {
 	@Override
 	public void dispose() {
 		super.disposeMedia();
-		this.sflame.getTexture().dispose();
-		for (final Flame flame : this.flames)
+		sflame.getTexture().dispose();
+		for (final Flame flame : flames)
 			flame.dispose();
 	}
 

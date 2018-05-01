@@ -1,4 +1,4 @@
-package com.mygdx.game.gamestate.state;
+package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -7,18 +7,18 @@ import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.MainGame;
-import com.mygdx.game.controller.ControllerHelperMenu;
-import com.mygdx.game.controller.ControllerMenuCallbackInterface;
-import com.mygdx.game.controller.ControllerWiki;
 import com.mygdx.game.gamestate.GameState;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.GameStateMethods;
+import com.mygdx.game.listener.controller.ControllerHelperMenu;
+import com.mygdx.game.listener.controller.ControllerMenuCallbackInterface;
+import com.mygdx.game.listener.controller.ControllerWiki;
 
 public class CreditState extends GameState implements ControllerMenuCallbackInterface {
 
 	private final String[] textContent;
 	private final Vector2[] textContentPosition;
-	
+
 	private final ControllerHelperMenu controllerHelperMenu;
 	private float controllerTimeHelper;
 
@@ -41,7 +41,7 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 		// calculate the text positions so that every line is centered
 		textContentPosition = GameStateMethods.calculateCenteredMultiLineTextPositons(MainGame.fontUpperCaseBig,
 				textContent, MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
-		
+
 		// add controller listener
 		controllerHelperMenu = new ControllerHelperMenu(this);
 		Controllers.addListener(controllerHelperMenu);
@@ -50,7 +50,7 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 
 	@Override
 	protected void handleInput() {
-		GameStateMethods.toggleFullScreen(Keys.F11);
+		GameStateMethods.toggleFullScreen(true);
 
 		// on touch or escape or back go back to the menu
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
@@ -79,7 +79,7 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 	protected void dispose() {
 		Controllers.removeListener(controllerHelperMenu);
 	}
-	
+
 	private void goBack() {
 		gameStateManager.setGameState(new MenuState(gameStateManager));
 	}

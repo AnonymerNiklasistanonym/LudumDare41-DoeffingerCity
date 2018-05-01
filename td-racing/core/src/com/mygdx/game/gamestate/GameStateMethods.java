@@ -1,6 +1,7 @@
 package com.mygdx.game.gamestate;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -11,34 +12,43 @@ import com.mygdx.game.MainGame;
 public class GameStateMethods {
 
 	/**
-	 * Toggle full screen on press of the given key
-	 * 
-	 * @param keyCode
-	 *            (Keys.F11 for example)
+	 * Standardized full screen toggle key
 	 */
-	public static void toggleFullScreen(final int keyCode) {
-		if (Gdx.input.isKeyJustPressed(keyCode)) {
+	public static final int standardizedFullScreenToggleKey = Keys.F11;
+
+	/**
+	 * Toggle full screen
+	 */
+	public static void toggleFullScreen() {
+		toggleFullScreen(false);
+	}
+
+	/**
+	 * Toggle full screen on press of the given standardized key
+	 */
+	public static void toggleFullScreen(final boolean useStandardizedKey) {
+		if (!useStandardizedKey || Gdx.input.isKeyJustPressed(standardizedFullScreenToggleKey)) {
 			if (Gdx.graphics.isFullscreen())
 				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
 			else
 				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		}
 	}
-	
-	public static void toggleFullScreen() {
-			if (Gdx.graphics.isFullscreen())
-				Gdx.graphics.setWindowedMode(MainGame.GAME_WIDTH, MainGame.GAME_HEIGHT);
-			else
-				Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-	}
 
+	/**
+	 * Get the current mouse position
+	 *
+	 * @param camera
+	 *            (State camera)
+	 * @return mouse position
+	 */
 	public static Vector3 getMousePosition(final Camera camera) {
 		return camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 	}
 
 	/**
 	 * Get the coordinates to render text centered
-	 * 
+	 *
 	 * @param font
 	 *            - BitmapFont which will be used to draw the text
 	 * @param text
@@ -57,7 +67,7 @@ public class GameStateMethods {
 
 	/**
 	 * Get the coordinates to render text centered
-	 * 
+	 *
 	 * @param font
 	 *            - BitmapFont which will be used to draw the text
 	 * @param text

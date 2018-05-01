@@ -13,24 +13,24 @@ import com.mygdx.game.objects.Tower;
 public class MgTower extends Tower {
 
 	// static properties
-	public static Texture groundTower;
-	public static Texture upperTower;
-	public static Texture towerFiring;
 	public static Sound soundShoot;
+	public static Texture groundTower;
+	public static Texture towerFiring;
+	public static Texture upperTower;
 
 	// static final properties
-	public static final int RANGE = 11;
 	public static final int COST = 100;
+	public static final int RANGE = 11;
 
 	public MgTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
 		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
-		this.maxHealth = -1;
-		this.speed = 0.4f;
-		this.firingSpriteTime = 0.1f;
-		this.power = 1f;
-		this.turnspeed = 50;
-		this.cost = COST;
-		this.color = new Color(0.5f, 0.1f, 0.7f, 0.3f);
+		color = new Color(0.5f, 0.1f, 0.7f, 0.3f);
+		cost = COST;
+		firingSpriteTime = 0.1f;
+		maxHealth = -1;
+		power = 1f;
+		speed = 0.4f;
+		turnspeed = 50;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.gamestate.state.PlayState;
+import com.mygdx.game.gamestate.states.PlayState;
 
 public class Car implements Disposable {
 
@@ -145,9 +145,9 @@ public class Car implements Disposable {
 	}
 
 	public float hitEnemy(final Enemy e) {
-		float damage=Math.abs(getForwardVelocity().x * 2);
-		if(damage>3f)
-		e.takeDamage(damage);
+		float damage = Math.abs(getForwardVelocity().x * 2);
+		if (damage > 3f)
+			e.takeDamage(damage);
 		return e.health;
 	}
 
