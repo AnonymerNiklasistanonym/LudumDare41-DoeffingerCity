@@ -83,7 +83,7 @@ public abstract class Enemy implements Disposable {
 
 		this.map = map;
 
-		distancetonode = sprite.getWidth() * 4;
+		distancetonode = sprite.getWidth() * 2;
 		findWay();
 	}
 
