@@ -18,6 +18,7 @@ public class ScoreBoard {
 	private final ScoreBoardCallbackInterface playState;
 	private final int COLUMN;
 	private int level;
+	private boolean debugDisplay;
 
 	public ScoreBoard(final ScoreBoardCallbackInterface playState) {
 		this.playState = playState;
@@ -27,6 +28,7 @@ public class ScoreBoard {
 		COLUMN = 53;
 		healthPoints = 100;
 		maxHealthPoints = healthPoints;
+		debugDisplay = true;
 		reset(0);
 	}
 
@@ -35,7 +37,7 @@ public class ScoreBoard {
 		MainGame.fontOutline.getData().setScale(PlayState.PIXEL_TO_METER);
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 
-		if (MainGame.DEVELOPER_MODE) {
+		if (MainGame.DEVELOPER_MODE && debugDisplay) {
 			MainGame.fontOutline.setColor(1, 0, 0, 1);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Small Enemy: F", 0.2f, 32);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Fat Enemy: G", 0.2f, 31);
@@ -165,6 +167,14 @@ public class ScoreBoard {
 
 	public void addScore(int i) {
 		score += i;
+	}
+
+	public boolean getDebugDisplay() {
+		return debugDisplay;
+	}
+
+	public void setDebugDisplay(boolean debugDisplay) {
+		this.debugDisplay = debugDisplay;
 	}
 
 }
