@@ -72,6 +72,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final ScoreBoard scoreBoard;
 	private final Array<Enemy> enemies;
 	private final Array<Tower> towers;
+	private final Array<Sprite> trailersmoke;
+	private float timesincesmoke=0;
 	private final PreferencesManager preferencesManager;
 	private final Sprite spritePitStop, spriteCar, spriteFinishLine;
 	private final ShapeRenderer shapeRenderer;
@@ -112,6 +114,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		spriteFinishLine = createScaledSprite("maps/finishline.png");
 		spritePitStop = createScaledSprite("pit_stop/pit_stop_01.png");
 		spriteSmoke=createScaledSprite("maps/smoke.png");
+		
 		// set textures
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
@@ -193,7 +196,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		mousePos = new Vector3();
 		trailerpos = new Vector2(0, 0);
 		padPos = new Vector3(MainGame.GAME_WIDTH * PIXEL_TO_METER / 2, MainGame.GAME_HEIGHT * PIXEL_TO_METER, 0);
-
+		trailersmoke=new Array<Sprite>();
+		
 		// activate background music
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.75f);
@@ -559,10 +563,45 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// check if the current wave is dead and a new one should start
 		updateWaves();
+		
+		updateSmoke();
 
 		// update box2D physics
 		updatePhysics(deltaTime);
 	}
+
+	private void updateSmoke() {
+		
+		float smokeseconds=15/(100f-scoreBoard.getHealth());
+		timesincesmoke=timesincesmoke+Gdx.graphics.getDeltaTime();
+		while(timesincesmoke>smokeseconds) {
+			spawnSmoke();
+			timesincesmoke=timesincesmoke-smokeseconds;
+		}
+		Array<Sprite> deadsmoke=new Array<Sprite>();
+		for (Sprite s : trailersmoke) {
+			s.setPosition(s.getX()+MathUtils.random(0.05f), s.getY()+0.05f);
+			if(s.getWidth()>spriteSmoke.getWidth())
+			s.setColor(1,1,1,s.getColor().a-0.0000001f);
+			s.setSize(s.getWidth()+0.02f, s.getHeight()+0.02f);
+			s.setRotation(s.getRotation()+MathUtils.random(-2.5f,-0.5f));
+			if(s.getColor().a<0.1f)
+				deadsmoke.add(s);
+			
+		}
+		for (Sprite s : deadsmoke) {
+			trailersmoke.removeValue(s, true);
+		}
+	}
+	
+	private void spawnSmoke() {
+		Sprite s=new Sprite(spriteSmoke);
+		s.setRotation(MathUtils.random(360));
+		s.setSize(s.getWidth()/8, s.getHeight()/8);
+		s.setPosition(trailerpos.x+MathUtils.random(-2f,0), trailerpos.y-4f);
+		trailersmoke.add(s);
+	}
+	
 
 	@Override
 	public void render(final SpriteBatch spriteBatch) {
@@ -620,6 +659,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		for (final Tower tower : towers)
 			tower.drawUpperBuddy(spriteBatch);
 
+		
+		//draw smoke from damaged trailer
+		for (Sprite s : trailersmoke) {
+			s.draw(spriteBatch);
+		}
+		
+		
 		// draw building tower on top of them all
 		if (buildingtower != null) {
 			buildingtower.draw(spriteBatch);
