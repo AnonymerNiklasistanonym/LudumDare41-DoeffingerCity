@@ -23,7 +23,7 @@ import com.mygdx.game.gamestate.states.PlayState;
 
 public abstract class Tower implements Disposable {
 
-	private static boolean soundOn;
+	protected static boolean soundOn;
 
 	protected Sprite amunition;
 	public Body body;
@@ -31,7 +31,7 @@ public abstract class Tower implements Disposable {
 	protected Vector2 center;
 	protected Color color;
 	protected int cost = 10;
-	protected float damage, soundVolumne;
+	protected float damage, soundVolume;
 	float delta = 0;
 	protected Animation<TextureRegion> destroyAnimation;
 	Array<Enemy> enemies;
@@ -78,7 +78,7 @@ public abstract class Tower implements Disposable {
 		this.spriteFiring.setOriginCenter();
 
 		timesincelastshot = 10;
-		soundVolumne = 0.25f;
+		soundVolume = 0.25f;
 		healthBar = false;
 		toremove = false;
 		damage = 0;
@@ -142,7 +142,7 @@ public abstract class Tower implements Disposable {
 		if (firingLineTime > timesincelastshot) {
 			drawProjectileShape(shapeRenderer);
 		} else {
-			
+
 		}
 	}
 
@@ -323,15 +323,15 @@ public abstract class Tower implements Disposable {
 
 	public void shoot(Enemy e) {
 		if (isTargetInRange(e)) {
-			damage=power;
-			if(speed==0) {
-				damage=power*delta;
+			damage = power;
+			if (speed == 0) {
+				damage = power * delta;
 			}
 			e.takeDamage(damage);
 			timesincelastshot = 0;
-			shotposition=e.getCenter();
+			shotposition = e.getCenter();
 			if (soundOn) {
-				soundShoot.play(soundVolumne,MathUtils.random(1f, 1.1f),0f);
+				soundShoot.play(soundVolume, MathUtils.random(1f, 1.1f), 0f);
 			}
 		} else {
 			target = null;
@@ -372,8 +372,8 @@ public abstract class Tower implements Disposable {
 			timesincelastshot = timesincelastshot + timeDelta;
 			if (target == null) {
 				selectNewTarget();
-				if(speed==0)
-				soundShoot.stop();
+				if (speed == 0)
+					soundShoot.stop();
 				isSoundPlaying = false;
 			} else
 				tryshoot(target);

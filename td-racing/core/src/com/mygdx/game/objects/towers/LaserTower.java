@@ -32,7 +32,7 @@ public class LaserTower extends Tower {
 		power = 3f;
 		speed = 0f;
 		turnspeed = 500;
-		soundVolumne = 0.05f;
+		soundVolume = 0.05f;
 	}
 
 	@Override

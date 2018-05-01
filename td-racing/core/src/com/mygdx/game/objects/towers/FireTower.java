@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -48,6 +49,7 @@ public class FireTower extends Tower {
 		sflame.setSize(sflame.getWidth() * PlayState.PIXEL_TO_METER, sflame.getHeight() * PlayState.PIXEL_TO_METER);
 		speed = 0.08f;
 		turnspeed = 700;
+		this.soundVolume = 1;
 	}
 
 	@Override
@@ -74,6 +76,8 @@ public class FireTower extends Tower {
 			final Flame flame = new Flame(body.getPosition(), sflame, world, power);
 			flame.getBody().applyForceToCenter(aim, true);
 			flames.add(flame);
+			if (soundOn)
+				soundShoot.play(soundVolume, MathUtils.random(1f, 1.1f), 0f);
 		} else
 			target = null;
 	}
