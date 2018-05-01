@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -139,14 +140,9 @@ public abstract class Tower implements Disposable {
 
 	public void drawLine(final ShapeRenderer shapeRenderer) {
 		if (firingLineTime > timesincelastshot) {
-			if (soundOn) {
-				soundShoot.play(soundVolumne);
-			}
 			drawProjectileShape(shapeRenderer);
 		} else {
-			if (soundOn) {
-				soundShoot.stop();
-			}
+			
 		}
 	}
 
@@ -334,6 +330,9 @@ public abstract class Tower implements Disposable {
 			e.takeDamage(damage);
 			timesincelastshot = 0;
 			shotposition=e.getCenter();
+			if (soundOn) {
+				soundShoot.play(soundVolumne,MathUtils.random(1f, 1.1f),0f);
+			}
 		} else {
 			target = null;
 		}
@@ -373,6 +372,7 @@ public abstract class Tower implements Disposable {
 			timesincelastshot = timesincelastshot + timeDelta;
 			if (target == null) {
 				selectNewTarget();
+				if(speed==0)
 				soundShoot.stop();
 				isSoundPlaying = false;
 			} else

@@ -458,7 +458,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				carSound.pause();
 				carSoundStart.pause();
 			} else if (!pause && soundOn) {
-				backgroundMusic.play();
+				//backgroundMusic.play();
 				carSound.play();
 				carSoundStart.resume();
 				soundmoney.resume();
@@ -477,7 +477,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				tower.updateSound();
 			// turn background music on/off
 			if (soundOn) {
-				backgroundMusic.play();
+				//backgroundMusic.play();
 				carSound.play();
 				carSoundStart.resume();
 				soundmoney.resume();
