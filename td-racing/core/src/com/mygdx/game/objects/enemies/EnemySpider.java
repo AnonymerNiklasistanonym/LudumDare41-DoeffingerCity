@@ -8,8 +8,8 @@ import com.mygdx.game.objects.Map;
 
 public class EnemySpider extends Enemy {
 
-	private static final float DAMAGE = 10;
-	private static final float HEALTH = 10;
+	private static final float DAMAGE = 1;
+	private static final float HEALTH = 1;
 	private static final float MONEY = 10;
 	private static final float SPEED = 10;
 	private static final float SCORE = 50;
