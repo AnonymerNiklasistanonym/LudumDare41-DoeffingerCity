@@ -26,7 +26,7 @@ public class FireTower extends Tower {
 	public static Texture upperTower;
 
 	// static final properties
-	private static final int RANGE = 7;
+	private static final int RANGE = 8;
 	public static final int COST = 300;
 
 	private final Array<Flame> flames;
@@ -44,10 +44,10 @@ public class FireTower extends Tower {
 		flames = new Array<Flame>();
 		maxHealth = -1;
 		permanentsound = true;
-		power = 0.15f;
+		power = 0.2f;
 		sflame = new Sprite(tflame);
 		sflame.setSize(sflame.getWidth() * PlayState.PIXEL_TO_METER, sflame.getHeight() * PlayState.PIXEL_TO_METER);
-		speed = 0.08f;
+		speed = 0.04f;
 		turnspeed = 700;
 		this.soundVolume = 1;
 	}
