@@ -115,7 +115,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		spriteFinishLine = createScaledSprite("maps/finishline.png");
 		spritePitStop = createScaledSprite("pit_stop/pit_stop_01.png");
 		spriteSmoke=createScaledSprite("maps/smoke.png");
-		
+
 		// set textures
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
@@ -198,7 +198,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		padPos = new Vector3(MainGame.GAME_WIDTH * PIXEL_TO_METER / 2, MainGame.GAME_HEIGHT * PIXEL_TO_METER, 0);
 		trailersmoke=new Array<Sprite>();
 		enemiesdead=new Array<Enemy>();
-		
+
 		// activate background music
 		backgroundMusic.setLooping(true);
 		backgroundMusic.setVolume(0.75f);
@@ -551,29 +551,30 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 
 		// garbage collect enemies
-		Array<Enemy> newdead=new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
-			if (!enemy.isBodyDeleted() && (enemy.isDeleteBody() || enemy.isDelete())) {
-				world.destroyBody(enemy.getBody());
-				enemy.setBodyDeleted(true);
+			// if enemy has a body
+			if (!enemy.isBodyDeleted()) {
+				// and it's body or itself should be deleted
+				if (enemy.isDeleteBody() || enemy.isDelete()) {
+					// remove body from the world
+					world.destroyBody(enemy.getBody());
+					enemy.setBodyDeleted(true);
+				}
+				// if enemy should be deleted delete the from the list
+				if (enemy.isDelete()) {
+					enemies.removeValue(enemy, true);
+				}
 			}
-			if (enemy.isDelete()) {
+			// If the enemy is dead add him to the other enemy list
+			if(enemy.isTot() && !enemy.isDelete()) {
 				enemies.removeValue(enemy, true);
-				enemy.dispose();
+				enemiesdead.add(enemy);
 			}
-			
-			if(enemy.isTot())
-				newdead.add(enemy);
-
-		}
-		for (Enemy enemy : newdead) {
-			enemies.removeValue(enemy, true);
-			enemiesdead.add(enemy);
 		}
 
 		// check if the current wave is dead and a new one should start
 		updateWaves();
-		
+
 		updateSmoke();
 
 		// update box2D physics
@@ -598,13 +599,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			s.setRotation(s.getRotation()+MathUtils.random(-2.5f,-0.5f));
 			if(s.getColor().a<0.1f)
 				deadsmoke.add(s);
-			
+
 		}
 		for (Sprite s : deadsmoke) {
 			trailersmoke.removeValue(s, true);
 		}
 	}
-	
+
 	private void spawnSmoke() {
 		Sprite s=new Sprite(spriteSmoke);
 		s.setRotation(MathUtils.random(360));
@@ -612,7 +613,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		s.setPosition(trailerpos.x+MathUtils.random(-2f,0), trailerpos.y-4f);
 		trailersmoke.add(s);
 	}
-	
+
 
 	@Override
 	public void render(final SpriteBatch spriteBatch) {
@@ -672,13 +673,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		for (final Tower tower : towers)
 			tower.drawUpperBuddy(spriteBatch);
 
-		
+
 		//draw smoke from damaged trailer
 		for (Sprite s : trailersmoke) {
 			s.draw(spriteBatch);
 		}
-		
-		
+
+
 		// draw building tower on top of them all
 		if (buildingtower != null) {
 			buildingtower.draw(spriteBatch);
@@ -943,12 +944,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void collisionCallbackCarEnemy(final Car car, final Enemy enemy) {
 		// if the new health after the hit is smaller than 0 play kill sound
-		System.out.println(enemy.getHealth());
-		System.out.println(enemy.isTot());
 		if ((!enemy.isBodyDeleted() && car.hitEnemy(enemy) <= 0) && soundOn)
 			splatt.play(1, MathUtils.random(0.5f, 2f), 0);
-		System.out.println(enemy.getHealth());
-		System.out.println(enemy.isTot());
 	}
 
 	@Override
@@ -1086,7 +1083,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void enemyHitsHomeCallback(final Enemy enemy) {
 		scoreBoard.reduceLife(enemy.getDamadge());
-		enemies.removeValue(enemy, true);
+		enemy.setDelete(true);
 	    if (soundOn)
 				soundDamage.play(1,MathUtils.random(1f, 1.1f),0f);
 	    spawnSmoke();

@@ -35,10 +35,10 @@ public abstract class Enemy implements Disposable {
 
 	protected float maxHealth, health, money, score, speed, damage;
 
-	
+
 	private float timesincedeepsearch=0;
 	private float maxtimedeepsearch=5;
-	
+
 	private Body body;
 	private Map map;
 	private Array<Node> weg;
@@ -225,8 +225,8 @@ public abstract class Enemy implements Disposable {
 				score = weg.get(weg.size - 1).getH();
 			if(timesincedeepsearch>maxtimedeepsearch)
 				doDeepSearch();
-		
-		
+
+
 		} else {
 			callbackInterface.enemyHitsHomeCallback(this);
 			deleteBody = true;
@@ -364,5 +364,9 @@ public abstract class Enemy implements Disposable {
 		cnt.x=getBodyX()+(sprite.getWidth()*0.5f*PlayState.PIXEL_TO_METER);
 		cnt.y=getBodyY()+(sprite.getHeight()*0.5f*PlayState.PIXEL_TO_METER);
 		return cnt;
+	}
+
+	public void setDelete(final boolean delete) {
+		this.delete = delete;
 	}
 }
