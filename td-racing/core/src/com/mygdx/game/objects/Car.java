@@ -18,7 +18,7 @@ public class Car implements Disposable {
 	private static final float ACCELERATION_FORWARD = 2000f;
 	private static final float BRAKE_POWER = 5000f;
 	private static final float ACCELERATION_BACK = 1000f;
-	private static final float STEER_POWER = 1500;
+	private static final float STEER_POWER = 1800;
 
 	private final Body body;
 	private final Sprite sprite;

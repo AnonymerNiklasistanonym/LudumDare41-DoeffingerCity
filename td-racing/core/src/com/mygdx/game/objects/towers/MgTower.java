@@ -30,7 +30,7 @@ public class MgTower extends Tower {
 		maxHealth = -1;
 		power = 1f;
 		speed = 0.4f;
-		turnspeed = 50;
+		turnspeed = 30;
 	}
 
 	@Override

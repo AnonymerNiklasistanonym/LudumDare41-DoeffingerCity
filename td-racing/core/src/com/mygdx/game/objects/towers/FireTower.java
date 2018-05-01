@@ -44,7 +44,7 @@ public class FireTower extends Tower {
 		flames = new Array<Flame>();
 		maxHealth = -1;
 		permanentsound = true;
-		power = 0.2f;
+		power = 0.1f;
 		sflame = new Sprite(tflame);
 		sflame.setSize(sflame.getWidth() * PlayState.PIXEL_TO_METER, sflame.getHeight() * PlayState.PIXEL_TO_METER);
 		speed = 0.04f;
@@ -67,7 +67,7 @@ public class FireTower extends Tower {
 	@Override
 	public void shoot(final Enemy enemy) {
 		if (isTargetInRange(enemy)) {
-			final Vector2 aim = new Vector2(2000, 0);
+			final Vector2 aim = new Vector2(2500, 0);
 			aim.rotate(getDegrees());
 			aim.rotate90(1);
 
