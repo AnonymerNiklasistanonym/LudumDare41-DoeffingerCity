@@ -173,7 +173,7 @@ public abstract class Tower implements Disposable {
 	}
 
 	public void drawUpperBuddy(final SpriteBatch spriteBatch) {
-		if (firingLineTime > timesincelastshot) {
+		if (firingSpriteTime > timesincelastshot) {
 			drawProjectile(spriteBatch);
 			spriteFiring.draw(spriteBatch);
 		} else {
@@ -401,8 +401,6 @@ public abstract class Tower implements Disposable {
 		this.spriteFiring.setPosition(position.x + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2,
 				position.y + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2);
 
-		// shot position to new position
-		//this.shotposition = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 		this.center = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 	}
 

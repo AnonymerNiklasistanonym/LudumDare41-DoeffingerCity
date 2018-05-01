@@ -26,7 +26,7 @@ public class SniperTower extends Tower {
 		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
 		color = new Color(0.5f, 0.1f, 0.7f, 0.3f);
 		cost = COST;
-		firingSpriteTime = 1f;
+		firingSpriteTime = 0.5f;
 		maxHealth = -1;
 		power = 15f;
 		speed = 4f;
