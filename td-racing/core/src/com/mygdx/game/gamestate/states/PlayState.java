@@ -193,7 +193,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// activate background music
 		backgroundMusic.setLooping(true);
-		backgroundMusic.setVolume(0.4f);
+		backgroundMusic.setVolume(0.6f);
 
 		// things to do in developer mode and not
 		if (MainGame.DEVELOPER_MODE) {
@@ -912,7 +912,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : moneyPerLap);
 			// play cash sound if sound activated
 			if (soundOn) {
-				soundmoney.play();
+				soundmoney.play(1);
 				System.out.println("Money sound was played");
 			}
 

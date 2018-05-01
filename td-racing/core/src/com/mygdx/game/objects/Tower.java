@@ -29,7 +29,7 @@ public abstract class Tower implements Disposable {
 	protected Vector2 center;
 	protected Color color;
 	protected int cost = 10;
-	protected float damage;
+	protected float damage, soundVolumne;
 	float delta = 0;
 	protected Animation<TextureRegion> destroyAnimation;
 	Array<Enemy> enemies;
@@ -76,6 +76,7 @@ public abstract class Tower implements Disposable {
 		this.spriteFiring.setOriginCenter();
 
 		timesincelastshot = 10;
+		soundVolumne = 0.25f;
 		healthBar = false;
 		toremove = false;
 		damage = 0;
@@ -138,12 +139,12 @@ public abstract class Tower implements Disposable {
 	public void drawLine(final ShapeRenderer shapeRenderer) {
 		if (firingLineTime > timesincelastshot) {
 			if (soundOn) {
-				soundShoot.play();
+				soundShoot.play(soundVolumne);
 			}
 			drawProjectileShape(shapeRenderer);
 		} else {
 			if (soundOn) {
-				soundShoot.pause();
+				soundShoot.stop();
 			}
 		}
 	}
