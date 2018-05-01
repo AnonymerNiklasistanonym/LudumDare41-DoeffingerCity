@@ -22,6 +22,10 @@ public class MainGame extends ApplicationAdapter {
 	 * Name of the game
 	 */
 	public final static String GAME_NAME = "LudumDare 41 - TnT (Track `n Towers)";
+	/**
+	 * Returns if this is an release or development
+	 */
+	public final static boolean DEVELOPER_MODE = false;
 
 	public static BitmapFont font70;
 	public static BitmapFont font;

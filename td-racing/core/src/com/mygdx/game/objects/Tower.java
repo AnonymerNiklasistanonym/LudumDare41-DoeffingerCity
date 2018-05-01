@@ -137,7 +137,14 @@ public abstract class Tower implements Disposable {
 
 	public void drawLine(final ShapeRenderer shapeRenderer) {
 		if (firingLineTime > timesincelastshot) {
+			if (soundOn) {
+				soundShoot.play();
+			}
 			drawProjectileShape(shapeRenderer);
+		} else {
+			if (soundOn) {
+				soundShoot.pause();
+			}
 		}
 	}
 
@@ -316,25 +323,19 @@ public abstract class Tower implements Disposable {
 		this.toremove = toremove;
 	}
 
+
+
 	public void shoot(Enemy e) {
 		if (isTargetInRange(e)) {
 
 			e.takeDamage(power);
-			if (soundOn)
-				if (!isSoundPlaying) {
-					soundShoot.loop(0.5f);
-					isSoundPlaying = true;
-				}
+
 			timesincelastshot = 0;
 			shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
 			shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
 			// TODO: Versatz Dynamisch machen!
 		} else {
 			target = null;
-			if (isSoundPlaying) {
-				soundShoot.stop();
-				isSoundPlaying = false;
-			}
 		}
 	}
 

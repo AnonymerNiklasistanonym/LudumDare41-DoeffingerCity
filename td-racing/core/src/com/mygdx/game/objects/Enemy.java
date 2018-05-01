@@ -33,31 +33,24 @@ public abstract class Enemy implements Disposable {
 	private final Texture textureDead;
 	private final float time;
 
-	protected float maxHealth;
-	protected float health;
-	protected float money;
-	protected float score;
-	protected float speed;
-	protected float damage;
+	protected float maxHealth, health, money, score, speed, damage;
 
 	private Body body;
 	private Map map;
 	private Array<Node> weg;
-	private boolean justDied = false;
-	private boolean delete;
-	private boolean tot = false;
-	private float distancetonode;
-	private boolean activated;
-	private float wasHitTime;
-	private float hitRandomX;
-	private float hitRandomY;
+	private float distancetonode, wasHitTime;
+	private Vector2 hitRandom;
 	private Color color;
-	protected boolean healthBar;
+	protected boolean activated, bodyDeleted, healthBar, tot, deleteBody, delete;
 
 	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
 			final Texture damagesprite, final Map map, final float time) {
 
 		textureDead = deadsprite;
+		deleteBody = false;
+		delete = false;
+		tot = false;
+		hitRandom = new Vector2();
 
 		sprite = new Sprite(alive);
 		sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER, sprite.getHeight() * PlayState.PIXEL_TO_METER);
@@ -140,10 +133,10 @@ public abstract class Enemy implements Disposable {
 		sprite.setSize(textureDead.getWidth() * PlayState.PIXEL_TO_METER,
 				textureDead.getHeight() * PlayState.PIXEL_TO_METER);
 		sprite.setRotation(MathUtils.random(360));
-		// ???
-		this.wasHitTime = 0;
+		callbackInterface.enemyDied(this);
+		deleteBody = true;
+		wasHitTime = 0;
 		speed = 0;
-		setJustDied(true);
 	}
 
 	public void takeDamage(float amount) {
@@ -202,13 +195,13 @@ public abstract class Enemy implements Disposable {
 		if (this.isTot() || !this.activated)
 			return;
 
-		if (this.wasHitTime > 0) {
-			this.wasHitTime -= deltaTime;
-			this.hitRandomX = MathUtils.random(-this.sprite.getWidth() / 4, this.sprite.getWidth() / 4);
-			this.hitRandomY = MathUtils.random(-this.sprite.getHeight() / 4, this.sprite.getHeight() / 4);
-			this.spriteDamage.setPosition(
-					getX() + this.sprite.getWidth() / 2 - this.spriteDamage.getWidth() / 2 + hitRandomX,
-					getY() + this.sprite.getHeight() / 2 - this.spriteDamage.getHeight() / 2 + hitRandomY);
+		if (wasHitTime > 0) {
+			wasHitTime -= deltaTime;
+			hitRandom.x = MathUtils.random(-this.sprite.getWidth() / 4, this.sprite.getWidth() / 4);
+			hitRandom.y = MathUtils.random(-this.sprite.getHeight() / 4, this.sprite.getHeight() / 4);
+			spriteDamage.setPosition(
+					getX() + this.sprite.getWidth() / 2 - this.spriteDamage.getWidth() / 2 + hitRandom.x,
+					getY() + this.sprite.getHeight() / 2 - this.spriteDamage.getHeight() / 2 + hitRandom.y);
 		}
 
 		if (getHealth() <= 0)
@@ -239,12 +232,20 @@ public abstract class Enemy implements Disposable {
 
 		} else {
 			callbackInterface.enemyHitsHomeCallback(this);
-			this.setDelete(true);
-			this.setTot(true);
+			deleteBody = true;
+			tot = true;
 		}
 
 		sprite.setPosition(getX(), getY());
 		sprite.setRotation(MathUtils.radDeg * this.body.getAngle());
+	}
+
+	public boolean isDeleteBody() {
+		return deleteBody;
+	}
+
+	public boolean isDelete() {
+		return delete;
 	}
 
 	private void killLateral(float drift) {
@@ -312,22 +313,6 @@ public abstract class Enemy implements Disposable {
 		this.health = health;
 	}
 
-	public boolean isJustDied() {
-		return justDied;
-	}
-
-	public void setJustDied(boolean justDied) {
-		this.justDied = justDied;
-	}
-
-	public boolean isDelete() {
-		return delete;
-	}
-
-	public void setDelete(boolean delete) {
-		this.delete = delete;
-	}
-
 	public boolean isTot() {
 		return tot;
 	}
@@ -347,5 +332,13 @@ public abstract class Enemy implements Disposable {
 
 	public Color getColor() {
 		return this.color;
+	}
+
+	public void setBodyDeleted(boolean b) {
+		bodyDeleted = b;
+	}
+
+	public boolean isBodyDeleted() {
+		return bodyDeleted;
 	}
 }

@@ -57,6 +57,8 @@ import com.mygdx.game.unsorted.PreferencesManager;
 public class PlayState extends GameState implements CollisionCallbackInterface, ControllerCallbackInterface,
 		ScoreBoardCallbackInterface, EnemyCallbackInterface {
 
+	private final static String STATE_NAME = "Play";
+
 	// Identify collision entities
 	public final static short PLAYER_BOX = 0x1; // 0001
 	public final static short ENEMY_BOX = 0x1 << 1; // 0010 or 0x2 in hex
@@ -65,7 +67,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public final static float METER_TO_PIXEL = 20f;
 
 	private final Music backgroundMusic;
-	private final Sound splatt, soundmoney, carSound, victorySound;
+	private final Sound splatt, soundmoney, carSoundStart, carSound, victorySound;
 	private final ControllerHelper controllerHelper;
 	private final ScoreBoard scoreBoard;
 	private final Array<Enemy> enemies;
@@ -73,9 +75,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final PreferencesManager preferencesManager;
 	private final Sprite spritePitStop, spriteCar, spriteFinishLine;
 	private final ShapeRenderer shapeRenderer;
-	private final int moneyPerLap;
+	private final Level[] level;
 
 	private Tower buildingtower;
+	private Checkpoint[] checkpoints;
 	private CollisionListener collis;
 	private World world;
 	private Car car;
@@ -84,149 +87,124 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private Map map;
 	private Box2DDebugRenderer debugRender;
 	private String waveText;
-
-	private float tutorialtimer, physicsaccumulator, timeforwavetext;
-	private boolean soundOn, debugBox2D, debugCollision, debugDistance, debugWay, wongame, deploy, unlockAllTowers;
-	private int currentwave, tutorialState;
-
-	private static final String STATE_NAME = "Play";
-
-	private Checkpoint[] checkpoints;
-
-	private boolean pause;
-	private int speedFactor;
-	private final Level[] level;
-	private Vector3 mousePos;
+	private Vector3 mousePos, padPos;
 	private Vector2 trailerpos;
-	private Vector3 padPos;
-	private boolean padActivated;
+	private float tutorialtimer, physicsaccumulator, timeforwavetext;
+	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay, unlockAllTowers,
+			padActivated;
+	private int currentwave, tutorialState, checkPointsCleared, moneyPerLap, speedFactor;
 
-	public PlayState(final GameStateManager gameStateManager, final int level) {
+	public PlayState(final GameStateManager gameStateManager, final int levelNumber) {
 		super(gameStateManager, STATE_NAME);
 
-		this.level = LevelHandler.loadLevels();
-
+		// scale used font correctly
 		MainGame.font70.getData().setScale(0.10f);
-		scoreBoard = new ScoreBoard(this, !deploy);
-		scoreBoard.reset(0);
 
-		preferencesManager = new PreferencesManager();
-		preferencesManager.checkHighscore();
-
-		trailerpos = new Vector2(0, 0);
-		checkPointsCleared = 0;
-		tutorialtimer = 0;
-		currentwave = 0;
-		wongame = false;
-		deploy = false;
-		unlockAllTowers = false;
-		tutorialState = 0;
-		physicsaccumulator = 0f;
-		soundOn = true;
-		lastSound = false;
-		pause = false;
-
+		// set static dependencies
 		Enemy.callbackInterface = this;
 
-		// import textures
+		// create sprite(s)
 		spriteCar = createScaledSprite("cars/car_standard.png");
 		spriteFinishLine = createScaledSprite("maps/finishline.png");
+		spritePitStop = createScaledSprite("pit_stop/pit_stop_01.png");
 
-		// set STATIC textures
+		// set textures
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
 		TowerMenu.flameButton = new Texture(Gdx.files.internal("buttons/flamebutton.png"));
 		TowerMenu.sniperButton = new Texture(Gdx.files.internal("buttons/sniperbutton.png"));
-
 		MgTower.groundTower = new Texture(Gdx.files.internal("tower/tower_empty.png"));
 		MgTower.upperTower = new Texture(Gdx.files.internal("tower/tower_empty_upper.png"));
 		MgTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_mg_firing.png"));
-		MgTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-
 		SniperTower.groundTower = new Texture(Gdx.files.internal("tower/tower_sniper_bottom.png"));
 		SniperTower.upperTower = new Texture(Gdx.files.internal("tower/tower_sniper_upper.png"));
 		SniperTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_sniper_firing.png"));
-		SniperTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-
 		LaserTower.groundTower = new Texture(Gdx.files.internal("tower/tower_laser_bottom.png"));
 		LaserTower.upperTower = new Texture(Gdx.files.internal("tower/tower_laser_upper.png"));
 		LaserTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_laser_firing.png"));
-		LaserTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
-
 		FireTower.groundTower = new Texture(Gdx.files.internal("tower/tower_fire_bottom.png"));
 		FireTower.upperTower = new Texture(Gdx.files.internal("tower/tower_fire_upper.png"));
 		FireTower.towerFiring = new Texture(Gdx.files.internal("tower/tower_fire_firing.png"));
 		FireTower.tflame = new Texture(Gdx.files.internal("tower/flame.png"));
-		FireTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-
 		EnemySmall.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_standard.png"));
 		EnemySmall.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_standard_dead.png"));
 		EnemySmall.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
-
 		EnemyFat.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_fat.png"));
 		EnemyFat.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_fat_dead.png"));
 		EnemyFat.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
-
 		EnemySpider.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_spider.png"));
 		EnemySpider.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_spider_dead.png"));
 		EnemySpider.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood_green.png"));
-
 		EnemyBicycle.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle.png"));
 		EnemyBicycle.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_bicycle_dead.png"));
 		EnemyBicycle.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
-
 		EnemyLincoln.normalTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln.png"));
 		EnemyLincoln.deadTexture = new Texture(Gdx.files.internal("zombies/zombie_lincoln_dead.png"));
 		EnemyLincoln.damageTexture = new Texture(Gdx.files.internal("zombies/zombie_blood.png"));
 
+		// set audio files
+		MgTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		SniperTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		LaserTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser_beam.mp3"));
+		FireTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 		soundmoney = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
-		carSound = Gdx.audio.newSound(Gdx.files.internal("sounds/car_sound2.wav"));
-		victorySound = Gdx.audio.newSound(Gdx.files.internal("sounds/LevelUp3.wav"));
+		carSoundStart = Gdx.audio.newSound(Gdx.files.internal("sounds/sound_car_engine_start.mp3"));
+		carSound = Gdx.audio.newSound(Gdx.files.internal("sounds/sound_car_engine.mp3"));
+		victorySound = Gdx.audio.newSound(Gdx.files.internal("sounds/level_victory.wav"));
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 
-		enemies = new Array<Enemy>();
-		towers = new Array<Tower>();
-		collis = new CollisionListener(this);
-		checkpoints = new Checkpoint[4];
-
+		// instantiate global fields
+		speedFactor = 1;
 		moneyPerLap = 50;
-
+		checkPointsCleared = 0;
+		tutorialtimer = 0;
+		currentwave = 0;
+		unlockAllTowers = false;
+		tutorialState = 0;
+		physicsaccumulator = 0f;
+		pause = false;
+		lastPause = !pause;
+		padActivated = false;
 		debugBox2D = false;
 		debugCollision = false;
 		debugWay = false;
 		debugDistance = false;
 
-		spritePitStop = createScaledSprite("pit_stop/pit_stop_01.png");
-
-		// Sicherstellen dass bei deploy alle test sachen aus sind
-		if (deploy)
-			soundOn = true;
-
-		loadLevel(level);
-
-		backgroundMusic.setLooping(true);
-		backgroundMusic.setVolume(0.6f);
-
-		if (soundOn)
-			backgroundMusic.play();
-
-		shapeRenderer = new ShapeRenderer();
-
-		speedFactor = 1;
-
-		// controller setup
+		// instantiate global objects
+		level = LevelHandler.loadLevels();
+		scoreBoard = new ScoreBoard(this);
 		controllerHelper = new ControllerHelper(this);
 		Controllers.addListener(controllerHelper);
-
-		padActivated = false;
-
+		preferencesManager = new PreferencesManager();
+		preferencesManager.checkHighscore();
+		enemies = new Array<Enemy>();
+		towers = new Array<Tower>();
+		collis = new CollisionListener(this);
+		checkpoints = new Checkpoint[4];
+		shapeRenderer = new ShapeRenderer();
 		mousePos = new Vector3();
+		trailerpos = new Vector2(0, 0);
 		padPos = new Vector3(MainGame.GAME_WIDTH * PIXEL_TO_METER / 2, MainGame.GAME_HEIGHT * PIXEL_TO_METER, 0);
+
+		// activate background music
+		backgroundMusic.setLooping(true);
+		backgroundMusic.setVolume(0.4f);
+
+		// things to do in developer mode and not
+		if (MainGame.DEVELOPER_MODE) {
+			soundOn = false;
+		} else {
+			soundOn = true;
+		}
+		lastSound = !soundOn;
+
+		// load level
+		loadLevel(levelNumber);
 	}
 
 	private void loadLevel(int levelNumber) {
@@ -243,6 +221,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			victoryGame();
 			return;
 		}
+
+		if (soundOn)
+			carSoundStart.play();
 
 		// decrement level number because everything needs to be inconsistent
 		levelNumber = levelNumber - 1;
@@ -332,15 +313,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	protected void handleInput() {
 		GameStateMethods.toggleFullScreen(true);
+		mousePos = GameStateMethods.getMousePosition(camera);
 
-		if (wongame && (Gdx.input.isKeyJustPressed(Keys.ENTER) || Gdx.input.justTouched()))
-			playerIsDeadCallback();
-		if (Gdx.input.isKeyJustPressed(Keys.F3)) {
-			for (final Enemy e : enemies)
-				e.activateEnemy();
-		}
+		// go back
 		if (Gdx.input.isCatchBackKey() || Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			goBack();
+
+		// control the car
 		if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.UP))
 			car.accelarate();
 		if (Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.DOWN))
@@ -349,13 +328,16 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			car.steerLeft();
 		if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT))
 			car.steerRight();
-		if (Gdx.input.isKeyJustPressed(Keys.U)) {
+
+		// toggle pause
+		if (Gdx.input.isKeyJustPressed(Keys.P))
+			pause = !pause;
+
+		// toggle sound
+		if (Gdx.input.isKeyJustPressed(Keys.U))
 			soundOn = !soundOn;
-			if (soundOn == false && backgroundMusic.isPlaying())
-				backgroundMusic.pause();
-			if (soundOn == true)
-				backgroundMusic.play();
-		}
+
+		// select tower
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			towerMenu.selectTower(0, mousePos, enemies);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
@@ -364,27 +346,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			towerMenu.selectTower(2, mousePos, enemies);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_4))
 			towerMenu.selectTower(3, mousePos, enemies);
-		if (Gdx.input.justTouched() && this.buildingtower != null)
-			buildTowerIfAllowed();
 
-		// pause the game if P is pressed
-		if (Gdx.input.isKeyJustPressed(Keys.P))
-			pause = !pause;
+		// build tower if in building mode
+		if (Gdx.input.justTouched() && buildingtower != null)
+			buildTowerIfAllowed(true);
 
-		// mark a tower red if the build position is not correct
-		if (buildingtower != null)
-			buildTowerIfAllowed(false);
-
-		if (deploy == false)
+		// turn on developer shortcuts
+		if (MainGame.DEVELOPER_MODE)
 			debugInputs();
-
 	}
 
 	private void debugInputs() {
-		// update camera position
-		mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-		camera.unproject(mousePos);
-
+		// manually instantiate enemies
 		if (Gdx.input.isKeyJustPressed(Keys.F))
 			enemies.add(new EnemySmall(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.G))
@@ -395,39 +368,37 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			enemies.add(new EnemyLincoln(new Vector2(220, 20), world, map, 0));
 		if (Gdx.input.isKeyJustPressed(Keys.K))
 			enemies.add(new EnemySpider(new Vector2(220, 20), world, map, 0));
+
+		// debug renderer
 		if (Gdx.input.isKeyJustPressed(Keys.X))
 			debugBox2D = !debugBox2D;
 		if (Gdx.input.isKeyJustPressed(Keys.C))
 			debugCollision = !debugCollision;
 		if (Gdx.input.isKeyJustPressed(Keys.V))
 			debugWay = !debugWay;
-		// toggle distance
 		if (Gdx.input.isKeyJustPressed(Keys.B))
 			debugDistance = !debugDistance;
 
-		// load the next level
+		// manipulate current level
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_5))
 			loadLevel(scoreBoard.getLevel() + 1);
-		// get 1000 money
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_7))
 			scoreBoard.addMoney(1000);
-		// die instantly
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
 			scoreBoard.reduceLife(scoreBoard.getHealth());
-		// kill all the loaded enemies
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_9)) {
 			for (int i = 0; i < enemies.size; i++) {
 				final Enemy enemy = enemies.get(i);
 				if (!enemy.isActivated())
 					enemy.activateEnemy();
-				enemy.takeDamage(enemy.getHealth());
+				if (!enemy.isTot())
+					enemy.takeDamage(enemy.getHealth());
 			}
 		}
-		// skip a tutorial step
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0))
 			tutorialState++;
 
-		// toggle (the unlock of all) towers
+		// other things
 		if (Gdx.input.isKeyJustPressed(Keys.T)) {
 			unlockAllTowers = !unlockAllTowers;
 			if (unlockAllTowers) {
@@ -439,29 +410,21 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					towerMenu.unlockTower(i, towersUnlockedForThisLevel[i]);
 			}
 		}
-		// get extra points
+		if (Gdx.input.isKeyJustPressed(Keys.E)) {
+			for (final Enemy e : enemies)
+				e.activateEnemy();
+		}
 		if (Gdx.input.isKeyJustPressed(Keys.R))
 			scoreBoard.addScore(1000);
-
-		// ?
-		if (Gdx.input.isKeyJustPressed(Keys.F8)) {
-			scoreBoard.toggleDebugDraw();
-		}
-
-		// speed up and reset game speed
 		if (Gdx.input.isKeyJustPressed(Keys.N))
 			speedFactor = 1;
 		if (Gdx.input.isKeyJustPressed(Keys.M))
 			speedFactor += 1;
 	}
 
-	private void buildTowerIfAllowed() {
-		buildTowerIfAllowed(true);
-	}
-
 	private void buildTowerIfAllowed(final boolean userClicked) {
-		// if position and money is ok build it
-		if (buildingMoneyIsEnough(this.buildingtower) && buildingPositionIsAllowed(this.buildingtower)) {
+		// if position and money are OK build it
+		if (buildingMoneyIsEnough(buildingtower) && buildingPositionIsAllowed(buildingtower)) {
 			if (userClicked) {
 				// Add tower to the tower list
 				towerMenu.unselectAll();
@@ -473,29 +436,60 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				towers.add(newTower);
 				stopBuilding();
 			} else {
-				blockBuildingTower(false);
+				buildingtower.setBlockBuildingMode(false);
 			}
 		} else {
-			blockBuildingTower(true);
+			buildingtower.setBlockBuildingMode(true);
 		}
 	}
 
-	private void blockBuildingTower(final boolean b) {
-		if (this.buildingtower != null)
-			this.buildingtower.setBlockBuildingMode(b);
-	}
-
-	private boolean lastSound = false;
-	private int checkPointsCleared;
-
 	@Override
 	protected void update(float deltaTime) {
+
+		// if the pause settings change
+		if (lastPause != pause) {
+			lastPause = pause;
+			// turn background music on/off
+			if (pause && soundOn) {
+				backgroundMusic.pause();
+				// carSound.pause();
+				carSound.loop(0.2f);
+				carSoundStart.pause();
+			} else if (!pause && soundOn) {
+				backgroundMusic.play();
+				// carSound.resume();
+				carSoundStart.resume();
+			}
+		}
+
+
 		if (pause)
 			return;
 
+		// if the sound settings change
+		if (lastSound != soundOn) {
+			lastSound = soundOn;
+			// turn tower sound on and of
+			Tower.setSoundOn(soundOn);
+			for (final Tower tower : towers)
+				tower.updateSound();
+			// turn background music on/off
+			if (soundOn)
+				backgroundMusic.play();
+			else
+				backgroundMusic.pause();
+		}
+
+		// turn car sounds on/off
+		if (!(soundOn && car.getForward().x != 0))
+			carSound.stop();
+
 		// minimize time for wave text - only if it's not pause
-		if (!pause)
-			timeforwavetext -= deltaTime;
+		timeforwavetext -= deltaTime;
+
+		// mark a tower red if the build position is not correct
+		if (buildingtower != null)
+			buildTowerIfAllowed(false);
 
 		// update objects
 		controllerHelper.update();
@@ -513,26 +507,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				enemy.activateEnemy();
 		}
 
-		// if the sound settings change
-		if (lastSound != soundOn) {
-			lastSound = soundOn;
-			// turn tower sound on and of
-			Tower.setSoundOn(soundOn);
-			for (final Tower tower : towers)
-				tower.updateSound();
-			// turn background music on/off
-			if (soundOn)
-				backgroundMusic.play();
-			else
-				backgroundMusic.pause();
-		}
-
-		// turn car sounds on/off
-		if (soundOn && car.getForward().x != 0)
-			carSound.loop();
-		else
-			carSound.stop();
-
 		// update building tower
 		if (buildingtower == null) {
 			buildingtower = towerMenu.getCurrentTower();
@@ -543,6 +517,31 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			buildingtower = towerMenu.getCurrentTower();
 			if (buildingtower == null)
 				stopBuilding();
+		}
+
+		// garbage collect tower projectiles that should be deleted
+		for (final Tower tower : towers) {
+			Array<Body> rb = tower.removeProjectiles();
+			if (rb != null) {
+				for (final Body body : rb) {
+					// why compare world?, there is only one
+					if (body.getWorld() == world)
+						world.destroyBody(body);
+				}
+			}
+		}
+
+		// garbage collect enemies
+		for (final Enemy enemy : enemies) {
+			if (!enemy.isBodyDeleted() && (enemy.isDeleteBody() || enemy.isDelete())) {
+				world.destroyBody(enemy.getBody());
+				enemy.setBodyDeleted(true);
+			}
+			if (enemy.isDelete()) {
+				enemies.removeValue(enemy, true);
+				enemy.dispose();
+			}
+
 		}
 
 		// check if the current wave is dead and a new one should start
@@ -559,58 +558,67 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		spriteBatch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 
+		// draw map
 		spriteBatch.begin();
-		// draw track bg
 		map.draw(spriteBatch);
 		spriteBatch.end();
+
+		// draw transparent tower range shapes
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.begin(ShapeType.Filled);
-
-		// drawTowerRange
 		for (final Tower tower : towers)
 			tower.drawRange(shapeRenderer);
 		if (buildingtower != null)
-			buildingtower.drawRange(shapeRenderer, new Color(1, 0, 1, 0.3f));
+			buildingtower.drawRange(shapeRenderer, new Color(1, 0, 0, 0.4f));
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
-		spriteBatch.begin();
+
 		// draw enemies
+		spriteBatch.begin();
 		for (final Enemy e : enemies)
 			e.draw(spriteBatch);
 		spriteBatch.end();
+
+		// draw enemy health bars
 		shapeRenderer.begin(ShapeType.Filled);
 		for (final Enemy e : enemies)
 			e.drawHealthBar(shapeRenderer);
 		shapeRenderer.end();
+
+		// draw car, pit stop, tower menu and score board
 		spriteBatch.begin();
-		// draw car
-		this.car.draw(spriteBatch);
-		// draw tower
-		for (final Tower tower : towers)
-			tower.draw(spriteBatch);
-		spriteBatch.end();
-		shapeRenderer.begin(ShapeType.Filled);
-		for (final Tower tower : towers)
-			tower.drawLine(shapeRenderer);
-		shapeRenderer.end();
-		spriteBatch.begin();
-		for (final Tower tower : towers)
-			tower.drawUpperBuddy(spriteBatch);
-		// draw tower menu tower
-		if (buildingtower != null) {
-			buildingtower.draw(spriteBatch);
-			buildingtower.drawUpperBuddy(spriteBatch);
-		}
-		// draw pitstop
+		car.draw(spriteBatch);
 		spritePitStop.draw(spriteBatch);
 		towerMenu.draw(spriteBatch);
 		scoreBoard.draw(spriteBatch);
 
+		// draw normal tower / tower ground
+		for (final Tower tower : towers)
+			tower.draw(spriteBatch);
+		spriteBatch.end();
+
+		// draw tower shooting lines
+		shapeRenderer.begin(ShapeType.Filled);
+		for (final Tower tower : towers)
+			tower.drawLine(shapeRenderer);
+		shapeRenderer.end();
+
+		// draw if shooting tower shooting top else normal top
+		spriteBatch.begin();
+		for (final Tower tower : towers)
+			tower.drawUpperBuddy(spriteBatch);
+
+		// draw building tower on top of them all
+		if (buildingtower != null) {
+			buildingtower.draw(spriteBatch);
+			buildingtower.drawUpperBuddy(spriteBatch);
+		}
+
 		// render tutorial
 		renderTutorial(spriteBatch);
 
-		// draw pause background
+		// draw pause overlay
 		if (pause) {
 			spriteBatch.end();
 			Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -631,15 +639,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					MainGame.GAME_HEIGHT * PIXEL_TO_METER);
 			MainGame.font70.draw(spriteBatch, pause ? "PAUSE" : waveText, wavePosition.x, wavePosition.y);
 		}
+		spriteBatch.end();
 
 		// render health bar
-		spriteBatch.end();
 		shapeRenderer.begin(ShapeType.Filled);
 		drawPlayerHealthBar(shapeRenderer);
 		shapeRenderer.end();
 
-		// if deployed do not even check any of the following
-		if (!deploy) {
+		// render also the following if in developer mode
+		if (MainGame.DEVELOPER_MODE) {
 			spriteBatch.begin();
 
 			MainGame.font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 30, 35.5f);
@@ -673,7 +681,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		for (final Enemy e : enemies) {
 			if (e.isActivated() && !e.isTot()) {
 				MainGame.font.setColor(e.getColor());
-				for (Node node : e.getWeg())
+				for (final Node node : e.getWeg())
 					MainGame.font.draw(spriteBatch, "x", node.getPosition().x * PlayState.PIXEL_TO_METER,
 							node.getPosition().y * PlayState.PIXEL_TO_METER);
 			}
@@ -743,8 +751,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// check appropriate stage
 		switch (tutorialState) {
-		case -1:
-			break;
 		case 0:
 			if (checkPointsCleared > 1) {
 				tutorialState++;
@@ -810,8 +816,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			MainGame.fontOutline.draw(spriteBatch, "PROTECT YOUR TRAILER FROM THE ZOMBIES!", trailerpos.x - 10.5f,
 					trailerpos.y - 2);
 			break;
-		default:
-			break;
 		}
 
 	}
@@ -825,36 +829,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			world.step(TIME_STEP * this.speedFactor, 6, 2);
 			physicsaccumulator -= TIME_STEP;
 		}
-		for (final Enemy enemy : enemies) {
-			if (enemy.isJustDied()) {
-				enemy.setJustDied(false);
-				world.destroyBody(enemy.getBody());
-				scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
-			}
-			if (enemy.isDelete()) {
-				world.destroyBody(enemy.getBody());
-				enemies.removeValue(enemy, true);
-			}
-		}
-
-		for (final Tower t : towers) {
-			Array<Body> ab = new Array<Body>();
-			Array<Body> rb = new Array<Body>();
-			rb = t.removeProjectiles();
-			if (rb != null)
-				ab.addAll(rb);
-			for (Body body : ab) {
-				if (body.getWorld() == world)
-					world.destroyBody(body);
-			}
-		}
-
 	}
 
 	@Override
 	protected void dispose() {
+		// remove all listeners
 		Controllers.removeListener(controllerHelper);
-		// dispose loaded enemies, towers and other objects
+		// dispose loaded objects
 		for (final Enemy enemy : enemies)
 			enemy.dispose();
 		enemies.clear();
@@ -867,11 +848,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		MgTower.groundTower.dispose();
 		MgTower.upperTower.dispose();
 		MgTower.towerFiring.dispose();
-		MgTower.soundShoot.dispose();
 		LaserTower.groundTower.dispose();
 		LaserTower.upperTower.dispose();
 		LaserTower.towerFiring.dispose();
-		LaserTower.soundShoot.dispose();
 		EnemySmall.normalTexture.dispose();
 		EnemySmall.deadTexture.dispose();
 		EnemyFat.normalTexture.dispose();
@@ -881,6 +860,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		TowerMenu.cannonButton.dispose();
 		TowerMenu.laserButton.dispose();
 		TowerMenu.flameButton.dispose();
+		MgTower.soundShoot.dispose();
+		LaserTower.soundShoot.dispose();
 		backgroundMusic.dispose();
 		splatt.dispose();
 		soundmoney.dispose();
@@ -892,8 +873,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void collisionCallbackCarEnemy(final Car car, final Enemy enemy) {
 		// if the new health after the hit is smaller than 0 play kill sound
-		if (car.hitEnemy(enemy) < 0 && soundOn)
+		if (!enemy.isBodyDeleted() && car.hitEnemy(enemy) < 0 && soundOn) {
 			splatt.play(1, MathUtils.random(0.5f, 2f), 0);
+		}
 	}
 
 	@Override
@@ -929,8 +911,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					- scoreBoard.getCurrentTime() * 2);
 			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : moneyPerLap);
 			// play cash sound if sound activated
-			if (soundOn)
+			if (soundOn) {
 				soundmoney.play();
+				System.out.println("Money sound was played");
+			}
+
 			if (tutorialState == 1) {
 				tutorialState++;
 				System.out.println("Tutorial advanced to Stage " + tutorialState);
@@ -990,8 +975,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		System.out.println("Level finished " + MainGame.level);
 
 		// play victory sound
-		if (soundOn)
+		if (soundOn) {
+			System.out.println("Victory sound was played");
 			victorySound.play();
+		}
 
 		// load a new level
 		loadLevel(scoreBoard.getLevel() + 1);
@@ -1030,7 +1017,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	@Override
 	public void enemyHitsHomeCallback(final Enemy enemy) {
+		System.out.println("Remove enemy because he hit home");
+		System.out.println(enemies.indexOf(enemy, true));
 		scoreBoard.reduceLife(enemy.getDamadge());
+		enemies.removeValue(enemy, true);
+		// world.destroyBody(enemy.getBody());
 	}
 
 	@Override
@@ -1096,7 +1087,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	@Override
 	public void buildTower() {
+		// when in building mode try build the current tower
 		if (buildingtower != null)
-			buildTowerIfAllowed();
+			buildTowerIfAllowed(true);
+	}
+
+	@Override
+	public void enemyDied(final Enemy enemy) {
+		System.out.println("Killed enemy");
+		scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 	}
 }

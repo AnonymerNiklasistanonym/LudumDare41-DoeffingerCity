@@ -89,14 +89,14 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	protected void handleInput() {
 		GameStateMethods.toggleFullScreen(true);
 
-		if (Gdx.input.isKeyJustPressed(Keys.LEFT))
-			selectNextCharacterButton(true);
-		if (Gdx.input.isKeyJustPressed(Keys.RIGHT))
+		if (Gdx.input.isKeyJustPressed(Keys.LEFT) || Gdx.input.isKeyJustPressed(Keys.A))
 			selectNextCharacterButton(false);
+		if (Gdx.input.isKeyJustPressed(Keys.RIGHT) || Gdx.input.isKeyJustPressed(Keys.D))
+			selectNextCharacterButton(true);
 
-		if (Gdx.input.isKeyJustPressed(Keys.UP))
+		if (Gdx.input.isKeyJustPressed(Keys.UP) || Gdx.input.isKeyJustPressed(Keys.W))
 			selectNextCharacter(true);
-		if (Gdx.input.isKeyJustPressed(Keys.DOWN))
+		if (Gdx.input.isKeyJustPressed(Keys.DOWN)  || Gdx.input.isKeyJustPressed(Keys.S))
 			selectNextCharacter(false);
 
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER))
@@ -104,7 +104,6 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
 			goBack();
-
 	}
 
 	private void goBack() {

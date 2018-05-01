@@ -2,6 +2,7 @@ package com.mygdx.game.gamestate.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +24,8 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 	private float controllerTimeHelper;
 
 	private static final String STATE_NAME = "Credits";
+
+	private final Music backgroundMusic;
 
 	public CreditState(final GameStateManager gameStateManager) {
 		super(gameStateManager, STATE_NAME);
@@ -46,6 +49,11 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 		controllerHelperMenu = new ControllerHelperMenu(this);
 		Controllers.addListener(controllerHelperMenu);
 		controllerTimeHelper = 0;
+
+		// add music
+		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
+		backgroundMusic.setLooping(true);
+		backgroundMusic.play();
 	}
 
 	@Override
@@ -78,6 +86,7 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 	@Override
 	protected void dispose() {
 		Controllers.removeListener(controllerHelperMenu);
+		backgroundMusic.dispose();
 	}
 
 	private void goBack() {

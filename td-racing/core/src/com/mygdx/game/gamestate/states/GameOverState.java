@@ -43,6 +43,8 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 	private float stickTimeHelper;
 	private float controllerTimeHelper;
 	private final ControllerListener controllerHelperMenu;
+	
+	
 
 	private final int level;
 
