@@ -581,7 +581,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void updateSmoke() {
-		if(pause)
+		if(pause||scoreBoard.getHealth()==100)
 			return;
 		float smokeseconds=15/(100f-scoreBoard.getHealth());
 		timesincesmoke=timesincesmoke+Gdx.graphics.getDeltaTime();
@@ -1089,6 +1089,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		enemies.removeValue(enemy, true);
 	    if (soundOn)
 				soundDamage.play(1,MathUtils.random(1f, 1.1f),0f);
+	    spawnSmoke();
 	}
 
 	@Override
