@@ -77,6 +77,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final ShapeRenderer shapeRenderer;
 	private final Level[] level;
 
+	private final Sound soundDamage;
+	
 	private Tower buildingtower;
 	private Checkpoint[] checkpoints;
 	private CollisionListener collis;
@@ -153,7 +155,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		soundmoney = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
 		carSoundStart = Gdx.audio.newSound(Gdx.files.internal("sounds/sound_car_engine_start.mp3"));
 		victorySound = Gdx.audio.newSound(Gdx.files.internal("sounds/level_victory.wav"));
-
+		soundDamage =Gdx.audio.newSound(Gdx.files.internal("sounds/trailerdamage.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -1016,6 +1018,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public void enemyHitsHomeCallback(final Enemy enemy) {
 		scoreBoard.reduceLife(enemy.getDamadge());
 		enemies.removeValue(enemy, true);
+	    if (soundOn) 
+				soundDamage.play(1,MathUtils.random(1f, 1.1f),0f);
 	}
 
 	@Override
