@@ -354,7 +354,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			buildTowerIfAllowed(true);
 
 		// turn on developer shortcuts
-		if (MainGame.DEVELOPER_MODE)
+		if (true)
 			debugInputs();
 	}
 

@@ -330,9 +330,10 @@ public abstract class Tower implements Disposable {
 			e.takeDamage(power);
 
 			timesincelastshot = 0;
-			shotposition.x = e.getX() + 10 * PlayState.PIXEL_TO_METER;
-			shotposition.y = e.getY() + 10 * PlayState.PIXEL_TO_METER;
-			// TODO: Versatz Dynamisch machen!
+			shotposition=e.getCenter();
+//			shotposition.x = shotposition.x * PlayState.PIXEL_TO_METER;
+//			shotposition.y = shotposition.y * PlayState.PIXEL_TO_METER;
+
 		} else {
 			target = null;
 		}

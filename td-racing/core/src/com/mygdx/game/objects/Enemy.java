@@ -184,10 +184,10 @@ public abstract class Enemy implements Disposable {
 		if (tot || !activated || !healthBar || health == maxHealth || health <= 0)
 			return;
 		shapeRenderer.setColor(new Color(1, 0, 0, 1));
-		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER,
+		shapeRenderer.rect(getBodyX()-25*PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER,
 				3 * PlayState.PIXEL_TO_METER);
 		shapeRenderer.setColor(new Color(0, 1, 0, 1));
-		shapeRenderer.rect(getBodyX(), getBodyY() + sprite.getHeight() / 2,
+		shapeRenderer.rect(getBodyX()-25*PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2,
 				50 * PlayState.PIXEL_TO_METER * (health / maxHealth), 3 * PlayState.PIXEL_TO_METER);
 	}
 
@@ -340,5 +340,12 @@ public abstract class Enemy implements Disposable {
 
 	public boolean isBodyDeleted() {
 		return bodyDeleted;
+	}
+	
+	public Vector2 getCenter() {
+		Vector2 cnt=new Vector2();
+		cnt.x=getBodyX()+(sprite.getWidth()*0.5f*PlayState.PIXEL_TO_METER);
+		cnt.y=getBodyY()+(sprite.getHeight()*0.5f*PlayState.PIXEL_TO_METER);
+		return cnt;
 	}
 }
