@@ -78,7 +78,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final Level[] level;
 
 	private final Sound soundDamage;
-	
+
 	private Tower buildingtower;
 	private Checkpoint[] checkpoints;
 	private CollisionListener collis;
@@ -358,11 +358,15 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			buildTowerIfAllowed(true);
 
 		// turn on developer shortcuts
-		if (true)
+		if (MainGame.DEVELOPER_MODE)
 			debugInputs();
 	}
 
 	private void debugInputs() {
+		// toggle developer score board
+		if (Gdx.input.isKeyJustPressed(Keys.F8))
+			scoreBoard.setDebugDisplay(!scoreBoard.getDebugDisplay());
+
 		// manually instantiate enemies
 		if (Gdx.input.isKeyJustPressed(Keys.F))
 			enemies.add(new EnemySmall(new Vector2(220, 20), world, map, 0));
@@ -1020,7 +1024,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public void enemyHitsHomeCallback(final Enemy enemy) {
 		scoreBoard.reduceLife(enemy.getDamadge());
 		enemies.removeValue(enemy, true);
-	    if (soundOn) 
+	    if (soundOn)
 				soundDamage.play(1,MathUtils.random(1f, 1.1f),0f);
 	}
 

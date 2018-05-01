@@ -25,7 +25,7 @@ public class MainGame extends ApplicationAdapter {
 	/**
 	 * Returns if this is an release or development
 	 */
-	public final static boolean DEVELOPER_MODE = false;
+	public static final boolean DEVELOPER_MODE = true;
 
 	public static BitmapFont font70;
 	public static BitmapFont font;
