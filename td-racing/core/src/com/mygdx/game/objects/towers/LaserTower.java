@@ -29,8 +29,8 @@ public class LaserTower extends Tower {
 		firingSpriteTime = 0.1f;
 		maxHealth = -1;
 		permanentsound = true;
-		power = 0.1f;
-		speed = 0.0f;
+		power = 3f;
+		speed = 0f;
 		turnspeed = 500;
 		soundVolumne = 0.05f;
 	}

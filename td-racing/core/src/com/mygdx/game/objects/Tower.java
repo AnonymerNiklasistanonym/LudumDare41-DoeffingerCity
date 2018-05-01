@@ -1,5 +1,6 @@
 package com.mygdx.game.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -326,14 +327,13 @@ public abstract class Tower implements Disposable {
 
 	public void shoot(Enemy e) {
 		if (isTargetInRange(e)) {
-
-			e.takeDamage(power);
-
+			damage=power;
+			if(speed==0) {
+				damage=power*delta;
+			}
+			e.takeDamage(damage);
 			timesincelastshot = 0;
 			shotposition=e.getCenter();
-//			shotposition.x = shotposition.x * PlayState.PIXEL_TO_METER;
-//			shotposition.y = shotposition.y * PlayState.PIXEL_TO_METER;
-
 		} else {
 			target = null;
 		}
@@ -402,7 +402,7 @@ public abstract class Tower implements Disposable {
 				position.y + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2);
 
 		// shot position to new position
-		this.shotposition = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
+		//this.shotposition = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 		this.center = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 	}
 
