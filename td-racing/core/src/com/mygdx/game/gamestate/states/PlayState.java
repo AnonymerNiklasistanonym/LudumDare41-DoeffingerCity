@@ -95,6 +95,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
 			unlockAllTowers, padActivated;
 	private int currentwave, tutorialState, checkPointsCleared, speedFactor;
+	
+	private final Sprite spriteSmoke;
 
 	public PlayState(final GameStateManager gameStateManager, final int levelNumber) {
 		super(gameStateManager, STATE_NAME);
@@ -109,7 +111,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		spriteCar = createScaledSprite("cars/car_standard.png");
 		spriteFinishLine = createScaledSprite("maps/finishline.png");
 		spritePitStop = createScaledSprite("pit_stop/pit_stop_01.png");
-
+		spriteSmoke=createScaledSprite("maps/smoke.png");
 		// set textures
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
 		TowerMenu.laserButton = new Texture(Gdx.files.internal("buttons/laserbutton.png"));
