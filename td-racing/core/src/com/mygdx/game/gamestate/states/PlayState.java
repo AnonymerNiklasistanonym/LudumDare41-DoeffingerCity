@@ -71,6 +71,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final ControllerHelper controllerHelper;
 	private final ScoreBoard scoreBoard;
 	private final Array<Enemy> enemies;
+	private final Array<Enemy> enemiesdead;
 	private final Array<Tower> towers;
 	private final Array<Sprite> trailersmoke;
 	private float timesincesmoke=0;
@@ -196,6 +197,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		trailerpos = new Vector2(0, 0);
 		padPos = new Vector3(MainGame.GAME_WIDTH * PIXEL_TO_METER / 2, MainGame.GAME_HEIGHT * PIXEL_TO_METER, 0);
 		trailersmoke=new Array<Sprite>();
+		enemiesdead=new Array<Enemy>();
 		
 		// activate background music
 		backgroundMusic.setLooping(true);
@@ -239,6 +241,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// clear all enemies and tower
 		this.enemies.clear();
 		this.towers.clear();
+		this.enemiesdead.clear();
 		// create a new world and add contact listener to the new world
 		this.world = new World(new Vector2(), true);
 		this.world.setContactListener(this.collis);
@@ -548,6 +551,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 
 		// garbage collect enemies
+		Array<Enemy> newdead=new Array<Enemy>();
 		for (final Enemy enemy : enemies) {
 			if (!enemy.isBodyDeleted() && (enemy.isDeleteBody() || enemy.isDelete())) {
 				world.destroyBody(enemy.getBody());
@@ -557,7 +561,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				enemies.removeValue(enemy, true);
 				enemy.dispose();
 			}
+			
+			if(enemy.isTot())
+				newdead.add(enemy);
 
+		}
+		for (Enemy enemy : newdead) {
+			enemies.removeValue(enemy, true);
+			enemiesdead.add(enemy);
 		}
 
 		// check if the current wave is dead and a new one should start
@@ -570,7 +581,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void updateSmoke() {
-		
+		if(pause)
+			return;
 		float smokeseconds=15/(100f-scoreBoard.getHealth());
 		timesincesmoke=timesincesmoke+Gdx.graphics.getDeltaTime();
 		while(timesincesmoke>smokeseconds) {
@@ -627,6 +639,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// draw enemies
 		spriteBatch.begin();
+		for (final Enemy e : enemiesdead)
+			e.draw(spriteBatch);
 		for (final Enemy e : enemies)
 			e.draw(spriteBatch);
 		spriteBatch.end();
