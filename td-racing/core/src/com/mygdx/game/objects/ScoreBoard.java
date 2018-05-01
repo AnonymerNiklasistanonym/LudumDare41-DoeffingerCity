@@ -32,6 +32,7 @@ public class ScoreBoard {
 
 	public void draw(final SpriteBatch spriteBatch) {
 
+		MainGame.fontOutline.getData().setScale(PlayState.PIXEL_TO_METER);
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 
 		if (MainGame.DEVELOPER_MODE) {
@@ -60,8 +61,9 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Unlock all towers: T", 0.2f, 12);
 			MainGame.fontOutline.draw(spriteBatch, "Add 1000 to score: R", 0.2f, 11);
 			MainGame.fontOutline.draw(spriteBatch, "Toggle this display: F8", 0.2f, 9);
-			MainGame.font.setColor(1, 1, 1, 1);
 		}
+
+		MainGame.font.setColor(1, 1, 1, 1);
 
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
 		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);

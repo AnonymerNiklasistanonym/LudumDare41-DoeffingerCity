@@ -66,8 +66,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public final static float PIXEL_TO_METER = 0.05f;
 	public final static float METER_TO_PIXEL = 20f;
 
-	private final Music backgroundMusic;
-	private final Sound splatt, soundmoney, carSoundStart, carSound, victorySound;
+	private final Music backgroundMusic, carSound;
+	private final Sound splatt, soundmoney, carSoundStart, victorySound;
 	private final ControllerHelper controllerHelper;
 	private final ScoreBoard scoreBoard;
 	private final Array<Enemy> enemies;
@@ -90,8 +90,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private Vector3 mousePos, padPos;
 	private Vector2 trailerpos;
 	private float tutorialtimer, physicsaccumulator, timeforwavetext;
-	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay, unlockAllTowers,
-			padActivated;
+	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
+			unlockAllTowers, padActivated;
 	private int currentwave, tutorialState, checkPointsCleared, moneyPerLap, speedFactor;
 
 	public PlayState(final GameStateManager gameStateManager, final int levelNumber) {
@@ -148,10 +148,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		LaserTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser_beam.mp3"));
 		FireTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
+		carSound = Gdx.audio.newMusic(Gdx.files.internal("sounds/sound_car_engine.mp3"));
 		splatt = Gdx.audio.newSound(Gdx.files.internal("sounds/splatt.wav"));
 		soundmoney = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
 		carSoundStart = Gdx.audio.newSound(Gdx.files.internal("sounds/sound_car_engine_start.mp3"));
-		carSound = Gdx.audio.newSound(Gdx.files.internal("sounds/sound_car_engine.mp3"));
 		victorySound = Gdx.audio.newSound(Gdx.files.internal("sounds/level_victory.wav"));
 
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
@@ -193,7 +193,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// activate background music
 		backgroundMusic.setLooping(true);
-		backgroundMusic.setVolume(0.6f);
+		backgroundMusic.setVolume(0.75f);
+		carSound.setLooping(true);
+		carSound.setVolume(1f);
 
 		// things to do in developer mode and not
 		if (MainGame.DEVELOPER_MODE) {
@@ -208,7 +210,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void loadLevel(int levelNumber) {
-		System.out.println("Load Level #" + levelNumber);
+		long time = System.currentTimeMillis();
+		System.out.print("Load Level #" + levelNumber);
 		// set/save level number
 		scoreBoard.setLevel(levelNumber);
 
@@ -259,6 +262,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					this.level[levelNumber].getCheckPoints()[j].x * PIXEL_TO_METER,
 					this.level[levelNumber].getCheckPoints()[j].y * PIXEL_TO_METER);
 		scoreBoard.reset(0);
+
+		System.out.println(" - " + (System.currentTimeMillis() - time) + "ms");
 	}
 
 	private static Sprite createScaledSprite(String location) {
@@ -269,7 +274,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void startBuilding(Tower t) {
-		System.out.println("Start building");
 		buildingtower = t;
 		buildingtower.setBuildingMode(true);
 		for (final Tower tower : towers)
@@ -300,7 +304,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void stopBuilding() {
-		System.out.println("Stop building");
 		towerMenu.unselectAll();
 		for (final Tower tower : towers)
 			tower.activateRange(false);
@@ -449,19 +452,19 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// if the pause settings change
 		if (lastPause != pause) {
 			lastPause = pause;
-			// turn background music on/off
+			// pause or resume all sounds
 			if (pause && soundOn) {
 				backgroundMusic.pause();
-				// carSound.pause();
-				carSound.loop(0.2f);
+				soundmoney.pause();
+				carSound.pause();
 				carSoundStart.pause();
 			} else if (!pause && soundOn) {
 				backgroundMusic.play();
-				// carSound.resume();
+				carSound.play();
 				carSoundStart.resume();
+				soundmoney.resume();
 			}
 		}
-
 
 		if (pause)
 			return;
@@ -474,15 +477,18 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			for (final Tower tower : towers)
 				tower.updateSound();
 			// turn background music on/off
-			if (soundOn)
+			if (soundOn) {
 				backgroundMusic.play();
-			else
+				carSound.play();
+				carSoundStart.resume();
+				soundmoney.resume();
+			} else {
 				backgroundMusic.pause();
+				soundmoney.pause();
+				carSound.pause();
+				carSoundStart.pause();
+			}
 		}
-
-		// turn car sounds on/off
-		if (!(soundOn && car.getForward().x != 0))
-			carSound.stop();
 
 		// minimize time for wave text - only if it's not pause
 		timeforwavetext -= deltaTime;
@@ -586,12 +592,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			e.drawHealthBar(shapeRenderer);
 		shapeRenderer.end();
 
-		// draw car, pit stop, tower menu and score board
+		// draw car and tower menu
 		spriteBatch.begin();
 		car.draw(spriteBatch);
-		spritePitStop.draw(spriteBatch);
 		towerMenu.draw(spriteBatch);
-		scoreBoard.draw(spriteBatch);
 
 		// draw normal tower / tower ground
 		for (final Tower tower : towers)
@@ -614,6 +618,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			buildingtower.draw(spriteBatch);
 			buildingtower.drawUpperBuddy(spriteBatch);
 		}
+
+		// draw pitStop and score board above the rest
+		spritePitStop.draw(spriteBatch);
+		scoreBoard.draw(spriteBatch);
 
 		// render tutorial
 		renderTutorial(spriteBatch);
@@ -650,6 +658,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (MainGame.DEVELOPER_MODE) {
 			spriteBatch.begin();
 
+			MainGame.font.setColor(1, 1, 1, 1);
+			MainGame.font.getData().setScale(PIXEL_TO_METER);
 			MainGame.font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 30, 35.5f);
 
 			if (debugCollision)
@@ -752,45 +762,39 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// check appropriate stage
 		switch (tutorialState) {
 		case 0:
-			if (checkPointsCleared > 1) {
+			if (checkPointsCleared > 1)
 				tutorialState++;
-				System.out.println("Tutorial advanced to Stage " + tutorialState);
-			}
 			break;
 		case 1:
 			// Checked in lineFinished();
 			break;
 		case 2:
-			if (scoreBoard.getMoney() > 100) {
+			if (scoreBoard.getMoney() > 100)
 				tutorialState++;
-				System.out.println("Tutorial advanced to Stage " + tutorialState);
-			}
 			break;
 		case 3:
-			if (buildingtower != null) {
+			if (buildingtower != null)
 				tutorialState++;
-				System.out.println("Tutorial advanced to Stage " + tutorialState);
-			}
 			break;
 		case 4:
 			if (towers.size > 0) {
 				tutorialState++;
 				tutorialtimer = 60f;
-				System.out.println("Tutorial advanced to Stage " + tutorialState);
 			}
 			break;
 		case 5:
-			if (tutorialtimer > 0) {
+			if (tutorialtimer > 0)
 				tutorialtimer = tutorialtimer - Gdx.graphics.getDeltaTime();
-			} else {
+			else
 				tutorialState++;
-				System.out.println("Tutorial advanced to Stage " + tutorialState);
-			}
 			break;
 		case 6:
 			tutorialState = -1;
 			break;
 		}
+
+		MainGame.fontOutline.getData().setScale(PlayState.PIXEL_TO_METER + 0.05f);
+		MainGame.fontOutline.setColor(1, 1, 1, 1);
 
 		// Then write the text
 		switch (tutorialState) {
@@ -807,14 +811,14 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			break;
 		case 3:
 			MainGame.fontOutline.draw(spriteBatch, "PRESS 1 OR 2 TO SELECT TOWER", towerMenu.getStart().x - 6.5f,
-					towerMenu.getStart().y + 5);
+					towerMenu.getStart().y + 7);
 			break;
 		case 4:
 			MainGame.fontOutline.draw(spriteBatch, "LEFT CLICK TO BUILD", mousePos.x - 5.5f, mousePos.y - 1);
 			break;
 		case 5:
-			MainGame.fontOutline.draw(spriteBatch, "PROTECT YOUR TRAILER FROM THE ZOMBIES!", trailerpos.x - 10.5f,
-					trailerpos.y - 2);
+			MainGame.fontOutline.draw(spriteBatch, "PROTECT YOUR TRAILER FROM THE ZOMBIES!", trailerpos.x - 20.5f,
+					trailerpos.y + 0.5f);
 			break;
 		}
 
@@ -911,15 +915,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 					- scoreBoard.getCurrentTime() * 2);
 			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : moneyPerLap);
 			// play cash sound if sound activated
-			if (soundOn) {
+			if (soundOn)
 				soundmoney.play(1);
-				System.out.println("Money sound was played");
-			}
 
-			if (tutorialState == 1) {
+			if (tutorialState == 1)
 				tutorialState++;
-				System.out.println("Tutorial advanced to Stage " + tutorialState);
-			}
 		}
 	}
 
@@ -975,10 +975,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		System.out.println("Level finished " + MainGame.level);
 
 		// play victory sound
-		if (soundOn) {
-			System.out.println("Victory sound was played");
+		if (soundOn)
 			victorySound.play();
-		}
 
 		// load a new level
 		loadLevel(scoreBoard.getLevel() + 1);
@@ -1017,11 +1015,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	@Override
 	public void enemyHitsHomeCallback(final Enemy enemy) {
-		System.out.println("Remove enemy because he hit home");
-		System.out.println(enemies.indexOf(enemy, true));
 		scoreBoard.reduceLife(enemy.getDamadge());
 		enemies.removeValue(enemy, true);
-		// world.destroyBody(enemy.getBody());
 	}
 
 	@Override
@@ -1094,7 +1089,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 	@Override
 	public void enemyDied(final Enemy enemy) {
-		System.out.println("Killed enemy");
 		scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
 	}
 }

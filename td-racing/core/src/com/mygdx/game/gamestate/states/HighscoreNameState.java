@@ -40,7 +40,8 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	private final boolean goToCreditStage;
 	private final int level;
 
-	public HighscoreNameState(GameStateManager gameStateManager, final int score, final int level, final boolean goToCreditStage) {
+	public HighscoreNameState(GameStateManager gameStateManager, final int score, final int level,
+			final boolean goToCreditStage) {
 		super(gameStateManager, STATE_NAME);
 
 		this.score = score;
@@ -96,7 +97,7 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 
 		if (Gdx.input.isKeyJustPressed(Keys.UP) || Gdx.input.isKeyJustPressed(Keys.W))
 			selectNextCharacter(true);
-		if (Gdx.input.isKeyJustPressed(Keys.DOWN)  || Gdx.input.isKeyJustPressed(Keys.S))
+		if (Gdx.input.isKeyJustPressed(Keys.DOWN) || Gdx.input.isKeyJustPressed(Keys.S))
 			selectNextCharacter(false);
 
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER))

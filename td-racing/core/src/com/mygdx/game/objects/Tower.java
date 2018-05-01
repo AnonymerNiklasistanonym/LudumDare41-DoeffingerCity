@@ -324,8 +324,6 @@ public abstract class Tower implements Disposable {
 		this.toremove = toremove;
 	}
 
-
-
 	public void shoot(Enemy e) {
 		if (isTargetInRange(e)) {
 
