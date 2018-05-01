@@ -35,6 +35,10 @@ public abstract class Enemy implements Disposable {
 
 	protected float maxHealth, health, money, score, speed, damage;
 
+	
+	private float timesincedeepsearch=0;
+	private float maxtimedeepsearch=5;
+	
 	private Body body;
 	private Map map;
 	private Array<Node> weg;
@@ -83,7 +87,7 @@ public abstract class Enemy implements Disposable {
 
 		this.map = map;
 
-		distancetonode = sprite.getWidth() * 2;
+		distancetonode = sprite.getWidth();
 		findWay();
 	}
 
@@ -145,16 +149,6 @@ public abstract class Enemy implements Disposable {
 	}
 
 	private void findWay() {
-		// Wo bin ich wo will ich hin
-		// Aus Map auslesen wo das Ziel ist
-		// final PolygonShape ps = (PolygonShape)
-		// map.getMapZielBody().getFixtureList().first().getShape();
-		// final Vector2 vector = new Vector2();
-		// ps.getVertex(0, vector);
-		// weg = getPath(new Vector2(getBodyX() * PlayState.METER_TO_PIXEL,
-		// this.getBodyY() * PlayState.METER_TO_PIXEL),
-		// new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y *
-		// PlayState.METER_TO_PIXEL));
 		weg = map.getRandomPath();
 		if (weg.size < 1)
 			System.out.println("Ich hab keinen gueltigen Weg bekommen :(");
@@ -192,6 +186,7 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void update(final float deltaTime) {
+		timesincedeepsearch=timesincedeepsearch+deltaTime;
 		if (this.isTot() || !this.activated)
 			return;
 
@@ -223,13 +218,15 @@ public abstract class Enemy implements Disposable {
 			if (weg.size == 1)
 				distancetonode = sprite.getWidth() * 2;
 
-			if (this.body.getPosition().dst(weg.get(weg.size - 1).getPosition().x * PlayState.PIXEL_TO_METER,
-					weg.get(weg.size - 1).getPosition().y * PlayState.PIXEL_TO_METER) < distancetonode)
+			if (isCloseEnough(weg.get(weg.size - 1),distancetonode))
 				weg.removeIndex(weg.size - 1);
 
 			if (weg.size > 0)
 				score = weg.get(weg.size - 1).getH();
-
+			if(timesincedeepsearch>maxtimedeepsearch)
+				doDeepSearch();
+		
+		
 		} else {
 			callbackInterface.enemyHitsHomeCallback(this);
 			deleteBody = true;
@@ -238,6 +235,26 @@ public abstract class Enemy implements Disposable {
 
 		sprite.setPosition(getX(), getY());
 		sprite.setRotation(MathUtils.radDeg * this.body.getAngle());
+	}
+
+	private boolean isCloseEnough(Node n,float distance) {
+		return this.body.getPosition().dst(n.getPosition().x * PlayState.PIXEL_TO_METER,
+				n.getPosition().y * PlayState.PIXEL_TO_METER) < distance;
+	}
+
+	private void doDeepSearch() {
+		Node skipnode=null;
+		for (Node n : weg) {
+			if(isCloseEnough(n, distancetonode*2)) {
+				if(skipnode==null)
+				skipnode=n;
+			}
+		}
+		if(skipnode!=null) {
+			while(weg.get(weg.size - 1)!=skipnode) {
+				weg.removeIndex(weg.size - 1);
+			}
+		}
 	}
 
 	public boolean isDeleteBody() {
