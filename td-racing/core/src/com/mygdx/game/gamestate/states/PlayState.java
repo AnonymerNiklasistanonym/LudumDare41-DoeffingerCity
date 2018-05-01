@@ -95,7 +95,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private Vector3 mousePos, padPos;
 	private Vector2 trailerpos;
 	private float tutorialtimer, physicsaccumulator, timeforwavetext;
-	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
+	private boolean pause, lastPause, disableBgMusic, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
 			unlockAllTowers, padActivated;
 	private int tutorialState, checkPointsCleared, speedFactor;
 
@@ -414,6 +414,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0))
 			tutorialState++;
 
+		// toggle background music
+		if (Gdx.input.isKeyJustPressed(Keys.L))
+			disableBgMusic = !disableBgMusic;
+
 		// other things
 		if (Gdx.input.isKeyJustPressed(Keys.T)) {
 			unlockAllTowers = !unlockAllTowers;
@@ -472,7 +476,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				carSound.pause();
 				carSoundStart.pause();
 			} else if (!pause && soundOn) {
-				backgroundMusic.play();
+				if (!disableBgMusic)
+					backgroundMusic.play();
 				carSound.play();
 				carSoundStart.resume();
 				soundmoney.resume();
@@ -491,7 +496,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				tower.updateSound();
 			// turn background music on/off
 			if (soundOn) {
-				backgroundMusic.play();
+				if (!disableBgMusic)
+					backgroundMusic.play();
 				carSound.play();
 				carSoundStart.resume();
 				soundmoney.resume();
