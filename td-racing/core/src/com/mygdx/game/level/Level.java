@@ -16,6 +16,7 @@ public class Level {
 	private boolean[] towersUnlocked;
 	private float timebonus;
 	private Vector2 healthBarPosition;
+	private float moneyPerLap;
 
 	public Level() {
 		waves = new Array<Wave>();
@@ -126,5 +127,15 @@ public class Level {
 	public Vector2 getHealthBarPosition() {
 		return healthBarPosition;
 	}
+
+	public float getMoneyPerLap() {
+		return moneyPerLap;
+	}
+
+	public void setMoneyPerLap(float moneyPerLap) {
+		this.moneyPerLap = moneyPerLap;
+	}
+	
+	
 
 }

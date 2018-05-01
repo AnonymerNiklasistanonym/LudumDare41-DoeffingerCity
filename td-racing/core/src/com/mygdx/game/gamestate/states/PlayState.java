@@ -92,7 +92,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private float tutorialtimer, physicsaccumulator, timeforwavetext;
 	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
 			unlockAllTowers, padActivated;
-	private int currentwave, tutorialState, checkPointsCleared, moneyPerLap, speedFactor;
+	private int currentwave, tutorialState, checkPointsCleared, speedFactor;
 
 	public PlayState(final GameStateManager gameStateManager, final int levelNumber) {
 		super(gameStateManager, STATE_NAME);
@@ -160,7 +160,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// instantiate global fields
 		speedFactor = 1;
-		moneyPerLap = 50;
 		checkPointsCleared = 0;
 		tutorialtimer = 0;
 		currentwave = 0;
@@ -910,10 +909,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// when all checkpoints were checked
 		if (allCheckpointsChecked) {
 			// add fast bonus and money per lap to the purse
-			int lapmoney = moneyPerLap - towers.size;
+			int lapmoney = (int)level[scoreBoard.getLevel() - 1].getMoneyPerLap() - towers.size;
 			final int fastBonus = (int) (level[scoreBoard.getLevel() - 1].getTimebonus()
 					- scoreBoard.getCurrentTime() * 2);
-			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : moneyPerLap);
+			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : lapmoney);
 			// play cash sound if sound activated
 			if (soundOn)
 				soundmoney.play(1);
