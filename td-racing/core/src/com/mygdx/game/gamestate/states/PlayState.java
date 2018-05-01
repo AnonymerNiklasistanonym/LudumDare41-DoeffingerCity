@@ -144,7 +144,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 
 		// set audio files
 		MgTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
-		SniperTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
+		SniperTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/sniper.wav"));
 		LaserTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/laser_beam.mp3"));
 		FireTower.soundShoot = Gdx.audio.newSound(Gdx.files.internal("sounds/mgturret.wav"));
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
