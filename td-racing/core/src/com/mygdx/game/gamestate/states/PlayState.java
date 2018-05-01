@@ -94,8 +94,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private float tutorialtimer, physicsaccumulator, timeforwavetext;
 	private boolean pause, lastPause, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
 			unlockAllTowers, padActivated;
-	private int currentwave, tutorialState, checkPointsCleared, speedFactor;
-	
+	private int tutorialState, checkPointsCleared, speedFactor;
+
 	private final Sprite spriteSmoke;
 
 	public PlayState(final GameStateManager gameStateManager, final int levelNumber) {
@@ -166,7 +166,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		speedFactor = 1;
 		checkPointsCleared = 0;
 		tutorialtimer = 0;
-		currentwave = 0;
 		unlockAllTowers = false;
 		tutorialState = 0;
 		physicsaccumulator = 0f;
@@ -884,9 +883,12 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void collisionCallbackCarEnemy(final Car car, final Enemy enemy) {
 		// if the new health after the hit is smaller than 0 play kill sound
-		if (!enemy.isBodyDeleted() && car.hitEnemy(enemy) < 0 && soundOn) {
+		System.out.println(enemy.getHealth());
+		System.out.println(enemy.isTot());
+		if ((!enemy.isBodyDeleted() && car.hitEnemy(enemy) <= 0) && soundOn)
 			splatt.play(1, MathUtils.random(0.5f, 2f), 0);
-		}
+		System.out.println(enemy.getHealth());
+		System.out.println(enemy.isTot());
 	}
 
 	@Override
@@ -959,7 +961,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				else
 					setWaveText("FINAL WAVE");
 				// create and add all enemies of the current wave to all enemies
-				enemies.addAll(currentLevelWaves.get(currentwave).createEnemies(map.getSpawnPosition(), world, map,
+				System.out.println();
+				enemies.addAll(currentLevelWaves.get(currentWave).createEnemies(map.getSpawnPosition(), world, map,
 						scoreBoard.getTime()));
 			}
 		}
