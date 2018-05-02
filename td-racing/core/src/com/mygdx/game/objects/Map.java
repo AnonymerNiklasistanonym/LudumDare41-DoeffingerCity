@@ -30,15 +30,17 @@ public class Map {
 	private Node[][] nodes2DList;
 	private Sprite map;
 	private Array<Array<Node>> paths;
+	private float spawnheighty;
 
-	public Map(final Level currentLevel, final World world, final Body finishLine) {
+	public Map(final Level currentLevel, final World world, final Body finishLine, final float sizePitstop) {
 		nodesList = new Array<Node>();
 		createSolidMap(currentLevel.getMapName(), world);
 		this.finishLine = finishLine;
 		createAStarArray();
 		paths = new Array<Array<Node>>();
 		healthBarPosition = currentLevel.getHealthBarPosition();
-
+		spawnheighty=currentLevel.getPitStopPosition().y*PlayState.PIXEL_TO_METER+sizePitstop;
+		
 		// Create x calculated ways
 		final PolygonShape ps = (PolygonShape) getMapZielBody().getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
@@ -322,4 +324,10 @@ public class Map {
 	public Vector2 getHealthBarPos() {
 		return healthBarPosition;
 	}
+
+	public float getSpawnheighty() {
+		return spawnheighty;
+	}
+	
+	
 }

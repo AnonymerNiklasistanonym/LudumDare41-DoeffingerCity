@@ -12,7 +12,7 @@ import com.mygdx.game.objects.Map;
 public class EnemyBicycle extends Enemy {
 
 	private static final float DAMAGE = 2;
-	private static final float HEALTH = 2;
+	private static final float HEALTH = 15;
 	private static final float MONEY = 2;
 	private static final float SPEED = 4;
 	private static final float SCORE = 20;

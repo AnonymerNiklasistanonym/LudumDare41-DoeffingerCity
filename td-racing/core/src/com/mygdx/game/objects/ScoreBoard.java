@@ -56,8 +56,8 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 18);
 			MainGame.fontOutline.draw(spriteBatch, "Advance Tutorial: 0", 0.2f, 17);
 
-			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: M", 0.2f, 15);
-			MainGame.fontOutline.draw(spriteBatch, "Reset world speed (=1): N", 0.2f, 14);
+			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: .", 0.2f, 15);
+			MainGame.fontOutline.draw(spriteBatch, "Reset world speed (=1): ,", 0.2f, 14);
 
 			MainGame.fontOutline.draw(spriteBatch, "Activate all enemies: E", 0.2f, 13);
 			MainGame.fontOutline.draw(spriteBatch, "Unlock all towers: T", 0.2f, 12);
@@ -68,7 +68,7 @@ public class ScoreBoard {
 		MainGame.font.setColor(1, 1, 1, 1);
 
 		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
-		MainGame.font.draw(spriteBatch, "EXIT: ESC", 58, 34);
+		MainGame.font.draw(spriteBatch, "MUSIC: M", 58, 34);
 		MainGame.font.draw(spriteBatch, "PAUSE: P", 58, 33);
 
 		MainGame.font.draw(spriteBatch, "Score: " + (int) score, 0.2f, 35);
@@ -77,7 +77,6 @@ public class ScoreBoard {
 		MainGame.font.draw(spriteBatch, "Level: " + level, 0.2f, 2);
 		MainGame.font.draw(spriteBatch, "Wave: " + waveNumber, 0.2f, 1);
 
-		MainGame.font.draw(spriteBatch, "Life: " + (int) healthPoints, COLUMN, 3);
 		MainGame.font.draw(spriteBatch, "Money: " + (int) money + " $", COLUMN, 2);
 		MainGame.font.draw(spriteBatch, "Lap: " + (int) currentTime + " sec (#" + lapNumber + ")", COLUMN, 1);
 	}

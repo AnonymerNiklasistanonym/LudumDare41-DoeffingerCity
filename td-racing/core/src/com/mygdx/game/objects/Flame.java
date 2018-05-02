@@ -52,7 +52,7 @@ public class Flame implements Disposable {
 		
 
 	public void update(final float deltaTime) {
-		spriteScale += deltaTime;
+		spriteScale += deltaTime*2;
 		if (spriteScale > 1)
 			spriteScale = 1;
 		lifetime -= deltaTime;
