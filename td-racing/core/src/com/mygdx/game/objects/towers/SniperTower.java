@@ -28,7 +28,7 @@ public class SniperTower extends Tower {
 		cost = COST;
 		firingSpriteTime = 0.5f;
 		maxHealth = -1;
-		power = 15f;
+		power = 50f;
 		speed = 4f;
 		turnspeed = 30;
 	}
