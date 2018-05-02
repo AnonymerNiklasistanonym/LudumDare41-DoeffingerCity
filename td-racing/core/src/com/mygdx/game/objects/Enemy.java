@@ -27,6 +27,7 @@ public abstract class Enemy implements Disposable {
 	private static final float SPEED = 80;
 	private static final float SCORE = 10;
 	private static final boolean HEALTH_BAR = true;
+	private static final float DENSITY= 2;
 
 	private final Sprite sprite;
 	private final Sprite spriteDamage;
@@ -96,7 +97,7 @@ public abstract class Enemy implements Disposable {
 		enemyCircle.setRadius(sprite.getHeight() * 0.35f);
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
-		fdef.density = 0.9f;
+		fdef.density = DENSITY;
 		return fdef;
 	}
 
@@ -104,7 +105,7 @@ public abstract class Enemy implements Disposable {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(position.x * PlayState.PIXEL_TO_METER, position.y * PlayState.PIXEL_TO_METER);
-
+		
 		this.body = w.createBody(bodydef);
 		this.body.setActive(false);
 
@@ -368,5 +369,10 @@ public abstract class Enemy implements Disposable {
 
 	public void setDelete(final boolean delete) {
 		this.delete = delete;
+	}
+	
+	public boolean isValidTarget() {
+		
+		return true;
 	}
 }

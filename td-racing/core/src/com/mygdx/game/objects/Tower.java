@@ -271,6 +271,7 @@ public abstract class Tower implements Disposable {
 			if (best == null)
 				if (e.isTot() == false)
 					if (isTargetInRange(e))
+						if(e.isValidTarget())
 						best = e;
 			if (best != null)
 				if (e.getScore() < best.getScore() && e.isTot() == false)

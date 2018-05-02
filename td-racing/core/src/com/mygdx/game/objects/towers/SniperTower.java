@@ -20,7 +20,7 @@ public class SniperTower extends Tower {
 
 	// static final properties
 	public static final int COST = 400;
-	public static final int RANGE = 40;
+	public static final int RANGE = 25;
 
 	public SniperTower(final Vector2 position, final Array<Enemy> enemies, final World world) {
 		super(position, groundTower, upperTower, towerFiring, enemies, world, RANGE, soundShoot);
