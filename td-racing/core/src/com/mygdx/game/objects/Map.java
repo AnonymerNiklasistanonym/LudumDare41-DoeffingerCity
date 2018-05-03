@@ -44,7 +44,7 @@ public class Map {
 		spawnheighty=currentLevel.getPitStopPosition().y*PlayState.PIXEL_TO_METER+sizePitstop;
 
 		// Create x calculated ways
-		final PolygonShape ps = (PolygonShape) getMapZielBody().getFixtureList().first().getShape();
+		final PolygonShape ps = (PolygonShape) mapZiel.getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
 
@@ -52,10 +52,6 @@ public class Map {
 			paths.add(getPath(new Vector2(currentLevel.getSpawnPoint().x, currentLevel.getSpawnPoint().y),
 					new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL)));
 		}
-	}
-
-	public Body getMapZielBody() {
-		return mapZiel;
 	}
 
 	public Node[][] getNodesList() {

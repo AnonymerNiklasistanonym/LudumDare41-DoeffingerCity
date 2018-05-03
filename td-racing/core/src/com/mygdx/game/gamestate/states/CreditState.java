@@ -54,7 +54,7 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 		// add music
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		backgroundMusic.setLooping(true);
-		if (new PreferencesManager().getSoundSetting())
+		if (new PreferencesManager().getMusicOn())
 			backgroundMusic.play();
 	}
 

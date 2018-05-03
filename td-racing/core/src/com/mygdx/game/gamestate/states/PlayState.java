@@ -74,7 +74,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private final Array<Enemy> enemiesdead;
 	private final Array<Tower> towers;
 	private final Array<Sprite> trailersmoke;
-	private float timesincesmoke=0;
+	private float timesincesmoke = 0;
 	private final PreferencesManager preferencesManager;
 	private final Sprite spritePitStop, spriteCar, spriteFinishLine;
 	private final ShapeRenderer shapeRenderer;
@@ -95,8 +95,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private Vector3 mousePos, padPos;
 	private Vector2 trailerpos;
 	private float tutorialtimer, physicsaccumulator, timeforwavetext;
-	private boolean pause, lastPause, disableBgMusic, lastSound, soundOn, debugBox2D, debugCollision, debugDistance, debugWay,
-			unlockAllTowers, padActivated;
+	private boolean pause, lastPause, musicOn, lastMusic, lastSound, soundOn, debugBox2D, debugCollision, debugDistance,
+			debugWay, unlockAllTowers, padActivated;
 	private int tutorialState, checkPointsCleared, speedFactor;
 
 	private final Sprite spriteSmoke;
@@ -114,7 +114,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		spriteCar = createScaledSprite("cars/car_standard.png");
 		spriteFinishLine = createScaledSprite("maps/finishline.png");
 		spritePitStop = createScaledSprite("pit_stop/pit_stop_01.png");
-		spriteSmoke=createScaledSprite("maps/smoke.png");
+		spriteSmoke = createScaledSprite("maps/smoke.png");
 
 		// set textures
 		TowerMenu.cannonButton = new Texture(Gdx.files.internal("buttons/cannonbutton.png"));
@@ -161,7 +161,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		soundmoney = Gdx.audio.newSound(Gdx.files.internal("sounds/cash.wav"));
 		carSoundStart = Gdx.audio.newSound(Gdx.files.internal("sounds/sound_car_engine_start.mp3"));
 		victorySound = Gdx.audio.newSound(Gdx.files.internal("sounds/level_victory.wav"));
-		soundDamage =Gdx.audio.newSound(Gdx.files.internal("sounds/trailerdamage.wav"));
+		soundDamage = Gdx.audio.newSound(Gdx.files.internal("sounds/trailerdamage.wav"));
 		// Sets this camera to an orthographic projection, centered at (viewportWidth/2,
 		// viewportHeight/2), with the y-axis pointing up or down.
 		camera.setToOrtho(false, MainGame.GAME_WIDTH * PIXEL_TO_METER, MainGame.GAME_HEIGHT * PIXEL_TO_METER);
@@ -196,8 +196,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		mousePos = new Vector3();
 		trailerpos = new Vector2(0, 0);
 		padPos = new Vector3(MainGame.GAME_WIDTH * PIXEL_TO_METER / 2, MainGame.GAME_HEIGHT * PIXEL_TO_METER, 0);
-		trailersmoke=new Array<Sprite>();
-		enemiesdead=new Array<Enemy>();
+		trailersmoke = new Array<Sprite>();
+		enemiesdead = new Array<Enemy>();
 
 		// activate background music
 		backgroundMusic.setLooping(true);
@@ -206,8 +206,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		carSound.setVolume(1f);
 
 		// things to do in developer mode and not
-		soundOn = preferencesManager.getSoundSetting();
+		soundOn = preferencesManager.getSoundEfectsOn();
 		lastSound = !soundOn;
+		musicOn = preferencesManager.getMusicOn();
+		lastMusic = !musicOn;
 
 		// load level
 		loadLevel(levelNumber);
@@ -259,7 +261,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 		this.finishline = new FinishLine(this.world, spriteFinishLine,
 				this.level[levelNumber].getFinishLinePosition().x, this.level[levelNumber].getFinishLinePosition().y);
-		this.map = new Map(this.level[levelNumber], this.world, this.finishline.getBody(),spritePitStop.getHeight());
+		this.map = new Map(this.level[levelNumber], this.world, this.finishline.getBody(), spritePitStop.getHeight());
 		this.map.setSpawnPosition(this.level[levelNumber].getSpawnPoint());
 		trailerpos.set(map.getTargetPosition().x, map.getTargetPosition().y);
 		this.spritePitStop.setPosition(this.level[levelNumber].getPitStopPosition().x * PIXEL_TO_METER,
@@ -348,8 +350,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			soundOn = !soundOn;
 		// toggle background music
 		if (Gdx.input.isKeyJustPressed(Keys.M))
-			disableBgMusic = !disableBgMusic;
-
+			musicOn = !musicOn;
 
 		// select tower
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
@@ -416,8 +417,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0))
 			tutorialState++;
 
-
-
 		// other things
 		if (Gdx.input.isKeyJustPressed(Keys.T)) {
 			unlockAllTowers = !unlockAllTowers;
@@ -470,17 +469,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (lastPause != pause) {
 			lastPause = pause;
 			// pause or resume all sounds
-			if (pause && soundOn) {
-				backgroundMusic.pause();
-				soundmoney.pause();
-				carSound.pause();
-				carSoundStart.pause();
-			} else if (!pause && soundOn) {
-				if (!disableBgMusic)
+			if (pause) {
+				if (soundOn) {
+					soundmoney.pause();
+					carSound.pause();
+					carSoundStart.pause();
+				}
+				if (musicOn)
+					backgroundMusic.pause();
+			} else {
+				if (soundOn) {
+					carSound.play();
+					carSoundStart.resume();
+					soundmoney.resume();
+				}
+				if (musicOn)
 					backgroundMusic.play();
-				carSound.play();
-				carSoundStart.resume();
-				soundmoney.resume();
 			}
 		}
 
@@ -490,23 +494,32 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// if the sound settings change
 		if (lastSound != soundOn) {
 			lastSound = soundOn;
-			preferencesManager.saveSoundSetting(soundOn);
+			preferencesManager.setSoundEffectsOn(soundOn);
 			// turn tower sound on and of
 			Tower.setSoundOn(soundOn);
 			for (final Tower tower : towers)
 				tower.updateSound();
 			// turn background music on/off
 			if (soundOn) {
-				if (!disableBgMusic)
-					backgroundMusic.play();
 				carSound.play();
 				carSoundStart.resume();
 				soundmoney.resume();
 			} else {
-				backgroundMusic.pause();
 				soundmoney.pause();
 				carSound.pause();
 				carSoundStart.pause();
+			}
+		}
+
+		// if the sound settings change
+		if (lastMusic != musicOn) {
+			lastMusic = musicOn;
+			preferencesManager.setMusicOn(musicOn);
+			// turn background music on/off
+			if (musicOn) {
+				backgroundMusic.play();
+			} else {
+				backgroundMusic.pause();
 			}
 		}
 
@@ -573,7 +586,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				}
 			}
 			// If the enemy is dead add him to the other enemy list
-			if(enemy.isTot() && !enemy.isDelete()) {
+			if (enemy.isTot() && !enemy.isDelete()) {
 				enemies.removeValue(enemy, true);
 				enemiesdead.add(enemy);
 			}
@@ -589,22 +602,22 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void updateSmoke() {
-		if(pause||scoreBoard.getHealth()==100)
+		if (pause || scoreBoard.getHealth() == 100)
 			return;
-		float smokeseconds=15/(100f-scoreBoard.getHealth());
-		timesincesmoke=timesincesmoke+Gdx.graphics.getDeltaTime();
-		while(timesincesmoke>smokeseconds) {
+		float smokeseconds = 15 / (100f - scoreBoard.getHealth());
+		timesincesmoke = timesincesmoke + Gdx.graphics.getDeltaTime();
+		while (timesincesmoke > smokeseconds) {
 			spawnSmoke();
-			timesincesmoke=timesincesmoke-smokeseconds;
+			timesincesmoke = timesincesmoke - smokeseconds;
 		}
-		Array<Sprite> deadsmoke=new Array<Sprite>();
+		Array<Sprite> deadsmoke = new Array<Sprite>();
 		for (Sprite s : trailersmoke) {
-			s.setPosition(s.getX()+MathUtils.random(0.05f), s.getY()+0.05f);
-			if(s.getWidth()>spriteSmoke.getWidth())
-			s.setColor(1,1,1,s.getColor().a-0.0000001f);
-			s.setSize(s.getWidth()+0.02f, s.getHeight()+0.02f);
-			s.setRotation(s.getRotation()+MathUtils.random(-2.5f,-0.5f));
-			if(s.getColor().a<0.1f)
+			s.setPosition(s.getX() + MathUtils.random(0.05f), s.getY() + 0.05f);
+			if (s.getWidth() > spriteSmoke.getWidth())
+				s.setColor(1, 1, 1, s.getColor().a - 0.0000001f);
+			s.setSize(s.getWidth() + 0.02f, s.getHeight() + 0.02f);
+			s.setRotation(s.getRotation() + MathUtils.random(-2.5f, -0.5f));
+			if (s.getColor().a < 0.1f)
 				deadsmoke.add(s);
 
 		}
@@ -614,13 +627,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	private void spawnSmoke() {
-		Sprite s=new Sprite(spriteSmoke);
+		Sprite s = new Sprite(spriteSmoke);
 		s.setRotation(MathUtils.random(360));
-		s.setSize(s.getWidth()/8, s.getHeight()/8);
-		s.setPosition(map.getTargetPosition().x+MathUtils.random(-2f,0), map.getTargetPosition().y-4f);
+		s.setSize(s.getWidth() / 8, s.getHeight() / 8);
+		System.out.println(map.getTargetPosition().toString());
+		s.setPosition(map.getTargetPosition().x + MathUtils.random(-2f, 0), map.getTargetPosition().y - 4f);
 		trailersmoke.add(s);
 	}
-
 
 	@Override
 	public void render(final SpriteBatch spriteBatch) {
@@ -680,12 +693,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		for (final Tower tower : towers)
 			tower.drawUpperBuddy(spriteBatch);
 
-
-		//draw smoke from damaged trailer
+		// draw smoke from damaged trailer
 		for (Sprite s : trailersmoke) {
 			s.draw(spriteBatch);
 		}
-
 
 		// draw building tower on top of them all
 		if (buildingtower != null) {
@@ -983,7 +994,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// when all checkpoints were checked
 		if (allCheckpointsChecked) {
 			// add fast bonus and money per lap to the purse
-			int lapmoney = (int)level[scoreBoard.getLevel() - 1].getMoneyPerLap() - towers.size;
+			int lapmoney = (int) level[scoreBoard.getLevel() - 1].getMoneyPerLap() - towers.size;
 			final int fastBonus = (int) (level[scoreBoard.getLevel() - 1].getTimebonus()
 					- scoreBoard.getCurrentTime() * 2);
 			scoreBoard.newLap((fastBonus > 0) ? lapmoney + fastBonus : lapmoney);
@@ -1091,9 +1102,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public void enemyHitsHomeCallback(final Enemy enemy) {
 		scoreBoard.reduceLife(enemy.getDamadge());
 		enemy.setDelete(true);
-	    if (soundOn)
-				soundDamage.play(1,MathUtils.random(1f, 1.1f),0f);
-	    spawnSmoke();
+		if (soundOn)
+			soundDamage.play(1, MathUtils.random(1f, 1.1f), 0f);
+		spawnSmoke();
 	}
 
 	@Override

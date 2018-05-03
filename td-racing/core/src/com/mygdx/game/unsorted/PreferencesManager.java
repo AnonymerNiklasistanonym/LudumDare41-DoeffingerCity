@@ -28,8 +28,8 @@ public class PreferencesManager {
 		}
 	}
 
-	private static final String SOUND_EFFECTS = "SOUND_EFFECTS";
 	private static final String MUSIC = "MUSIC";
+	private static final String SOUND_EFFECTS = "SOUND_EFFECTS";
 	private static final String HIGHSCORE_NAME = "HIGHSCORE_NAME";
 	private static final String HIGHSCORE_SCORE = "HIGHSCORE_SCORE";
 	private static final String PREFERENCES_NAME = "My Preferences";
@@ -82,19 +82,19 @@ public class PreferencesManager {
 		return entries;
 	}
 
-	public void saveSoundEffects(final boolean soundEffectsOn) {
-		prefs.putBoolean(SOUND_EFFECTS, soundEffectsOn).flush();
-	}
-
-	public void saveSoundSetting(final boolean musicOn) {
+	public void setMusicOn(final boolean musicOn) {
 		prefs.putBoolean(MUSIC, musicOn).flush();
 	}
 
-	public boolean retrieveSoundEffects() {
+	public void setSoundEffectsOn(final boolean soundEffectsOn) {
+		prefs.putBoolean(SOUND_EFFECTS, soundEffectsOn).flush();
+	}
+
+	public boolean getMusicOn() {
 		return prefs.getBoolean(SOUND_EFFECTS);
 	}
 
-	public boolean getSoundSetting() {
+	public boolean getSoundEfectsOn() {
 		return prefs.getBoolean(MUSIC);
 	}
 

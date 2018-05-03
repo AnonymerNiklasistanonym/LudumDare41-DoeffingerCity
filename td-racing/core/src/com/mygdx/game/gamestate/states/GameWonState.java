@@ -58,7 +58,7 @@ public class GameWonState extends GameState implements ControllerMenuCallbackInt
 
 		// play sound
 		victorySound = Gdx.audio.newSound(Gdx.files.internal("sounds/level_victory.wav"));
-		if (new PreferencesManager().getSoundSetting())
+		if (new PreferencesManager().getSoundEfectsOn())
 			victorySound.play();
 	}
 
