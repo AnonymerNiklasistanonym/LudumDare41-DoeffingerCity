@@ -14,6 +14,7 @@ import com.mygdx.game.gamestate.GameStateMethods;
 import com.mygdx.game.listener.controller.ControllerHelperMenu;
 import com.mygdx.game.listener.controller.ControllerMenuCallbackInterface;
 import com.mygdx.game.listener.controller.ControllerWiki;
+import com.mygdx.game.unsorted.PreferencesManager;
 
 public class CreditState extends GameState implements ControllerMenuCallbackInterface {
 
@@ -53,7 +54,8 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 		// add music
 		backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("sounds/theme.mp3"));
 		backgroundMusic.setLooping(true);
-		backgroundMusic.play();
+		if (new PreferencesManager().getSoundSetting())
+			backgroundMusic.play();
 	}
 
 	@Override

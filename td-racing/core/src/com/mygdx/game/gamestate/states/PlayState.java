@@ -206,11 +206,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		carSound.setVolume(1f);
 
 		// things to do in developer mode and not
-		if (MainGame.DEVELOPER_MODE) {
-			soundOn = false;
-		} else {
-			soundOn = true;
-		}
+		soundOn = preferencesManager.getSoundSetting();
 		lastSound = !soundOn;
 
 		// load level
@@ -243,7 +239,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		this.towers.clear();
 		this.enemiesdead.clear();
 		this.trailersmoke.clear();
-		
+
 		// create a new world and add contact listener to the new world
 		this.world = new World(new Vector2(), true);
 		this.world.setContactListener(this.collis);
@@ -353,8 +349,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// toggle background music
 		if (Gdx.input.isKeyJustPressed(Keys.M))
 			disableBgMusic = !disableBgMusic;
-		
-		
+
+
 		// select tower
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			towerMenu.selectTower(0, mousePos, enemies);
@@ -494,6 +490,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// if the sound settings change
 		if (lastSound != soundOn) {
 			lastSound = soundOn;
+			preferencesManager.saveSoundSetting(soundOn);
 			// turn tower sound on and of
 			Tower.setSoundOn(soundOn);
 			for (final Tower tower : towers)

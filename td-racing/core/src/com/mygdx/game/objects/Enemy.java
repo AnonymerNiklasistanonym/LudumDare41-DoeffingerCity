@@ -106,7 +106,7 @@ public abstract class Enemy implements Disposable {
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
 		bodydef.position.set(position.x * PlayState.PIXEL_TO_METER, position.y * PlayState.PIXEL_TO_METER);
-		
+
 		this.body = w.createBody(bodydef);
 		this.body.setActive(false);
 
@@ -177,7 +177,7 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void drawHealthBar(final ShapeRenderer shapeRenderer) {
-		if (((tot || !activated) || !healthBar) || (health == maxHealth || health <= 0))
+		if (tot || !activated || !healthBar || (int) health == (int) maxHealth || health <= 0f)
 			return;
 		shapeRenderer.setColor(new Color(1, 0, 0, 1));
 		shapeRenderer.rect(getBodyX()-25*PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER,
@@ -371,7 +371,7 @@ public abstract class Enemy implements Disposable {
 	public void setDelete(final boolean delete) {
 		this.delete = delete;
 	}
-	
+
 	public boolean isValidTarget() {
 		if(getY()>map.getSpawnheighty())
 			leftspawn=true;

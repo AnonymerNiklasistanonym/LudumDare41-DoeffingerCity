@@ -42,7 +42,6 @@ public class EnemyBicycle extends Enemy {
 		fdef.shape = zBox;
 		fdef.density = 1f;
 		// fdef.isSensor=true;
-		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 		return fdef;
 	}

@@ -36,11 +36,13 @@ public class Map {
 		nodesList = new Array<Node>();
 		createSolidMap(currentLevel.getMapName(), world);
 		this.finishLine = finishLine;
+		spawnPosition = new Vector2();
+		targetPosition = new Vector2();
 		createAStarArray();
 		paths = new Array<Array<Node>>();
 		healthBarPosition = currentLevel.getHealthBarPosition();
 		spawnheighty=currentLevel.getPitStopPosition().y*PlayState.PIXEL_TO_METER+sizePitstop;
-		
+
 		// Create x calculated ways
 		final PolygonShape ps = (PolygonShape) getMapZielBody().getFixtureList().first().getShape();
 		final Vector2 vector = new Vector2();
@@ -136,19 +138,18 @@ public class Map {
 			}
 		}
 		// Write all neighbors into the nodes
+		final Vector2[] iterationHelper = new Vector2[] {new Vector2(10, 0), new Vector2(0,10), new Vector2(-10,0), new Vector2(0,-10)};
 		for (int i = 0; i < nodesList.size; i++) {
 			final Node nodeMain = nodesList.get(i);
 			for (int j = 0; j < nodesList.size; j++) {
 				final Node nodeNeighbor = nodesList.get(j);
-				if ((nodeMain.getPosition().x + 10 == nodeNeighbor.getPosition().x
-						&& nodeMain.getPosition().y == nodeNeighbor.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNeighbor.getPosition().x
-								&& nodeMain.getPosition().y + 10 == nodeNeighbor.getPosition().y)
-						|| (nodeMain.getPosition().x - 10 == nodeNeighbor.getPosition().x
-								&& nodeMain.getPosition().y == nodeNeighbor.getPosition().y)
-						|| (nodeMain.getPosition().x == nodeNeighbor.getPosition().x
-								&& nodeMain.getPosition().y - 10 == nodeNeighbor.getPosition().y))
-					nodeMain.getNachbarn().add(nodeNeighbor);
+				for (int k = 0; k < iterationHelper.length; k++) {
+					if (((int) (nodeMain.getPosition().x + iterationHelper[k].x) == (int) (nodeNeighbor.getPosition().x)
+							&& (int) (nodeMain.getPosition().y + iterationHelper[k].y) == (int) (nodeNeighbor.getPosition().y))) {
+						nodeMain.getNachbarn().add(nodeNeighbor);
+						break;
+					}
+				}
 			}
 		}
 
@@ -165,12 +166,12 @@ public class Map {
 		if (vector.y % 10 >= 5)
 			zielY = vector.y + (10 - vector.y % 10);
 
-		targetPosition = new Vector2(zielX, zielY);
+		targetPosition.set(zielX, zielY);
 
 		for (int i = 0; i < nodesList.size; i++) {
 			final Node node = nodesList.get(i);
-			if (node.getPosition().x == zielX * PlayState.METER_TO_PIXEL
-					&& node.getPosition().y == zielY * PlayState.METER_TO_PIXEL) {
+			if ((int) node.getPosition().x == (int) (zielX * PlayState.METER_TO_PIXEL)
+					&& (int) node.getPosition().y == (int) (zielY * PlayState.METER_TO_PIXEL)) {
 				node.setH(1);
 				// set "target" node
 				werteSetzen(node);
@@ -328,6 +329,6 @@ public class Map {
 	public float getSpawnheighty() {
 		return spawnheighty;
 	}
-	
-	
+
+
 }

@@ -86,7 +86,7 @@ public class PreferencesManager {
 		prefs.putBoolean(SOUND_EFFECTS, soundEffectsOn).flush();
 	}
 
-	public void saveMusic(final boolean musicOn) {
+	public void saveSoundSetting(final boolean musicOn) {
 		prefs.putBoolean(MUSIC, musicOn).flush();
 	}
 
@@ -94,7 +94,7 @@ public class PreferencesManager {
 		return prefs.getBoolean(SOUND_EFFECTS);
 	}
 
-	public boolean retrieveMusic() {
+	public boolean getSoundSetting() {
 		return prefs.getBoolean(MUSIC);
 	}
 

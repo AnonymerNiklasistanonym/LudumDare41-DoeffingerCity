@@ -36,7 +36,6 @@ public class Car implements Disposable {
 		fdef.shape = carBox;
 		fdef.density = 1f;
 		fdef.friction = 1f;
-		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 		fdef.filter.categoryBits = PlayState.ENEMY_BOX;
 		body.createFixture(fdef);
 		body.setUserData(this);
