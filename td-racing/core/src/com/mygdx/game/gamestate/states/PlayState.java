@@ -630,8 +630,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		Sprite s = new Sprite(spriteSmoke);
 		s.setRotation(MathUtils.random(360));
 		s.setSize(s.getWidth() / 8, s.getHeight() / 8);
-		System.out.println(map.getTargetPosition().toString());
-		s.setPosition(map.getTargetPosition().x + MathUtils.random(-2f, 0), map.getTargetPosition().y - 4f);
+		s.setPosition((map.getHealthBarPos().x + 50) * PIXEL_TO_METER + MathUtils.random(-1, 1),
+				(map.getHealthBarPos().y)* PIXEL_TO_METER - 2f);
 		trailersmoke.add(s);
 	}
 
