@@ -242,6 +242,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		this.enemies.clear();
 		this.towers.clear();
 		this.enemiesdead.clear();
+		this.trailersmoke.clear();
+		
 		// create a new world and add contact listener to the new world
 		this.world = new World(new Vector2(), true);
 		this.world.setContactListener(this.collis);
@@ -261,7 +263,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 		this.finishline = new FinishLine(this.world, spriteFinishLine,
 				this.level[levelNumber].getFinishLinePosition().x, this.level[levelNumber].getFinishLinePosition().y);
-		this.map = new Map(this.level[levelNumber], this.world, this.finishline.getBody());
+		this.map = new Map(this.level[levelNumber], this.world, this.finishline.getBody(),spritePitStop.getHeight());
 		this.map.setSpawnPosition(this.level[levelNumber].getSpawnPoint());
 		trailerpos.set(map.getTargetPosition().x, map.getTargetPosition().y);
 		this.spritePitStop.setPosition(this.level[levelNumber].getPitStopPosition().x * PIXEL_TO_METER,
@@ -348,7 +350,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// toggle sound
 		if (Gdx.input.isKeyJustPressed(Keys.U))
 			soundOn = !soundOn;
-
+		// toggle background music
+		if (Gdx.input.isKeyJustPressed(Keys.M))
+			disableBgMusic = !disableBgMusic;
+		
+		
 		// select tower
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			towerMenu.selectTower(0, mousePos, enemies);
@@ -414,9 +420,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0))
 			tutorialState++;
 
-		// toggle background music
-		if (Gdx.input.isKeyJustPressed(Keys.L))
-			disableBgMusic = !disableBgMusic;
+
 
 		// other things
 		if (Gdx.input.isKeyJustPressed(Keys.T)) {
@@ -436,9 +440,9 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 		if (Gdx.input.isKeyJustPressed(Keys.R))
 			scoreBoard.addScore(1000);
-		if (Gdx.input.isKeyJustPressed(Keys.N))
+		if (Gdx.input.isKeyJustPressed(Keys.COMMA))
 			speedFactor = 1;
-		if (Gdx.input.isKeyJustPressed(Keys.M))
+		if (Gdx.input.isKeyJustPressed(Keys.PERIOD))
 			speedFactor += 1;
 	}
 
@@ -616,7 +620,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		Sprite s=new Sprite(spriteSmoke);
 		s.setRotation(MathUtils.random(360));
 		s.setSize(s.getWidth()/8, s.getHeight()/8);
-		s.setPosition(trailerpos.x+MathUtils.random(-2f,0), trailerpos.y-4f);
+		s.setPosition(map.getTargetPosition().x+MathUtils.random(-2f,0), map.getTargetPosition().y-4f);
 		trailersmoke.add(s);
 	}
 
