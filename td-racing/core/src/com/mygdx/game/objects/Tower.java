@@ -346,12 +346,14 @@ public abstract class Tower implements Disposable {
 	}
 
 	public void tryshoot(Enemy e) {
-		if (getAngleToEnemy(e) > getDegrees()) {
+		
+	
+		if (shouldTurnClockwise(e)) {
 			setDegrees(getDegrees() + turnspeed * delta);
 		} else {
 			setDegrees(getDegrees() - turnspeed * delta);
 		}
-		if (Math.abs(getDegrees() - getAngleToEnemy(e)) < turnspeed * delta) {
+		if (Math.abs(getDegrees() - Math.abs(getAngleToEnemy(e))) <= turnspeed * delta * 1.1f) {
 			setDegrees(getAngleToEnemy(e));
 			if (timesincelastshot > speed)
 				shoot(e);
@@ -360,6 +362,22 @@ public abstract class Tower implements Disposable {
 		if (e.isTot())
 			target = null;
 
+	}
+	
+	public boolean shouldTurnClockwise(Enemy e) {
+//		Vector2 angle=new Vector2(0,1);
+//		System.out.println("Angle1 x/y"+angle.x+"/"+angle.y);
+//		angle.rotate(getDegrees());
+//		System.out.println("Angle2 x/y"+angle.x+"/"+angle.y);
+//		Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
+//		float anglefloat=angle.angle(tpos);
+//		System.out.println("Angle: "+anglefloat);
+//		if(anglefloat<0)
+//		return false;
+//		else
+//			return true;
+		
+		return getAngleToEnemy(e) > getDegrees();
 	}
 
 	public void update(final float timeDelta, final Vector3 mousePos) {
