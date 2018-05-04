@@ -378,4 +378,8 @@ public abstract class Enemy implements Disposable {
 
 		return leftspawn;
 	}
+
+	public Vector2 getCenteredPosition() {
+		return new Vector2(sprite.getX() + sprite.getWidth() / 2, sprite.getY() + sprite.getHeight() / 2);
+	}
 }

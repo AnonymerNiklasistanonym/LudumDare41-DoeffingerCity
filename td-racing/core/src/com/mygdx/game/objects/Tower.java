@@ -350,19 +350,49 @@ public abstract class Tower implements Disposable {
 			return;
 		}
 
+		if (!isTargetInRange(target)) {
+			System.out.println("TARGET LOST");
+			target = null;
+			return;
+		}
+
 		// check if enemy can be locked
 		float newDegrees;
-		if (Math.abs(getDegrees() - getAngleToEnemy(target)) <= turnspeed * deltaTime) {
+		final float maximumDegreeChange = turnspeed * deltaTime;
+		final float degreeChangeOne = Math.abs(getDegrees() - getAngleToEnemy(target));
+		final float degreeChangeTwo = Math.abs(getAngleToEnemy(target) - getDegrees());
+
+		if (degreeChangeOne <= maximumDegreeChange || degreeChangeTwo <= maximumDegreeChange) {
 			newDegrees = getAngleToEnemy(target);
 			if (timesincelastshot > speed)
 				shoot(target, deltaTime);
 		} else if (clockWise(getDegrees() % 360, getAngleToEnemy(target) % 360)) {
+			System.out.println("Turning clockwise because of: getDegrees() = " + getDegrees() + ", getAngleToEnemy() = "
+					+ getAngleToEnemy(target));
 			newDegrees = getDegrees() - turnspeed * deltaTime;
 		} else {
+			System.out.println("Turning counter clockwise because of: getDegrees() = " + getDegrees()
+					+ ", getAngleToEnemy() = " + getAngleToEnemy(target));
 			newDegrees = getDegrees() + turnspeed * deltaTime;
 		}
 
 		setDegrees(newDegrees % 360);
+	}
+
+	public void drawTarget(final ShapeRenderer shapeRenderer) {
+		if (target != null) {
+			shapeRenderer.setColor(target.getColor());
+			shapeRenderer.rect(spriteUpperBody.getX() + spriteUpperBody.getWidth() / 2 - spriteUpperBody.getWidth() / 4, spriteUpperBody.getY() + spriteUpperBody.getHeight() / 2, spriteUpperBody.getOriginX(),
+					spriteUpperBody.getOriginY(), spriteUpperBody.getWidth() / 4, spriteUpperBody.getHeight() * 3, 1, 2,
+					spriteUpperBody.getRotation());
+			shapeRenderer.circle(target.getCenteredPosition().x, target.getCenteredPosition().y, 1f);
+			shapeRenderer.line(getCenteredPosition(), target.getCenteredPosition());
+		}
+	}
+
+	private Vector2 getCenteredPosition() {
+		return new Vector2(spriteBody.getX() + spriteBody.getWidth() / 2,
+				spriteBody.getY() + spriteBody.getHeight() / 2);
 	}
 
 	private boolean clockWise(final float currentAngle, final float angleToEnemy) {
@@ -373,13 +403,14 @@ public abstract class Tower implements Disposable {
 			return currentAngle > angleToEnemy;
 		}
 		if (currentAngle >= 0 && angleToEnemy < 0) {
-			return (currentAngle + (-angleToEnemy)) <= 180;
+			return (currentAngle + (-angleToEnemy)) % 360 <= 180;
 		}
 		if (currentAngle < 0 && angleToEnemy >= 0) {
-			return (angleToEnemy + (-currentAngle)) >= 180;
+			return (angleToEnemy + (-currentAngle)) % 360 >= 180;
 		}
 
-		// this is bad code and does not really fix the problem... or did it fix the problem?
+		// this is bad code and does not really fix the problem... or did it fix the
+		// problem?
 		return false;
 	}
 

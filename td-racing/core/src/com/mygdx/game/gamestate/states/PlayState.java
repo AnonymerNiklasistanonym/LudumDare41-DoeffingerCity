@@ -655,6 +655,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			tower.drawRange(shapeRenderer);
 		if (buildingtower != null)
 			buildingtower.drawRange(shapeRenderer, new Color(1, 0, 0, 0.4f));
+		for (final Tower tower : towers)
+			tower.drawTarget(shapeRenderer);
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
