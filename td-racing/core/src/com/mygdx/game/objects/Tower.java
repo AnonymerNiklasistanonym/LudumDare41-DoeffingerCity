@@ -31,7 +31,6 @@ public abstract class Tower implements Disposable {
 	protected Color color;
 	protected int cost = 10;
 	protected float damage, soundVolume;
-	float delta = 0;
 	protected Animation<TextureRegion> destroyAnimation;
 	Array<Enemy> enemies;
 	protected float firingLineTime = 0.1f;
@@ -213,7 +212,7 @@ public abstract class Tower implements Disposable {
 	}
 
 	public float getDegrees() {
-		return this.spriteUpperBody.getRotation();
+		return spriteUpperBody.getRotation();
 	}
 
 	public float getRange() {
@@ -267,15 +266,13 @@ public abstract class Tower implements Disposable {
 
 		Enemy best = null;
 		for (Enemy e : enemies) {
-			if (best == null)
-				if (e.isTot() == false)
-					if (isTargetInRange(e))
-						if(e.isValidTarget())
-						best = e;
-			if (best != null)
-				if (e.getScore() < best.getScore() && e.isTot() == false)
-					if (isTargetInRange(e))
-						best = e;
+			if (best == null) {
+				if (e.isTot() == false && isTargetInRange(e) && e.isValidTarget())
+					best = e;
+			} else {
+				if (e.getScore() < best.getScore() && e.isTot() == false && isTargetInRange(e))
+					best = e;
+			}
 		}
 		target = best;
 	}
@@ -321,11 +318,11 @@ public abstract class Tower implements Disposable {
 		this.toremove = toremove;
 	}
 
-	public void shoot(Enemy e) {
+	public void shoot(Enemy e, float deltaTime) {
 		if (isTargetInRange(e)) {
 			damage = power;
 			if (speed == 0) {
-				damage = power * delta;
+				damage = power * deltaTime;
 			}
 			e.takeDamage(damage);
 			timesincelastshot = 0;
@@ -345,58 +342,88 @@ public abstract class Tower implements Disposable {
 		}
 	}
 
-	public void tryshoot(Enemy e) {
-		
-	
-		if (shouldTurnClockwise(e)) {
-			setDegrees(getDegrees() + turnspeed * delta);
-		} else {
-			setDegrees(getDegrees() - turnspeed * delta);
-		}
-		if (Math.abs(getDegrees() - Math.abs(getAngleToEnemy(e))) <= turnspeed * delta * 1.1f) {
-			setDegrees(getAngleToEnemy(e));
-			if (timesincelastshot > speed)
-				shoot(e);
-		}
+	public void tryshoot(float deltaTime) {
 
-		if (e.isTot())
+		// if target is dead stop everything
+		if (target.isTot() || target == null) {
 			target = null;
+			return;
+		}
 
+		// check if enemy can be locked
+		float newDegrees;
+		if (Math.abs(getDegrees() - getAngleToEnemy(target)) <= turnspeed * deltaTime) {
+			newDegrees = getAngleToEnemy(target);
+			if (timesincelastshot > speed)
+				shoot(target, deltaTime);
+		} else if (clockWise(getDegrees() % 360, getAngleToEnemy(target) % 360)) {
+			newDegrees = getDegrees() - turnspeed * deltaTime;
+		} else {
+			newDegrees = getDegrees() + turnspeed * deltaTime;
+		}
+
+		setDegrees(newDegrees % 360);
 	}
-	
+
+	private boolean clockWise(final float currentAngle, final float angleToEnemy) {
+		if (currentAngle >= 0 && angleToEnemy >= 0) {
+			return currentAngle > angleToEnemy;
+		}
+		if (currentAngle < 0 && angleToEnemy < 0) {
+			return currentAngle > angleToEnemy;
+		}
+		if (currentAngle >= 0 && angleToEnemy < 0) {
+			return (currentAngle + (-angleToEnemy)) <= 180;
+		}
+		if (currentAngle < 0 && angleToEnemy >= 0) {
+			return (angleToEnemy + (-currentAngle)) >= 180;
+		}
+
+		// this is bad code and does not really fix the problem... or did it fix the problem?
+		return false;
+	}
+
 	public boolean shouldTurnClockwise(Enemy e) {
-//		Vector2 angle=new Vector2(0,1);
-//		System.out.println("Angle1 x/y"+angle.x+"/"+angle.y);
-//		angle.rotate(getDegrees());
-//		System.out.println("Angle2 x/y"+angle.x+"/"+angle.y);
-//		Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
-//		float anglefloat=angle.angle(tpos);
-//		System.out.println("Angle: "+anglefloat);
-//		if(anglefloat<0)
-//		return false;
-//		else
-//			return true;
-		
+		// Vector2 angle=new Vector2(0,1);
+		// System.out.println("Angle1 x/y"+angle.x+"/"+angle.y);
+		// angle.rotate(getDegrees());
+		// System.out.println("Angle2 x/y"+angle.x+"/"+angle.y);
+		// Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
+		// float anglefloat=angle.angle(tpos);
+		// System.out.println("Angle: "+anglefloat);
+		// if(anglefloat<0)
+		// return false;
+		// else
+		// return true;
+
 		return getAngleToEnemy(e) > getDegrees();
 	}
 
 	public void update(final float timeDelta, final Vector3 mousePos) {
 
-		if (this.isInBuildingMode)
-			this.updateSprites(new Vector2(mousePos.x, mousePos.y));
+		// when in building mode move tower sprite(s) according to mouse/pad position
+		if (isInBuildingMode)
+			updateSprites(new Vector2(mousePos.x, mousePos.y));
 
-		this.delta = timeDelta;
-		if (isactive) {
-			timesincelastshot = timesincelastshot + timeDelta;
-			if (target == null) {
-				selectNewTarget();
-				if (speed == 0)
-					soundShoot.stop();
-				isSoundPlaying = false;
-			} else
-				tryshoot(target);
-			updateProjectiles(timeDelta);
+		// when the tower is not yet active do nothing more
+		if (!isactive)
+			return;
+
+		// make time since last shot bigger on every computer
+		timesincelastshot += timeDelta;
+
+		// if there is currently no target
+		if (target == null) {
+			// find one
+			selectNewTarget();
+			// and stop playing the shooting sound
+			soundShoot.stop();
+		} else {
+			// else rotate to the target and shoot it
+			tryshoot(timeDelta);
 		}
+
+		updateProjectiles(timeDelta);
 
 	}
 
