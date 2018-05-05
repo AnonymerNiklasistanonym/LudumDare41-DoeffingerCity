@@ -27,7 +27,7 @@ public class MainGame implements ApplicationListener {
 	/**
 	 * Returns if this is an release or development
 	 */
-	public static final boolean DEVELOPER_MODE = true;
+	public static final boolean DEVELOPER_MODE = false;
 
 	public static BitmapFont font70;
 	public static BitmapFont font;
