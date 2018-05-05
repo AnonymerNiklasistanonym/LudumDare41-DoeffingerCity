@@ -83,6 +83,12 @@ public class TowerMenu implements Disposable {
 			return false;
 		}
 
+		if (buildingtower != null && buildingtower.body != null) {
+			world.destroyBody(buildingtower.body);
+			buildingtower = null;
+		} else if (buildingtower != null)
+			buildingtower = null;
+
 		if (towerSelected[i] && towerUnlocked[i]) {
 			buildingtower = getTower(i, mousePos, enemies);
 			buildingtower.activateRange(true);

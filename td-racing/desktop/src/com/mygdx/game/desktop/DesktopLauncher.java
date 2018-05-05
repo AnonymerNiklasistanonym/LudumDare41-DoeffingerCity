@@ -13,8 +13,8 @@ public class DesktopLauncher {
 		config.width = MainGame.GAME_WIDTH;
 		// set window name
 		config.title = MainGame.GAME_NAME;
-		config.fullscreen=false;
-		
+		config.fullscreen = false;
+
 		// add application icon that will be shown if the program is running
 		for (int size : new int[] { 16, 32, 64 }) {
 			config.addIcon("icon/icon_" + size + ".png", FileType.Internal);

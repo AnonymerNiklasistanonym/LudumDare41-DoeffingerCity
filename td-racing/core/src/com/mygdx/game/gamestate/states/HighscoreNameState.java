@@ -154,12 +154,12 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	}
 
 	@Override
-	public void backCallback() {
+	public void backControllerCallback() {
 		goBack();
 	}
 
 	@Override
-	public void selectCallback(int buttonId) {
+	public void selectControllerCallback(int buttonId) {
 		if (controllerTimeHelper < 0.2)
 			return;
 		if (buttonId == ControllerWiki.BUTTON_A)
@@ -180,7 +180,7 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	}
 
 	@Override
-	public void dPadCallback(PovDirection direction) {
+	public void dPadButtonsControllerCallback(PovDirection direction) {
 		// select character next button
 		if (direction == ControllerWiki.BUTTON_DPAD_RIGHT)
 			selectNextCharacterButton(true);
@@ -193,7 +193,7 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 	}
 
 	@Override
-	public void stickMoved(final boolean xAxis, final float value) {
+	public void stickMovedControllerCallback(final boolean xAxis, final float value) {
 		// select next button
 		if (blockStickInput && stickTimeHelper >= 0.3)
 			blockStickInput = false;
@@ -223,6 +223,17 @@ public class HighscoreNameState extends GameState implements ControllerMenuCallb
 			highscoreCharacterButton.activate(false);
 		highscoreCharacterButtons[currentIndex].activate(true);
 
+	}
+
+	@Override
+	public void pause() {
+		// Nothing to do
+
+	}
+
+	@Override
+	public void resume() {
+		// Nothing to do
 	}
 
 }

@@ -95,7 +95,7 @@ public class FireTower extends Tower {
 	}
 
 	@Override
-	public void drawProjectileShape(final ShapeRenderer shapeRenderer) {
+	public void drawProjectile(final ShapeRenderer shapeRenderer) {
 		// No shape to draw
 	}
 

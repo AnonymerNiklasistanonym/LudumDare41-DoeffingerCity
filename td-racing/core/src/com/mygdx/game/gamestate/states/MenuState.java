@@ -152,7 +152,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 	}
 
 	@Override
-	public void backCallback() {
+	public void backControllerCallback() {
 		if (controllerTimeHelper < 0.2)
 			return;
 		// exit application
@@ -160,7 +160,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 	}
 
 	@Override
-	public void selectCallback(int buttonId) {
+	public void selectControllerCallback(int buttonId) {
 		if (controllerTimeHelper < 0.2)
 			return;
 		// open selected button
@@ -184,7 +184,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 	}
 
 	@Override
-	public void dPadCallback(PovDirection direction) {
+	public void dPadButtonsControllerCallback(PovDirection direction) {
 		// select next button
 		if (direction == ControllerWiki.BUTTON_DPAD_DOWN || direction == ControllerWiki.BUTTON_DPAD_RIGHT)
 			selectNextButton(true);
@@ -194,7 +194,7 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 	}
 
 	@Override
-	public void stickMoved(final boolean xAxis, final float value) {
+	public void stickMovedControllerCallback(final boolean xAxis, final float value) {
 		// select next button
 		if (blockStickInput && stickTimeHelper >= 0.3)
 			blockStickInput = false;
@@ -203,6 +203,17 @@ public class MenuState extends GameState implements ControllerMenuCallbackInterf
 			stickTimeHelper = 0;
 			blockStickInput = true;
 		}
+	}
+
+	@Override
+	public void pause() {
+		// Nothing to do
+
+	}
+
+	@Override
+	public void resume() {
+		// Nothing to do
 	}
 
 }

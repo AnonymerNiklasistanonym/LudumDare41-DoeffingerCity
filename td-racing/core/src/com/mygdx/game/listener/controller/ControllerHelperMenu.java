@@ -38,13 +38,13 @@ public class ControllerHelperMenu implements ControllerListener {
 	@Override
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
 		final boolean isXAxis = axisCode == ControllerWiki.AXIS_LEFT_X || axisCode == ControllerWiki.AXIS_RIGHT_X;
-		controllerMenuCallbackInterface.stickMoved(isXAxis, value);
+		controllerMenuCallbackInterface.stickMovedControllerCallback(isXAxis, value);
 		return false;
 	}
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		controllerMenuCallbackInterface.dPadCallback(value);
+		controllerMenuCallbackInterface.dPadButtonsControllerCallback(value);
 		return false;
 	}
 
@@ -74,27 +74,27 @@ public class ControllerHelperMenu implements ControllerListener {
 		switch (buttonId) {
 		case ControllerWiki.BUTTON_A:
 			if (pressed)
-				controllerMenuCallbackInterface.selectCallback(buttonId);
+				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
 			break;
 		case ControllerWiki.BUTTON_B:
 			if (pressed)
-				controllerMenuCallbackInterface.backCallback();
+				controllerMenuCallbackInterface.backControllerCallback();
 			break;
 		case ControllerWiki.BUTTON_X:
 			if (pressed)
-				controllerMenuCallbackInterface.selectCallback(buttonId);
+				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
 			break;
 		case ControllerWiki.BUTTON_Y:
 			if (pressed)
-				controllerMenuCallbackInterface.selectCallback(buttonId);
+				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
 			break;
 		case ControllerWiki.BUTTON_BACK:
 			if (pressed)
-				controllerMenuCallbackInterface.backCallback();
+				controllerMenuCallbackInterface.backControllerCallback();
 			break;
 		case ControllerWiki.BUTTON_START:
 			if (pressed)
-				controllerMenuCallbackInterface.selectCallback(buttonId);
+				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
 			break;
 		default:
 			// not important

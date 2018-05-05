@@ -77,4 +77,14 @@ public class LoadingState extends GameState {
 		backgroundLoading.dispose();
 	}
 
+	@Override
+	public void pause() {
+		// Nothing to do
+
+	}
+
+	@Override
+	public void resume() {
+		// Nothing to do
+	}
 }

@@ -35,7 +35,7 @@ public abstract class Tower implements Disposable {
 	Array<Enemy> enemies;
 	protected float firingLineTime = 0.1f;
 	protected float firingSpriteTime = 0.3f;
-	boolean healthBar;
+	boolean healthBarActivated;
 	boolean isactive = false;
 	private boolean isInBuildingMode;
 	boolean isSoundPlaying = false;
@@ -59,6 +59,7 @@ public abstract class Tower implements Disposable {
 	protected Tower(final Vector2 position, final Texture spriteBody, final Texture spriteUpperBody,
 			final Texture spriteFiring, final Array<Enemy> enemies, final World world, final int range,
 			final Sound soundShoot) {
+		System.out.println("CREATE NEW TOWER");
 		this.soundShoot = soundShoot;
 		this.enemies = enemies;
 		this.range = range;
@@ -77,7 +78,7 @@ public abstract class Tower implements Disposable {
 
 		timesincelastshot = 10;
 		soundVolume = 0.25f;
-		healthBar = false;
+		healthBarActivated = false;
 		toremove = false;
 		damage = 0;
 		buildingModeBlocked = false;
@@ -103,33 +104,28 @@ public abstract class Tower implements Disposable {
 		isactive = true;
 	}
 
-	public void activateHealthBar(boolean activate) {
-		healthBar = activate;
+	public void activateHealthBar(final boolean healthBarActivated) {
+		this.healthBarActivated = healthBarActivated;
 	}
 
-	public void activateRange(boolean b) {
-		this.rangeActivated = b;
+	public void activateRange(final boolean rangeActivated) {
+		this.rangeActivated = rangeActivated;
 	}
 
 	public boolean buildingModeBlocked() {
 		return this.buildingModeBlocked;
 	}
 
-	public boolean contains(float xPos, float yPos) {
+	public boolean contains(final float xPos, final float yPos) {
 		return (xPos >= this.spriteBody.getX() && xPos <= this.spriteBody.getX() + this.spriteBody.getWidth())
 				&& (yPos >= this.spriteBody.getY() && yPos <= this.spriteBody.getY() + this.spriteBody.getHeight());
 	}
 
-	public void destroyAnimation() {
-		// TODO
-		System.out.println("Destroyed");
-	}
-
 	public void disposeMedia() {
-		this.spriteBody.getTexture().dispose();
-		this.spriteFiring.getTexture().dispose();
-		this.spriteFiring.getTexture().dispose();
-		this.soundShoot.dispose();
+		spriteBody.getTexture().dispose();
+		spriteFiring.getTexture().dispose();
+		spriteFiring.getTexture().dispose();
+		soundShoot.dispose();
 	}
 
 	public void draw(final SpriteBatch spriteBatch) {
@@ -137,18 +133,13 @@ public abstract class Tower implements Disposable {
 	}
 
 	public void drawLine(final ShapeRenderer shapeRenderer) {
-		if (firingLineTime > timesincelastshot) {
-			drawProjectileShape(shapeRenderer);
-		} else {
-
-		}
+		if (firingLineTime > timesincelastshot)
+			drawProjectile(shapeRenderer);
 	}
 
-	public void drawProjectile(final SpriteBatch spriteBatch) {
+	public abstract void drawProjectile(final SpriteBatch spriteBatch);
 
-	}
-
-	public abstract void drawProjectileShape(final ShapeRenderer shapeRenderer);
+	public abstract void drawProjectile(final ShapeRenderer shapeRenderer);
 
 	public void drawRange(final ShapeRenderer shapeRenderer) {
 		if (this.rangeActivated) {
@@ -337,21 +328,16 @@ public abstract class Tower implements Disposable {
 
 	public void takeDamage(float amount) {
 		damage += amount;
-		if (damage >= maxHealth) {
-			this.destroyAnimation();
-		}
 	}
 
 	public void tryshoot(float deltaTime) {
 
 		// if target is dead stop everything
-		if (target.isTot() || target == null) {
-			target = null;
+		if (target == null) {
 			return;
 		}
 
-		if (!isTargetInRange(target)) {
-			System.out.println("TARGET LOST");
+		if (target.isTot() || !isTargetInRange(target)) {
 			target = null;
 			return;
 		}
@@ -366,13 +352,15 @@ public abstract class Tower implements Disposable {
 			newDegrees = getAngleToEnemy(target);
 			if (timesincelastshot > speed)
 				shoot(target, deltaTime);
-		} else if (clockWise(getDegrees() % 360, getAngleToEnemy(target) % 360)) {
-			System.out.println("Turning clockwise because of: getDegrees() = " + getDegrees() + ", getAngleToEnemy() = "
-					+ getAngleToEnemy(target));
+		} else if (turnClockWise(getDegrees() % 360, getAngleToEnemy(target) % 360)) {
+			// System.out.println("Turning clockwise because of: getDegrees() = " +
+			// getDegrees() + ", getAngleToEnemy() = "
+			// + getAngleToEnemy(target));
 			newDegrees = getDegrees() - turnspeed * deltaTime;
 		} else {
-			System.out.println("Turning counter clockwise because of: getDegrees() = " + getDegrees()
-					+ ", getAngleToEnemy() = " + getAngleToEnemy(target));
+			// System.out.println("Turning counter clockwise because of: getDegrees() = " +
+			// getDegrees()
+			// + ", getAngleToEnemy() = " + getAngleToEnemy(target));
 			newDegrees = getDegrees() + turnspeed * deltaTime;
 		}
 
@@ -380,14 +368,12 @@ public abstract class Tower implements Disposable {
 	}
 
 	public void drawTarget(final ShapeRenderer shapeRenderer) {
-		if (target != null) {
-			shapeRenderer.setColor(target.getColor());
-			shapeRenderer.rect(spriteUpperBody.getX() + spriteUpperBody.getWidth() / 2 - spriteUpperBody.getWidth() / 4, spriteUpperBody.getY() + spriteUpperBody.getHeight() / 2, spriteUpperBody.getOriginX(),
-					spriteUpperBody.getOriginY(), spriteUpperBody.getWidth() / 4, spriteUpperBody.getHeight() * 3, 1, 2,
-					spriteUpperBody.getRotation());
-			shapeRenderer.circle(target.getCenteredPosition().x, target.getCenteredPosition().y, 1f);
-			shapeRenderer.line(getCenteredPosition(), target.getCenteredPosition());
-		}
+		if (target == null)
+			return;
+
+		shapeRenderer.setColor(target.getColor());
+		shapeRenderer.circle(target.getCenteredPosition().x, target.getCenteredPosition().y, 1f);
+		shapeRenderer.line(getCenteredPosition(), target.getCenteredPosition());
 	}
 
 	private Vector2 getCenteredPosition() {
@@ -395,39 +381,13 @@ public abstract class Tower implements Disposable {
 				spriteBody.getY() + spriteBody.getHeight() / 2);
 	}
 
-	private boolean clockWise(final float currentAngle, final float angleToEnemy) {
-		if (currentAngle >= 0 && angleToEnemy >= 0) {
+	private boolean turnClockWise(final float currentAngle, final float angleToEnemy) {
+		if (currentAngle >= 0 && angleToEnemy < 0)
+			return (currentAngle - angleToEnemy) % 360 <= 180;
+		else if (currentAngle < 0 && angleToEnemy >= 0)
+			return (angleToEnemy - currentAngle) % 360 >= 180;
+		else
 			return currentAngle > angleToEnemy;
-		}
-		if (currentAngle < 0 && angleToEnemy < 0) {
-			return currentAngle > angleToEnemy;
-		}
-		if (currentAngle >= 0 && angleToEnemy < 0) {
-			return (currentAngle + (-angleToEnemy)) % 360 <= 180;
-		}
-		if (currentAngle < 0 && angleToEnemy >= 0) {
-			return (angleToEnemy + (-currentAngle)) % 360 >= 180;
-		}
-
-		// this is bad code and does not really fix the problem... or did it fix the
-		// problem?
-		return false;
-	}
-
-	public boolean shouldTurnClockwise(Enemy e) {
-		// Vector2 angle=new Vector2(0,1);
-		// System.out.println("Angle1 x/y"+angle.x+"/"+angle.y);
-		// angle.rotate(getDegrees());
-		// System.out.println("Angle2 x/y"+angle.x+"/"+angle.y);
-		// Vector2 tpos = new Vector2(e.getBodyX(), e.getBodyY());
-		// float anglefloat=angle.angle(tpos);
-		// System.out.println("Angle: "+anglefloat);
-		// if(anglefloat<0)
-		// return false;
-		// else
-		// return true;
-
-		return getAngleToEnemy(e) > getDegrees();
 	}
 
 	public void update(final float timeDelta, final Vector3 mousePos) {
@@ -465,19 +425,19 @@ public abstract class Tower implements Disposable {
 	public void updateSprites(final Vector2 position) {
 
 		// set body
-		this.body.setTransform(position, this.body.getAngle());
+		body.setTransform(position, body.getAngle());
 		position.add(new Vector2(-spriteBody.getWidth() / 2, -spriteBody.getWidth() / 2));
 
 		// set body to new position
-		this.spriteBody.setPosition(position.x, position.y);
+		spriteBody.setPosition(position.x, position.y);
 		// set upper body to new position
-		this.spriteUpperBody.setPosition(position.x + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2,
-				position.y + this.spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2);
+		spriteUpperBody.setPosition(position.x + spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2,
+				position.y + spriteBody.getWidth() / 2 - spriteUpperBody.getHeight() / 2);
 		// fire position to new position
-		this.spriteFiring.setPosition(position.x + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2,
+		spriteFiring.setPosition(position.x + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2,
 				position.y + spriteBody.getWidth() / 2 - spriteFiring.getHeight() / 2);
 
-		this.center = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
+		center = new Vector2(position.x + spriteBody.getWidth() / 2, position.y + spriteBody.getWidth() / 2);
 	}
 
 	public static void setSoundOn(boolean soundOn) {

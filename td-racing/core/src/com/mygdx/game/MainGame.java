@@ -1,14 +1,16 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Scaling;
 import com.mygdx.game.gamestate.GameStateManager;
 import com.mygdx.game.gamestate.states.MenuState;
 
-public class MainGame extends ApplicationAdapter {
+public class MainGame implements ApplicationListener {
 
 	/**
 	 * Height of the game screen (the window)
@@ -78,5 +80,25 @@ public class MainGame extends ApplicationAdapter {
 		gameStateManager.update(Gdx.graphics.getDeltaTime());
 		// render the current state
 		gameStateManager.render(spriteBatch);
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		final Vector2 size = Scaling.fit.apply(GAME_WIDTH, GAME_HEIGHT, width, height);
+		final int viewportX = (int) (width - size.x) / 2;
+		final int viewportY = (int) (height - size.y) / 2;
+		final int viewportWidth = (int) size.x;
+		final int viewportHeight = (int) size.y;
+		Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+	}
+
+	@Override
+	public void pause() {
+		gameStateManager.pause();
+	}
+
+	@Override
+	public void resume() {
+		gameStateManager.resume();
 	}
 }

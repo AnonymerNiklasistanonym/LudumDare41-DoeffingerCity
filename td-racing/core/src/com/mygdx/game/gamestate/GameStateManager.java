@@ -24,7 +24,7 @@ public class GameStateManager {
 
 	/**
 	 * Push a new state on the stack
-	 * 
+	 *
 	 * @param gameState
 	 */
 	public void pushState(final GameState gameState) {
@@ -33,7 +33,7 @@ public class GameStateManager {
 
 	/**
 	 * Set instantly a new state
-	 * 
+	 *
 	 * @param gameState
 	 */
 	public void setGameState(final GameState gameState) {
@@ -50,7 +50,7 @@ public class GameStateManager {
 
 	/**
 	 * Update everything (input and then updates)
-	 * 
+	 *
 	 * @param deltaTime
 	 *            (time between last frame and this)
 	 */
@@ -61,12 +61,21 @@ public class GameStateManager {
 
 	/**
 	 * Render everything
-	 * 
+	 *
 	 * @param spriteBatch
 	 *            (contains every sprite)
 	 */
 	public void render(final SpriteBatch spriteBatch) {
 		gameStateStack.peek().render(spriteBatch);
+	}
+
+	public void pause() {
+		gameStateStack.peek().pause();
+
+	}
+
+	public void resume() {
+		gameStateStack.peek().resume();
 	}
 
 }

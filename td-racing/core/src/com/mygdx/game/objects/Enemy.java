@@ -46,7 +46,7 @@ public abstract class Enemy implements Disposable {
 	private float distancetonode, wasHitTime;
 	private Vector2 hitRandom;
 	private Color color;
-	protected boolean activated, bodyDeleted, healthBar, tot, deleteBody, delete, leftspawn;
+	protected boolean activated, bodyDeleted, healthBar, tot, deleteBody, delete;
 
 	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
 			final Texture damagesprite, final Map map, final float time) {
@@ -55,7 +55,6 @@ public abstract class Enemy implements Disposable {
 		deleteBody = false;
 		delete = false;
 		tot = false;
-		leftspawn=false;
 		hitRandom = new Vector2();
 
 		sprite = new Sprite(alive);
@@ -373,10 +372,7 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public boolean isValidTarget() {
-		if(getY()>map.getSpawnheighty())
-			leftspawn=true;
-
-		return leftspawn;
+		return activated && !tot;
 	}
 
 	public Vector2 getCenteredPosition() {

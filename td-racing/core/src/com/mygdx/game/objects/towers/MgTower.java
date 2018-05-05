@@ -3,6 +3,7 @@ package com.mygdx.game.objects.towers;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -34,7 +35,7 @@ public class MgTower extends Tower {
 	}
 
 	@Override
-	public void drawProjectileShape(final ShapeRenderer shapeRenderer) {
+	public void drawProjectile(final ShapeRenderer shapeRenderer) {
 		shapeRenderer.setColor(Color.YELLOW);
 		shapeRenderer.rectLine(center, shotposition, 0.2f);
 	}
@@ -44,4 +45,8 @@ public class MgTower extends Tower {
 		super.disposeMedia();
 	}
 
+	@Override
+	public void drawProjectile(final SpriteBatch spriteBatch) {
+		// No sprite or else to draw
+	}
 }

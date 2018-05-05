@@ -20,7 +20,7 @@ public abstract class GameState {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param gameStateManager
 	 */
 	protected GameState(final GameStateManager gameStateManager, final String stateName) {
@@ -36,14 +36,14 @@ public abstract class GameState {
 
 	/**
 	 * Update everything to the current frame
-	 * 
+	 *
 	 * @param deltaTime
 	 */
 	protected abstract void update(final float deltaTime);
 
 	/**
 	 * Render method
-	 * 
+	 *
 	 * @param spriteBatch
 	 *            (contains everything that needs to be drawn)
 	 */
@@ -53,5 +53,9 @@ public abstract class GameState {
 	 * Dispose any resource for a better memory management
 	 */
 	protected abstract void dispose();
+
+	public abstract void pause();
+
+	public abstract void resume();
 
 }

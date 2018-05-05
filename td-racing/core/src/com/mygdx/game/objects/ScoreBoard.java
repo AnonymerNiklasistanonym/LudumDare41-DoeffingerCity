@@ -49,16 +49,15 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Debug Collision: C", 0.2f, 25);
 			MainGame.fontOutline.draw(spriteBatch, "Debug Way: V", 0.2f, 24);
 			MainGame.fontOutline.draw(spriteBatch, "Debug Distance: B", 0.2f, 23);
+			MainGame.fontOutline.draw(spriteBatch, "Debug Tower: Y", 0.2f, 22);
 
-			MainGame.fontOutline.draw(spriteBatch, "Go to the next level: 5", 0.2f, 21);
-			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies/Next wave: 9", 0.2f, 20);
-			MainGame.fontOutline.draw(spriteBatch, "Get Money: 7", 0.2f, 19);
-			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 18);
-			MainGame.fontOutline.draw(spriteBatch, "Advance Tutorial: 0", 0.2f, 17);
-
+			MainGame.fontOutline.draw(spriteBatch, "Go to the next level: 5", 0.2f, 20);
+			MainGame.fontOutline.draw(spriteBatch, "Kill all enemies/Next wave: 9", 0.2f, 19);
+			MainGame.fontOutline.draw(spriteBatch, "Get Money: 7", 0.2f, 18);
+			MainGame.fontOutline.draw(spriteBatch, "Die instantly: 8", 0.2f, 17);
+			MainGame.fontOutline.draw(spriteBatch, "Advance Tutorial: 0", 0.2f, 16);
 			MainGame.fontOutline.draw(spriteBatch, "Speed up the world + 1: .", 0.2f, 15);
 			MainGame.fontOutline.draw(spriteBatch, "Reset world speed (=1): ,", 0.2f, 14);
-
 			MainGame.fontOutline.draw(spriteBatch, "Activate all enemies: E", 0.2f, 13);
 			MainGame.fontOutline.draw(spriteBatch, "Unlock all towers: T", 0.2f, 12);
 			MainGame.fontOutline.draw(spriteBatch, "Add 1000 to score: R", 0.2f, 11);

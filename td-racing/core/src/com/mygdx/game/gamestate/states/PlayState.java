@@ -67,20 +67,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	public final static float METER_TO_PIXEL = 20f;
 
 	private final Music backgroundMusic, carSound;
-	private final Sound splatt, soundmoney, carSoundStart, victorySound;
+	private final Sound splatt, soundmoney, carSoundStart, victorySound, soundDamage;
 	private final ControllerHelper controllerHelper;
 	private final ScoreBoard scoreBoard;
-	private final Array<Enemy> enemies;
-	private final Array<Enemy> enemiesdead;
+	private final Array<Enemy> enemies, enemiesdead;
 	private final Array<Tower> towers;
 	private final Array<Sprite> trailersmoke;
-	private float timesincesmoke = 0;
+	private float timesincesmoke;
 	private final PreferencesManager preferencesManager;
-	private final Sprite spritePitStop, spriteCar, spriteFinishLine;
+	private final Sprite spritePitStop, spriteCar, spriteFinishLine, spriteSmoke;
 	private final ShapeRenderer shapeRenderer;
 	private final Level[] level;
-
-	private final Sound soundDamage;
 
 	private Tower buildingtower;
 	private Checkpoint[] checkpoints;
@@ -96,10 +93,8 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	private Vector2 trailerpos;
 	private float tutorialtimer, physicsaccumulator, timeforwavetext;
 	private boolean pause, lastPause, musicOn, lastMusic, lastSound, soundOn, debugBox2D, debugCollision, debugDistance,
-			debugWay, unlockAllTowers, padActivated;
+			debugWay, unlockAllTowers, padActivated, debugTower, wasAlreadyPaused;
 	private int tutorialState, checkPointsCleared, speedFactor;
-
-	private final Sprite spriteSmoke;
 
 	public PlayState(final GameStateManager gameStateManager, final int levelNumber) {
 		super(gameStateManager, STATE_NAME);
@@ -172,10 +167,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		tutorialtimer = 0;
 		unlockAllTowers = false;
 		tutorialState = 0;
-		physicsaccumulator = 0f;
+		physicsaccumulator = 0;
+		timesincesmoke = 0;
 		pause = false;
 		lastPause = !pause;
+		wasAlreadyPaused = pause;
 		padActivated = false;
+		debugTower = false;
 		debugBox2D = false;
 		debugCollision = false;
 		debugWay = false;
@@ -377,18 +375,35 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			scoreBoard.setDebugDisplay(!scoreBoard.getDebugDisplay());
 
 		// manually instantiate enemies
-		if (Gdx.input.isKeyJustPressed(Keys.F))
-			enemies.add(new EnemySmall(new Vector2(220, 20), world, map, 0));
-		if (Gdx.input.isKeyJustPressed(Keys.G))
-			enemies.add(new EnemyFat(new Vector2(220, 20), world, map, 0));
-		if (Gdx.input.isKeyJustPressed(Keys.H))
-			enemies.add(new EnemyBicycle(new Vector2(220, 20), world, map, 0));
-		if (Gdx.input.isKeyJustPressed(Keys.J))
-			enemies.add(new EnemyLincoln(new Vector2(220, 20), world, map, 0));
-		if (Gdx.input.isKeyJustPressed(Keys.K))
-			enemies.add(new EnemySpider(new Vector2(220, 20), world, map, 0));
+		if (Gdx.input.isKeyJustPressed(Keys.F)) {
+			final Enemy enemy = new EnemySmall(map.getSpawnPosition(), world, map, 0);
+			enemy.activateEnemy();
+			enemies.add(enemy);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.G)) {
+			final Enemy enemy = new EnemyFat(map.getSpawnPosition(), world, map, 0);
+			enemy.activateEnemy();
+			enemies.add(enemy);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.H)) {
+			final Enemy enemy = new EnemyBicycle(map.getSpawnPosition(), world, map, 0);
+			enemy.activateEnemy();
+			enemies.add(enemy);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.J)) {
+			final Enemy enemy = new EnemyLincoln(map.getSpawnPosition(), world, map, 0);
+			enemy.activateEnemy();
+			enemies.add(enemy);
+		}
+		if (Gdx.input.isKeyJustPressed(Keys.K)) {
+			final Enemy enemy = new EnemySpider(map.getSpawnPosition(), world, map, 0);
+			enemy.activateEnemy();
+			enemies.add(enemy);
+		}
 
 		// debug renderer
+		if (Gdx.input.isKeyJustPressed(Keys.Y))
+			debugTower = !debugTower;
 		if (Gdx.input.isKeyJustPressed(Keys.X))
 			debugBox2D = !debugBox2D;
 		if (Gdx.input.isKeyJustPressed(Keys.C))
@@ -526,10 +541,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		// minimize time for wave text - only if it's not pause
 		timeforwavetext -= deltaTime;
 
-		// mark a tower red if the build position is not correct
-		if (buildingtower != null)
-			buildTowerIfAllowed(false);
-
 		// update objects
 		controllerHelper.update();
 		towerMenu.update();
@@ -547,15 +558,13 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		}
 
 		// update building tower
+		buildingtower = towerMenu.getCurrentTower();
 		if (buildingtower == null) {
-			buildingtower = towerMenu.getCurrentTower();
-			if (buildingtower != null)
-				startBuilding(buildingtower);
+			stopBuilding();
 		} else {
+			startBuilding(buildingtower);
 			buildingtower.update(deltaTime, padActivated ? padPos : mousePos);
-			buildingtower = towerMenu.getCurrentTower();
-			if (buildingtower == null)
-				stopBuilding();
+			buildTowerIfAllowed(false);
 		}
 
 		// garbage collect tower projectiles that should be deleted
@@ -655,8 +664,10 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			tower.drawRange(shapeRenderer);
 		if (buildingtower != null)
 			buildingtower.drawRange(shapeRenderer, new Color(1, 0, 0, 0.4f));
-		for (final Tower tower : towers)
-			tower.drawTarget(shapeRenderer);
+		if (MainGame.DEVELOPER_MODE && debugTower) {
+			for (final Tower tower : towers)
+				tower.drawTarget(shapeRenderer);
+		}
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);
 
@@ -1038,7 +1049,6 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 				else
 					setWaveText("FINAL WAVE");
 				// create and add all enemies of the current wave to all enemies
-				System.out.println();
 				enemies.addAll(currentLevelWaves.get(currentWave).createEnemies(map.getSpawnPosition(), world, map,
 						scoreBoard.getTime()));
 			}
@@ -1180,5 +1190,17 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void enemyDied(final Enemy enemy) {
 		scoreBoard.killedEnemy(enemy.getScore(), enemy.getMoney());
+	}
+
+	@Override
+	public void pause() {
+		wasAlreadyPaused = pause;
+		pause = true;
+	}
+
+	@Override
+	public void resume() {
+		if (!wasAlreadyPaused)
+			pause = false;
 	}
 }
