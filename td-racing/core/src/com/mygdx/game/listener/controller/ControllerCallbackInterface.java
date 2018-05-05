@@ -16,9 +16,9 @@ public interface ControllerCallbackInterface {
 
 	void controllerCallbackStartBuildingMode(int towerId);
 
-	void controllerMouseChanged(Vector3 rightPad);
+	void controllerCallbackMouseChanged(Vector3 rightPad);
 
-	void buildTower();
+	void controllerCallbackBuildTower();
 
 	void controllerCallbackTogglePause();
 

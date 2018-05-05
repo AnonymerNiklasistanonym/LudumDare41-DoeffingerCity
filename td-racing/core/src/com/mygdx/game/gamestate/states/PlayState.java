@@ -640,7 +640,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		s.setRotation(MathUtils.random(360));
 		s.setSize(s.getWidth() / 8, s.getHeight() / 8);
 		s.setPosition((map.getHealthBarPos().x + 50) * PIXEL_TO_METER + MathUtils.random(-1, 1),
-				(map.getHealthBarPos().y)* PIXEL_TO_METER - 2f);
+				(map.getHealthBarPos().y) * PIXEL_TO_METER - 2f);
 		trailersmoke.add(s);
 	}
 
@@ -1167,7 +1167,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	@Override
-	public void controllerMouseChanged(final Vector3 rightPad) {
+	public void controllerCallbackMouseChanged(final Vector3 rightPad) {
 		if (!padActivated)
 			return;
 
@@ -1181,7 +1181,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	}
 
 	@Override
-	public void buildTower() {
+	public void controllerCallbackBuildTower() {
 		// when in building mode try build the current tower
 		if (buildingtower != null)
 			buildTowerIfAllowed(true);

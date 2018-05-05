@@ -135,7 +135,5 @@ public class Level {
 	public void setMoneyPerLap(float moneyPerLap) {
 		this.moneyPerLap = moneyPerLap;
 	}
-	
-	
 
 }

@@ -38,13 +38,13 @@ public class ControllerHelperMenu implements ControllerListener {
 	@Override
 	public boolean axisMoved(Controller controller, int axisCode, float value) {
 		final boolean isXAxis = axisCode == ControllerWiki.AXIS_LEFT_X || axisCode == ControllerWiki.AXIS_RIGHT_X;
-		controllerMenuCallbackInterface.stickMovedControllerCallback(isXAxis, value);
+		controllerMenuCallbackInterface.controllerCallbackStickMoved(isXAxis, value);
 		return false;
 	}
 
 	@Override
 	public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-		controllerMenuCallbackInterface.dPadButtonsControllerCallback(value);
+		controllerMenuCallbackInterface.controllerCallbackDPadButtonPressed(value);
 		return false;
 	}
 
@@ -74,27 +74,27 @@ public class ControllerHelperMenu implements ControllerListener {
 		switch (buttonId) {
 		case ControllerWiki.BUTTON_A:
 			if (pressed)
-				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
+				controllerMenuCallbackInterface.controllerCallbackButtonPressed(buttonId);
 			break;
 		case ControllerWiki.BUTTON_B:
 			if (pressed)
-				controllerMenuCallbackInterface.backControllerCallback();
+				controllerMenuCallbackInterface.controllerCallbackBackPressed();
 			break;
 		case ControllerWiki.BUTTON_X:
 			if (pressed)
-				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
+				controllerMenuCallbackInterface.controllerCallbackButtonPressed(buttonId);
 			break;
 		case ControllerWiki.BUTTON_Y:
 			if (pressed)
-				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
+				controllerMenuCallbackInterface.controllerCallbackButtonPressed(buttonId);
 			break;
 		case ControllerWiki.BUTTON_BACK:
 			if (pressed)
-				controllerMenuCallbackInterface.backControllerCallback();
+				controllerMenuCallbackInterface.controllerCallbackBackPressed();
 			break;
 		case ControllerWiki.BUTTON_START:
 			if (pressed)
-				controllerMenuCallbackInterface.selectControllerCallback(buttonId);
+				controllerMenuCallbackInterface.controllerCallbackButtonPressed(buttonId);
 			break;
 		default:
 			// not important

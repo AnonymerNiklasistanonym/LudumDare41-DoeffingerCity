@@ -22,7 +22,7 @@ public class Flame implements Disposable {
 	private boolean killme;
 
 	public Flame(final Vector2 position, final Sprite sprite, final World world, final float damage) {
-		
+
 		// add flame as dynamic body to the box2D world
 		final BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyDef.BodyType.DynamicBody;
@@ -49,10 +49,9 @@ public class Flame implements Disposable {
 		this.lifetime = 0.5f;
 		this.killme = false;
 	}
-		
 
 	public void update(final float deltaTime) {
-		spriteScale += deltaTime*2;
+		spriteScale += deltaTime * 2;
 		if (spriteScale > 1)
 			spriteScale = 1;
 		lifetime -= deltaTime;

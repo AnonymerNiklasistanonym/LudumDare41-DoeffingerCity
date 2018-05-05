@@ -96,12 +96,12 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 	}
 
 	@Override
-	public void backControllerCallback() {
+	public void controllerCallbackBackPressed() {
 		goBack();
 	}
 
 	@Override
-	public void selectControllerCallback(final int buttonId) {
+	public void controllerCallbackButtonPressed(final int buttonId) {
 		if (controllerTimeHelper <= 0.2)
 			return;
 		// go back to the menu
@@ -113,12 +113,12 @@ public class CreditState extends GameState implements ControllerMenuCallbackInte
 	}
 
 	@Override
-	public void dPadButtonsControllerCallback(final PovDirection direction) {
+	public void controllerCallbackDPadButtonPressed(final PovDirection direction) {
 		// Nothing to do
 	}
 
 	@Override
-	public void stickMovedControllerCallback(final boolean xAxis, final float value) {
+	public void controllerCallbackStickMoved(final boolean xAxis, final float value) {
 		// Nothing to do
 	}
 

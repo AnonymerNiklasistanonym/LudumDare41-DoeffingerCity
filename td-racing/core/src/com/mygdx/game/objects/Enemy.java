@@ -27,7 +27,7 @@ public abstract class Enemy implements Disposable {
 	private static final float SPEED = 80;
 	private static final float SCORE = 10;
 	private static final boolean HEALTH_BAR = true;
-	private static final float DENSITY= 2;
+	private static final float DENSITY = 2;
 
 	private final Sprite sprite;
 	private final Sprite spriteDamage;
@@ -36,9 +36,8 @@ public abstract class Enemy implements Disposable {
 
 	protected float maxHealth, health, money, score, speed, damage;
 
-
-	private float timesincedeepsearch=0;
-	private float maxtimedeepsearch=5;
+	private float timesincedeepsearch = 0;
+	private float maxtimedeepsearch = 5;
 
 	private Body body;
 	private Map map;
@@ -179,15 +178,15 @@ public abstract class Enemy implements Disposable {
 		if (tot || !activated || !healthBar || (int) health == (int) maxHealth || health <= 0f)
 			return;
 		shapeRenderer.setColor(new Color(1, 0, 0, 1));
-		shapeRenderer.rect(getBodyX()-25*PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2, 50 * PlayState.PIXEL_TO_METER,
-				3 * PlayState.PIXEL_TO_METER);
+		shapeRenderer.rect(getBodyX() - 25 * PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2,
+				50 * PlayState.PIXEL_TO_METER, 3 * PlayState.PIXEL_TO_METER);
 		shapeRenderer.setColor(new Color(0, 1, 0, 1));
-		shapeRenderer.rect(getBodyX()-25*PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2,
+		shapeRenderer.rect(getBodyX() - 25 * PlayState.PIXEL_TO_METER, getBodyY() + sprite.getHeight() / 2,
 				50 * PlayState.PIXEL_TO_METER * (health / maxHealth), 3 * PlayState.PIXEL_TO_METER);
 	}
 
 	public void update(final float deltaTime) {
-		timesincedeepsearch=timesincedeepsearch+deltaTime;
+		timesincedeepsearch = timesincedeepsearch + deltaTime;
 		if (this.isTot() || !this.activated)
 			return;
 
@@ -219,14 +218,13 @@ public abstract class Enemy implements Disposable {
 			if (weg.size == 1)
 				distancetonode = sprite.getWidth() * 2;
 
-			if (isCloseEnough(weg.get(weg.size - 1),distancetonode))
+			if (isCloseEnough(weg.get(weg.size - 1), distancetonode))
 				weg.removeIndex(weg.size - 1);
 
 			if (weg.size > 0)
 				score = weg.get(weg.size - 1).getH();
-			if(timesincedeepsearch>maxtimedeepsearch)
+			if (timesincedeepsearch > maxtimedeepsearch)
 				doDeepSearch();
-
 
 		} else {
 			callbackInterface.enemyHitsHomeCallback(this);
@@ -238,21 +236,21 @@ public abstract class Enemy implements Disposable {
 		sprite.setRotation(MathUtils.radDeg * this.body.getAngle());
 	}
 
-	private boolean isCloseEnough(Node n,float distance) {
+	private boolean isCloseEnough(Node n, float distance) {
 		return this.body.getPosition().dst(n.getPosition().x * PlayState.PIXEL_TO_METER,
 				n.getPosition().y * PlayState.PIXEL_TO_METER) < distance;
 	}
 
 	private void doDeepSearch() {
-		Node skipnode=null;
+		Node skipnode = null;
 		for (Node n : weg) {
-			if(isCloseEnough(n, distancetonode*2)) {
-				if(skipnode==null)
-				skipnode=n;
+			if (isCloseEnough(n, distancetonode * 2)) {
+				if (skipnode == null)
+					skipnode = n;
 			}
 		}
-		if(skipnode!=null) {
-			while(weg.get(weg.size - 1)!=skipnode) {
+		if (skipnode != null) {
+			while (weg.get(weg.size - 1) != skipnode) {
 				weg.removeIndex(weg.size - 1);
 			}
 		}
@@ -361,9 +359,9 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public Vector2 getCenter() {
-		Vector2 cnt=new Vector2();
-		cnt.x=getBodyX()+(sprite.getWidth()*0.5f*PlayState.PIXEL_TO_METER);
-		cnt.y=getBodyY()+(sprite.getHeight()*0.5f*PlayState.PIXEL_TO_METER);
+		Vector2 cnt = new Vector2();
+		cnt.x = getBodyX() + (sprite.getWidth() * 0.5f * PlayState.PIXEL_TO_METER);
+		cnt.y = getBodyY() + (sprite.getHeight() * 0.5f * PlayState.PIXEL_TO_METER);
 		return cnt;
 	}
 

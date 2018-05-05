@@ -182,13 +182,13 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 	}
 
 	@Override
-	public void backControllerCallback() {
+	public void controllerCallbackBackPressed() {
 		// exit application
 		Gdx.app.exit();
 	}
 
 	@Override
-	public void selectControllerCallback(int buttonId) {
+	public void controllerCallbackButtonPressed(int buttonId) {
 		if (controllerTimeHelper < 0.2)
 			return;
 		// open selected button
@@ -212,7 +212,7 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 	}
 
 	@Override
-	public void dPadButtonsControllerCallback(PovDirection direction) {
+	public void controllerCallbackDPadButtonPressed(PovDirection direction) {
 		// select next button
 		if (direction == ControllerWiki.BUTTON_DPAD_DOWN || direction == ControllerWiki.BUTTON_DPAD_RIGHT)
 			selectNextButton(true);
@@ -222,7 +222,7 @@ public class GameOverState extends GameState implements ControllerMenuCallbackIn
 	}
 
 	@Override
-	public void stickMovedControllerCallback(final boolean xAxis, final float value) {
+	public void controllerCallbackStickMoved(final boolean xAxis, final float value) {
 		// select next button
 		if (blockStickInput && stickTimeHelper >= 0.3)
 			blockStickInput = false;

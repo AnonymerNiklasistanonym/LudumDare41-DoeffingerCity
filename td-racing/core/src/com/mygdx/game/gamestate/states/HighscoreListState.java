@@ -113,12 +113,12 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 	}
 
 	@Override
-	public void backControllerCallback() {
+	public void controllerCallbackBackPressed() {
 		goBack();
 	}
 
 	@Override
-	public void selectControllerCallback(int buttonId) {
+	public void controllerCallbackButtonPressed(int buttonId) {
 		if (controllerTimeHelper < 0.2)
 			return;
 		if (buttonId == ControllerWiki.BUTTON_A)
@@ -128,12 +128,12 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 	}
 
 	@Override
-	public void dPadButtonsControllerCallback(PovDirection direction) {
+	public void controllerCallbackDPadButtonPressed(PovDirection direction) {
 		// Nothing to do
 	}
 
 	@Override
-	public void stickMovedControllerCallback(final boolean xAxis, final float value) {
+	public void controllerCallbackStickMoved(final boolean xAxis, final float value) {
 		// Nothing to do
 	}
 

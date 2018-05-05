@@ -7,7 +7,7 @@ public interface ControllerMenuCallbackInterface {
 	/**
 	 * B or Back button was pressed
 	 */
-	void backControllerCallback();
+	void controllerCallbackBackPressed();
 
 	/**
 	 * Another main button was pressed (A,X,Y)
@@ -15,7 +15,7 @@ public interface ControllerMenuCallbackInterface {
 	 * @param buttonId
 	 *            (ControllerWiki.BUTTON...)
 	 */
-	void selectControllerCallback(final int buttonId);
+	void controllerCallbackButtonPressed(final int buttonId);
 
 	/**
 	 * DPad button was pressed
@@ -23,7 +23,7 @@ public interface ControllerMenuCallbackInterface {
 	 * @param buttonId
 	 *            (ControllerWiki.BUTTON...)
 	 */
-	void dPadButtonsControllerCallback(final PovDirection direction);
+	void controllerCallbackDPadButtonPressed(final PovDirection direction);
 
 	/**
 	 * One of the sticks was moved
@@ -33,6 +33,6 @@ public interface ControllerMenuCallbackInterface {
 	 * @param value
 	 *            (how fast was the stick moved)
 	 */
-	void stickMovedControllerCallback(final boolean xAxis, final float value);
+	void controllerCallbackStickMoved(final boolean xAxis, final float value);
 
 }

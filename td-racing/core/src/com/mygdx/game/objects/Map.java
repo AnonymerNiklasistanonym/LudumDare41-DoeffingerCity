@@ -41,7 +41,7 @@ public class Map {
 		createAStarArray();
 		paths = new Array<Array<Node>>();
 		healthBarPosition = currentLevel.getHealthBarPosition();
-		spawnheighty=currentLevel.getPitStopPosition().y*PlayState.PIXEL_TO_METER+sizePitstop;
+		spawnheighty = currentLevel.getPitStopPosition().y * PlayState.PIXEL_TO_METER + sizePitstop;
 
 		// Create x calculated ways
 		final PolygonShape ps = (PolygonShape) mapZiel.getFixtureList().first().getShape();
@@ -134,14 +134,16 @@ public class Map {
 			}
 		}
 		// Write all neighbors into the nodes
-		final Vector2[] iterationHelper = new Vector2[] {new Vector2(10, 0), new Vector2(0,10), new Vector2(-10,0), new Vector2(0,-10)};
+		final Vector2[] iterationHelper = new Vector2[] { new Vector2(10, 0), new Vector2(0, 10), new Vector2(-10, 0),
+				new Vector2(0, -10) };
 		for (int i = 0; i < nodesList.size; i++) {
 			final Node nodeMain = nodesList.get(i);
 			for (int j = 0; j < nodesList.size; j++) {
 				final Node nodeNeighbor = nodesList.get(j);
 				for (int k = 0; k < iterationHelper.length; k++) {
 					if (((int) (nodeMain.getPosition().x + iterationHelper[k].x) == (int) (nodeNeighbor.getPosition().x)
-							&& (int) (nodeMain.getPosition().y + iterationHelper[k].y) == (int) (nodeNeighbor.getPosition().y))) {
+							&& (int) (nodeMain.getPosition().y
+									+ iterationHelper[k].y) == (int) (nodeNeighbor.getPosition().y))) {
 						nodeMain.getNachbarn().add(nodeNeighbor);
 						break;
 					}
@@ -325,6 +327,5 @@ public class Map {
 	public float getSpawnheighty() {
 		return spawnheighty;
 	}
-
 
 }

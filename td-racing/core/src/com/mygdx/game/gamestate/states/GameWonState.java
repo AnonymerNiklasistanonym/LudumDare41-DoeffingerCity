@@ -108,12 +108,12 @@ public class GameWonState extends GameState implements ControllerMenuCallbackInt
 	}
 
 	@Override
-	public void backControllerCallback() {
+	public void controllerCallbackBackPressed() {
 		goBack();
 	}
 
 	@Override
-	public void selectControllerCallback(final int buttonId) {
+	public void controllerCallbackButtonPressed(final int buttonId) {
 		if (controllerTimeHelper < 0.2)
 			return;
 		if (buttonId == ControllerWiki.BUTTON_A)
@@ -123,12 +123,12 @@ public class GameWonState extends GameState implements ControllerMenuCallbackInt
 	}
 
 	@Override
-	public void dPadButtonsControllerCallback(final PovDirection direction) {
+	public void controllerCallbackDPadButtonPressed(final PovDirection direction) {
 		// Do nothing
 	}
 
 	@Override
-	public void stickMovedControllerCallback(final boolean xAxis, final float value) {
+	public void controllerCallbackStickMoved(final boolean xAxis, final float value) {
 		// Do nothing
 	}
 

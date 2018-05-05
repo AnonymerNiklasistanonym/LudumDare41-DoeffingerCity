@@ -44,13 +44,13 @@ public class ControllerHelper implements ControllerListener {
 			controllerCallbackInterface.controllerCallbackSteerCar(false);
 
 		// control the mouse cursor
-		controllerCallbackInterface.controllerMouseChanged(rightPad);
+		controllerCallbackInterface.controllerCallbackMouseChanged(rightPad);
 	}
 
 	private void buttonManager(int buttonId, boolean pressed) {
 		switch (buttonId) {
 		case ControllerWiki.BUTTON_A:
-			controllerCallbackInterface.buildTower();
+			controllerCallbackInterface.controllerCallbackBuildTower();
 			break;
 		case ControllerWiki.BUTTON_B:
 			controllerCallbackInterface.controllerCallbackStartBuildingMode(-1);
