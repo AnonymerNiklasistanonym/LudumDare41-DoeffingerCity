@@ -144,8 +144,8 @@ public class Car implements Disposable {
 	}
 
 	public float hitEnemy(final Enemy e) {
-		float damage = Math.abs(getForwardVelocity().x * 2);
-		if (damage > 3f)
+		float damage = Math.abs(getForwardVelocity().x * 1.5f);
+		if (damage > 2f)
 			e.takeDamage(damage);
 		return e.health;
 	}
