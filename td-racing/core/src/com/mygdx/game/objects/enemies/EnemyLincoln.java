@@ -9,9 +9,9 @@ import com.mygdx.game.objects.Map;
 public class EnemyLincoln extends Enemy {
 
 	private static final float DAMAGE = 40;
-	private static final float HEALTH = 1000;
+	private static final float HEALTH = 10000;
 	private static final float MONEY = 10000;
-	private static final float SPEED = 0.9f;
+	private static final float SPEED = 1f;
 	private static final float SCORE = 1000;
 	private static final boolean HEALTH_BAR = true;
 
