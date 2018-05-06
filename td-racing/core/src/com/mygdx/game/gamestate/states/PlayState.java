@@ -1162,6 +1162,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 	@Override
 	public void controllerCallbackToggleSound() {
 		soundOn = !soundOn;
+		musicOn = soundOn;
 	}
 
 	@Override
