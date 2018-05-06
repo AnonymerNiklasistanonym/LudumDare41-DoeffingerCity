@@ -33,7 +33,7 @@ public class PreferencesManager {
 	private static final String HIGHSCORE_NAME = "HIGHSCORE_NAME";
 	private static final String HIGHSCORE_SCORE = "HIGHSCORE_SCORE";
 	private static final String PREFERENCES_NAME = "td-racing-ludum-dare-41";
-	private static final String NEVER_LAUNCHED = "NEVER_LAUNCHED";
+	private static final String ALREADY_LAUNCHED = "ALREADY_LAUNCHED";
 	private static final String LAST_NAME = "LAST_NAME";
 
 	private static final int NUMBER_HIGHSCORE_ENTRIES = 5;
@@ -41,9 +41,9 @@ public class PreferencesManager {
 	private final Preferences prefs;
 
 	public void setupIfFirstStart() {
-		if (!prefs.getBoolean(NEVER_LAUNCHED)) {
+		if (!prefs.getBoolean(ALREADY_LAUNCHED)) {
 			System.out.println("First launch detected");
-			prefs.putBoolean(NEVER_LAUNCHED, true).flush();
+			prefs.putBoolean(ALREADY_LAUNCHED, true).flush();
 			saveName("NOBODY");
 			setMusicOn(true);
 			setSoundEffectsOn(true);
