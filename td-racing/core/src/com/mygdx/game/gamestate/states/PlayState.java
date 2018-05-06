@@ -186,6 +186,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		Controllers.addListener(controllerHelper);
 		preferencesManager = new PreferencesManager();
 		preferencesManager.checkHighscore();
+		preferencesManager.setupIfFirstStart();
 		enemies = new Array<Enemy>();
 		towers = new Array<Tower>();
 		collis = new CollisionListener(this);
@@ -664,9 +665,11 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 			tower.drawRange(shapeRenderer);
 		if (buildingtower != null)
 			buildingtower.drawRange(shapeRenderer, new Color(1, 0, 0, 0.4f));
-		if (MainGame.DEVELOPER_MODE && debugTower) {
-			for (final Tower tower : towers)
-				tower.drawTarget(shapeRenderer);
+		if (MainGame.DEVELOPER_MODE) {
+			if (debugTower) {
+				for (final Tower tower : towers)
+					tower.drawTarget(shapeRenderer);
+			}
 		}
 		shapeRenderer.end();
 		Gdx.gl.glDisable(GL20.GL_BLEND);

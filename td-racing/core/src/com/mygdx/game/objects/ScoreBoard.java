@@ -37,7 +37,30 @@ public class ScoreBoard {
 		MainGame.fontOutline.getData().setScale(PlayState.PIXEL_TO_METER);
 		MainGame.font.getData().setScale(PlayState.PIXEL_TO_METER);
 
-		if (MainGame.DEVELOPER_MODE && debugDisplay) {
+		if (MainGame.DEVELOPER_MODE)
+			debugPanel(spriteBatch);
+
+		MainGame.font.setColor(1, 1, 1, 1);
+
+		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
+		MainGame.font.draw(spriteBatch, "MUSIC: M", 58, 34);
+		MainGame.font.draw(spriteBatch, "PAUSE: P", 58, 33);
+
+		MainGame.font.draw(spriteBatch, "Score: " + (int) score, 0.2f, 35);
+		MainGame.font.draw(spriteBatch, "Kills: " + (int) killCount, 0.2f, 34);
+
+		MainGame.font.draw(spriteBatch, "Level: " + level, 0.2f, 2);
+		MainGame.font.draw(spriteBatch, "Wave: " + waveNumber, 0.2f, 1);
+
+		MainGame.font.draw(spriteBatch, "Money: " + (int) money + " $", COLUMN, 2);
+		MainGame.font.draw(spriteBatch, "Lap: " + (int) currentTime + " sec (#" + lapNumber + ")", COLUMN, 1);
+	}
+
+	private void debugPanel(final SpriteBatch spriteBatch) {
+		{
+			if (!debugDisplay)
+				return;
+
 			MainGame.fontOutline.setColor(1, 0, 0, 1);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Small Enemy: F", 0.2f, 32);
 			MainGame.fontOutline.draw(spriteBatch, "Spawn Fat Enemy: G", 0.2f, 31);
@@ -63,21 +86,6 @@ public class ScoreBoard {
 			MainGame.fontOutline.draw(spriteBatch, "Add 1000 to score: R", 0.2f, 11);
 			MainGame.fontOutline.draw(spriteBatch, "Toggle this display: F8", 0.2f, 9);
 		}
-
-		MainGame.font.setColor(1, 1, 1, 1);
-
-		MainGame.font.draw(spriteBatch, "SOUND: U", 58, 35);
-		MainGame.font.draw(spriteBatch, "MUSIC: M", 58, 34);
-		MainGame.font.draw(spriteBatch, "PAUSE: P", 58, 33);
-
-		MainGame.font.draw(spriteBatch, "Score: " + (int) score, 0.2f, 35);
-		MainGame.font.draw(spriteBatch, "Kills: " + (int) killCount, 0.2f, 34);
-
-		MainGame.font.draw(spriteBatch, "Level: " + level, 0.2f, 2);
-		MainGame.font.draw(spriteBatch, "Wave: " + waveNumber, 0.2f, 1);
-
-		MainGame.font.draw(spriteBatch, "Money: " + (int) money + " $", COLUMN, 2);
-		MainGame.font.draw(spriteBatch, "Lap: " + (int) currentTime + " sec (#" + lapNumber + ")", COLUMN, 1);
 	}
 
 	public void reduceLife(float damage) {

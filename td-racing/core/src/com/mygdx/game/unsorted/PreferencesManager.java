@@ -32,16 +32,26 @@ public class PreferencesManager {
 	private static final String SOUND_EFFECTS = "SOUND_EFFECTS";
 	private static final String HIGHSCORE_NAME = "HIGHSCORE_NAME";
 	private static final String HIGHSCORE_SCORE = "HIGHSCORE_SCORE";
-	private static final String PREFERENCES_NAME = "My Preferences";
-
+	private static final String PREFERENCES_NAME = "td-racing-ludum-dare-41";
+	private static final String NEVER_LAUNCHED = "NEVER_LAUNCHED";
 	private static final String LAST_NAME = "LAST_NAME";
 
 	private static final int NUMBER_HIGHSCORE_ENTRIES = 5;
 
 	private final Preferences prefs;
 
+	public void setupIfFirstStart() {
+		if (!prefs.getBoolean(NEVER_LAUNCHED)) {
+			System.out.println("First launch detected");
+			prefs.putBoolean(NEVER_LAUNCHED, true).flush();
+			saveName("NOBODY");
+			setMusicOn(true);
+			setSoundEffectsOn(true);
+		}
+	}
+
 	public PreferencesManager() {
-		this.prefs = Gdx.app.getPreferences(PREFERENCES_NAME);
+		prefs = Gdx.app.getPreferences(PREFERENCES_NAME);
 	}
 
 	public void saveName(final String name) {
