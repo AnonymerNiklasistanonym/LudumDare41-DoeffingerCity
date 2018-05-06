@@ -11,7 +11,7 @@ public class EnemySmall extends Enemy {
 	private static final float DAMAGE = 1;
 	private static final float HEALTH = 12;
 	private static final float MONEY = 1;
-	private static final float SPEED = 3;
+	private static final float SPEED = 2;
 	private static final float SCORE = 2;
 	private static final boolean HEALTH_BAR = false;
 
