@@ -880,7 +880,7 @@ public class PlayState extends GameState implements CollisionCallbackInterface, 
 		case 4:
 			if (towers.size > 0) {
 				tutorialState++;
-				tutorialtimer = 60f;
+				tutorialtimer = 30f;
 			}
 			break;
 		case 5:
