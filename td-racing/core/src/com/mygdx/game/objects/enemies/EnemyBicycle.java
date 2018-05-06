@@ -40,7 +40,7 @@ public class EnemyBicycle extends Enemy {
 				normalTexture.getHeight() * PlayState.PIXEL_TO_METER * 0.4f);
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = zBox;
-		fdef.density = 1f;
+		fdef.density = 4f;
 		// fdef.isSensor=true;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 		return fdef;
