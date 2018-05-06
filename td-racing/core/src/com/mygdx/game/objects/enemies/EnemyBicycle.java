@@ -14,7 +14,7 @@ public class EnemyBicycle extends Enemy {
 	private static final float DAMAGE = 2;
 	private static final float HEALTH = 15;
 	private static final float MONEY = 2;
-	private static final float SPEED = 4;
+	private static final float SPEED = 15;
 	private static final float SCORE = 20;
 	private static final boolean HEALTH_BAR = true;
 
@@ -40,7 +40,7 @@ public class EnemyBicycle extends Enemy {
 				normalTexture.getHeight() * PlayState.PIXEL_TO_METER * 0.4f);
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = zBox;
-		fdef.density = 4f;
+		fdef.density = 5f;
 		// fdef.isSensor=true;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 		return fdef;
