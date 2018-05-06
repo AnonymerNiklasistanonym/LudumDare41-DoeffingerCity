@@ -23,7 +23,7 @@ public class MainGame implements ApplicationListener {
 	/**
 	 * Name of the game
 	 */
-	public final static String GAME_NAME = "Tracks `n Towers)";
+	public final static String GAME_NAME = "TnT (Tracks `n Towers)";
 	/**
 	 * Returns if this is an release or development
 	 */
