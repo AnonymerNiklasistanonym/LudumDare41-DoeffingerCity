@@ -258,10 +258,10 @@ public abstract class Tower implements Disposable {
 		Enemy best = null;
 		for (Enemy e : enemies) {
 			if (best == null) {
-				if (e.isTot() == false && isTargetInRange(e) && e.isValidTarget())
+				if (isTargetInRange(e) && e.isValidTarget()&&e.hasLeftSpawn())
 					best = e;
 			} else {
-				if (e.getScore() < best.getScore() && e.isTot() == false && isTargetInRange(e))
+				if (e.getScore() < best.getScore() && isTargetInRange(e) && e.isValidTarget()&&e.hasLeftSpawn())
 					best = e;
 			}
 		}

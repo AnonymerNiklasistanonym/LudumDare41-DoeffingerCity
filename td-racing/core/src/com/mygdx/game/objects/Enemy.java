@@ -34,26 +34,26 @@ public abstract class Enemy implements Disposable {
 	private final Texture textureDead;
 	private final float time;
 
-	protected float maxHealth, health, money, score, speed, damage;
+	protected float maxHealth, health, money, score, speed, damage, timeAlive;
 
 	private float timesincedeepsearch = 0;
-	private float maxtimedeepsearch = 5;
-
+	private float maxtimedeepsearch = 3;
 	private Body body;
 	private Map map;
 	private Array<Node> weg;
 	private float distancetonode, wasHitTime;
 	private Vector2 hitRandom;
 	private Color color;
-	protected boolean activated, bodyDeleted, healthBar, tot, deleteBody, delete;
+	protected boolean activated, bodyDeleted, healthBar, tot, deleteBody, delete, leftSpawn;
 
 	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
 			final Texture damagesprite, final Map map, final float time) {
-
+		timeAlive=0f;
 		textureDead = deadsprite;
 		deleteBody = false;
 		delete = false;
 		tot = false;
+		leftSpawn=false;
 		hitRandom = new Vector2();
 
 		sprite = new Sprite(alive);
@@ -144,8 +144,10 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void takeDamage(float amount) {
+		if(isValidTarget()) {
 		this.health -= amount;
 		this.wasHitTime = 0.15f;
+		}
 	}
 
 	private void findWay() {
@@ -186,10 +188,16 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void update(final float deltaTime) {
+		
+	
 		timesincedeepsearch = timesincedeepsearch + deltaTime;
 		if (this.isTot() || !this.activated)
 			return;
 
+		timeAlive=timeAlive+deltaTime;
+		if(timeAlive>60&&!hasLeftSpawn())
+			die();
+		
 		if (wasHitTime > 0) {
 			wasHitTime -= deltaTime;
 			hitRandom.x = MathUtils.random(-this.sprite.getWidth() / 4, this.sprite.getWidth() / 4);
@@ -371,6 +379,14 @@ public abstract class Enemy implements Disposable {
 
 	public boolean isValidTarget() {
 		return activated && !tot;
+
+	}
+	
+	public boolean hasLeftSpawn() {
+		if(getY()>map.getSpawnheighty())
+		leftSpawn=true;
+
+	return leftSpawn;
 	}
 
 	public Vector2 getCenteredPosition() {
