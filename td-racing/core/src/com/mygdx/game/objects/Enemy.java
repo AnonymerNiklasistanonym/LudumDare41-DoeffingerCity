@@ -27,7 +27,7 @@ public abstract class Enemy implements Disposable {
 	private static final float SPEED = 80;
 	private static final float SCORE = 10;
 	private static final boolean HEALTH_BAR = true;
-	private static final float DENSITY = 2f;
+	private static final float DENSITY = 1f;
 
 	private final Sprite sprite;
 	private final Sprite spriteDamage;

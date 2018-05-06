@@ -25,7 +25,7 @@ public class Node {
 		g = 1;
 		noUse = false;
 		position = new Vector2(x, y);
-		additionalDifficulty = MathUtils.random(1f, 3f);
+		additionalDifficulty = 0;
 		h = 99999;
 		nachbarn = new Array<Node>();
 	}
@@ -75,8 +75,8 @@ public class Node {
 		return parentNode;
 	}
 
-	public void setAdditionalDifficulty(final float additionalDifficulty) {
-		this.additionalDifficulty = additionalDifficulty;
+	public void setAdditionalDifficulty(final float aD) {
+		this.additionalDifficulty = this.additionalDifficulty+aD;
 	}
 
 	public void setH(final float h) {
