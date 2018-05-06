@@ -72,10 +72,14 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 		if (Gdx.input.justTouched() || (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || Gdx.input.isCatchBackKey()))
 			goBack();
 
-		// clear high score list
-		if (Gdx.input.isKeyJustPressed(Keys.C)) {
-			preferencesManager.clearHighscore();
-			loadHighScoreList();
+		if (MainGame.DEVELOPER_MODE) {
+
+			// clear high score list
+			if (Gdx.input.isKeyJustPressed(Keys.C)) {
+				preferencesManager.clearHighscore();
+				loadHighScoreList();
+			}
+
 		}
 	}
 
@@ -96,10 +100,14 @@ public class HighscoreListState extends GameState implements ControllerMenuCallb
 		for (final HighscoreButton highscoreButton : highscoreButtons)
 			highscoreButton.draw(spriteBatch);
 
-		// draw message to inform how the list can be cleared
-		MainGame.font.getData().setScale(1);
-		MainGame.font.setColor(1, 1, 1, 1);
-		MainGame.font.draw(spriteBatch, "Clear List: C", 10, 30);
+		if (MainGame.DEVELOPER_MODE) {
+
+			// draw message to inform how the list can be cleared
+			MainGame.font.getData().setScale(1);
+			MainGame.font.setColor(1, 1, 1, 1);
+			MainGame.font.draw(spriteBatch, "Clear List: C", 10, 30);
+
+		}
 
 		spriteBatch.end();
 	}

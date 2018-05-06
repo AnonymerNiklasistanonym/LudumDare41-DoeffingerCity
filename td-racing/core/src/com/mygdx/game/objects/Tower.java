@@ -348,7 +348,7 @@ public abstract class Tower implements Disposable {
 		final float degreeChangeOne = Math.abs(getDegrees() - getAngleToEnemy(target));
 		final float degreeChangeTwo = Math.abs(getAngleToEnemy(target) - getDegrees());
 
-		if (degreeChangeOne <= maximumDegreeChange*1.1f || degreeChangeTwo <= maximumDegreeChange*1.1f) {
+		if (degreeChangeOne <= maximumDegreeChange * 1.1f || degreeChangeTwo <= maximumDegreeChange * 1.1f) {
 			newDegrees = getAngleToEnemy(target);
 			if (timesincelastshot > speed)
 				shoot(target, deltaTime);
