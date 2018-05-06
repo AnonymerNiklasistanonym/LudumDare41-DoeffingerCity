@@ -27,14 +27,14 @@ public abstract class Enemy implements Disposable {
 	private static final float SPEED = 80;
 	private static final float SCORE = 10;
 	private static final boolean HEALTH_BAR = true;
-	private static final float DENSITY= 2.5f;
+	private static final float DENSITY = 2f;
 
 	private final Sprite sprite;
 	private final Sprite spriteDamage;
 	private final Texture textureDead;
 	private final float time;
 
-	protected float maxHealth, health, money, score, speed, damage, timeAlive;
+	protected float maxHealth, health, money, score, speed, damage, timeAlive, distanceToTarget, timeSinceLastNode;
 
 	private float timesincedeepsearch = 0;
 	private float maxtimedeepsearch = 3;
@@ -48,14 +48,15 @@ public abstract class Enemy implements Disposable {
 
 	public Enemy(final Vector2 position, final World world, final Texture alive, final Texture deadsprite,
 			final Texture damagesprite, final Map map, final float time) {
-		timeAlive=0f;
+		timeAlive = 0f;
 		textureDead = deadsprite;
 		deleteBody = false;
 		delete = false;
 		tot = false;
-		leftSpawn=false;
+		leftSpawn = false;
 		hitRandom = new Vector2();
-
+		distanceToTarget = 0f;
+		timeSinceLastNode = 0f;
 		sprite = new Sprite(alive);
 		sprite.setSize(sprite.getWidth() * PlayState.PIXEL_TO_METER, sprite.getHeight() * PlayState.PIXEL_TO_METER);
 		sprite.setOriginCenter();
@@ -96,6 +97,7 @@ public abstract class Enemy implements Disposable {
 		enemyCircle.setRadius(sprite.getHeight() * 0.35f);
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = enemyCircle;
+		fdef.friction = 0;
 		fdef.density = DENSITY;
 		return fdef;
 	}
@@ -144,9 +146,9 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void takeDamage(float amount) {
-		if(isValidTarget()) {
-		this.health -= amount;
-		this.wasHitTime = 0.15f;
+		if (isValidTarget()) {
+			this.health -= amount;
+			this.wasHitTime = 0.15f;
 		}
 	}
 
@@ -188,16 +190,16 @@ public abstract class Enemy implements Disposable {
 	}
 
 	public void update(final float deltaTime) {
-		
-	
-		timesincedeepsearch = timesincedeepsearch + deltaTime;
+
 		if (this.isTot() || !this.activated)
 			return;
 
-		timeAlive=timeAlive+deltaTime;
-		if(timeAlive>60&&!hasLeftSpawn())
+		timesincedeepsearch = timesincedeepsearch + deltaTime;
+		timeAlive = timeAlive + deltaTime;
+		timeSinceLastNode = timeSinceLastNode + deltaTime;
+		if (timeAlive > 60 && !hasLeftSpawn())
 			die();
-		
+
 		if (wasHitTime > 0) {
 			wasHitTime -= deltaTime;
 			hitRandom.x = MathUtils.random(-this.sprite.getWidth() / 4, this.sprite.getWidth() / 4);
@@ -221,18 +223,37 @@ public abstract class Enemy implements Disposable {
 
 			body.applyForceToCenter(velo, true);
 			reduceToMaxSpeed(speed);
-			killLateral(1f);
+			killLateral(0.2f);
 
-			if (weg.size == 1)
-				distancetonode = sprite.getWidth() * 2;
+			float oldDistance = distanceToTarget;
+			distanceToTarget = getDistanceToTarget(weg.get(weg.size - 1));
+			float distanceTraveled = Math.abs(oldDistance - distanceToTarget);
+			if (timeAlive > 7f && distanceTraveled != 0 && timeSinceLastNode > 2f) {
+				if (distanceTraveled < 0.001f) {
+					// System.out.println("Doing deep search OLD/NEW/TRAVELLED:
+					// "+oldDistance+"/"+distanceToTarget+"/"+distanceTraveled);
+					doDeepSearch(timeSinceLastNode);
+				}
+				if (oldDistance < distanceToTarget) {
+					// System.out.println("Farther away OLD/NEW/TRAVELLED:
+					// "+oldDistance+"/"+distanceToTarget+"/"+distanceTraveled);
+					doDeepSearch(timeSinceLastNode);
+				}
+			}
+			if (timeSinceLastNode > 6f) {
+				// System.out.println("Farther away OLD/NEW/TRAVELLED:
+				// "+oldDistance+"/"+distanceToTarget+"/"+distanceTraveled);
+				doDeepSearch(timeSinceLastNode);
+			}
 
-			if (isCloseEnough(weg.get(weg.size - 1), distancetonode))
+			if (isCloseEnough(weg.get(weg.size - 1), distancetonode)) {
 				weg.removeIndex(weg.size - 1);
+				distanceToTarget = 100;
+				timeSinceLastNode = 0;
+			}
 
 			if (weg.size > 0)
 				score = weg.get(weg.size - 1).getH();
-			if (timesincedeepsearch > maxtimedeepsearch)
-				doDeepSearch();
 
 		} else {
 			callbackInterface.enemyHitsHomeCallback(this);
@@ -245,14 +266,18 @@ public abstract class Enemy implements Disposable {
 	}
 
 	private boolean isCloseEnough(Node n, float distance) {
-		return this.body.getPosition().dst(n.getPosition().x * PlayState.PIXEL_TO_METER,
-				n.getPosition().y * PlayState.PIXEL_TO_METER) < distance;
+		return getDistanceToTarget(n) < distance;
 	}
 
-	private void doDeepSearch() {
+	private float getDistanceToTarget(Node n) {
+		return this.body.getPosition().dst(n.getPosition().x * PlayState.PIXEL_TO_METER,
+				n.getPosition().y * PlayState.PIXEL_TO_METER);
+	}
+
+	private void doDeepSearch(float factor) {
 		Node skipnode = null;
 		for (Node n : weg) {
-			if (isCloseEnough(n, distancetonode * 2)) {
+			if (isCloseEnough(n, distancetonode * factor)) {
 				if (skipnode == null)
 					skipnode = n;
 			}
@@ -260,6 +285,7 @@ public abstract class Enemy implements Disposable {
 		if (skipnode != null) {
 			while (weg.get(weg.size - 1) != skipnode) {
 				weg.removeIndex(weg.size - 1);
+				timeSinceLastNode = 0f;
 			}
 		}
 	}
@@ -381,12 +407,12 @@ public abstract class Enemy implements Disposable {
 		return activated && !tot;
 
 	}
-	
-	public boolean hasLeftSpawn() {
-		if(getY()>map.getSpawnheighty())
-		leftSpawn=true;
 
-	return leftSpawn;
+	public boolean hasLeftSpawn() {
+		if (getY() > map.getSpawnheighty())
+			leftSpawn = true;
+
+		return leftSpawn;
 	}
 
 	public Vector2 getCenteredPosition() {
