@@ -13,6 +13,7 @@ public class EnemyFat extends Enemy {
 	private static final float MONEY = 4;
 	private static final float SPEED = 1f;
 	private static final float SCORE = 40;
+	private static final float DENSITY = 4;
 	private static final boolean HEALTH_BAR = true;
 
 	public static Texture damageTexture;

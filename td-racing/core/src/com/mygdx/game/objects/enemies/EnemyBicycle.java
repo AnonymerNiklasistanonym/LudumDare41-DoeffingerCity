@@ -17,6 +17,7 @@ public class EnemyBicycle extends Enemy {
 	private static final float SPEED = 15;
 	private static final float SCORE = 20;
 	private static final boolean HEALTH_BAR = true;
+	private static final float DENSITY = 5f;
 
 	public static Texture damageTexture;
 	public static Texture deadTexture;
@@ -40,7 +41,7 @@ public class EnemyBicycle extends Enemy {
 				normalTexture.getHeight() * PlayState.PIXEL_TO_METER * 0.4f);
 		final FixtureDef fdef = new FixtureDef();
 		fdef.shape = zBox;
-		fdef.density = 5f;
+		fdef.density = DENSITY;
 		// fdef.isSensor=true;
 		fdef.filter.categoryBits = PlayState.PLAYER_BOX;
 		return fdef;
@@ -49,5 +50,12 @@ public class EnemyBicycle extends Enemy {
 	@Override
 	public void dispose() {
 		super.disposeMedia();
+	}
+	
+	@Override
+	protected void findWay() {
+		weg = map.getRandomMotorPath();
+		if (weg.size < 1)
+			System.out.println("Ich hab keinen gueltigen Weg bekommen :(");
 	}
 }

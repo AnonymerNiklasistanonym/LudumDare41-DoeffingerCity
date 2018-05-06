@@ -39,8 +39,8 @@ public abstract class Enemy implements Disposable {
 	private float timesincedeepsearch = 0;
 	private float maxtimedeepsearch = 3;
 	private Body body;
-	private Map map;
-	private Array<Node> weg;
+	protected Map map;
+	protected Array<Node> weg;
 	private float distancetonode, wasHitTime;
 	private Vector2 hitRandom;
 	private Color color;
@@ -152,7 +152,7 @@ public abstract class Enemy implements Disposable {
 		}
 	}
 
-	private void findWay() {
+	protected void findWay() {
 		weg = map.getRandomPath();
 		if (weg.size < 1)
 			System.out.println("Ich hab keinen gueltigen Weg bekommen :(");
@@ -199,6 +199,8 @@ public abstract class Enemy implements Disposable {
 		timeSinceLastNode = timeSinceLastNode + deltaTime;
 		if (timeAlive > 60 && !hasLeftSpawn())
 			die();
+		if(timeSinceLastNode>60)
+			die();
 
 		if (wasHitTime > 0) {
 			wasHitTime -= deltaTime;
@@ -223,6 +225,7 @@ public abstract class Enemy implements Disposable {
 
 			body.applyForceToCenter(velo, true);
 			reduceToMaxSpeed(speed);
+			
 			killLateral(0.2f);
 
 			float oldDistance = distanceToTarget;
@@ -278,6 +281,7 @@ public abstract class Enemy implements Disposable {
 		Node skipnode = null;
 		for (Node n : weg) {
 			if (isCloseEnough(n, distancetonode * factor)) {
+				if(weg.indexOf(n, true)>weg.size/2)
 				if (skipnode == null)
 					skipnode = n;
 			}
@@ -300,7 +304,7 @@ public abstract class Enemy implements Disposable {
 
 	private void killLateral(float drift) {
 		float lat = getVelocityVector().dot(getOrthogonal());
-		body.applyLinearImpulse(getOrthogonal().scl(drift).scl(lat).scl(-1), body.getPosition(), true);
+		body.applyLinearImpulse(getOrthogonal().scl(drift).scl(lat).scl(-1).scl(DENSITY), body.getPosition(), true);
 	}
 
 	private Vector2 getVelocityVector() {

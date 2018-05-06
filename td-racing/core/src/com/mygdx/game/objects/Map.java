@@ -30,6 +30,7 @@ public class Map {
 	private Node[][] nodes2DList;
 	private Sprite map;
 	private Array<Array<Node>> paths;
+	private Array<Array<Node>> motorpaths;
 	private float spawnheighty;
 
 	public Map(final Level currentLevel, final World world, final Body finishLine, final float sizePitstop) {
@@ -39,6 +40,7 @@ public class Map {
 		spawnPosition = new Vector2();
 		targetPosition = new Vector2();
 		createAStarArray();
+		motorpaths = new Array<Array<Node>>();
 		paths = new Array<Array<Node>>();
 		healthBarPosition = currentLevel.getHealthBarPosition();
 		spawnheighty = currentLevel.getPitStopPosition().y * PlayState.PIXEL_TO_METER + sizePitstop;
@@ -48,10 +50,16 @@ public class Map {
 		final Vector2 vector = new Vector2();
 		ps.getVertex(0, vector);
 
+		for (int i = 0; i < 2; i++) {
+			motorpaths.add(getPath(new Vector2(currentLevel.getSpawnPoint().x, currentLevel.getSpawnPoint().y),
+					new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL),0));
+		}
+		
 		for (int i = 0; i < 200; i++) {
 			paths.add(getPath(new Vector2(currentLevel.getSpawnPoint().x, currentLevel.getSpawnPoint().y),
-					new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL)));
+					new Vector2(vector.x * PlayState.METER_TO_PIXEL, vector.y * PlayState.METER_TO_PIXEL),3));
 		}
+
 	}
 
 	public Node[][] getNodesList() {
@@ -236,7 +244,7 @@ public class Map {
 		return vector;
 	}
 
-	private Array<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition) {
+	private Array<Node> getPath(final Vector2 startPosition, final Vector2 targetPosition, float maxDiff) {
 		Array<Node> openList = new Array<Node>();
 		Array<Node> closedList = new Array<Node>();
 		Node[][] tempNodes2DList = getNodesList();
@@ -306,7 +314,7 @@ public class Map {
 		while (aktuellerNode != null) {
 			// Add for every way that is used an additional difficulty
 			getNodesList()[(int) aktuellerNode.getPosition().x][(int) aktuellerNode.getPosition().y]
-					.setAdditionalDifficulty(MathUtils.random(1f, 3f));
+					.setAdditionalDifficulty(MathUtils.random(0f, maxDiff));
 			// Add node to way
 			tempweg.add(aktuellerNode);
 			// do it until there is no "parent" any more
@@ -318,6 +326,10 @@ public class Map {
 
 	public Array<Node> getRandomPath() {
 		return new Array<Node>(paths.random());
+	}
+	
+	public Array<Node> getRandomMotorPath() {
+		return new Array<Node>(motorpaths.random());
 	}
 
 	public Vector2 getHealthBarPos() {
